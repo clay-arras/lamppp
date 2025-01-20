@@ -1,3 +1,5 @@
+# taken from Kaparthy's micrograd
+
 from graphviz import Digraph
 
 def trace(root):

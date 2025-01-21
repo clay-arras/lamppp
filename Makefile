@@ -21,4 +21,4 @@ test_nn: $(NN_SRC)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(NN_SRC) -o $@
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(ENGINE_SRC) $(NN_SRC)

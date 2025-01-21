@@ -27,10 +27,10 @@ public:
     std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& other);
     std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& other);
 
-    std::shared_ptr<Value> pow(const double pwr); // TODO make this with other Values
+    std::shared_ptr<Value> pow(const double pwr); // TODO: make this with other Values
     std::shared_ptr<Value> exp();
 
-    // Activation functions
+    // Activation functions, TODO: add more activations and operations
     std::shared_ptr<Value> tanh();
     std::shared_ptr<Value> relu();
 

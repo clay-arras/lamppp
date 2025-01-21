@@ -1,4 +1,7 @@
 
+# from Karpathy's micrograd
+import math
+
 class Value:
     def __init__(self, data, _children=(), _op='', label='') -> None:
         self.data = data

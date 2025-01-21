@@ -1,4 +1,3 @@
-
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
@@ -6,36 +5,40 @@
 #include <unordered_set>
 #include <string>
 #include <cmath>
+#include <vector>
+#include <algorithm>
+#include <memory>
 
-class Value
-{
+class Value : public std::enable_shared_from_this<Value> {
 private:
-    std::function<void(void)> backward;
-    std::unordered_set<std::shared_ptr<Value>> prev; // TODO: might have to make shared pointers
+    std::function<void()> backward;
+    std::unordered_set<std::shared_ptr<Value>> prev; 
 
-    char op; // debug, if non leaf node then is a combination
-    string label; // debug
+    char op; // Debug: operation type
+    std::string label; // Debug: label for the node
 
-    void internalTopoSort(const *Value node);
+    std::vector<std::shared_ptr<Value>> internalTopoSort();
 
 public:
     double data;
     double grad;
-    Value(double data, unordered_set<shared_ptr<Value>> children = {}, double grad = 0.0, char op = '\0', const std::string& label = "");
 
-    Value operator+(const Value& other) const;
-    Value operator-(const Value& other) const;
-    Value operator*(const Value& other) const;
-    Value operator/(const Value& other) const;
-    Value pow(const double pwr) const;
-    Value exp() const;
+    Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {}, double grad = 0.0, char op = '\0', const std::string& label = "");
 
-    // activation functions
-    Value tanh() const;
-    Value relu() const;
+    std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& other) const;
+    std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& other) const;
+    std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& other) const;
+    std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& other) const;
+    
+    std::shared_ptr<Value> pow(const double pwr) const;
+    std::shared_ptr<Value> exp() const;
 
-    void backward();
+    // Activation functions
+    std::shared_ptr<Value> tanh() const;
+    std::shared_ptr<Value> relu() const;
+
+    void backprop();
     friend std::ostream& operator<<(std::ostream& os, const Value& obj);
-}
+};
 
 #endif

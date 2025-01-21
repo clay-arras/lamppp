@@ -84,9 +84,17 @@ std::shared_ptr<Value> Value::tanh() {
 }
 
 std::shared_ptr<Value> Value::relu() {
-    // Value out;
-    // return out;
-    return nullptr;
+    std::unordered_set<std::shared_ptr<Value>> prev_out;
+    prev_out.insert(shared_from_this());
+    double out_data = (this->data < 0 ? 0 : this->data);
+    auto out = std::make_shared<Value>(out_data, prev_out, 'r');
+
+    out->backward = [self=shared_from_this(), out]() {
+        self->grad += (out.data > 0) * out->grad;
+    };
+    return out;
+
+    return ;
 }
 
 void Value::backprop() {

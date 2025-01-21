@@ -14,24 +14,20 @@ class Value : public std::enable_shared_from_this<Value> {
 private:
     std::function<void()> backward; 
     std::unordered_set<std::shared_ptr<Value>> prev;
-
-    char op; 
-    std::string label; 
-
     std::vector<std::shared_ptr<Value>> internalTopoSort();
 
 public:
     double data;
     double grad;
 
-    Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {}, char op = '\0', double grad = 0.0, const std::string& label = "");
+    Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {}, double grad = 0.0);
 
     std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& other);
     std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& other);
     std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& other);
     std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& other);
 
-    std::shared_ptr<Value> pow(const double pwr);
+    std::shared_ptr<Value> pow(const double pwr); // TODO make this with other Values
     std::shared_ptr<Value> exp();
 
     // Activation functions

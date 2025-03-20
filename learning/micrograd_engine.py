@@ -55,7 +55,7 @@ class Value:
 
         out._backward = _backward
         return out
-    
+
     def log(self):
         out = Value(math.log(self.data), _children=(self,), _op="exp")
 
@@ -64,7 +64,6 @@ class Value:
 
         out._backward = _backward
         return out
-
 
     def __pow__(self, other):  # self ** other
         if not (isinstance(other, int) or isinstance(other, float)):

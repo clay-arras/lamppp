@@ -24,4 +24,4 @@ Next Steps:
 - finally, try to apply learnings to C++ code
 - finally, try to add vector parallization
 
-Without Optimizations: 52.7s
+Without Optimizations: 1m 9.5s

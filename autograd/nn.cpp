@@ -1,4 +1,5 @@
 #include "nn.h"
+#include <memory>
 
 Neuron::Neuron(int nin) {
   std::random_device seed;
@@ -24,7 +25,7 @@ Neuron::operator()(std::vector<std::shared_ptr<Value>> x) {
   for (int i = 0; i < (int)x.size(); i++) {
     ret = ret + (this->weights[i] * x[i]);
   }
-  return ret->tanh();
+  return ret;
 }
 
 Layer::Layer(int nin, int nout) {
@@ -44,10 +45,12 @@ std::vector<std::shared_ptr<Value>> Layer::parameters() {
 }
 
 std::vector<std::shared_ptr<Value>>
-Layer::operator()(std::vector<std::shared_ptr<Value>> x) {
+Layer::operator()(std::vector<std::shared_ptr<Value>> x, bool activ) {
   std::vector<std::shared_ptr<Value>> ret;
   for (int i = 0; i < (int)this->neurons.size(); i++) {
-    ret.push_back((*this->neurons[i])(x));
+    std::shared_ptr<Value> val = (*this->neurons[i])(x);
+    if (activ) ret.push_back(val->relu());
+    else ret.push_back(val);
   }
   return ret;
 }

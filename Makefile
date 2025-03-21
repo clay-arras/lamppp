@@ -5,6 +5,8 @@ INCLUDES = -I/usr/include/c++/14 \
 
 ENGINE_SRC = test/test_engine.cpp autograd/engine.cpp autograd/nn.cpp
 NN_SRC = test/test_nn.cpp autograd/engine.cpp autograd/nn.cpp
+UTIL_SRC = autograd/engine.cpp autograd/nn.cpp autograd/util.cpp
+MNIST_SRC = autograd/engine.cpp autograd/nn.cpp autograd/util.cpp autograd/mnist.cpp
 TARGET = out 
 
 .PHONY: all clean
@@ -19,6 +21,12 @@ test_engine: $(ENGINE_SRC)
 
 test_nn: $(NN_SRC)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(NN_SRC) -o $@
+
+util: $(UTIL_SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(UTIL_SRC) -o $@
+
+mnist: $(MNIST_SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(MNIST_SRC) -o $@
 
 clean:
 	rm -f $(TARGET) $(ENGINE_SRC) $(NN_SRC)

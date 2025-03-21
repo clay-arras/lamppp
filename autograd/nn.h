@@ -25,7 +25,7 @@ public:
   Layer(int nin, int nout);
   std::vector<std::shared_ptr<Value>> parameters();
   std::vector<std::shared_ptr<Value>>
-  operator()(std::vector<std::shared_ptr<Value>> x);
+  operator()(std::vector<std::shared_ptr<Value>> x, bool activ=true);
 };
 
 class MultiLayerPerceptron

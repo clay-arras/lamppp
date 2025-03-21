@@ -74,6 +74,16 @@ std::shared_ptr<Value> Value::exp() {
   return out;
 }
 
+std::shared_ptr<Value> Value::log() {
+  std::shared_ptr<Value> out = std::make_shared<Value>(
+      std::log(this->data),
+      std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
+  out->backward = [self = shared_from_this(), out]() {
+    self->grad += (1.0 / self->data) * out->grad;
+  };
+  return out;
+}
+
 // TODO: make normal
 std::shared_ptr<Value> Value::tanh() {
   std::shared_ptr<Value> exp =

@@ -31,6 +31,7 @@ public:
   std::shared_ptr<Value>
   pow(const double pwr); // TODO: make this with other Values
   std::shared_ptr<Value> exp();
+  std::shared_ptr<Value> log();
 
   // Activation functions, TODO: add more activations and operations
   std::shared_ptr<Value> tanh();

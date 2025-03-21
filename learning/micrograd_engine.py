@@ -17,7 +17,7 @@ class Value:
     def __add__(self, other):
         if not isinstance(other, Value):
             other = Value(other)
-        out = Value(self.data + other.data, _children=(self, other), _op="+")
+        out = Value(self.data + other.data, _children=(self, other), _op="add")
 
         def _backward():
             self.grad += 1.0 * out.grad
@@ -29,10 +29,16 @@ class Value:
     def __radd__(self, other):
         return self + other
 
+    def __neg__(self):
+        return -1.0 * self
+
+    def __sub__(self, other):
+        return self + other.__neg__()
+
     def __mul__(self, other):
         if not isinstance(other, Value):
             other = Value(other)
-        out = Value(self.data * other.data, _children=(self, other), _op="*")
+        out = Value(self.data * other.data, _children=(self, other), _op="mul")
 
         def _backward():
             self.grad += out.grad * other.data
@@ -44,8 +50,19 @@ class Value:
     def __rmul__(self, other):
         return self * other
 
-    def __neg__(self):
-        return -1.0 * self
+    def __truediv__(self, other):  # self/other
+        return self * (other ** (-1.0))
+
+    def __pow__(self, other):  # self ** other
+        if not (isinstance(other, int) or isinstance(other, float)):
+            assert False
+        out = Value(self.data**other, _children=(self,), _op="pow")
+
+        def _backward():
+            self.grad += out.grad * (other * (self.data ** (other - 1.0)))
+
+        out._backward = _backward
+        return out
 
     def exp(self):
         out = Value(math.exp(self.data), _children=(self,), _op="exp")
@@ -57,30 +74,13 @@ class Value:
         return out
 
     def log(self):
-        out = Value(math.log(self.data), _children=(self,), _op="exp")
+        out = Value(math.log(self.data), _children=(self,), _op="log")
 
         def _backward():
             self.grad += out.grad * (1.0 / self.data)
 
         out._backward = _backward
         return out
-
-    def __pow__(self, other):  # self ** other
-        if not (isinstance(other, int) or isinstance(other, float)):
-            assert False
-        out = Value(self.data**other, _children=(self,), _op="**")
-
-        def _backward():
-            self.grad += out.grad * (other * (self.data ** (other - 1.0)))
-
-        out._backward = _backward
-        return out
-
-    def __sub__(self, other):
-        return self + other.__neg__()
-
-    def __truediv__(self, other):  # self/other
-        return self * (other ** (-1.0))
 
     def tanh(self):
         e = (2 * self).exp()

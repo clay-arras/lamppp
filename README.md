@@ -1,42 +1,36 @@
 # MicroGrad C++
 
-A C++ implementation of autograd inspired by Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd) - a tiny autograd engine that implements backpropagation (reverse-mode autodiff) over a dynamically built DAG.
+A from-scratch implementation of autograd in both Python and C++, inspired by Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd), with MNIST digit classification in multiple implementations.
 
-## Overview
+## Core Implementations
 
-This project implements:
+- **Pure Python Autograd Engine**: Complete autograd implementation from scratch in Python
+- **Pure C++ Autograd Engine**: Full autograd system rebuilt from the ground up in C++
+- **MNIST Implementations**:
+  - Using only basic PyTorch vector operations
+  - Using only our custom Python autograd engine
+  - Using our C++ autograd engine from scratch
 
-1. An autograd engine that tracks computations and enables automatic differentiation
-2. A neural network library built on top of the autograd engine
-3. Support for basic neural network operations including:
-   - Forward and backward propagation
-   - Common activation functions (tanh, ReLU)
-   - Multi-layer perceptron architecture
-
-## Building
-
-Requirements:
+## Requirements
 
 - C++17 compatible compiler (g++-14 recommended)
 - Make
+- Python 3.11+
 
 ## Features
 
-- **Autograd Engine**
+- **Autograd Engines**: Support for operations (+, -, \*, /, pow, exp, log) with automatic differentiation
+- **Neural Network**: Modular architecture with customizable layers and activation functions
+- **Performance**: Batch processing capabilities with optimization experiments
 
-  - Automatic differentiation through computational graphs
-  - Support for basic mathematical operations (+, -, \*, /, pow)
-  - Activation functions (tanh, ReLU)
+## Future Developments
 
-- **Neural Network Library**
-  - Modular design with Neuron, Layer, and MLP classes
-  - Support for multi-layer architectures
-  - Automatic parameter management
+- Improved parallelization strategies
+- Vector operations optimization
+- CUDA support
 
 ## License
 
 MIT License
-
-## Acknowledgments
 
 This project is inspired by Andrej Karpathy's micrograd.

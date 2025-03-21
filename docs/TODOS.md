@@ -23,5 +23,3 @@ Next Steps:
 - train a small network on MNIST short
 - finally, try to apply learnings to C++ code
 - finally, try to add vector parallization
-
-Without Optimizations: 1m 9.5s

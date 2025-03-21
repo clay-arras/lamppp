@@ -1,5 +1,5 @@
 # adapted and extended from Karpathy's micrograd
-from micrograd_engine import Value
+from learning.micrograd_engine import Value
 from abc import ABC, abstractmethod
 import random
 
@@ -36,7 +36,7 @@ class Layer:
     def __call__(self, x, relu=True):  # x is nin
         out = [neuron(x) for neuron in self.neurons]
         if relu:
-            out = [i.tanh() for i in out]
+            out = [i.relu() for i in out]
         return out[0] if len(out) == 1 else out
 
     def parameters(self):

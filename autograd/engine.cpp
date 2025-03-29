@@ -52,7 +52,7 @@ std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &a,
 }
 
 std::shared_ptr<Value> Value::operator/(const std::shared_ptr<Value> &other) {
-  return shared_from_this() * other->pow(std::make_shared<Value>(-1)); // TODO: implement pow with exp and log
+  return shared_from_this() * other->pow(std::make_shared<Value>(-1));
 }
 
 std::shared_ptr<Value> Value::pow(std::shared_ptr<Value> other) {

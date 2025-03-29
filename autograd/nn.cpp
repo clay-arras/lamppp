@@ -1,5 +1,4 @@
 #include "nn.h"
-#include <memory>
 
 Neuron::Neuron(int nin) {
   std::random_device seed;

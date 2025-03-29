@@ -19,7 +19,12 @@ https://github.com/vincentlaucsb/csv-parser
 
 Next Steps:
 
-- figure out how to CPU-bound some of the for loops
+<!-- - figure out how to CPU-bound some of the for loops -->
+
 - train a small network on MNIST short
 - finally, try to apply learnings to C++ code
 - finally, try to add vector parallization
+
+Also:
+
+- make the leaf, requires_grad optimization

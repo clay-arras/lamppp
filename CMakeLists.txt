@@ -23,5 +23,8 @@ target_link_libraries(test_engine autograd_core)
 add_executable(test_nn test/test_nn.cpp)
 target_link_libraries(test_nn autograd_core)
 
+add_executable(test_gen test/test_gen.cpp)
+target_link_libraries(test_gen autograd_core)
+
 add_executable(mnist autograd/mnist.cpp)
 target_link_libraries(mnist autograd_core)

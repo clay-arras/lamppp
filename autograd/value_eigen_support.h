@@ -21,3 +21,9 @@ struct NumTraits<std::shared_ptr<Value>> : NumTraits<float> {
     };
 };
 } 
+
+// std::shared_ptr<Value> exp();
+// std::shared_ptr<Value> log();
+
+// std::shared_ptr<Value> tanh();
+// std::shared_ptr<Value> relu();

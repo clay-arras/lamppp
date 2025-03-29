@@ -27,8 +27,6 @@ public:
   std::shared_ptr<Value> operator*(const std::shared_ptr<Value> &other);
   std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &other);
 
-  std::shared_ptr<Value>
-  pow(const double pwr); // TODO: make this with other Values
   std::shared_ptr<Value> exp();
   std::shared_ptr<Value> log();
 
@@ -48,5 +46,10 @@ std::shared_ptr<Value> operator*(const std::shared_ptr<Value> &a,
                                  const std::shared_ptr<Value> &b);
 std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &a,
                                  const std::shared_ptr<Value> &b);
+
+std::shared_ptr<Value> exp(const std::shared_ptr<Value> &value);
+std::shared_ptr<Value> log(const std::shared_ptr<Value> &value);
+std::shared_ptr<Value> tanh(const std::shared_ptr<Value> &value);
+std::shared_ptr<Value> relu(const std::shared_ptr<Value> &value);
 
 #endif

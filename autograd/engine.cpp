@@ -51,17 +51,8 @@ std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &a,
 }
 
 std::shared_ptr<Value> Value::operator/(const std::shared_ptr<Value> &other) {
-  return shared_from_this() * other->pow(-1);
-}
-
-std::shared_ptr<Value> Value::pow(const double pwr) {
-  std::shared_ptr<Value> out = std::make_shared<Value>(
-      std::pow(this->data, pwr),
-      std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
-  out->backward = [self = shared_from_this(), pwr, out]() {
-    self->grad += (pwr * std::pow(self->data, pwr - 1)) * out->grad;
-  };
-  return out;
+  // return shared_from_this() * other->pow(-1); // TODO: implement pow with exp and log
+  return shared_from_this(); // TODO: implement pow with exp and log
 }
 
 std::shared_ptr<Value> Value::exp() {
@@ -74,6 +65,10 @@ std::shared_ptr<Value> Value::exp() {
   return out;
 }
 
+std::shared_ptr<Value> exp(const std::shared_ptr<Value> &a) {
+  return a->exp();
+}
+
 std::shared_ptr<Value> Value::log() {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       std::log(this->data),
@@ -84,12 +79,20 @@ std::shared_ptr<Value> Value::log() {
   return out;
 }
 
+std::shared_ptr<Value> log(const std::shared_ptr<Value> &a) {
+  return a->log();
+}
+
 // TODO: make normal
 std::shared_ptr<Value> Value::tanh() {
   std::shared_ptr<Value> exp =
       (std::make_shared<Value>(2) * shared_from_this())->exp();
   std::shared_ptr<Value> one = std::make_shared<Value>(1);
   return (exp - one) / (exp + one);
+}
+
+std::shared_ptr<Value> tanh(const std::shared_ptr<Value> &a) {
+  return a->tanh();
 }
 
 std::shared_ptr<Value> Value::relu() {
@@ -101,6 +104,10 @@ std::shared_ptr<Value> Value::relu() {
     self->grad += (self->data > 0) * out->grad;
   };
   return out;
+}
+
+std::shared_ptr<Value> relu(const std::shared_ptr<Value> &a) {
+  return a->relu();
 }
 
 void Value::backprop() {

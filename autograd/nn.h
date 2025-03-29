@@ -4,6 +4,7 @@
 #include "engine.h"
 #include <memory>
 #include <vector>
+#include <random>
 
 class Neuron : public std::enable_shared_from_this<Neuron> {
 private:

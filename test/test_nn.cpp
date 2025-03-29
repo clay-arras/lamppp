@@ -1,6 +1,7 @@
 #include "../autograd/engine.h"
 #include "../autograd/nn.h"
 #include <iostream>
+#include <memory>
 
 int main() {
   auto net =
@@ -29,14 +30,14 @@ int main() {
       ypred.push_back((*net)(x));
     }
 
-    // auto loss = std::make_shared<Value>(0.0);
-    // for (size_t j = 0; j < ys.size(); j++) {
-    //   auto diff = (ypred[j][0]) - std::make_shared<Value>(ys[j]);
-    //   loss = loss + (diff->pow(2.0));
-    // }
-    // std::cout << "Loss: " << loss->data << std::endl;
+    auto loss = std::make_shared<Value>(0.0);
+    for (size_t j = 0; j < ys.size(); j++) {
+      auto diff = (ypred[j][0]) - std::make_shared<Value>(ys[j]);
+      loss = loss + (diff->pow(std::make_shared<Value>(2.0)));
+    }
+    std::cout << "Loss: " << loss->data << std::endl;
 
-    // loss->backprop();
+    loss->backprop();
     auto params = net->parameters();
     for (auto &param : params) {
       param->data -= alpha * param->grad;

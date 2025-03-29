@@ -28,9 +28,5 @@ int main() {
         }
         std::cout << std::endl;
     }
-    // std::shared_ptr<Value> value_ptr = mat(1, 0);
-    // std::shared_ptr<Value> result = std::make_shared<Value>(std::sqrt(value_ptr->data));
-    // std::cout << "Square root of " << value_ptr->data << " is " << result->data << std::endl;
-    
     return 0;
 }

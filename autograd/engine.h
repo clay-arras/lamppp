@@ -7,6 +7,8 @@
 #include <memory>
 #include <unordered_set>
 #include <algorithm>
+#include <memory>
+#include <cassert>
 #include <vector>
 
 class Value : public std::enable_shared_from_this<Value> {
@@ -29,6 +31,7 @@ public:
 
   std::shared_ptr<Value> exp();
   std::shared_ptr<Value> log();
+  std::shared_ptr<Value> pow(std::shared_ptr<Value> a);
 
   // Activation functions, TODO: add more activations and operations
   std::shared_ptr<Value> tanh();

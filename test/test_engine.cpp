@@ -44,11 +44,11 @@ int main() {
   assert(approx_equal(b->grad, 0.5));
 
   auto n = std::make_shared<Value>(4.0);
-  // auto p = std::make_shared<Value>(2.0) * n->pow(3);
+  auto p = std::make_shared<Value>(2.0) * n->pow(std::make_shared<Value>(3.0));
 
-  // p->backprop();
-  // std::cout << "n.grad = " << n->grad << std::endl;
-  // assert(approx_equal(n->grad, 96.0));
+  p->backprop();
+  std::cout << "n.grad = " << n->grad << std::endl;
+  assert(approx_equal(n->grad, 96.0));
 
   std::cout << "\nAll tests passed!" << std::endl;
 }

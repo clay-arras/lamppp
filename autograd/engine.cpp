@@ -1,4 +1,5 @@
 #include "engine.h"
+#include <cmath>
 
 Value::Value(double data, std::unordered_set<std::shared_ptr<Value>> children,
              double grad)
@@ -51,8 +52,18 @@ std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &a,
 }
 
 std::shared_ptr<Value> Value::operator/(const std::shared_ptr<Value> &other) {
-  // return shared_from_this() * other->pow(-1); // TODO: implement pow with exp and log
-  return shared_from_this(); // TODO: implement pow with exp and log
+  return shared_from_this() * other->pow(std::make_shared<Value>(-1)); // TODO: implement pow with exp and log
+}
+
+std::shared_ptr<Value> Value::pow(std::shared_ptr<Value> other) {
+  std::shared_ptr<Value> out = std::make_shared<Value>(
+      std::pow(this->data, other->data),
+      std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other}); // here
+  out->backward = [self = shared_from_this(), other, out]() {
+    self->grad += other->data * std::pow(self->data, other->data - 1) * out->grad;
+    // other->grad += std::log(self->data) * std::pow(self->data, other->data) * out->grad;
+  };
+  return out;
 }
 
 std::shared_ptr<Value> Value::exp() {
@@ -70,6 +81,7 @@ std::shared_ptr<Value> exp(const std::shared_ptr<Value> &a) {
 }
 
 std::shared_ptr<Value> Value::log() {
+  assert(this->data > 0);
   std::shared_ptr<Value> out = std::make_shared<Value>(
       std::log(this->data),
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});

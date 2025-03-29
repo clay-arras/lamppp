@@ -3,7 +3,6 @@
 
 #include "engine.h"
 #include <memory>
-#include <random>
 #include <vector>
 
 class Neuron : public std::enable_shared_from_this<Neuron> {

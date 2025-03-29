@@ -1,13 +1,12 @@
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
-#include <algorithm>
 #include <cmath>
 #include <functional>
 #include <iostream>
 #include <memory>
-#include <string>
 #include <unordered_set>
+#include <algorithm>
 #include <vector>
 
 class Value : public std::enable_shared_from_this<Value> {

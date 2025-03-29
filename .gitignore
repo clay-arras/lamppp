@@ -1,5 +1,7 @@
+.cache/
 __pycache__/
-data/
-.venv/
+build/
 checkpoint/
+data/
 poetry.lock
+.venv/

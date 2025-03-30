@@ -31,7 +31,7 @@ public:
 
   std::shared_ptr<Value> exp();
   std::shared_ptr<Value> log();
-  std::shared_ptr<Value> pow(std::shared_ptr<Value> a);
+  std::shared_ptr<Value> pow(std::shared_ptr<Value> other);
 
   // Activation functions, TODO: add more activations and operations
   std::shared_ptr<Value> tanh();
@@ -49,6 +49,18 @@ std::shared_ptr<Value> operator*(const std::shared_ptr<Value> &a,
                                  const std::shared_ptr<Value> &b);
 std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &a,
                                  const std::shared_ptr<Value> &b);
+
+std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a, const float b);
+std::shared_ptr<Value> operator+(const float b, const std::shared_ptr<Value>& a);
+
+std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& a, const float b);
+std::shared_ptr<Value> operator-(const float b, const std::shared_ptr<Value>& a);
+
+std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a, const float b);
+std::shared_ptr<Value> operator*(const float b, const std::shared_ptr<Value>& a);
+
+std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a, const float b);
+std::shared_ptr<Value> operator/(const float b, const std::shared_ptr<Value>& a);
 
 std::shared_ptr<Value> exp(const std::shared_ptr<Value> &value);
 std::shared_ptr<Value> log(const std::shared_ptr<Value> &value);

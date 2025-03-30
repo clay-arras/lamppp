@@ -150,6 +150,38 @@ std::vector<std::shared_ptr<Value>> Value::internalTopoSort() {
   return topo;
 }
 
+std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a, const float b) {
+  return a + std::make_shared<Value>(b);
+}
+
+std::shared_ptr<Value> operator+(const float b, const std::shared_ptr<Value>& a) {
+  return std::make_shared<Value>(b) + a;
+}
+
+std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& a, const float b) {
+  return a - std::make_shared<Value>(b);
+}
+
+std::shared_ptr<Value> operator-(const float b, const std::shared_ptr<Value>& a) {
+  return std::make_shared<Value>(b) - a;
+}
+
+std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a, const float b) {
+  return a * std::make_shared<Value>(b);
+}
+
+std::shared_ptr<Value> operator*(const float b, const std::shared_ptr<Value>& a) {
+  return std::make_shared<Value>(b) * a;
+}
+
+std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a, const float b) {
+  return a / std::make_shared<Value>(b);
+}
+
+std::shared_ptr<Value> operator/(const float b, const std::shared_ptr<Value>& a) {
+  return std::make_shared<Value>(b) / a;
+}
+
 std::ostream &operator<<(std::ostream &os, const Value &obj) {
   os << "Value(data=" << obj.data << ", grad=" << obj.grad << ")";
   return os;

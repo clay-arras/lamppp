@@ -28,9 +28,8 @@ FastLayer::FastLayer(int nin, int nout) : nin(nin), nout(nout) {
  *         of output features.
  */
 Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>
-FastLayer::operator()(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x, std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> activ) {
+FastLayer::operator()(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> &x, std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)> activ) {
     Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> a(nout, 1);
-    a = weights * x;
-    a = a + bias;
+    a = weights * x + bias;
     return activ(a);
 }

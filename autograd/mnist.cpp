@@ -31,14 +31,14 @@ int main() {
             ptrs.push_back(std::make_shared<Value>(Value(i)));
         y_pred.push_back(forward(ptrs));
     }
-    std::shared_ptr<Value> loss = std::make_shared<Value>(Value(0));
+    // std::shared_ptr<Value> loss = std::make_shared<Value>(Value(0));
 
-    for (int i=0; i<N; i++) {
-        std::shared_ptr<Value> cross_entropy = std::make_shared<Value>(Value(0));
-        for (int j=0; j<10; j++) 
-            if (j == label[i])
-                cross_entropy = cross_entropy + y_pred[i][j]->log();
-        loss = loss - cross_entropy;
-    }
-    std::cout << loss->data << std::endl;
+    // for (int i=0; i<N; i++) {
+    //     std::shared_ptr<Value> cross_entropy = std::make_shared<Value>(Value(0));
+    //     for (int j=0; j<10; j++) 
+    //         if (j == label[i])
+    //             cross_entropy = cross_entropy + y_pred[i][j]->log();
+    //     loss = loss - cross_entropy;
+    // }
+    // std::cout << loss->data << std::endl;
 }

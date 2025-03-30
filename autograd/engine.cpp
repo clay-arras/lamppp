@@ -1,9 +1,9 @@
 #include "engine.h"
-#include <cmath>
 
 Value::Value(double data, std::unordered_set<std::shared_ptr<Value>> children,
              double grad)
-    : data(data), grad(grad), prev(children), backward([]() -> void {}) {}
+    : data(data), grad(grad), prev(children), 
+      backward_fn(nullptr), backward_ctx(nullptr) {}
 
 std::shared_ptr<Value> operator+(const std::shared_ptr<Value> &a,
                                  const std::shared_ptr<Value> &b) {
@@ -14,10 +14,11 @@ std::shared_ptr<Value> Value::operator+(const std::shared_ptr<Value> &other) {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       this->data + other->data,
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other});
-  out->backward = [self = shared_from_this(), other, out]() {
-    self->grad += 1.0 * out->grad;
-    other->grad += 1.0 * out->grad;
-  };
+  
+  auto ctx = std::make_shared<AddBackwardContext>(shared_from_this(), other, out);
+  out->backward_fn = &add_backward;
+  out->backward_ctx = static_cast<void*>(ctx);
+  
   return out;
 }
 
@@ -39,10 +40,11 @@ std::shared_ptr<Value> Value::operator*(const std::shared_ptr<Value> &other) {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       this->data * other->data,
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other});
-  out->backward = [self = shared_from_this(), other, out]() {
-    self->grad += other->data * out->grad;
-    other->grad += self->data * out->grad;
-  };
+  
+  auto ctx = std::make_shared<MulBackwardContext>(shared_from_this(), other, out);
+  out->backward_fn = &mul_backward;
+  out->backward_ctx = static_cast<void*>(ctx);
+  
   return out;
 }
 
@@ -58,11 +60,12 @@ std::shared_ptr<Value> Value::operator/(const std::shared_ptr<Value> &other) {
 std::shared_ptr<Value> Value::pow(std::shared_ptr<Value> other) {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       std::pow(this->data, other->data),
-      std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other}); // here
-  out->backward = [self = shared_from_this(), other, out]() {
-    self->grad += other->data * std::pow(self->data, other->data - 1) * out->grad;
-    // other->grad += std::log(self->data) * std::pow(self->data, other->data) * out->grad;
-  };
+      std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other});
+  
+  auto ctx = std::make_shared<PowBackwardContext>(shared_from_this(), other, out);
+  out->backward_fn = &pow_backward;
+  out->backward_ctx = static_cast<void*>(ctx);
+  
   return out;
 }
 
@@ -70,9 +73,11 @@ std::shared_ptr<Value> Value::exp() {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       std::exp(this->data),
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
-  out->backward = [self = shared_from_this(), out]() {
-    self->grad += out->data * out->grad;
-  };
+  
+  auto ctx = std::make_shared<ExpBackwardContext>(shared_from_this(), out);
+  out->backward_fn = &exp_backward;
+  out->backward_ctx = static_cast<void*>(ctx);
+  
   return out;
 }
 
@@ -85,9 +90,11 @@ std::shared_ptr<Value> Value::log() {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       std::log(this->data),
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
-  out->backward = [self = shared_from_this(), out]() {
-    self->grad += (1.0 / self->data) * out->grad;
-  };
+  
+  auto ctx = std::make_shared<LogBackwardContext>(shared_from_this(), out);
+  out->backward_fn = &log_backward;
+  out->backward_ctx = static_cast<void*>(ctx);
+  
   return out;
 }
 
@@ -112,9 +119,10 @@ std::shared_ptr<Value> Value::relu() {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       out_data, std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
 
-  out->backward = [self = shared_from_this(), out]() {
-    self->grad += (self->data > 0) * out->grad;
-  };
+  auto ctx = std::make_shared<ReluBackwardContext>(shared_from_this(), out);
+  out->backward_fn = &relu_backward;
+  out->backward_ctx = static_cast<void*>(ctx);
+  
   return out;
 }
 

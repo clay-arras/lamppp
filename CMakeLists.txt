@@ -12,6 +12,7 @@ add_library(autograd_core
     autograd/util.cpp
     autograd/fast_layer.cpp
     autograd/wrapper_engine.cpp
+    autograd/grad.cpp
 )
 
 target_include_directories(autograd_core PUBLIC
@@ -33,3 +34,9 @@ target_link_libraries(mnist autograd_core)
 
 add_executable(fast_mnist autograd/fast_mnist.cpp)
 target_link_libraries(fast_mnist autograd_core)
+
+add_executable(test_mnist test/test_mnist.cpp)
+target_link_libraries(test_mnist autograd_core)
+
+add_executable(test_fast_mnist test/test_fast_mnist.cpp)
+target_link_libraries(test_fast_mnist autograd_core)

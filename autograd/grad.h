@@ -3,7 +3,9 @@
 
 #include <memory>
 #include <cmath>
-#include "engine.h"
+
+// Forward declaration only
+class Value;
 
 struct AddBackwardContext {
     std::shared_ptr<Value> self;

@@ -10,9 +10,15 @@
 #include <memory>
 #include <cassert>
 #include <vector>
-#include "grad.h"
-#include <cmath>
 #include <initializer_list>
+
+// Forward declarations for backward functions
+void add_backward(void* ctx);
+void mul_backward(void* ctx);
+void pow_backward(void* ctx);
+void exp_backward(void* ctx);
+void log_backward(void* ctx);
+void relu_backward(void* ctx);
 
 typedef void (*BackwardFn)(void*);
 
@@ -27,8 +33,7 @@ public:
   void* backward_ctx = nullptr;
   std::unordered_set<std::shared_ptr<Value>> prev;
 
-  Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {},
-        double grad = 0.0);
+  Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {}, double grad = 0.0);
         
   void backward() {
     assert(backward_fn != nullptr);

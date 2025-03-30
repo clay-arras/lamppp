@@ -1,4 +1,5 @@
 #include "grad.h"
+#include "engine.h"
 
 void add_backward(void* ctx) {
     auto* context = static_cast<AddBackwardContext*>(ctx);

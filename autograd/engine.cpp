@@ -1,7 +1,7 @@
 #include "engine.h"
+#include "grad.h"
 
-Value::Value(double data, std::unordered_set<std::shared_ptr<Value>> children,
-             double grad)
+Value::Value(double data, std::unordered_set<std::shared_ptr<Value>> children, double grad)
     : data(data), grad(grad), prev(children), 
       backward_fn(nullptr), backward_ctx(nullptr) {}
 
@@ -15,7 +15,7 @@ std::shared_ptr<Value> Value::operator+(const std::shared_ptr<Value> &other) {
       this->data + other->data,
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other});
   
-  auto ctx = std::make_shared<AddBackwardContext>(shared_from_this(), other, out);
+  auto ctx = new AddBackwardContext(shared_from_this(), other, out);
   out->backward_fn = &add_backward;
   out->backward_ctx = static_cast<void*>(ctx);
   
@@ -28,7 +28,7 @@ std::shared_ptr<Value> operator-(const std::shared_ptr<Value> &a,
 }
 
 std::shared_ptr<Value> Value::operator-(const std::shared_ptr<Value> &other) {
-  return shared_from_this() + (other * std::make_shared<Value>(-1));
+  return shared_from_this() + (other * std::make_shared<Value>(static_cast<double>(-1), std::unordered_set<std::shared_ptr<Value>>{}, 0.0));
 }
 
 std::shared_ptr<Value> operator*(const std::shared_ptr<Value> &a,
@@ -41,7 +41,7 @@ std::shared_ptr<Value> Value::operator*(const std::shared_ptr<Value> &other) {
       this->data * other->data,
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other});
   
-  auto ctx = std::make_shared<MulBackwardContext>(shared_from_this(), other, out);
+  auto ctx = new MulBackwardContext(shared_from_this(), other, out);
   out->backward_fn = &mul_backward;
   out->backward_ctx = static_cast<void*>(ctx);
   
@@ -54,7 +54,7 @@ std::shared_ptr<Value> operator/(const std::shared_ptr<Value> &a,
 }
 
 std::shared_ptr<Value> Value::operator/(const std::shared_ptr<Value> &other) {
-  return shared_from_this() * other->pow(std::make_shared<Value>(-1));
+  return shared_from_this() * other->pow(std::make_shared<Value>(static_cast<double>(-1), std::unordered_set<std::shared_ptr<Value>>{}, 0.0));
 }
 
 std::shared_ptr<Value> Value::pow(std::shared_ptr<Value> other) {
@@ -62,7 +62,7 @@ std::shared_ptr<Value> Value::pow(std::shared_ptr<Value> other) {
       std::pow(this->data, other->data),
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this(), other});
   
-  auto ctx = std::make_shared<PowBackwardContext>(shared_from_this(), other, out);
+  auto ctx = new PowBackwardContext(shared_from_this(), other, out);
   out->backward_fn = &pow_backward;
   out->backward_ctx = static_cast<void*>(ctx);
   
@@ -74,7 +74,7 @@ std::shared_ptr<Value> Value::exp() {
       std::exp(this->data),
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
   
-  auto ctx = std::make_shared<ExpBackwardContext>(shared_from_this(), out);
+  auto ctx = new ExpBackwardContext(shared_from_this(), out);
   out->backward_fn = &exp_backward;
   out->backward_ctx = static_cast<void*>(ctx);
   
@@ -91,7 +91,7 @@ std::shared_ptr<Value> Value::log() {
       std::log(this->data),
       std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
   
-  auto ctx = std::make_shared<LogBackwardContext>(shared_from_this(), out);
+  auto ctx = new LogBackwardContext(shared_from_this(), out);
   out->backward_fn = &log_backward;
   out->backward_ctx = static_cast<void*>(ctx);
   
@@ -105,8 +105,8 @@ std::shared_ptr<Value> log(const std::shared_ptr<Value> &a) {
 // TODO: make normal
 std::shared_ptr<Value> Value::tanh() {
   std::shared_ptr<Value> exp =
-      (std::make_shared<Value>(2) * shared_from_this())->exp();
-  std::shared_ptr<Value> one = std::make_shared<Value>(1);
+      (std::make_shared<Value>(static_cast<double>(2), std::unordered_set<std::shared_ptr<Value>>{}, 0.0) * shared_from_this())->exp();
+  std::shared_ptr<Value> one = std::make_shared<Value>(static_cast<double>(1), std::unordered_set<std::shared_ptr<Value>>{}, 0.0);
   return (exp - one) / (exp + one);
 }
 
@@ -119,7 +119,7 @@ std::shared_ptr<Value> Value::relu() {
   std::shared_ptr<Value> out = std::make_shared<Value>(
       out_data, std::unordered_set<std::shared_ptr<Value>>{shared_from_this()});
 
-  auto ctx = std::make_shared<ReluBackwardContext>(shared_from_this(), out);
+  auto* ctx = new ReluBackwardContext(shared_from_this(), out);
   out->backward_fn = &relu_backward;
   out->backward_ctx = static_cast<void*>(ctx);
   
@@ -159,35 +159,35 @@ std::vector<std::shared_ptr<Value>> Value::internalTopoSort() {
 }
 
 std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a, const float b) {
-  return a + std::make_shared<Value>(b);
+  return a + std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0);
 }
 
 std::shared_ptr<Value> operator+(const float b, const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(b) + a;
+  return std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0) + a;
 }
 
 std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& a, const float b) {
-  return a - std::make_shared<Value>(b);
+  return a - std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0);
 }
 
 std::shared_ptr<Value> operator-(const float b, const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(b) - a;
+  return std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0) - a;
 }
 
 std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a, const float b) {
-  return a * std::make_shared<Value>(b);
+  return a * std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0);
 }
 
 std::shared_ptr<Value> operator*(const float b, const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(b) * a;
+  return std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0) * a;
 }
 
 std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a, const float b) {
-  return a / std::make_shared<Value>(b);
+  return a / std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0);
 }
 
 std::shared_ptr<Value> operator/(const float b, const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(b) / a;
+  return std::make_shared<Value>(static_cast<double>(b), std::unordered_set<std::shared_ptr<Value>>{}, 0.0) / a;
 }
 
 std::ostream &operator<<(std::ostream &os, const Value &obj) {

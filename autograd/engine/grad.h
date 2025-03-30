@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <memory>
+#include <utility>
 #include "engine.h"
 
 class Value;
@@ -14,7 +15,7 @@ struct AddBackwardContext {
 
   AddBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> o,
                      std::shared_ptr<Value> out)
-      : self(s), other(o), out(out) {}
+      : self(std::move(s)), other(std::move(o)), out(std::move(out)) {}
 };
 
 struct MulBackwardContext {
@@ -24,7 +25,7 @@ struct MulBackwardContext {
 
   MulBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> o,
                      std::shared_ptr<Value> out)
-      : self(s), other(o), out(out) {}
+      : self(std::move(s)), other(std::move(o)), out(std::move(out)) {}
 };
 
 struct PowBackwardContext {
@@ -34,7 +35,7 @@ struct PowBackwardContext {
 
   PowBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> o,
                      std::shared_ptr<Value> out)
-      : self(s), other(o), out(out) {}
+      : self(std::move(s)), other(std::move(o)), out(std::move(out)) {}
 };
 
 struct ExpBackwardContext {
@@ -42,7 +43,7 @@ struct ExpBackwardContext {
   std::shared_ptr<Value> out;
 
   ExpBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> out)
-      : self(s), out(out) {}
+      : self(std::move(s)), out(std::move(out)) {}
 };
 
 struct LogBackwardContext {
@@ -50,7 +51,7 @@ struct LogBackwardContext {
   std::shared_ptr<Value> out;
 
   LogBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> out)
-      : self(s), out(out) {}
+      : self(std::move(s)), out(std::move(out)) {}
 };
 
 struct ReluBackwardContext {
@@ -58,7 +59,7 @@ struct ReluBackwardContext {
   std::shared_ptr<Value> out;
 
   ReluBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> out)
-      : self(s), out(out) {}
+      : self(std::move(s)), out(std::move(out)) {}
 };
 
 void add_backward(void* ctx);

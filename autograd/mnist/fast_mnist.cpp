@@ -1,5 +1,13 @@
 #include "fast_mnist.h"
 #include "autograd/wrapper_engine.h"
+#include <cassert>
+#include <memory>
+#include <vector>
+#include "engine.h"
+#include "fast_layer.h"
+#include "nn.h"
+#include "util.h"
+#include "wrapper_engine.h"
 
 int main() {
   auto [data, label] = readCSV("data/mnist_dummy.csv");

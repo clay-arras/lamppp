@@ -1,17 +1,13 @@
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
-#include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <functional>
-#include <initializer_list>
 #include <iostream>
 #include <memory>
 #include <unordered_set>
 #include <vector>
 
-// Forward declarations for backward functions
 void add_backward(void* ctx);
 void mul_backward(void* ctx);
 void pow_backward(void* ctx);
@@ -19,7 +15,7 @@ void exp_backward(void* ctx);
 void log_backward(void* ctx);
 void relu_backward(void* ctx);
 
-typedef void (*BackwardFn)(void*);
+using BackwardFn = void (*)(void *);
 
 class Value : public std::enable_shared_from_this<Value> {
  private:
@@ -32,10 +28,10 @@ class Value : public std::enable_shared_from_this<Value> {
   void* backward_ctx = nullptr;
   std::unordered_set<std::shared_ptr<Value>> prev;
 
-  Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {},
+  explicit Value(double data, std::unordered_set<std::shared_ptr<Value>> children = {},
         double grad = 0.0);
 
-  void backward() {
+  void backward() const {
     assert(backward_fn != nullptr);
     backward_fn(backward_ctx);
   }
@@ -49,7 +45,7 @@ class Value : public std::enable_shared_from_this<Value> {
   std::shared_ptr<Value> log();
   std::shared_ptr<Value> tanh();
   std::shared_ptr<Value> relu();
-  std::shared_ptr<Value> pow(std::shared_ptr<Value> other);
+  std::shared_ptr<Value> pow(const std::shared_ptr<Value> &other);
 
   void backprop();
   friend std::ostream& operator<<(std::ostream& os, const Value& obj);
@@ -65,23 +61,23 @@ std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a,
                                  const std::shared_ptr<Value>& b);
 
 std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a,
-                                 const float b);
-std::shared_ptr<Value> operator+(const float b,
+                                 float b);
+std::shared_ptr<Value> operator+(float b,
                                  const std::shared_ptr<Value>& a);
 
 std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& a,
-                                 const float b);
-std::shared_ptr<Value> operator-(const float b,
+                                 float b);
+std::shared_ptr<Value> operator-(float b,
                                  const std::shared_ptr<Value>& a);
 
 std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a,
-                                 const float b);
-std::shared_ptr<Value> operator*(const float b,
+                                 float b);
+std::shared_ptr<Value> operator*(float b,
                                  const std::shared_ptr<Value>& a);
 
 std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a,
-                                 const float b);
-std::shared_ptr<Value> operator/(const float b,
+                                 float b);
+std::shared_ptr<Value> operator/(float b,
                                  const std::shared_ptr<Value>& a);
 
 std::shared_ptr<Value> exp(const std::shared_ptr<Value>& value);

@@ -1,5 +1,12 @@
 #include "mnist.h"
 
+#include <cassert>
+#include <memory>
+#include <vector>
+#include "autograd/engine/engine.h"
+#include "nn.h"
+#include "util.h"
+
 int main() {
   auto [data, label] = readCSV("data/mnist_dummy.csv");
   int N = (int)data.size();

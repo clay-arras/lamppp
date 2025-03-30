@@ -41,6 +41,6 @@ void log_backward(void* ctx) {
 
 void relu_backward(void* ctx) {
   auto* context = static_cast<ReluBackwardContext*>(ctx);
-  context->self->grad += (context->self->data > 0) * context->out->grad;
+  context->self->grad += static_cast<double>(context->self->data > 0) * context->out->grad;
   delete context;
 }

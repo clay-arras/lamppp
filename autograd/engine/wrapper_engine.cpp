@@ -1,140 +1,141 @@
 #include "wrapper_engine.h"
 
-SharedValue::SharedValue() : value(std::make_shared<Value>(0.0)) {}
-SharedValue::SharedValue(double data) : value(std::make_shared<Value>(data)) {}
-SharedValue::SharedValue(std::shared_ptr<Value> value) : value(value) {}
+#include <utility>
+
+SharedValue::SharedValue() : value_(std::make_shared<Value>(0.0)) {}
+SharedValue::SharedValue(double data) : value_(std::make_shared<Value>(data)) {}
+SharedValue::SharedValue(std::shared_ptr<Value> value_) : value_(std::move(value_)) {}
 
 double SharedValue::getData() const {
-  return value->data;
+  return value_->data;
 }
 double SharedValue::getGrad() const {
-  return value->grad;
+  return value_->grad;
 }
 std::shared_ptr<Value> SharedValue::getPtr() const {
-  return value;
+  return value_;
 }
 
 SharedValue SharedValue::operator+(const SharedValue& other) const {
-  return SharedValue(value + other.value);
+  return SharedValue(value_ + other.value_);
 }
 
 SharedValue SharedValue::operator-(const SharedValue& other) const {
-  return SharedValue(value - other.value);
+  return SharedValue(value_ - other.value_);
 }
 
 SharedValue SharedValue::operator*(const SharedValue& other) const {
-  return SharedValue(value * other.value);
+  return SharedValue(value_ * other.value_);
 }
 
 SharedValue SharedValue::operator/(const SharedValue& other) const {
-  return SharedValue(value / other.value);
+  return SharedValue(value_ / other.value_);
 }
 
 SharedValue& SharedValue::operator+=(const SharedValue& other) {
-  value = value + other.value;
+  value_ = value_ + other.value_;
   return *this;
 }
 
 SharedValue& SharedValue::operator-=(const SharedValue& other) {
-  value = value - other.value;
+  value_ = value_ - other.value_;
   return *this;
 }
 
 SharedValue& SharedValue::operator*=(const SharedValue& other) {
-  value = value * other.value;
+  value_ = value_ * other.value_;
   return *this;
 }
 
 SharedValue& SharedValue::operator/=(const SharedValue& other) {
-  value = value / other.value;
+  value_ = value_ / other.value_;
   return *this;
 }
 
 // Operations with scalar values
 SharedValue SharedValue::operator+(double scalar) const {
-  return SharedValue(value + scalar);
+  return SharedValue(value_ + scalar);
 }
 
 SharedValue SharedValue::operator-(double scalar) const {
-  return SharedValue(value - scalar);
+  return SharedValue(value_ - scalar);
 }
 
 SharedValue SharedValue::operator*(double scalar) const {
-  return SharedValue(value * scalar);
+  return SharedValue(value_ * scalar);
 }
 
 SharedValue SharedValue::operator/(double scalar) const {
-  return SharedValue(value / scalar);
+  return SharedValue(value_ / scalar);
 }
 
 SharedValue& SharedValue::operator+=(double scalar) {
-  value = value + scalar;
+  value_ = value_ + scalar;
   return *this;
 }
 
 SharedValue& SharedValue::operator-=(double scalar) {
-  value = value - scalar;
+  value_ = value_ - scalar;
   return *this;
 }
 
 SharedValue& SharedValue::operator*=(double scalar) {
-  value = value * scalar;
+  value_ = value_ * scalar;
   return *this;
 }
 
 SharedValue& SharedValue::operator/=(double scalar) {
-  value = value / scalar;
+  value_ = value_ / scalar;
   return *this;
 }
 
 // Comparison operators
 bool SharedValue::operator<(const SharedValue& other) const {
-  return value->data < other.value->data;
+  return value_->data < other.value_->data;
 }
 
 bool SharedValue::operator>(const SharedValue& other) const {
-  return value->data > other.value->data;
+  return value_->data > other.value_->data;
 }
 
 bool SharedValue::operator==(const SharedValue& other) const {
-  return value->data == other.value->data;
+  return value_->data == other.value_->data;
 }
 
 bool SharedValue::operator!=(const SharedValue& other) const {
-  return value->data != other.value->data;
+  return value_->data != other.value_->data;
 }
 
 bool SharedValue::operator<=(const SharedValue& other) const {
-  return value->data <= other.value->data;
+  return value_->data <= other.value_->data;
 }
 
 bool SharedValue::operator>=(const SharedValue& other) const {
-  return value->data >= other.value->data;
+  return value_->data >= other.value_->data;
 }
 
-// Comparison with scalar
 bool SharedValue::operator<(double scalar) const {
-  return value->data < scalar;
+  return value_->data < scalar;
 }
 
 bool SharedValue::operator>(double scalar) const {
-  return value->data > scalar;
+  return value_->data > scalar;
 }
 
 bool SharedValue::operator==(double scalar) const {
-  return value->data == scalar;
+  return value_->data == scalar;
 }
 
 bool SharedValue::operator!=(double scalar) const {
-  return value->data != scalar;
+  return value_->data != scalar;
 }
 
 bool SharedValue::operator<=(double scalar) const {
-  return value->data <= scalar;
+  return value_->data <= scalar;
 }
 
 bool SharedValue::operator>=(double scalar) const {
-  return value->data >= scalar;
+  return value_->data >= scalar;
 }
 
 bool operator<(double scalar, const SharedValue& value) {
@@ -162,28 +163,28 @@ bool operator>=(double scalar, const SharedValue& value) {
 }
 
 SharedValue SharedValue::exp() const {
-  return SharedValue(value->exp());
+  return SharedValue(value_->exp());
 }
 
 SharedValue SharedValue::log() const {
-  return SharedValue(value->log());
+  return SharedValue(value_->log());
 }
 
 SharedValue SharedValue::pow(const SharedValue& exponent) const {
-  return SharedValue(value->pow(exponent.value));
+  return SharedValue(value_->pow(exponent.value_));
 }
 
 SharedValue SharedValue::tanh() const {
-  return SharedValue(value->tanh());
+  return SharedValue(value_->tanh());
 }
 
 SharedValue SharedValue::relu() const {
   std::cout << "ppp" << std::endl;
-  return SharedValue(value->relu());
+  return SharedValue(value_->relu());
 }
 
 void SharedValue::backprop() {
-  value->backprop();
+  value_->backprop();
 }
 
 SharedValue operator+(double scalar, const SharedValue& value) {
@@ -191,8 +192,8 @@ SharedValue operator+(double scalar, const SharedValue& value) {
 }
 
 SharedValue operator-(double scalar, const SharedValue& value) {
-  std::shared_ptr<Value> scalarValue = std::make_shared<Value>(scalar);
-  return SharedValue(scalarValue - value.getPtr());
+  std::shared_ptr<Value> scalar_value = std::make_shared<Value>(scalar);
+  return SharedValue(scalar_value - value.getPtr());
 }
 
 SharedValue operator*(double scalar, const SharedValue& value) {
@@ -200,8 +201,8 @@ SharedValue operator*(double scalar, const SharedValue& value) {
 }
 
 SharedValue operator/(double scalar, const SharedValue& value) {
-  std::shared_ptr<Value> scalarValue = std::make_shared<Value>(scalar);
-  return SharedValue(scalarValue / value.getPtr());
+  std::shared_ptr<Value> scalar_value = std::make_shared<Value>(scalar);
+  return SharedValue(scalar_value / value.getPtr());
 }
 
 std::ostream& operator<<(std::ostream& os, const SharedValue& obj) {

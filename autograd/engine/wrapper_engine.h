@@ -6,12 +6,12 @@
 
 class SharedValue {
  private:
-  std::shared_ptr<Value> value;
+  std::shared_ptr<Value> value_;
 
  public:
   SharedValue();
-  SharedValue(double data);
-  SharedValue(std::shared_ptr<Value> value);
+  explicit SharedValue(double data);
+  explicit SharedValue(std::shared_ptr<Value> value);
 
   double getData() const;
   double getGrad() const;

@@ -21,7 +21,7 @@ std::pair<std::vector<std::vector<double>>, std::vector<int>> readCSV(const std:
         label.push_back(stoi(cell));
 
         while (std::getline(ss, cell, ',')) {
-            row.push_back(std::stod(cell));
+            row.push_back(std::stod(cell) / 255);
         }
 
         data.push_back(row);

@@ -31,6 +31,7 @@ int main() {
     //     std::cout << std::endl;
     // }
 
+    // ---
     Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> mat1(784, 256);
     Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> mat2(256, 10);
 
@@ -52,7 +53,6 @@ int main() {
 
     // mat1 = mat1.unaryExpr([&init_fn](float) { return init_fn(0); });
     // mat2 = mat2.unaryExpr([&init_fn](float) { return init_fn(0); });
-
     // Eigen::MatrixXf res = mat1 * mat2;
 
 

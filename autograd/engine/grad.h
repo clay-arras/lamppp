@@ -3,8 +3,8 @@
 
 #include <memory>
 #include <cmath>
+#include "engine.h"
 
-// Forward declaration only
 class Value;
 
 struct AddBackwardContext {

@@ -4,14 +4,14 @@ FastLayer::FastLayer(int nin, int nout) {
     weights.resize(nout, nin);
     bias.resize(nout, 1);
 
-    // std::random_device seed;
-    // std::mt19937 gen{seed()};
-    // std::uniform_real_distribution<> dist{-1.0, 1.0};
-    // auto initValue = [&dist, &gen](const SharedValue &a) {
-    //     return std::make_shared<Value>(dist(gen));
-    // };
-    // weights = weights.unaryExpr(initValue);
-    // bias = bias.unaryExpr(initValue);
+    std::random_device seed;
+    std::mt19937 gen{seed()};
+    std::uniform_real_distribution<> dist{-1.0, 1.0};
+    auto initValue = [&dist, &gen](const SharedValue &a) {
+        return SharedValue(dist(gen));
+    };
+    weights = weights.unaryExpr(initValue);
+    bias = bias.unaryExpr(initValue);
 }
 
 /**
@@ -28,11 +28,10 @@ FastLayer::FastLayer(int nin, int nout) {
  *         of output features.
  */
 Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>
-FastLayer::operator()(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x, std::function<SharedValue(SharedValue)> activ) {
-    // Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> a = weights * x;
+FastLayer::operator()(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x, std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> activ) {
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> a = weights * x;
 
-    // a = a + bias;
-    // Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z = a.unaryExpr(activ);
-    // return z;
-    return bias;
+    a = a + bias;
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z = activ(a);
+    return z;
 }

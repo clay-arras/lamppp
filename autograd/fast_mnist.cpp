@@ -8,7 +8,11 @@ int main() {
     FastLayer W1(nin, 256);
     FastLayer W2(256, 10);
 
-    auto softmax = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) -> Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> {
+    std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> relu = [](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) {
+        return x.unaryExpr([](const SharedValue& v) { return v.relu(); });
+    };
+    
+    std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> softmax = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) {
         assert(x.rows() == 10);
         x = x.unaryExpr([](const SharedValue& v) { return v.exp(); });
         SharedValue denom = SharedValue(1e-4) + x.sum();
@@ -29,27 +33,40 @@ int main() {
     }
     std::cout << std::endl;
     
-    // auto forward = [&](std::vector<SharedValue> x) {
-    //     std::vector<SharedValue> Z1 = W1(x);
-    //     std::vector<SharedValue> Z2 = W2(Z1, false);
-    //     return softmax(Z2);
-    // };
+    auto forward = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) {
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> Z1 = W1(x, relu);
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> Z2 = W2(Z1, softmax);
+        return Z2;
+    };
 
-    // std::vector<std::vector<SharedValue>> y_pred;
-    // for (std::vector<double> item : data) {
-    //     std::vector<SharedValue> ptrs;
-    //     for (double i : item)
-    //         ptrs.push_back(SharedValue(Value(i)));
-    //     y_pred.push_back(forward(ptrs));
-    // }
-    // SharedValue loss = SharedValue(Value(0));
+    std::vector<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>> y_pred;
+    for (const std::vector<double>& item : data) {
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x(item.size());
+        for (size_t i = 0; i < item.size(); ++i) {
+            x(i, 0) = SharedValue(item[i]);
+        }
+        y_pred.push_back(forward(x));
+    }
+    SharedValue loss = SharedValue(0);
 
-    // for (int i=0; i<N; i++) {
-    //     SharedValue cross_entropy = SharedValue(Value(0));
-    //     for (int j=0; j<10; j++) 
-    //         if (j == label[i])
-    //             cross_entropy = cross_entropy + y_pred[i][j].log();
-    //     loss = loss - cross_entropy;
+    // std::cout << "Predictions (y_pred) in a grid format:" << std::endl;
+    // for (const auto& prediction : y_pred) {
+    //     for (int i = 0; i < prediction.rows(); ++i) {
+    //         std::cout << prediction(i, 0).getData() << " ";
+    //     }
+    //     std::cout << std::endl;
     // }
-    // std::cout << loss.getData() << std::endl;
+
+    for (int i = 0; i < N; i++) {
+        SharedValue cross_entropy = SharedValue(0);
+        for (int j = 0; j < 10; j++) {
+            if (j == label[i]) {
+                SharedValue pred_value = y_pred[i](j, 0) + SharedValue(1e-10);
+                cross_entropy = cross_entropy + pred_value.log();
+            }
+        }
+        loss = loss - cross_entropy;
+    }
+    loss = loss / SharedValue(N);
+    std::cout << "Loss: " << loss.getData() << std::endl;
 }

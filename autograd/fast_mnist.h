@@ -2,6 +2,7 @@
 #define _FAST_MNIST_H_
 
 #include "engine.h"
+#include "wrapper_engine.h"
 #include "nn.h"
 #include "fast_layer.h"
 #include "util.h"

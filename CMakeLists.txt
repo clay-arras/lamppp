@@ -11,6 +11,7 @@ add_library(autograd_core
     autograd/nn.cpp
     autograd/util.cpp
     autograd/fast_layer.cpp
+    autograd/wrapper_engine.cpp
 )
 
 target_include_directories(autograd_core PUBLIC

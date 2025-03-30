@@ -11,6 +11,7 @@
 
 class FastLayer {
 private:
+    int nin, nout;
     Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> weights;
     Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> bias;
 

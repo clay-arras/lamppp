@@ -29,9 +29,10 @@ FastLayer::FastLayer(int nin, int nout) {
  */
 Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>
 FastLayer::operator()(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x, std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> activ) {
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> a = weights * x;
-
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> a(nout, 1);
+    a = weights * x;
+    std::cout << "After weights multiplication: " << std::endl; // Print after weights multiplication
     a = a + bias;
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z = activ(a);
-    return z;
+    std::cout << "After adding bias: " << std::endl; // Print after adding bias
+    return activ(a);
 }

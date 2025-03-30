@@ -37,6 +37,20 @@ public:
     SharedValue& operator*=(double scalar);
     SharedValue& operator/=(double scalar);
 
+    bool operator<(const SharedValue& other) const;
+    bool operator>(const SharedValue& other) const;
+    bool operator==(const SharedValue& other) const;
+    bool operator!=(const SharedValue& other) const;
+    bool operator<=(const SharedValue& other) const;
+    bool operator>=(const SharedValue& other) const;
+
+    bool operator<(double scalar) const;
+    bool operator>(double scalar) const;
+    bool operator==(double scalar) const;
+    bool operator!=(double scalar) const;
+    bool operator<=(double scalar) const;
+    bool operator>=(double scalar) const;
+
     SharedValue exp() const;
     SharedValue log() const;
     SharedValue pow(const SharedValue& exponent) const;
@@ -51,5 +65,12 @@ SharedValue operator+(double scalar, const SharedValue& value);
 SharedValue operator-(double scalar, const SharedValue& value);
 SharedValue operator*(double scalar, const SharedValue& value);
 SharedValue operator/(double scalar, const SharedValue& value);
+
+bool operator<(double scalar, const SharedValue& value);
+bool operator>(double scalar, const SharedValue& value);
+bool operator==(double scalar, const SharedValue& value);
+bool operator!=(double scalar, const SharedValue& value);
+bool operator<=(double scalar, const SharedValue& value);
+bool operator>=(double scalar, const SharedValue& value);
 
 #endif // _WRAPPER_ENGINE_H_

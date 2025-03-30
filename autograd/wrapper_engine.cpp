@@ -81,6 +81,80 @@ SharedValue& SharedValue::operator/=(double scalar) {
     return *this;
 }
 
+// Comparison operators
+bool SharedValue::operator<(const SharedValue& other) const {
+    return value->data < other.value->data;
+}
+
+bool SharedValue::operator>(const SharedValue& other) const {
+    return value->data > other.value->data;
+}
+
+bool SharedValue::operator==(const SharedValue& other) const {
+    return value->data == other.value->data;
+}
+
+bool SharedValue::operator!=(const SharedValue& other) const {
+    return value->data != other.value->data;
+}
+
+bool SharedValue::operator<=(const SharedValue& other) const {
+    return value->data <= other.value->data;
+}
+
+bool SharedValue::operator>=(const SharedValue& other) const {
+    return value->data >= other.value->data;
+}
+
+// Comparison with scalar
+bool SharedValue::operator<(double scalar) const {
+    return value->data < scalar;
+}
+
+bool SharedValue::operator>(double scalar) const {
+    return value->data > scalar;
+}
+
+bool SharedValue::operator==(double scalar) const {
+    return value->data == scalar;
+}
+
+bool SharedValue::operator!=(double scalar) const {
+    return value->data != scalar;
+}
+
+bool SharedValue::operator<=(double scalar) const {
+    return value->data <= scalar;
+}
+
+bool SharedValue::operator>=(double scalar) const {
+    return value->data >= scalar;
+}
+
+bool operator<(double scalar, const SharedValue& value) {
+    return scalar < value.getData();
+}
+
+bool operator>(double scalar, const SharedValue& value) {
+    return scalar > value.getData();
+}
+
+bool operator==(double scalar, const SharedValue& value) {
+    return scalar == value.getData();
+}
+
+bool operator!=(double scalar, const SharedValue& value) {
+    return scalar != value.getData();
+}
+
+bool operator<=(double scalar, const SharedValue& value) {
+    return scalar <= value.getData();
+}
+
+bool operator>=(double scalar, const SharedValue& value) {
+    return scalar >= value.getData();
+}
+
 SharedValue SharedValue::exp() const {
     return SharedValue(::exp(value));
 }
@@ -98,6 +172,7 @@ SharedValue SharedValue::tanh() const {
 }
 
 SharedValue SharedValue::relu() const {
+    std::cout << "ppp" << std::endl;
     return SharedValue(::relu(value));
 }
 

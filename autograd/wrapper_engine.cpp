@@ -156,11 +156,11 @@ bool operator>=(double scalar, const SharedValue& value) {
 }
 
 SharedValue SharedValue::exp() const {
-    return SharedValue(::exp(value));
+    return SharedValue(value->exp());
 }
 
 SharedValue SharedValue::log() const {
-    return SharedValue(::log(value));
+    return SharedValue(value->log());
 }
 
 SharedValue SharedValue::pow(const SharedValue& exponent) const {
@@ -168,12 +168,12 @@ SharedValue SharedValue::pow(const SharedValue& exponent) const {
 }
 
 SharedValue SharedValue::tanh() const {
-    return SharedValue(::tanh(value));
+    return SharedValue(value->tanh());
 }
 
 SharedValue SharedValue::relu() const {
     std::cout << "ppp" << std::endl;
-    return SharedValue(::relu(value));
+    return SharedValue(value->relu());
 }
 
 void SharedValue::backprop() {

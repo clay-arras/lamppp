@@ -1,6 +1,6 @@
 #include "fast_layer.h"
 
-FastLayer::FastLayer(int nin, int nout) { 
+FastLayer::FastLayer(int nin, int nout) : nin(nin), nout(nout) { 
     weights.resize(nout, nin);
     bias.resize(nout, 1);
 
@@ -31,8 +31,6 @@ Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>
 FastLayer::operator()(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x, std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> activ) {
     Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> a(nout, 1);
     a = weights * x;
-    std::cout << "After weights multiplication: " << std::endl; // Print after weights multiplication
     a = a + bias;
-    std::cout << "After adding bias: " << std::endl; // Print after adding bias
     return activ(a);
 }

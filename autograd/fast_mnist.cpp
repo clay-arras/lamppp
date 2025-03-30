@@ -1,4 +1,5 @@
 #include "fast_mnist.h"
+#include "autograd/wrapper_engine.h"
 
 int main() { 
     auto [data, label] = readCSV("data/mnist_dummy.csv");
@@ -9,10 +10,12 @@ int main() {
     FastLayer W2(256, 10);
 
     std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> relu = [](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) {
-        std::cout << "PEINS" << std::endl;
-        return x.unaryExpr([](const SharedValue& v) -> SharedValue { 
-            return SharedValue(v.getPtr()->relu()); 
-        });
+        auto reluFunc = [](const SharedValue& v) -> SharedValue { 
+            return SharedValue(v.getPtr()->relu());
+        };
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z;
+        z = x.unaryExpr(reluFunc);
+        return z;
     };
     
     std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>)> softmax = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) {
@@ -35,28 +38,22 @@ int main() {
         std::cout << softmax_output(i, 0).getData() << " ";
     }
     std::cout << std::endl;
-    std::cout << "HELLO" << std::endl;
     
     auto forward = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x) {
         Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> Z1 = W1(x, relu);
-        std::cout << "AFTER" << std::endl;
         Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> Z2 = W2(Z1, softmax);
         return Z2;
     };
 
-    std::cout << "HELLO" << std::endl;
 
     std::vector<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>> y_pred;
     for (const std::vector<double>& item : data) {
-        std::cout << "Process" << std::endl;
         Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x;
         x.resize((int)item.size(), 1);
         for (size_t i = 0; i < item.size(); ++i) {
             x(i, 0) = SharedValue(item[i]);
         }
-        std::cout << "done" << std::endl;
         y_pred.push_back(forward(x));
-        std::cout << "forward" << std::endl;
     }
     SharedValue loss = SharedValue(0);
 

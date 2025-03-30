@@ -1,8 +1,8 @@
-#include "../autograd/engine.h"
 #include <cassert>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include "../autograd/engine.h"
 
 bool approx_equal(double a, double b, double epsilon = 1e-2) {
   return std::abs(a - b) < epsilon;

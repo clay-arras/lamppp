@@ -24,6 +24,8 @@ documentation:
 
     > FastLayer is 1.604, Layer is 13.399
 
+- setting up cpp tools and project folders
+
 ### 1. Benchmarking Frameworks
 
 - **Google Benchmark:** Framework for microbenchmarks in C++.
@@ -36,26 +38,3 @@ documentation:
 - **perf:** Linux tool for hardware performance insights.
 - **Valgrind (Callgrind):** Simulates CPU for function call profiling.
 - **Intel VTune Amplifier:** Commercial tool for performance bottleneck analysis.
-
-### 3. Compiler Optimizations
-
-- **Optimization Flags:** Use `-O2` or `-O3` for code optimization.
-- **Profile-Guided Optimization (PGO):** Optimize based on application profile.
-- **Link-Time Optimization (LTO):** Cross-unit optimizations to reduce overhead.
-
-### 4. Static and Dynamic Analysis
-
-- **Clang-Tidy:** Catches inefficient code patterns.
-- **Sanitizers:** Detects memory and concurrency issues.
-
-### 5. Algorithm and Data Structure Optimization
-
-- **Algorithm Analysis:** Ensure efficient algorithms and data structures.
-- **Cache Utilization:** Structure data to improve cache locality.
-
-### 6. Iterative Profiling and Tuning
-
-- **Iterative Testing:** Benchmark code sections after changes.
-- **Micro vs. Macro Benchmarks:** Test individual functions and overall performance.
-
-Combine these tools and techniques to identify bottlenecks and optimize your C++ library.

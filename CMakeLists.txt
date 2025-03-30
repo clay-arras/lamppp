@@ -1,18 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
 project(autograd_cpp)
 
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Eigen3 REQUIRED)
 
 add_library(autograd_core
-    autograd/engine.cpp
-    autograd/nn.cpp
-    autograd/util.cpp
-    autograd/fast_layer.cpp
-    autograd/wrapper_engine.cpp
-    autograd/grad.cpp
+    autograd/engine/engine.cpp
+    autograd/engine/grad.cpp
+    autograd/engine/wrapper_engine.cpp
+    autograd/nn/nn.cpp
+    autograd/nn/fast_layer.cpp
+    autograd/util/csv_reader.cpp
 )
 
 target_include_directories(autograd_core PUBLIC
@@ -20,23 +21,39 @@ target_include_directories(autograd_core PUBLIC
     ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(test_engine test/test_engine.cpp)
+add_executable(test_engine test/cpp/test_engine.cpp)
 target_link_libraries(test_engine autograd_core)
 
-add_executable(test_nn test/test_nn.cpp)
+add_executable(test_nn test/cpp/test_nn.cpp)
 target_link_libraries(test_nn autograd_core)
 
-add_executable(test_gen test/test_gen.cpp)
+add_executable(test_gen test/cpp/test_gen.cpp)
 target_link_libraries(test_gen autograd_core)
 
-add_executable(mnist autograd/mnist.cpp)
+add_executable(mnist autograd/mnist/mnist.cpp)
 target_link_libraries(mnist autograd_core)
 
-add_executable(fast_mnist autograd/fast_mnist.cpp)
+add_executable(fast_mnist autograd/mnist/fast_mnist.cpp)
 target_link_libraries(fast_mnist autograd_core)
 
-add_executable(test_mnist test/test_mnist.cpp)
+add_executable(test_mnist test/cpp/test_mnist.cpp)
 target_link_libraries(test_mnist autograd_core)
 
-add_executable(test_fast_mnist test/test_fast_mnist.cpp)
+add_executable(test_fast_mnist test/cpp/test_fast_mnist.cpp)
 target_link_libraries(test_fast_mnist autograd_core)
+
+find_program(CLANG_FORMAT_EXE NAMES clang-format)
+if (NOT CLANG_FORMAT_EXE)
+  message(FATAL_ERROR "clang-format not found!")
+endif()
+
+file(GLOB_RECURSE ALL_SOURCE_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
+)
+
+add_custom_target(format
+    COMMAND ${CLANG_FORMAT_EXE} -i ${ALL_SOURCE_FILES}
+    COMMENT "Running clang-format on source files..."
+)

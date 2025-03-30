@@ -18,8 +18,8 @@ std::vector<std::shared_ptr<Value>> Neuron::parameters() {
 }
 
 // TODO: look into parallized implementations
-std::shared_ptr<Value>
-Neuron::operator()(std::vector<std::shared_ptr<Value>> x) {
+std::shared_ptr<Value> Neuron::operator()(
+    std::vector<std::shared_ptr<Value>> x) {
   std::shared_ptr<Value> ret = std::make_shared<Value>(this->bias->data);
   for (int i = 0; i < (int)x.size(); i++) {
     ret = ret + (this->weights[i] * x[i]);
@@ -43,13 +43,15 @@ std::vector<std::shared_ptr<Value>> Layer::parameters() {
   return params;
 }
 
-std::vector<std::shared_ptr<Value>>
-Layer::operator()(std::vector<std::shared_ptr<Value>> x, bool activ) {
+std::vector<std::shared_ptr<Value>> Layer::operator()(
+    std::vector<std::shared_ptr<Value>> x, bool activ) {
   std::vector<std::shared_ptr<Value>> ret;
   for (int i = 0; i < (int)this->neurons.size(); i++) {
     std::shared_ptr<Value> val = (*this->neurons[i])(x);
-    if (activ) ret.push_back(val->relu());
-    else ret.push_back(val);
+    if (activ)
+      ret.push_back(val->relu());
+    else
+      ret.push_back(val);
   }
   return ret;
 }
@@ -72,8 +74,8 @@ std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::parameters() {
   return params;
 }
 
-std::vector<std::shared_ptr<Value>>
-MultiLayerPerceptron::operator()(std::vector<std::shared_ptr<Value>> x) {
+std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::operator()(
+    std::vector<std::shared_ptr<Value>> x) {
   std::vector<std::shared_ptr<Value>> ret = x;
   for (int i = 0; i < (int)this->layers.size(); i++) {
     ret = (*this->layers[i])(ret);

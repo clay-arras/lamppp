@@ -18,7 +18,8 @@ SharedValue::SharedValue(double data) : value_(std::make_shared<Value>(data)) {}
  * @brief Constructs a SharedValue from a shared pointer to a Value.
  * @param value_ The shared pointer to a Value object.
  */
-SharedValue::SharedValue(std::shared_ptr<Value> value_) : value_(std::move(value_)) {}
+SharedValue::SharedValue(std::shared_ptr<Value> value_)
+    : value_(std::move(value_)) {}
 
 /**
  * @brief Retrieves the data stored in the SharedValue.
@@ -195,7 +196,6 @@ SharedValue& SharedValue::operator/=(double scalar) {
   value_ = value_ / scalar;
   return *this;
 }
-
 
 /**
  * @brief Less than comparison operator for SharedValue.

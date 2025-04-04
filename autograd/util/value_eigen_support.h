@@ -12,18 +12,21 @@
 namespace Eigen {
 template <>
 struct NumTraits<SharedValue> : NumTraits<float> {
-  using Real = SharedValue; ///< The real type corresponding to SharedValue.
-  using NonInteger = SharedValue; ///< The non-integer type corresponding to SharedValue.
-  using Nested = SharedValue; ///< The nested type corresponding to SharedValue.
+  using Real = SharedValue;  ///< The real type corresponding to SharedValue.
+  using NonInteger =
+      SharedValue;  ///< The non-integer type corresponding to SharedValue.
+  using Nested =
+      SharedValue;  ///< The nested type corresponding to SharedValue.
 
   enum {
-    IsComplex = 0, ///< Indicates that SharedValue is not a complex type.
-    IsInteger = 0, ///< Indicates that SharedValue is not an integer type.
-    IsSigned = 1, ///< Indicates that SharedValue is a signed type.
-    RequireInitialization = 1, ///< Indicates that SharedValue requires initialization.
-    ReadCost = 1, ///< The cost of reading a SharedValue.
-    AddCost = 1, ///< The cost of adding two SharedValues.
-    MulCost = 1 ///< The cost of multiplying two SharedValues.
+    IsComplex = 0,  ///< Indicates that SharedValue is not a complex type.
+    IsInteger = 0,  ///< Indicates that SharedValue is not an integer type.
+    IsSigned = 1,   ///< Indicates that SharedValue is a signed type.
+    RequireInitialization =
+        1,         ///< Indicates that SharedValue requires initialization.
+    ReadCost = 1,  ///< The cost of reading a SharedValue.
+    AddCost = 1,   ///< The cost of adding two SharedValues.
+    MulCost = 1    ///< The cost of multiplying two SharedValues.
   };
 
   /**

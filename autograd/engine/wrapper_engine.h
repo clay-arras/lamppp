@@ -9,7 +9,7 @@
  */
 class SharedValue {
  private:
-  std::shared_ptr<Value> value_; ///< Pointer to the underlying Value object.
+  std::shared_ptr<Value> value_;  ///< Pointer to the underlying Value object.
 
  public:
   /**
@@ -47,45 +47,63 @@ class SharedValue {
    */
   std::shared_ptr<Value> getPtr() const;
 
-  SharedValue operator+(const SharedValue& other) const; ///< Addition operator.
-  SharedValue operator-(const SharedValue& other) const; ///< Subtraction operator.
-  SharedValue operator*(const SharedValue& other) const; ///< Multiplication operator.
-  SharedValue operator/(const SharedValue& other) const; ///< Division operator.
+  SharedValue operator+(
+      const SharedValue& other) const;  ///< Addition operator.
+  SharedValue operator-(
+      const SharedValue& other) const;  ///< Subtraction operator.
+  SharedValue operator*(
+      const SharedValue& other) const;  ///< Multiplication operator.
+  SharedValue operator/(
+      const SharedValue& other) const;  ///< Division operator.
 
-  SharedValue& operator+=(const SharedValue& other); ///< Addition assignment operator.
-  SharedValue& operator-=(const SharedValue& other); ///< Subtraction assignment operator.
-  SharedValue& operator*=(const SharedValue& other); ///< Multiplication assignment operator.
-  SharedValue& operator/=(const SharedValue& other); ///< Division assignment operator.
+  SharedValue& operator+=(
+      const SharedValue& other);  ///< Addition assignment operator.
+  SharedValue& operator-=(
+      const SharedValue& other);  ///< Subtraction assignment operator.
+  SharedValue& operator*=(
+      const SharedValue& other);  ///< Multiplication assignment operator.
+  SharedValue& operator/=(
+      const SharedValue& other);  ///< Division assignment operator.
 
-  SharedValue operator+(double scalar) const; ///< Addition with a scalar.
-  SharedValue operator-(double scalar) const; ///< Subtraction with a scalar.
-  SharedValue operator*(double scalar) const; ///< Multiplication with a scalar.
-  SharedValue operator/(double scalar) const; ///< Division by a scalar.
+  SharedValue operator+(double scalar) const;  ///< Addition with a scalar.
+  SharedValue operator-(double scalar) const;  ///< Subtraction with a scalar.
+  SharedValue operator*(
+      double scalar) const;  ///< Multiplication with a scalar.
+  SharedValue operator/(double scalar) const;  ///< Division by a scalar.
 
-  SharedValue& operator+=(double scalar); ///< Addition assignment with a scalar.
-  SharedValue& operator-=(double scalar); ///< Subtraction assignment with a scalar.
-  SharedValue& operator*=(double scalar); ///< Multiplication assignment with a scalar.
-  SharedValue& operator/=(double scalar); ///< Division assignment by a scalar.
+  SharedValue& operator+=(
+      double scalar);  ///< Addition assignment with a scalar.
+  SharedValue& operator-=(
+      double scalar);  ///< Subtraction assignment with a scalar.
+  SharedValue& operator*=(
+      double scalar);  ///< Multiplication assignment with a scalar.
+  SharedValue& operator/=(double scalar);  ///< Division assignment by a scalar.
 
-  bool operator<(const SharedValue& other) const; ///< Less than comparison.
-  bool operator>(const SharedValue& other) const; ///< Greater than comparison.
-  bool operator==(const SharedValue& other) const; ///< Equality comparison.
-  bool operator!=(const SharedValue& other) const; ///< Inequality comparison.
-  bool operator<=(const SharedValue& other) const; ///< Less than or equal to comparison.
-  bool operator>=(const SharedValue& other) const; ///< Greater than or equal to comparison.
+  bool operator<(const SharedValue& other) const;  ///< Less than comparison.
+  bool operator>(const SharedValue& other) const;  ///< Greater than comparison.
+  bool operator==(const SharedValue& other) const;  ///< Equality comparison.
+  bool operator!=(const SharedValue& other) const;  ///< Inequality comparison.
+  bool operator<=(
+      const SharedValue& other) const;  ///< Less than or equal to comparison.
+  bool operator>=(const SharedValue& other)
+      const;  ///< Greater than or equal to comparison.
 
-  bool operator<(double scalar) const; ///< Less than comparison with a scalar.
-  bool operator>(double scalar) const; ///< Greater than comparison with a scalar.
-  bool operator==(double scalar) const; ///< Equality comparison with a scalar.
-  bool operator!=(double scalar) const; ///< Inequality comparison with a scalar.
-  bool operator<=(double scalar) const; ///< Less than or equal to comparison with a scalar.
-  bool operator>=(double scalar) const; ///< Greater than or equal to comparison with a scalar.
+  bool operator<(double scalar) const;  ///< Less than comparison with a scalar.
+  bool operator>(
+      double scalar) const;  ///< Greater than comparison with a scalar.
+  bool operator==(double scalar) const;  ///< Equality comparison with a scalar.
+  bool operator!=(
+      double scalar) const;  ///< Inequality comparison with a scalar.
+  bool operator<=(double scalar)
+      const;  ///< Less than or equal to comparison with a scalar.
+  bool operator>=(double scalar)
+      const;  ///< Greater than or equal to comparison with a scalar.
 
-  SharedValue exp() const; ///< Exponential function.
-  SharedValue log() const; ///< Natural logarithm function.
-  SharedValue pow(const SharedValue& exponent) const; ///< Power function.
-  SharedValue tanh() const; ///< Hyperbolic tangent function.
-  SharedValue relu() const; ///< Rectified linear unit function.
+  SharedValue exp() const;  ///< Exponential function.
+  SharedValue log() const;  ///< Natural logarithm function.
+  SharedValue pow(const SharedValue& exponent) const;  ///< Power function.
+  SharedValue tanh() const;  ///< Hyperbolic tangent function.
+  SharedValue relu() const;  ///< Rectified linear unit function.
 
   /**
    * @brief Performs backpropagation for the SharedValue.
@@ -101,16 +119,35 @@ class SharedValue {
   friend std::ostream& operator<<(std::ostream& os, const SharedValue& obj);
 };
 
-SharedValue operator+(double scalar, const SharedValue& value); ///< Addition with a scalar.
-SharedValue operator-(double scalar, const SharedValue& value); ///< Subtraction with a scalar.
-SharedValue operator*(double scalar, const SharedValue& value); ///< Multiplication with a scalar.
-SharedValue operator/(double scalar, const SharedValue& value); ///< Division by a scalar.
+SharedValue operator+(double scalar,
+                      const SharedValue& value);  ///< Addition with a scalar.
+SharedValue operator-(
+    double scalar, const SharedValue& value);  ///< Subtraction with a scalar.
+SharedValue operator*(
+    double scalar,
+    const SharedValue& value);  ///< Multiplication with a scalar.
+SharedValue operator/(double scalar,
+                      const SharedValue& value);  ///< Division by a scalar.
 
-bool operator<(double scalar, const SharedValue& value); ///< Less than comparison with a scalar.
-bool operator>(double scalar, const SharedValue& value); ///< Greater than comparison with a scalar.
-bool operator==(double scalar, const SharedValue& value); ///< Equality comparison with a scalar.
-bool operator!=(double scalar, const SharedValue& value); ///< Inequality comparison with a scalar.
-bool operator<=(double scalar, const SharedValue& value); ///< Less than or equal to comparison with a scalar.
-bool operator>=(double scalar, const SharedValue& value); ///< Greater than or equal to comparison with a scalar.
+bool operator<(
+    double scalar,
+    const SharedValue& value);  ///< Less than comparison with a scalar.
+bool operator>(
+    double scalar,
+    const SharedValue& value);  ///< Greater than comparison with a scalar.
+bool operator==(
+    double scalar,
+    const SharedValue& value);  ///< Equality comparison with a scalar.
+bool operator!=(
+    double scalar,
+    const SharedValue& value);  ///< Inequality comparison with a scalar.
+bool operator<=(
+    double scalar,
+    const SharedValue&
+        value);  ///< Less than or equal to comparison with a scalar.
+bool operator>=(
+    double scalar,
+    const SharedValue&
+        value);  ///< Greater than or equal to comparison with a scalar.
 
 #endif  // _WRAPPER_ENGINE_H_

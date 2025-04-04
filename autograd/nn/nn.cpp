@@ -1,7 +1,7 @@
 #include "nn.h"
-#include "autograd/engine/engine.h"
 #include <random>
 #include <utility>
+#include "autograd/engine/engine.h"
 
 /**
  * @brief Constructs a Neuron with the specified number of input connections.
@@ -46,7 +46,7 @@ std::vector<std::shared_ptr<Value>> Neuron::parameters() {
  * @return A shared pointer to the output value after applying the weights and bias.
  */
 std::shared_ptr<Value> Neuron::operator()(
-    const std::vector<std::shared_ptr<Value>> &x) {
+    const std::vector<std::shared_ptr<Value>>& x) {
   std::shared_ptr<Value> ret = std::make_shared<Value>(this->bias_->data);
   for (int i = 0; i < static_cast<int>(x.size()); i++) {
     ret = ret + (this->weights_[i] * x[i]);
@@ -79,9 +79,8 @@ Layer::Layer(int nin, int nout) {
  */
 std::vector<std::shared_ptr<Value>> Layer::parameters() {
   std::vector<std::shared_ptr<Value>> params;
-  for (auto & neuron : this->neurons_) {
-    std::vector<std::shared_ptr<Value>> n_params =
-        neuron->parameters();
+  for (auto& neuron : this->neurons_) {
+    std::vector<std::shared_ptr<Value>> n_params = neuron->parameters();
     params.insert(params.end(), n_params.begin(), n_params.end());
   }
   return params;
@@ -98,9 +97,9 @@ std::vector<std::shared_ptr<Value>> Layer::parameters() {
  * @return A vector of shared pointers to the output values after processing through the layer.
  */
 std::vector<std::shared_ptr<Value>> Layer::operator()(
-    const std::vector<std::shared_ptr<Value>> &x, bool activ) {
+    const std::vector<std::shared_ptr<Value>>& x, bool activ) {
   std::vector<std::shared_ptr<Value>> ret;
-  for (auto & neuron : this->neurons_) {
+  for (auto& neuron : this->neurons_) {
     std::shared_ptr<Value> val = (*neuron)(x);
     if (activ) {
       ret.push_back(val->relu());
@@ -120,7 +119,8 @@ std::vector<std::shared_ptr<Value>> Layer::operator()(
  * @param nin Number of input features to the multi-layer perceptron.
  * @param nouts A vector containing the number of output neurons for each layer.
  */
-MultiLayerPerceptron::MultiLayerPerceptron(int nin, const std::vector<int> &nouts) {
+MultiLayerPerceptron::MultiLayerPerceptron(int nin,
+                                           const std::vector<int>& nouts) {
   int prev = nin;
   for (int nout : nouts) {
     this->layers_.push_back(std::make_shared<Layer>(prev, nout));
@@ -138,9 +138,8 @@ MultiLayerPerceptron::MultiLayerPerceptron(int nin, const std::vector<int> &nout
  */
 std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::parameters() {
   std::vector<std::shared_ptr<Value>> params;
-  for (auto & layer : this->layers_) {
-    std::vector<std::shared_ptr<Value>> l_params =
-        layer->parameters();
+  for (auto& layer : this->layers_) {
+    std::vector<std::shared_ptr<Value>> l_params = layer->parameters();
     params.insert(params.end(), l_params.begin(), l_params.end());
   }
   return params;
@@ -156,9 +155,9 @@ std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::parameters() {
  * @return A vector of shared pointers to the output values after processing through the MLP.
  */
 std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::operator()(
-    const std::vector<std::shared_ptr<Value>> &x) {
+    const std::vector<std::shared_ptr<Value>>& x) {
   std::vector<std::shared_ptr<Value>> ret = std::move(x);
-  for (auto & layer : this->layers_) {
+  for (auto& layer : this->layers_) {
     ret = (*layer)(ret);
   }
   return ret;

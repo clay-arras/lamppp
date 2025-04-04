@@ -28,9 +28,6 @@ target_link_libraries(test_engine autograd_core)
 add_executable(test_nn test/cpp/test_nn.cpp)
 target_link_libraries(test_nn autograd_core)
 
-add_executable(test_gen test/cpp/test_gen.cpp)
-target_link_libraries(test_gen autograd_core)
-
 add_executable(mnist autograd/mnist/mnist.cpp)
 target_link_libraries(mnist autograd_core)
 
@@ -46,8 +43,11 @@ target_link_libraries(test_fast_mnist autograd_core)
 add_executable(bench_nn test/benchmarks/bench_nn.cpp)
 target_link_libraries(bench_nn autograd_core benchmark::benchmark)
 
-# add_executable(bench_fast_layer test/benchmarks/bench_fast_layer.cpp)
-# target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
+add_executable(bench_fast_layer test/benchmarks/bench_fast_layer.cpp)
+target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
+
+add_executable(bench_mat test/benchmarks/bench_mat.cpp)
+target_link_libraries(bench_mat autograd_core benchmark::benchmark)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if (NOT CLANG_FORMAT_EXE)

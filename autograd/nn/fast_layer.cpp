@@ -23,7 +23,7 @@ FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
   std::uniform_real_distribution<> dis(-1.0, 1.0);
 
   auto random_shared = [&dis, &gen](const SharedValue&) -> SharedValue {
-      return SharedValue(dis(gen));
+    return SharedValue(dis(gen));
   };
 
   weights_ = weights_.unaryExpr(random_shared);

@@ -13,10 +13,11 @@
  */
 class FastLayer {
  private:
-  int nin_;  ///< Number of input features.
-  int nout_; ///< Number of output features.
-  Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> weights_; ///< Weights of the layer.
-  Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> bias_;               ///< Bias of the layer.
+  int nin_;   ///< Number of input features.
+  int nout_;  ///< Number of output features.
+  Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>
+      weights_;  ///< Weights of the layer.
+  Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> bias_;  ///< Bias of the layer.
 
  public:
   /**
@@ -48,8 +49,7 @@ class FastLayer {
   Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> operator()(
       Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x,
       const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
-          Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>&
-          activ);
+          Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>& activ);
 };
 
 #endif  // _FAST_LAYER_H_

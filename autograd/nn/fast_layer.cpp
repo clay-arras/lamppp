@@ -1,5 +1,5 @@
 #include "fast_layer.h"
-
+#include <eigen3/Eigen/src/Core/Matrix.h>
 #include <functional>
 #include <random>
 
@@ -14,18 +14,20 @@
  */
 using Eigen::Matrix;
 
-FastLayer::FastLayer(int nin, int nout) : nin(nin), nout(nout) {
-  weights.resize(nout, nin);
-  bias.resize(nout, 1);
+FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
+  weights_.resize(nout, nin);
+  bias_.resize(nout, 1);
 
-  std::random_device seed;
-  std::mt19937 gen{seed()};
-  std::uniform_real_distribution<> dist{-1.0, 1.0};
-  auto init_value = [&dist, &gen](const SharedValue& a) {
-    return SharedValue(dist(gen));
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-1.0, 1.0);
+
+  auto random_shared = [&dis, &gen](const SharedValue&) -> SharedValue {
+      return SharedValue(dis(gen));
   };
-  weights = weights.unaryExpr(init_value);
-  bias = bias.unaryExpr(init_value);
+
+  weights_ = weights_.unaryExpr(random_shared);
+  bias_ = bias_.unaryExpr(random_shared);
 }
 
 /**
@@ -45,10 +47,9 @@ FastLayer::FastLayer(int nin, int nout) : nin(nin), nout(nout) {
  */
 Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> FastLayer::operator()(
     Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x,
-    std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
-        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>
-        activ) {
-  Matrix<SharedValue, Eigen::Dynamic, 1> a(nout, 1);
-  a = weights * x + bias;
+    const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>& activ) {
+  Matrix<SharedValue, Eigen::Dynamic, 1> a(nout_, 1);
+  a = weights_ * x + bias_;
   return activ(a);
 }

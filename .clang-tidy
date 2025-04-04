@@ -114,7 +114,10 @@ Checks: >
   -bugprone-implicit-widening-of-multiplication-result,
   -bugprone-unchecked-optional-access,
   -bugprone-unused-local-non-trivial-variable,
-  -bugprone-unused-return-value
+  -bugprone-unused-return-value,
+  -llvmlibc-restrict-system-libc-headers,
+  -llvmlibc-implementation-in-namespace,
+  -llvmlibc-callee-namespace
 
 # Turn all the warnings from the checks above into errors.
 WarningsAsErrors: "*"

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="autograd_cpp" targetName="autograd_core" />
+      <config projectName="autograd_cpp" targetName="test_gen" />
+      <config projectName="autograd_cpp" targetName="test_mnist" />
+      <config projectName="autograd_cpp" targetName="mnist" />
+      <config projectName="autograd_cpp" targetName="test_nn" />
+      <config projectName="autograd_cpp" targetName="fast_mnist" />
+      <config projectName="autograd_cpp" targetName="test_fast_mnist" />
+      <config projectName="autograd_cpp" targetName="format" />
+      <config projectName="autograd_cpp" targetName="test_engine" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="aca7a409-fe92-431b-afa0-6a63d66bd59a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.clang-tidy" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-tidy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/engine/wrapper_engine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/engine/wrapper_engine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/engine/wrapper_engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/engine/wrapper_engine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/mnist/fast_mnist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/mnist/fast_mnist.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/mnist/mnist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/mnist/mnist.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/nn/fast_layer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/nn/fast_layer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/nn/fast_layer.h" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/nn/fast_layer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/nn/nn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/nn/nn.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/nn/nn.h" beforeDir="false" afterPath="$PROJECT_DIR$/autograd/nn/nn.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autograd/wrapper_engine.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp/test_engine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/cpp/test_engine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp/test_fast_mnist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/cpp/test_fast_mnist.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp/test_gen.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/cpp/test_gen.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp/test_mnist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/cpp/test_mnist.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp/test_nn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/cpp/test_nn.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="3.5" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2vF6wFGr677GAGeaBjPFg57Rc2V" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/nlin/workspace/code/projects/autograd_cpp",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="CMake Application.fast_mnist">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="autograd_core" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="autograd_core" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="fast_mnist" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="fast_mnist" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="fast_mnist">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="format" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="format" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mnist" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="mnist" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="mnist">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test_engine" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="test_engine" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="test_engine">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test_fast_mnist" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="test_fast_mnist" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="test_fast_mnist">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test_gen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="test_gen" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="test_gen">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test_mnist" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="test_mnist" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="test_mnist">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test_nn" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="autograd_cpp" TARGET_NAME="test_nn" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="autograd_cpp" RUN_TARGET_NAME="test_nn">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.autograd_core" />
+      <item itemvalue="CMake Application.fast_mnist" />
+      <item itemvalue="CMake Application.format" />
+      <item itemvalue="CMake Application.mnist" />
+      <item itemvalue="CMake Application.test_engine" />
+      <item itemvalue="CMake Application.test_fast_mnist" />
+      <item itemvalue="CMake Application.test_gen" />
+      <item itemvalue="CMake Application.test_mnist" />
+      <item itemvalue="CMake Application.test_nn" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="aca7a409-fe92-431b-afa0-6a63d66bd59a" name="Changes" comment="" />
+      <created>1743728711955</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743728711955</updated>
+      <workItem from="1743728713618" duration="749000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+</project>

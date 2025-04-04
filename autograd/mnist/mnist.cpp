@@ -2,39 +2,41 @@
 
 #include <cassert>
 #include <memory>
+#include <utility>
 #include <vector>
 #include "autograd/engine/engine.h"
-#include "nn.h"
-#include "util.h"
+#include "autograd/nn/nn.h"
+#include "autograd/util/csv_reader.h"
 
 int main() {
   auto [data, label] = readCSV("data/mnist_dummy.csv");
-  int N = (int)data.size();
+  int n = static_cast<int>(data.size());
 
   int nin = 28 * 28;
-  Layer W1(nin, 256);
-  Layer W2(256, 10);
+  Layer w1(nin, 256);
+  Layer w2(256, 10);
 
   auto softmax = [&](std::vector<std::shared_ptr<Value>> x)
       -> std::vector<std::shared_ptr<Value>> {
     assert((int)x.size() == 10);
     std::shared_ptr<Value> denom = std::make_shared<Value>(Value(1e-4));
-    for (auto i : x)
+    for (const auto& i : x)
       denom = denom + i->exp();
     for (auto& i : x)
       i = i->exp() / denom;
     return x;
   };
 
-  auto forward = [&](std::vector<std::shared_ptr<Value>> x) {
-    std::vector<std::shared_ptr<Value>> Z1 = W1(x);
-    std::vector<std::shared_ptr<Value>> Z2 = W2(Z1, false);
-    return softmax(Z2);
+  auto forward = [&](const std::vector<std::shared_ptr<Value>>& x) {
+    std::vector<std::shared_ptr<Value>> z1 = w1(std::move(x));
+    std::vector<std::shared_ptr<Value>> z2 = w2(z1, false);
+    return softmax(z2);
   };
 
   std::vector<std::vector<std::shared_ptr<Value>>> y_pred;
-  for (std::vector<double> item : data) {
+  for (const std::vector<double>& item : data) {
     std::vector<std::shared_ptr<Value>> ptrs;
+    ptrs.reserve(item.size());
     for (double i : item)
       ptrs.push_back(std::make_shared<Value>(Value(i)));
     y_pred.push_back(forward(ptrs));

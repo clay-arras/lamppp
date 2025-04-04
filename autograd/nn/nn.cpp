@@ -1,5 +1,7 @@
 #include "nn.h"
+#include "autograd/engine/engine.h"
 #include <random>
+#include <utility>
 
 /**
  * @brief Constructs a Neuron with the specified number of input connections.
@@ -44,9 +46,9 @@ std::vector<std::shared_ptr<Value>> Neuron::parameters() {
  * @return A shared pointer to the output value after applying the weights and bias.
  */
 std::shared_ptr<Value> Neuron::operator()(
-    std::vector<std::shared_ptr<Value>> x) {
+    const std::vector<std::shared_ptr<Value>> &x) {
   std::shared_ptr<Value> ret = std::make_shared<Value>(this->bias_->data);
-  for (int i = 0; i < (int)x.size(); i++) {
+  for (int i = 0; i < static_cast<int>(x.size()); i++) {
     ret = ret + (this->weights_[i] * x[i]);
   }
   return ret;
@@ -100,10 +102,11 @@ std::vector<std::shared_ptr<Value>> Layer::operator()(
   std::vector<std::shared_ptr<Value>> ret;
   for (auto & neuron : this->neurons_) {
     std::shared_ptr<Value> val = (*neuron)(x);
-    if (activ)
+    if (activ) {
       ret.push_back(val->relu());
-    else
+    } else {
       ret.push_back(val);
+    }
   }
   return ret;
 }
@@ -117,11 +120,11 @@ std::vector<std::shared_ptr<Value>> Layer::operator()(
  * @param nin Number of input features to the multi-layer perceptron.
  * @param nouts A vector containing the number of output neurons for each layer.
  */
-MultiLayerPerceptron::MultiLayerPerceptron(int nin, std::vector<int> nouts) {
+MultiLayerPerceptron::MultiLayerPerceptron(int nin, const std::vector<int> &nouts) {
   int prev = nin;
-  for (int i = 0; i < (int)nouts.size(); i++) {
-    this->layers_.push_back(std::make_shared<Layer>(prev, nouts[i]));
-    prev = nouts[i];
+  for (int nout : nouts) {
+    this->layers_.push_back(std::make_shared<Layer>(prev, nout));
+    prev = nout;
   }
 }
 
@@ -153,8 +156,8 @@ std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::parameters() {
  * @return A vector of shared pointers to the output values after processing through the MLP.
  */
 std::vector<std::shared_ptr<Value>> MultiLayerPerceptron::operator()(
-    std::vector<std::shared_ptr<Value>> x) {
-  std::vector<std::shared_ptr<Value>> ret = x;
+    const std::vector<std::shared_ptr<Value>> &x) {
+  std::vector<std::shared_ptr<Value>> ret = std::move(x);
   for (auto & layer : this->layers_) {
     ret = (*layer)(ret);
   }

@@ -45,7 +45,7 @@ class Neuron : public std::enable_shared_from_this<Neuron> {
    * @param x A vector of shared pointers to the input values.
    * @return A shared pointer to the output value after applying the weights and bias.
    */
-  std::shared_ptr<Value> operator()(std::vector<std::shared_ptr<Value>> x);
+  std::shared_ptr<Value> operator()(const std::vector<std::shared_ptr<Value>> &x);
 };
 
 /**
@@ -91,7 +91,7 @@ class Layer : public std::enable_shared_from_this<Layer> {
    * @return A vector of shared pointers to the output values after processing through the layer.
    */
   std::vector<std::shared_ptr<Value>> operator()(
-      std::vector<std::shared_ptr<Value>> x, bool activ = true);
+      const std::vector<std::shared_ptr<Value>> &x, bool activ = true);
 };
 
 /**
@@ -115,7 +115,7 @@ class MultiLayerPerceptron
    * @param nin Number of input features to the multi-layer perceptron.
    * @param nouts A vector containing the number of output neurons for each layer.
    */
-  MultiLayerPerceptron(int nin, std::vector<int> nouts);
+  MultiLayerPerceptron(int nin, const std::vector<int> &nouts);
 
   /**
    * @brief Retrieves the parameters of the multi-layer perceptron.
@@ -137,7 +137,7 @@ class MultiLayerPerceptron
    * @return A vector of shared pointers to the output values after processing through the MLP.
    */
   std::vector<std::shared_ptr<Value>> operator()(
-      std::vector<std::shared_ptr<Value>> x);
+      const std::vector<std::shared_ptr<Value>> &x);
 };
 
 #endif //_NN_H_

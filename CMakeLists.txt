@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project(autograd_cpp)
 
-set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Eigen3 REQUIRED)
+find_package(benchmark REQUIRED)
 
 add_library(autograd_core
     autograd/engine/engine.cpp
@@ -41,6 +42,12 @@ target_link_libraries(test_mnist autograd_core)
 
 add_executable(test_fast_mnist test/cpp/test_fast_mnist.cpp)
 target_link_libraries(test_fast_mnist autograd_core)
+
+add_executable(bench_nn test/benchmarks/bench_nn.cpp)
+target_link_libraries(bench_nn autograd_core benchmark::benchmark)
+
+# add_executable(bench_fast_layer test/benchmarks/bench_fast_layer.cpp)
+# target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if (NOT CLANG_FORMAT_EXE)

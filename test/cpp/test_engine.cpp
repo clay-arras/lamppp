@@ -2,11 +2,13 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include "../autograd/engine.h"
+#include "autograd/engine/engine.h"
 
+namespace {
 bool approx_equal(double a, double b, double epsilon = 1e-2) {
   return std::abs(a - b) < epsilon;
 }
+}  // namespace
 
 int main() {
   auto x1 = std::make_shared<Value>(2.0);

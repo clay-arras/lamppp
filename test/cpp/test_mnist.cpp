@@ -1,10 +1,10 @@
-#include "autograd/nn.h"
+#include "autograd/nn/nn.h"
 
 int main() {
   int nin = 108 * 108 * 3;
-  Layer W1(nin, 1024);
-  Layer W2(1024, 512);
-  Layer W3(512, 256);
-  Layer W4(256, 128);
-  Layer W5(128, 10);
+  Layer w1(nin, 1024);
+  Layer w2(1024, 512);
+  Layer w3(512, 256);
+  Layer w4(256, 128);
+  Layer w5(128, 10);
 }

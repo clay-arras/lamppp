@@ -1,8 +1,5 @@
 #include <Eigen/Core>
-#include <functional>
-#include <memory>
-#include "autograd/engine.h"
-#include "autograd/wrapper_engine.h"
+#include "autograd/engine/wrapper_engine.h"
 
 int main() {
   // Create a 2x2 matrix of shared_ptr<Value>
@@ -35,7 +32,7 @@ int main() {
   Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> mat2(256, 10);
 
   auto init_fn = [](const SharedValue&) {
-    return SharedValue((2.0f * (static_cast<float>(rand()) / RAND_MAX) - 1.0f) /
+    return SharedValue((2.0F * (static_cast<float>(rand()) / RAND_MAX) - 1.0F) /
                        1000);
   };
 

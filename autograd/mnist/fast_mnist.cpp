@@ -1,21 +1,18 @@
 #include "fast_mnist.h"
-#include "autograd/wrapper_engine.h"
+#include "autograd/nn/fast_layer.h"
+#include "autograd/util/csv_reader.h"
+#include "autograd/engine/wrapper_engine.h"
 #include <cassert>
-#include <memory>
 #include <vector>
-#include "engine.h"
-#include "fast_layer.h"
-#include "nn.h"
-#include "util.h"
-#include "wrapper_engine.h"
+
 
 int main() {
   auto [data, label] = readCSV("data/mnist_dummy.csv");
-  int N = (int)data.size();
+  int n = static_cast<int>(data.size());
 
   int nin = 28 * 28;
-  FastLayer W1(nin, 256);
-  FastLayer W2(256, 10);
+  FastLayer w1(nin, 256);
+  FastLayer w2(256, 10);
 
   // std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic,
   // 1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)> relu =
@@ -43,22 +40,22 @@ int main() {
     auto identity = [](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x) {
       return x;
     };
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> Z1 = W1(x, identity);
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> Z2 = W2(Z1, identity);
-    return Z2;
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z1 = w1(x, identity);
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z2 = w2(z1, identity);
+    return z2;
   };
 
   std::vector<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>> y_pred;
   for (const std::vector<double>& item : data) {
     Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> x(item.size(), 1);
 
-    std::vector<SharedValue> sharedValues;
-    sharedValues.reserve(item.size());
+    std::vector<SharedValue> shared_values;
+    shared_values.reserve(item.size());
     for (double val : item) {
-      sharedValues.push_back(SharedValue(val));
+      shared_values.emplace_back(val);
     }
     x = Eigen::Map<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>>(
-        sharedValues.data(), sharedValues.size());
+        shared_values.data(), shared_values.size());
     y_pred.push_back(forward(x));
   }
   // SharedValue loss = SharedValue(0);

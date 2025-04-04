@@ -1,6 +1,7 @@
 .cache/
 __pycache__/
 build/
+cmake-build-debug/
 checkpoint/
 data/
 poetry.lock

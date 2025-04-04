@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
-#include "../autograd/engine.h"
-#include "../autograd/nn.h"
+#include "autograd/engine/engine.h"
+#include "autograd/nn/nn.h"
 
 int main() {
   auto net =
@@ -19,6 +19,8 @@ int main() {
 
   std::vector<double> ys = {1.0, -1.0, -1.0, 1.0};
   std::vector<std::vector<std::shared_ptr<Value>>> ypred;
+
+  ypred.reserve(xs.size());
   for (const auto& x : xs) {
     ypred.push_back((*net)(x));
   }
@@ -26,6 +28,8 @@ int main() {
   double alpha = 0.01;
   for (int i = 0; i < 100; i++) {
     std::vector<std::vector<std::shared_ptr<Value>>> ypred;
+
+    ypred.reserve(xs.size());
     for (const auto& x : xs) {
       ypred.push_back((*net)(x));
     }

@@ -35,7 +35,9 @@ class Value : public std::enable_shared_from_this<Value> {
                 bool requires_grad = false,
                 std::vector<std::shared_ptr<Value>> children = {},
                 double grad = 0.0); // TODO(nlin): need to add destructor
-  static std::shared_ptr<Value> create(Value& value);
+  static std::shared_ptr<Value> create(const Value& value);
+  static void destroy(Value* ptr);
+  Value(const Value& other);
 
   void backward() const {
     assert(backward_fn != nullptr);

@@ -8,21 +8,24 @@
 #include "autograd/engine/grad.h"
 #include "autograd/engine/value_pool.h"
 
-ValueMemoryPool Value::pool_(1e12); 
+ValueMemoryPool Value::pool_(1000); 
 
 Value::Value(double data, bool requires_grad, std::vector<std::shared_ptr<Value>> children,
              double grad)
     : data(data), grad(grad), prev(std::move(children)), requires_grad(requires_grad) {}
+  
+Value::Value(const Value& other) : Value(other.data, other.requires_grad, other.prev, other.grad) {}
 
- std::shared_ptr<Value> Value::create(Value& value) {
+void Value::destroy(Value* ptr) {
+  ptr->~Value();
+  pool_.deallocate(static_cast<void*>(ptr));
+}
+
+std::shared_ptr<Value> Value::create(const Value& value) {
   void* raw_memory = pool_.allocate();
   auto* block = new (raw_memory) Value(value);
 
-
-  auto deallocator = [](Value* ptr) {
-    pool_.deallocate(static_cast<void*>(ptr));
-  };
-  std::shared_ptr<Value> alloc(block, deallocator);
+  std::shared_ptr<Value> alloc(block, destroy);
   return alloc;
 }
 
@@ -33,11 +36,11 @@ std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a,
 
 std::shared_ptr<Value> Value::operator+(const std::shared_ptr<Value>& other) {
   if (!this->requires_grad && !other->requires_grad) {
-    return std::make_shared<Value>(this->data + other->data);
+    return Value::create(Value(this->data + other->data));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
+  std::shared_ptr<Value> out = Value::create(Value(
       this->data + other->data, true,
-      std::vector<std::shared_ptr<Value>>{shared_from_this(), other});
+      std::vector<std::shared_ptr<Value>>{shared_from_this(), other}));
 
   auto* ctx = new AddBackwardContext(shared_from_this(), other, out);
   out->backward_fn = &add_backward;
@@ -53,7 +56,7 @@ std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& a,
 
 std::shared_ptr<Value> Value::operator-(const std::shared_ptr<Value>& other) {
   return shared_from_this() +
-         (other * std::make_shared<Value>(static_cast<double>(-1)));
+         (other * Value::create(Value(static_cast<double>(-1))));
 }
 
 std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a,
@@ -63,11 +66,11 @@ std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a,
 
 std::shared_ptr<Value> Value::operator*(const std::shared_ptr<Value>& other) {
   if (!this->requires_grad && !other->requires_grad) {
-    return std::make_shared<Value>(this->data * other->data);
+    return Value::create(Value(this->data * other->data));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
+  std::shared_ptr<Value> out = Value::create(Value(
       this->data * other->data, true,
-      std::vector<std::shared_ptr<Value>>{shared_from_this(), other});
+      std::vector<std::shared_ptr<Value>>{shared_from_this(), other}));
 
   auto* ctx = new MulBackwardContext(shared_from_this(), other, out);
   out->backward_fn = &mul_backward;
@@ -83,16 +86,16 @@ std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a,
 
 std::shared_ptr<Value> Value::operator/(const std::shared_ptr<Value>& other) {
   return shared_from_this() *
-         other->pow(std::make_shared<Value>(static_cast<double>(-1)));
+         other->pow(Value::create(Value(static_cast<double>(-1))));
 }
 
 std::shared_ptr<Value> Value::pow(const std::shared_ptr<Value>& other) {
   if (!this->requires_grad && !other->requires_grad) {
-    return std::make_shared<Value>(std::pow(this->data, other->data));
+    return Value::create(Value(std::pow(this->data, other->data)));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
+  std::shared_ptr<Value> out = Value::create(Value(
       std::pow(this->data, other->data), true,
-      std::vector<std::shared_ptr<Value>>{shared_from_this(), other});
+      std::vector<std::shared_ptr<Value>>{shared_from_this(), other}));
   auto* ctx = new PowBackwardContext(shared_from_this(), other, out);
   out->backward_fn = &pow_backward;
   out->backward_ctx = static_cast<void*>(ctx);
@@ -102,11 +105,11 @@ std::shared_ptr<Value> Value::pow(const std::shared_ptr<Value>& other) {
 
 std::shared_ptr<Value> Value::exp() {
   if (!this->requires_grad) {
-    return std::make_shared<Value>(std::exp(this->data));
+    return Value::create(Value(std::exp(this->data)));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
+  std::shared_ptr<Value> out = Value::create(Value(
       std::exp(this->data), true,
-      std::vector<std::shared_ptr<Value>>{shared_from_this()});
+      std::vector<std::shared_ptr<Value>>{shared_from_this()}));
 
   auto* ctx = new ExpBackwardContext(shared_from_this(), out);
   out->backward_fn = &exp_backward;
@@ -122,11 +125,11 @@ std::shared_ptr<Value> exp(const std::shared_ptr<Value>& value) {
 std::shared_ptr<Value> Value::log() {
   assert(this->data > 0);
   if (!this->requires_grad) {
-    return std::make_shared<Value>(std::log(this->data));
+    return Value::create(Value(std::log(this->data)));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
+  std::shared_ptr<Value> out = Value::create(Value(
       std::log(this->data), true, 
-      std::vector<std::shared_ptr<Value>>{shared_from_this()});
+      std::vector<std::shared_ptr<Value>>{shared_from_this()}));
 
   auto* ctx = new LogBackwardContext(shared_from_this(), out);
   out->backward_fn = &log_backward;
@@ -141,10 +144,10 @@ std::shared_ptr<Value> log(const std::shared_ptr<Value>& value) {
 
 std::shared_ptr<Value> Value::tanh() {
   if (!this->requires_grad) {
-    return std::make_shared<Value>(std::tanh(this->data));
+    return Value::create(Value(std::tanh(this->data)));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
-      std::tanh(this->data), true, std::vector<std::shared_ptr<Value>>{shared_from_this()});
+  std::shared_ptr<Value> out = Value::create(Value(
+      std::tanh(this->data), true, std::vector<std::shared_ptr<Value>>{shared_from_this()}));
 
   auto* ctx = new TanhBackwardContext(shared_from_this(), out);
   out->backward_fn = &tanh_backward;
@@ -159,10 +162,10 @@ std::shared_ptr<Value> tanh(const std::shared_ptr<Value>& value) {
 
 std::shared_ptr<Value> Value::relu() {
   if (!this->requires_grad) {
-    return std::make_shared<Value>(std::max(0.0, this->data));
+    return Value::create(Value(std::max(0.0, this->data)));
   }
-  std::shared_ptr<Value> out = std::make_shared<Value>(
-      std::max(0.0, this->data), true, std::vector<std::shared_ptr<Value>>{shared_from_this()});
+  std::shared_ptr<Value> out = Value::create(Value(
+      std::max(0.0, this->data), true, std::vector<std::shared_ptr<Value>>{shared_from_this()}));
 
   auto* ctx = new ReluBackwardContext(shared_from_this(), out);
   out->backward_fn = &relu_backward;
@@ -205,45 +208,45 @@ std::vector<std::shared_ptr<Value>> Value::internalTopoSort() {
 
 std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a,
                                  const float b) {
-  return a + std::make_shared<Value>(static_cast<double>(b));
+  return a + Value::create(Value(static_cast<double>(b)));
 }
 
 std::shared_ptr<Value> operator+(const float b,
                                  const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(static_cast<double>(b)) + a;
+  return Value::create(Value(static_cast<double>(b))) + a;
 }
 
 std::shared_ptr<Value> operator-(const std::shared_ptr<Value>& a,
                                  const float b) {
-  return a - std::make_shared<Value>(static_cast<double>(b));
+  return a - Value::create(Value(static_cast<double>(b)));
 }
 
 std::shared_ptr<Value> operator-(const float b,
                                  const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(static_cast<double>(b)) - a;
+  return Value::create(Value(static_cast<double>(b))) - a;
 }
 
 std::shared_ptr<Value> operator*(const std::shared_ptr<Value>& a,
                                  const float b) {
-  return a * std::make_shared<Value>(static_cast<double>(b));
+  return a * Value::create(Value(static_cast<double>(b)));
 }
 
 std::shared_ptr<Value> operator*(const float b,
                                  const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(static_cast<double>(b)) * a;
+  return Value::create(Value(static_cast<double>(b))) * a;
 }
 
 std::shared_ptr<Value> operator/(const std::shared_ptr<Value>& a,
                                  const float b) {
-  return a / std::make_shared<Value>(static_cast<double>(b));
+  return a / Value::create(Value(static_cast<double>(b)));
 }
 
 std::shared_ptr<Value> operator/(const float b,
                                  const std::shared_ptr<Value>& a) {
-  return std::make_shared<Value>(static_cast<double>(b)) / a;
+  return Value::create(Value(static_cast<double>(b))) / a;
 }
 
 std::ostream& operator<<(std::ostream& os, const Value& obj) {
-  os << "Value(data=" << obj.data << ", grad=" << obj.grad << ")";
+  os << "Value(data=" << obj.data << ", grad=" << obj.grad << ", requires_grad=" << obj.requires_grad << ")";
   return os;
 }

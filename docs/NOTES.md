@@ -29,10 +29,17 @@ IDEA: somehow CONDENSE THE GRAPH IF NO_GRAD, BECAUSE ALL THE OPERATIONS BEFORE G
 // before requires grad it took 700x slower
 // after requires grad it was only 200x slower
 
-no optimizations 7000000000 ns
+no optimizations ..7000000000 ns
 with requires_grad 2000000000 ns
+with memory pool: .3000000000 ns
+
+<!-- with mp + lambda optim -->
+
+regular double ......10000000 ns
+.......232769086 ns 200000000 ns
+.............240273 ns 200000 ns
+
 vector and unordered_set are pretty much the same
-regular double 10000000 ns
 
 Nevermind;
 IMPORTANT NOTE: THERE SILL IS REFERENCES TO THAT VALUE, NEED TO FIX THE MAKE_SHARED THING!!!!!!!!!

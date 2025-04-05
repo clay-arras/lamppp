@@ -9,8 +9,19 @@
  */
 class ValueMemoryPool {
  private:
-  std::vector<void*> pool_;  ///< Pool of shared pointers to Value objects.
-  std::mutex mutex_;
+  static thread_local std::vector<void*> local_pool_;
+  std::vector<void*> global_pool_; 
+  std::mutex global_mutex_;
+
+  size_t block_size_;
+  size_t initial_local_size_; 
+
+  void initialize_local_pool() const {
+        local_pool_.reserve(initial_local_size_);
+        for (size_t i = 0; i < initial_local_size_; i++) {
+            local_pool_.push_back(::operator new(block_size_));
+        }
+    }
 
  public:
   /**

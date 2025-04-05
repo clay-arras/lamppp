@@ -18,7 +18,7 @@ namespace {
     void test_value_creation() {
         Value val(5.0, true);
         std::shared_ptr<Value> v = Value::create(val);
-        
+
         assert(v->data == 5.0);
         assert(v->requires_grad == true);
         assert(v->grad == 0.0);

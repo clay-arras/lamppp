@@ -3,25 +3,50 @@
 #include <mutex>
 #include "engine.h"
 
+thread_local std::vector<void*> ValueMemoryPool::local_pool_;
 
 ValueMemoryPool::ValueMemoryPool(size_t size) {
-    pool_.reserve(size);
-    for (size_t i = 0; i < size; i++) {
-        pool_.push_back(::operator new(sizeof(Value)));
+    block_size_ = sizeof(Value);
+    initial_local_size_ = size / 4;
+    local_pool_.reserve(initial_local_size_); // heuristic
+    for (size_t i = 0; i < initial_local_size_; i++) {
+        local_pool_.push_back(::operator new(block_size_));
     }
 }
 
 void* ValueMemoryPool::allocate() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (pool_.empty()) {
-        assert(false); // TODO(nlin): just crash for now, later implement resizing like std::vector
+    if (local_pool_.empty()) {
+        initialize_local_pool();
     }
-    void* alloc = pool_.back();
-    pool_.pop_back();
-    return alloc; 
+
+    if (!local_pool_.empty()) {
+        void* alloc = local_pool_.back();
+        local_pool_.pop_back();
+        return alloc;
+    } 
+    
+    {
+        assert(false);
+        std::lock_guard<std::mutex> lock(global_mutex_);
+        if (!global_pool_.empty()) {
+            void* alloc = global_pool_.back();
+            global_pool_.pop_back();
+            return alloc;
+        }
+    }
+    
+    assert(false);
+    return ::operator new(block_size_);
 }
 
 void ValueMemoryPool::deallocate(void* value) { 
-    std::lock_guard<std::mutex> lock(mutex_);
-    pool_.push_back(value); // can't check void*, if this isn't a Value it's going to fucking die.
+    local_pool_.push_back(value);
+    
+    if (local_pool_.size() > 1000) { // TODO(nlin): do resize better
+        std::lock_guard<std::mutex> lock(global_mutex_);
+        for (size_t i = 0; i < 500; i++) {
+            global_pool_.push_back(local_pool_.back());
+            local_pool_.pop_back();
+        }
+    }
 }

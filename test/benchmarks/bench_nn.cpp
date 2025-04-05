@@ -7,7 +7,7 @@
 
 using std::vector;
 
-namespace { 
+namespace {
 
 /**
  * @brief Computes the softmax of a vector of shared values.
@@ -20,7 +20,8 @@ namespace {
  * @param x A vector of shared pointers to Value objects.
  * @return A vector of shared pointers to Value objects after applying softmax.
  */
-std::vector<std::shared_ptr<Value>> softmax (std::vector<std::shared_ptr<Value>> x) {
+std::vector<std::shared_ptr<Value>> softmax(
+    std::vector<std::shared_ptr<Value>> x) {
   assert((int)x.size() == 10);
   std::shared_ptr<Value> denom = std::make_shared<Value>(Value(1e-4));
   for (const auto& i : x)
@@ -42,7 +43,8 @@ std::vector<std::shared_ptr<Value>> softmax (std::vector<std::shared_ptr<Value>>
  * @param w2 The second layer to apply.
  * @return A vector of shared pointers to Value objects after the forward pass.
  */
-std::vector<std::shared_ptr<Value>> forward (const std::vector<std::shared_ptr<Value>>& x, Layer& w1, Layer& w2) {
+std::vector<std::shared_ptr<Value>> forward(
+    const std::vector<std::shared_ptr<Value>>& x, Layer& w1, Layer& w2) {
   std::vector<std::shared_ptr<Value>> z1 = w1(std::move(x));
   std::vector<std::shared_ptr<Value>> z2 = w2(z1, false);
   return softmax(z2);

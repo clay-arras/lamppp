@@ -6,7 +6,7 @@
 
 using std::vector;
 
-namespace { 
+namespace {
 
 /**
  * @brief Applies the ReLU activation function to a given input matrix.
@@ -17,15 +17,15 @@ namespace {
  * @param x Input matrix of SharedValue elements.
  * @return Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> The modified input matrix after applying ReLU.
  */
-std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic,
-1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)> relu =
-[](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x) {
-    auto relu_func = [](const SharedValue& v) -> SharedValue {
+std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>
+    relu = [](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x) {
+      auto relu_func = [](const SharedValue& v) -> SharedValue {
         return SharedValue(v.getPtr()->relu());
+      };
+      x = x.unaryExpr(relu_func);
+      return x;
     };
-    x = x.unaryExpr(relu_func);
-    return x;
-};
 
 /**
  * @brief Applies the softmax function to a given input matrix.
@@ -37,15 +37,15 @@ std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic,
  * @param x Input matrix of SharedValue elements.
  * @return Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> The modified input matrix after applying softmax.
  */
-std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic,
-1>(Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)> softmax =
-[](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x) {
-    assert(x.rows() == 10);
-    x = x.unaryExpr([](const SharedValue& v) { return v.exp(); });
-    SharedValue denom = SharedValue(1e-4) + x.sum();
-    x = x / denom;
-    return x;
-};
+std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>
+    softmax = [](Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x) {
+      assert(x.rows() == 10);
+      x = x.unaryExpr([](const SharedValue& v) { return v.exp(); });
+      SharedValue denom = SharedValue(1e-4) + x.sum();
+      x = x / denom;
+      return x;
+    };
 
 /**
  * @brief Performs a forward pass through the two FastLayers.
@@ -59,8 +59,7 @@ std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic,
  * @return Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> The output matrix after applying both layers.
  */
 Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> forward(
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x,
-    FastLayer& w1, 
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x, FastLayer& w1,
     FastLayer& w2) {
   Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z1 = w1(x, relu);
   Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> z2 = w2(z1, softmax);
@@ -140,14 +139,14 @@ void BM_FastEngineBackwardProp(benchmark::State& state) {
   for (auto _ : state) {
     SharedValue loss = SharedValue(0);
     for (int i = 0; i < n; i++) {
-        SharedValue cross_entropy = SharedValue(0);
-        for (int j = 0; j < 10; j++) {
-            if (j == label[i]) {
-                SharedValue pred_value = y_pred[i](j, 0) + SharedValue(1e-10);
-                cross_entropy = cross_entropy + pred_value.log();
-            }
+      SharedValue cross_entropy = SharedValue(0);
+      for (int j = 0; j < 10; j++) {
+        if (j == label[i]) {
+          SharedValue pred_value = y_pred[i](j, 0) + SharedValue(1e-10);
+          cross_entropy = cross_entropy + pred_value.log();
         }
-        loss = loss - cross_entropy;
+      }
+      loss = loss - cross_entropy;
     }
   }
 }

@@ -16,6 +16,8 @@ add_library(autograd_core
     autograd/nn/nn.cpp
     autograd/nn/fast_layer.cpp
     autograd/util/csv_reader.cpp
+    test/cpp/dummy_value.cpp
+    test/cpp/dummy_mem_pool.cpp
 )
 
 target_include_directories(autograd_core PUBLIC

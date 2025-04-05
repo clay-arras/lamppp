@@ -46,6 +46,13 @@ regular, w/o memory pooling
 .......244149687 ns 240000000 ns 3 // x400 slower
 .............651494 ns 600000 ns 1100
 
+regular
+BM_MatrixMultiplicationSharedValue 240995770 ns 240867705 ns 3
+with the shared value overhead stuff, double wrapper
+BM_MatrixMultiplicationSharedFloat 137610098 ns 137565666 ns 5
+BM_MatrixMultiplicationSharedValue 237733062 ns 237683481 ns 3
+BM_MatrixMultiplicationSharedFloat 137566795 ns 137552101 ns 5
+
 vector and unordered_set are pretty much the same
 
 Nevermind;
@@ -53,3 +60,5 @@ IMPORTANT NOTE: THERE SILL IS REFERENCES TO THAT VALUE, NEED TO FIX THE MAKE_SHA
 step 1: fix the references and figure out some way to calculate WITH THE OTHER VALUE BEING A CONSTANT
 ok so if you have a graph with all the values being no grad, then the IN BETWEEN VALUES will be deleted; i.e. they'll be deallocated once the time's up
 if the operation involves one requires_grad and one no_grad, then we still need to keep that no_grad reference, and there's no way around it.
+
+TODO: to make it cleaner please delete the wrapper and make an internal struct instead.

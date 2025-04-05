@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include "autograd/engine/value_pool.h"
 
 void add_backward(void* ctx);
 void mul_backward(void* ctx);
@@ -28,11 +29,13 @@ class Value : public std::enable_shared_from_this<Value> {
   BackwardFn backward_fn = nullptr;
   void* backward_ctx = nullptr;
   std::vector<std::shared_ptr<Value>> prev;
+  static ValueMemoryPool pool_;
 
   explicit Value(double data,
                 bool requires_grad = false,
                 std::vector<std::shared_ptr<Value>> children = {},
-                double grad = 0.0);
+                double grad = 0.0); // TODO(nlin): need to add destructor
+  static std::shared_ptr<Value> create(Value& value);
 
   void backward() const {
     assert(backward_fn != nullptr);

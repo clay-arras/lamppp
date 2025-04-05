@@ -6,10 +6,25 @@
 
 #include "autograd/engine/engine.h"
 #include "autograd/engine/grad.h"
+#include "autograd/engine/value_pool.h"
+
+ValueMemoryPool Value::pool_(1e12); 
 
 Value::Value(double data, bool requires_grad, std::vector<std::shared_ptr<Value>> children,
              double grad)
     : data(data), grad(grad), prev(std::move(children)), requires_grad(requires_grad) {}
+
+ std::shared_ptr<Value> Value::create(Value& value) {
+  void* raw_memory = pool_.allocate();
+  auto* block = new (raw_memory) Value(value);
+
+
+  auto deallocator = [](Value* ptr) {
+    pool_.deallocate(static_cast<void*>(ptr));
+  };
+  std::shared_ptr<Value> alloc(block, deallocator);
+  return alloc;
+}
 
 std::shared_ptr<Value> operator+(const std::shared_ptr<Value>& a,
                                  const std::shared_ptr<Value>& b) {

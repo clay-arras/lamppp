@@ -403,7 +403,6 @@ SharedValue SharedValue::tanh() const {
  * @return A new SharedValue representing the ReLU of this SharedValue.
  */
 SharedValue SharedValue::relu() const {
-  std::cout << "ppp" << std::endl;
   return SharedValue(value_->relu());
 }
 

@@ -12,6 +12,7 @@ add_library(autograd_core
     autograd/engine/engine.cpp
     autograd/engine/grad.cpp
     autograd/engine/wrapper_engine.cpp
+    autograd/engine/value_pool.cpp
     autograd/nn/nn.cpp
     autograd/nn/fast_layer.cpp
     autograd/util/csv_reader.cpp
@@ -39,6 +40,9 @@ target_link_libraries(test_mnist autograd_core)
 
 add_executable(test_fast_mnist test/cpp/test_fast_mnist.cpp)
 target_link_libraries(test_fast_mnist autograd_core)
+
+add_executable(test_mem_pool test/cpp/test_mem_pool.cpp)
+target_link_libraries(test_mem_pool autograd_core)
 
 add_executable(bench_nn test/benchmarks/bench_nn.cpp)
 target_link_libraries(bench_nn autograd_core benchmark::benchmark)

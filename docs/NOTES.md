@@ -36,8 +36,15 @@ with memory pool: .3000000000 ns
 <!-- with mp + lambda optim -->
 
 regular double ......10000000 ns
-.......232769086 ns 200000000 ns
+
+now, with local threads
+.......232769086 ns 230000000 ns
+regular, w/o memory pooling
+.......232769086 ns 210000000 ns
 .............240273 ns 200000 ns
+
+.......244149687 ns 240000000 ns 3 // x400 slower
+.............651494 ns 600000 ns 1100
 
 vector and unordered_set are pretty much the same
 

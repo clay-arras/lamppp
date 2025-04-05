@@ -22,19 +22,20 @@ documentation:
     Layer W5(128, 10);
 ```
 
-    > FastLayer is 1.604, Layer is 13.399
+> FastLayer is 1.604, Layer is 13.399
 
-- setting up cpp tools and project folders
+IDEA: somehow CONDENSE THE GRAPH IF NO_GRAD, BECAUSE ALL THE OPERATIONS BEFORE GRAD CAN JUST BE INTO ONE
 
-### 1. Benchmarking Frameworks
+// before requires grad it took 700x slower
+// after requires grad it was only 200x slower
 
-- **Google Benchmark:** Framework for microbenchmarks in C++.
-- **Catch2 Benchmarking:** Built-in features for testing with Catch2.
-- **Custom Timers:** Use `std::chrono::high_resolution_clock` for timing.
+no optimizations 7000000000 ns
+with requires_grad 2000000000 ns
+vector and unordered_set are pretty much the same
+regular double 10000000 ns
 
-### 2. Profiling Tools
-
-- **gprof:** GNU profiler for time breakdown.
-- **perf:** Linux tool for hardware performance insights.
-- **Valgrind (Callgrind):** Simulates CPU for function call profiling.
-- **Intel VTune Amplifier:** Commercial tool for performance bottleneck analysis.
+Nevermind;
+IMPORTANT NOTE: THERE SILL IS REFERENCES TO THAT VALUE, NEED TO FIX THE MAKE_SHARED THING!!!!!!!!!
+step 1: fix the references and figure out some way to calculate WITH THE OTHER VALUE BEING A CONSTANT
+ok so if you have a graph with all the values being no grad, then the IN BETWEEN VALUES will be deleted; i.e. they'll be deallocated once the time's up
+if the operation involves one requires_grad and one no_grad, then we still need to keep that no_grad reference, and there's no way around it.

@@ -62,11 +62,20 @@ struct ReluBackwardContext {
       : self(std::move(s)), out(std::move(out)) {}
 };
 
+struct TanhBackwardContext {
+  std::shared_ptr<Value> self;
+  std::shared_ptr<Value> out;
+
+  TanhBackwardContext(std::shared_ptr<Value> s, std::shared_ptr<Value> out)
+      : self(std::move(s)), out(std::move(out)) {}
+};
+
 void add_backward(void* ctx);
 void mul_backward(void* ctx);
 void pow_backward(void* ctx);
 void exp_backward(void* ctx);
 void log_backward(void* ctx);
 void relu_backward(void* ctx);
+void tanh_backward(void* ctx);
 
 #endif  // _GRAD_H_

@@ -12,7 +12,7 @@ SharedValue::SharedValue() : value_(std::make_shared<Value>(0.0)) {}
  * @brief Constructs a SharedValue from a double.
  * @param data The double value to initialize the SharedValue.
  */
-SharedValue::SharedValue(double data) : value_(std::make_shared<Value>(data)) {}
+SharedValue::SharedValue(double data, bool requires_grad) : value_(std::make_shared<Value>(data, requires_grad)) {}
 
 /**
  * @brief Constructs a SharedValue from a shared pointer to a Value.

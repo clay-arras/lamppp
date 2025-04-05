@@ -5,7 +5,6 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
-#include <unordered_set>
 #include <vector>
 
 void add_backward(void* ctx);
@@ -14,6 +13,7 @@ void pow_backward(void* ctx);
 void exp_backward(void* ctx);
 void log_backward(void* ctx);
 void relu_backward(void* ctx);
+void tanh_backward(void* ctx);
 
 using BackwardFn = void (*)(void*);
 
@@ -24,13 +24,15 @@ class Value : public std::enable_shared_from_this<Value> {
  public:
   double data;
   double grad;
+  bool requires_grad;
   BackwardFn backward_fn = nullptr;
   void* backward_ctx = nullptr;
-  std::unordered_set<std::shared_ptr<Value>> prev;
+  std::vector<std::shared_ptr<Value>> prev;
 
   explicit Value(double data,
-                 std::unordered_set<std::shared_ptr<Value>> children = {},
-                 double grad = 0.0);
+                bool requires_grad = false,
+                std::vector<std::shared_ptr<Value>> children = {},
+                double grad = 0.0);
 
   void backward() const {
     assert(backward_fn != nullptr);

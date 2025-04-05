@@ -21,7 +21,7 @@ class SharedValue {
    * @brief Constructs a SharedValue from a double.
    * @param data The double value to initialize the SharedValue.
    */
-  explicit SharedValue(double data);
+  explicit SharedValue(double data, bool requires_grad = false);
 
   /**
    * @brief Constructs a SharedValue from a shared pointer to a Value.

@@ -45,3 +45,10 @@ void relu_backward(void* ctx) {
       static_cast<double>(context->self->data > 0) * context->out->grad;
   delete context;
 }
+
+void tanh_backward(void* ctx) {
+  auto* context = static_cast<TanhBackwardContext*>(ctx);
+  double derivative = 1.0 - (context->out->data * context->out->data);
+  context->self->grad += derivative * context->out->grad;
+  delete context;
+}

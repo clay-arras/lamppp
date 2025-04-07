@@ -1,5 +1,6 @@
 #ifndef _GRAD_H_
 #define _GRAD_H_
+#pragma once
 
 #include <cmath>
 #include <memory>

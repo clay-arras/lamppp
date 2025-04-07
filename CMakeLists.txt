@@ -13,6 +13,8 @@ add_library(autograd_core
     autograd/engine/grad.cpp
     autograd/engine/wrapper_engine.cpp
     autograd/engine/value_pool.cpp
+    autograd/engine/variable.cpp
+    autograd/engine/function.cpp
     autograd/nn/nn.cpp
     autograd/nn/fast_layer.cpp
     autograd/util/csv_reader.cpp

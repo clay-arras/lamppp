@@ -1,5 +1,6 @@
 #ifndef _VALUE_MEMORY_POOL_H_
 #define _VALUE_MEMORY_POOL_H_
+#pragma once
 
 #include <mutex>
 #include <vector>

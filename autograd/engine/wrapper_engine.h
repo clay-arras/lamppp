@@ -1,5 +1,6 @@
 #ifndef _WRAPPER_ENGINE_H_
 #define _WRAPPER_ENGINE_H_
+#pragma once
 
 #include <memory>
 #include "engine.h"

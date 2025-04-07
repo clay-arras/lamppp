@@ -48,6 +48,7 @@ regular, w/o memory pooling
 
 regular
 BM_MatrixMultiplicationSharedValue 240995770 ns 240867705 ns 3
+
 with the shared value overhead stuff, double wrapper
 BM_MatrixMultiplicationSharedFloat 137610098 ns 137565666 ns 5
 BM_MatrixMultiplicationSharedValue 237733062 ns 237683481 ns 3
@@ -62,3 +63,24 @@ ok so if you have a graph with all the values being no grad, then the IN BETWEEN
 if the operation involves one requires_grad and one no_grad, then we still need to keep that no_grad reference, and there's no way around it.
 
 TODO: to make it cleaner please delete the wrapper and make an internal struct instead.
+TODO: make the function implementations inline
+TODO: Function class needs to have a virutal method
+TODO: should I use unique_ptr OR weak_ptr???
+
+test:
+w/o unique ptr: 143015692 ns
+w/ unique ptr and deepcopy: 1893248409 ns
+
+---
+
+steps;
+
+- need to make it a struct
+
+- variable.h
+- function.h
+
+BM_MatrixMultiplicationSharedValue 2943497714 ns
+BM_MatrixMultiplicationFloat 1942519028 ns
+BM_MatrixMultiplicationVariable 1262827408 ns
+BM_MatrixMultiplicationDouble ....21922319 ns

@@ -149,9 +149,34 @@ void BM_OperationsDoubleWrapper(benchmark::State& state) {
             benchmark::DoNotOptimize(div);
         }
     }
+}
+
+void BM_OperationsSharedPtrValue(benchmark::State& state) {
+    const int iterations = 10000;
+    std::vector<std::shared_ptr<Value>> values1(iterations);
+    std::vector<std::shared_ptr<Value>> values2(iterations);
+    
+    for (int i = 0; i < iterations; ++i) {
+        values1[i] = std::make_shared<Value>(generateRandom());
+        values2[i] = std::make_shared<Value>(generateRandom());
+    }
+    
+    for (auto _ : state) {
+        for (int i = 0; i < iterations; ++i) {
+            auto add = values1[i] + values2[i];
+            auto sub = values1[i] - values2[i];
+            auto mul = values1[i] * values2[i];
+            auto div = values1[i] / values2[i];
+            benchmark::DoNotOptimize(add);
+            benchmark::DoNotOptimize(sub);
+            benchmark::DoNotOptimize(mul);
+            benchmark::DoNotOptimize(div);
+        }
+    }
 };
 
 BENCHMARK(BM_OperationsSharedValue);
+BENCHMARK(BM_OperationsSharedPtrValue);
 BENCHMARK(BM_OperationsFloat);
 BENCHMARK(BM_OperationsVariable);
 BENCHMARK(BM_OperationsDouble);

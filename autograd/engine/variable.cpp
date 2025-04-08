@@ -36,42 +36,6 @@ Variable& Variable::operator/=(const Variable& other) {
     return *this;
 }
 
-Variable Variable::operator+(double scalar) const {
-    return Variable(this->data() + scalar);
-}
-
-Variable Variable::operator-(double scalar) const {
-    return Variable(this->data() - scalar);
-}
-
-Variable Variable::operator*(double scalar) const {
-    return Variable(this->data() * scalar);
-}
-
-Variable Variable::operator/(double scalar) const {
-    return Variable(this->data() / scalar);
-}
-
-Variable& Variable::operator+=(double scalar) {
-    this->data() += scalar;
-    return *this;
-}
-
-Variable& Variable::operator-=(double scalar) {
-    this->data() -= scalar;
-    return *this;
-}
-
-Variable& Variable::operator*=(double scalar) {
-    this->data() *= scalar;
-    return *this;
-}
-
-Variable& Variable::operator/=(double scalar) {
-    this->data() /= scalar;
-    return *this;
-}
-
 bool Variable::operator<(const Variable& other) const {
     return this->data() < other.data();
 }
@@ -94,28 +58,4 @@ bool Variable::operator<=(const Variable& other) const {
 
 bool Variable::operator>=(const Variable& other) const {
     return this->data() >= other.data();
-}
-
-bool Variable::operator<(double scalar) const {
-    return this->data() < scalar;
-}
-
-bool Variable::operator>(double scalar) const {
-    return this->data() > scalar;
-}
-
-bool Variable::operator==(double scalar) const {
-    return this->data() == scalar;
-}
-
-bool Variable::operator!=(double scalar) const {
-    return this->data() != scalar;
-}
-
-bool Variable::operator<=(double scalar) const {
-    return this->data() <= scalar;
-}
-
-bool Variable::operator>=(double scalar) const {
-    return this->data() >= scalar;
 }

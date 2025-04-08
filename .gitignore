@@ -6,3 +6,5 @@ checkpoint/
 data/
 poetry.lock
 .venv/
+
+FlameGraph/

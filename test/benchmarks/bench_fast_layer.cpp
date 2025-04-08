@@ -58,7 +58,7 @@ void BM_FastEngineForwardProp(benchmark::State& state) {
   }
 }
 
-BENCHMARK(BM_FastEngineForwardProp)->Arg(100)->Arg(1000);
+BENCHMARK(BM_FastEngineForwardProp)->Arg(100);
 
 void BM_FastEngineBackwardProp(benchmark::State& state) {
   // auto [data, label] = readCSV("data/mnist_dummy.csv");

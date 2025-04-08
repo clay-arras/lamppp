@@ -50,29 +50,12 @@ public:
     Variable& operator*=(const Variable& other);
     Variable& operator/=(const Variable& other);
 
-    Variable operator+(double scalar) const;
-    Variable operator-(double scalar) const;
-    Variable operator*(double scalar) const;
-    Variable operator/(double scalar) const;
-
-    Variable& operator+=(double scalar);
-    Variable& operator-=(double scalar);
-    Variable& operator*=(double scalar);
-    Variable& operator/=(double scalar);
-
     bool operator<(const Variable& other) const;
     bool operator>(const Variable& other) const;
     bool operator==(const Variable& other) const;
     bool operator!=(const Variable& other) const;
     bool operator<=(const Variable& other) const;
     bool operator>=(const Variable& other) const;
-
-    bool operator<(double scalar) const;
-    bool operator>(double scalar) const;
-    bool operator==(double scalar) const;
-    bool operator!=(double scalar) const;
-    bool operator<=(double scalar) const;
-    bool operator>=(double scalar) const;
 };
 
 

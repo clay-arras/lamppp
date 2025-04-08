@@ -80,7 +80,7 @@ void BM_EngineForwardProp(benchmark::State& state) {
   }
 }
 
-BENCHMARK(BM_EngineForwardProp)->Arg(100)->Arg(1000);
+BENCHMARK(BM_EngineForwardProp)->Arg(100);
 
 /**
  * @brief Benchmark for the backward propagation through the neural network.

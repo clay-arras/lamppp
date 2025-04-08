@@ -4,6 +4,7 @@ project(autograd_cpp)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g")
 
 find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)

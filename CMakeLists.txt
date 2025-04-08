@@ -57,6 +57,9 @@ target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
 add_executable(bench_mat test/benchmarks/bench_mat.cpp)
 target_link_libraries(bench_mat autograd_core benchmark::benchmark)
 
+add_executable(bench_ops test/benchmarks/bench_ops.cpp)
+target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if (NOT CLANG_FORMAT_EXE)
   message(FATAL_ERROR "clang-format not found!")

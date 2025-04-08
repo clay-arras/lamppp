@@ -40,7 +40,7 @@ private:
         float value;
     };
     
-    std::unique_ptr<Impl> impl_;
+    std::shared_ptr<Impl> impl_;
 };
 
 #endif // DUMMY_VALUE_H

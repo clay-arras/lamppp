@@ -2,6 +2,7 @@
 #include <eigen3/Eigen/src/Core/Matrix.h>
 #include <functional>
 #include <random>
+#include "Eigen/src/Core/util/Constants.h"
 
 /**
  * @brief Constructs a FastLayer with the specified number of input and output features.
@@ -15,8 +16,8 @@
 using Eigen::Matrix;
 
 FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
-  weights_.resize(nout, nin);
-  bias_.resize(nout, 1);
+  weights_.resize(nin, nout);
+  bias_.resize(1, nout);
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -30,26 +31,14 @@ FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
   bias_ = bias_.unaryExpr(random_shared);
 }
 
-/**
- * @brief Forward pass through the FastLayer.
- *
- * This operator takes an input vector and applies the layer's weights and bias,
- * followed by an activation function.
- *
- * @param x Input vector of shape (nin x 1), where nin is the number of input
- * features.
- * @param activ Activation function to be applied to the output after the linear
- * transformation.
- *
- * @return Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> The output vector after
- * applying the weights, bias, and activation function, of shape (nout x 1),
- * where nout is the number of output features.
- */
-Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> FastLayer::operator()(
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x,
-    const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
-        Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>& activ) {
-  Matrix<SharedValue, Eigen::Dynamic, 1> a(nout_, 1);
-  a = weights_ * x + bias_;
+Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> FastLayer::operator()(
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x,
+    const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>(
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>&)>& activ) {
+  Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> a;
+  a = x * weights_;
+  // for (auto && row : x.rowwise()) {
+  //   row = row + bias_;
+  // }
   return activ(a);
 }

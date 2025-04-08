@@ -1,14 +1,14 @@
 #include <memory>
 #include "dummy_value.h"
 
-Float::Float() : impl_(std::make_unique<Impl>()) {}
+Float::Float() : impl_(std::make_shared<Impl>()) {}
 
-Float::Float(float value) : impl_(std::make_unique<Impl>(value)) {}
+Float::Float(float value) : impl_(std::make_shared<Impl>(value)) {}
 
-Float::Float(const Float& other) : impl_(std::make_unique<Impl>(other.impl_->value)) {}
+Float::Float(const Float& other) : impl_(std::make_shared<Impl>(other.impl_->value)) {}
 Float& Float::operator=(const Float& other) {
     if (this != &other) {
-        impl_ = std::make_unique<Impl>(other.impl_->value);
+        impl_ = other.impl_;
     }
     return *this;
 }

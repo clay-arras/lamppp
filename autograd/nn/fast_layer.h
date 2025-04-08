@@ -17,7 +17,7 @@ class FastLayer {
   int nout_;  ///< Number of output features.
   Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>
       weights_;  ///< Weights of the layer.
-  Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> bias_;  ///< Bias of the layer.
+  Eigen::Matrix<SharedValue, 1, Eigen::Dynamic> bias_;  ///< Bias of the layer.
 
  public:
   /**
@@ -46,10 +46,10 @@ class FastLayer {
    * applying the weights, bias, and activation function, of shape (nout x 1),
    * where nout is the number of output features.
    */
-  Eigen::Matrix<SharedValue, Eigen::Dynamic, 1> operator()(
-      Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>& x,
-      const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>(
-          Eigen::Matrix<SharedValue, Eigen::Dynamic, 1>&)>& activ);
+  Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> operator()(
+      Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x,
+      const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>(
+          Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>&)>& activ);
 };
 
 #endif  // _FAST_LAYER_H_

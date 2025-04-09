@@ -4,16 +4,7 @@
 #include <random>
 #include "Eigen/src/Core/util/Constants.h"
 
-/**
- * @brief Constructs a FastLayer with the specified number of input and output features.
- *
- * This constructor initializes the weights and bias of the layer with random values
- * drawn from a uniform distribution in the range [-1.0, 1.0].
- *
- * @param nin Number of input features.
- * @param nout Number of output features.
- */
-using Eigen::Matrix;
+using Matrix = Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>;
 
 FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
   weights_.resize(nin, nout);
@@ -31,11 +22,8 @@ FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
   bias_ = bias_.unaryExpr(random_shared);
 }
 
-Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> FastLayer::operator()(
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x,
-    const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>(
-        Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>&)>& activ) {
-  Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> a;
+Matrix FastLayer::operator()(Matrix& x, const std::function<Matrix(Matrix&)>& activ) {
+  Matrix a;
   a = x * weights_;
   // for (auto && row : x.rowwise()) {
   //   row = row + bias_;

@@ -1,9 +1,7 @@
 #include <benchmark/benchmark.h>
 #include <Eigen/Core>
-#include "autograd/engine/wrapper_engine.h"
-#include "autograd/engine/variable.h"
-#include "test/cpp/dummy_value.h"
-// #include "autograd/util/value_eigen_support.h"
+#include "wrapper_engine.h"
+#include "variable.h"
 
 namespace {
 
@@ -59,28 +57,6 @@ void BM_MatrixMultiplicationVariable(benchmark::State& state) {
   }
 }
 
-
-void BM_MatrixMultiplicationFloat(benchmark::State& state) {
-  Eigen::Matrix<Float, Eigen::Dynamic, Eigen::Dynamic> mat1(kRows1,
-                                                              kCols1);
-  Eigen::Matrix<Float, Eigen::Dynamic, Eigen::Dynamic> mat2(kCols1,
-                                                              kCols2);
-
-  auto init_fn = [](float) {
-    return Float(
-        (2.0F * (static_cast<float>(rand()) / RAND_MAX) - 1.0F) / 1000);
-  };
-
-  mat1 = mat1.unaryExpr([&init_fn](const Float&) { return init_fn(0); });
-  mat2 = mat2.unaryExpr([&init_fn](const Float&) { return init_fn(0); });
-
-  for (auto _ : state) {
-    Eigen::Matrix<Float, Eigen::Dynamic, Eigen::Dynamic> res =
-        mat1 * mat2;
-    benchmark::DoNotOptimize(res);
-  }
-}
-
 void BM_MatrixMultiplicationDouble(benchmark::State& state) {
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> mat1(kRows1, kCols1);
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> mat2(kCols1, kCols2);
@@ -99,7 +75,6 @@ void BM_MatrixMultiplicationDouble(benchmark::State& state) {
 }
 
 BENCHMARK(BM_MatrixMultiplicationSharedValue);
-BENCHMARK(BM_MatrixMultiplicationFloat);
 BENCHMARK(BM_MatrixMultiplicationVariable);
 BENCHMARK(BM_MatrixMultiplicationDouble);
 

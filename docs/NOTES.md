@@ -117,3 +117,12 @@ questions:
 - also a decision: do I want to switch matrix providers or not
 
 - also: do I want the variable to store a TENSOR or store a SINGLE VARIABLE
+
+// organize the code base, put tests in a designated test folder, clean up the tests and benchmarks
+// next: Have 1 main branch, then a bunch of tests in the testing folder; have two versions of files, once it's been decided, then incorporate it into the main branch.
+
+- also add pragma once to all files
+
+a) make the variable support Tensors, NOT single variables.
+
+-fopenmp, and #pragma omp

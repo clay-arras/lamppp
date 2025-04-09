@@ -1,12 +1,11 @@
+#include "engine.h"
+#include "grad.h"
+
 #include <algorithm>
 #include <functional>
 #include <memory>
 #include <unordered_set>
 #include <utility>
-
-#include "autograd/engine/engine.h"
-#include "autograd/engine/grad.h"
-#include "autograd/engine/value_pool.h"
 
 ValueMemoryPool Value::pool_(1000, sizeof(Value));
 

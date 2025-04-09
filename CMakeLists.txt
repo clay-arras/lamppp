@@ -10,17 +10,18 @@ find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
 
 add_library(autograd_core
-    autograd/engine/engine.cpp
-    autograd/engine/grad.cpp
-    autograd/engine/wrapper_engine.cpp
-    autograd/engine/value_pool.cpp
+        test/benchmarks/wrapper/engine.cpp
+        test/benchmarks/wrapper/grad.cpp
+        test/benchmarks/wrapper/wrapper_engine.cpp
+        test/benchmarks/mem_pool/value_pool.cpp
     autograd/engine/variable.cpp
+        test/benchmarks/mem_pool/variable_mem.cpp
     autograd/engine/function.cpp
-    autograd/nn/nn.cpp
-    autograd/nn/fast_layer.cpp
+#    autograd/nn/nn.cpp
+#    autograd/nn/fast_layer.cpp
     autograd/util/csv_reader.cpp
-    test/cpp/dummy_value.cpp
-    test/cpp/dummy_mem_pool.cpp
+        test/benchmarks/mem_pool/variable_pool.cpp
+        test/benchmarks/mem_pool/variable_pool.h
 )
 
 target_include_directories(autograd_core PUBLIC
@@ -28,38 +29,41 @@ target_include_directories(autograd_core PUBLIC
     ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(test_engine test/cpp/test_engine.cpp)
-target_link_libraries(test_engine autograd_core)
+#add_executable(test_engine test/cpp/test_engine.cpp)
+#target_link_libraries(test_engine autograd_core)
+#
+#add_executable(test_nn test/cpp/test_nn.cpp)
+#target_link_libraries(test_nn autograd_core)
 
-add_executable(test_nn test/cpp/test_nn.cpp)
-target_link_libraries(test_nn autograd_core)
+#add_executable(mnist autograd/mnist/mnist.cpp)
+#target_link_libraries(mnist autograd_core)
+#
+#add_executable(fast_mnist autograd/mnist/fast_mnist.cpp)
+#target_link_libraries(fast_mnist autograd_core)
 
-add_executable(mnist autograd/mnist/mnist.cpp)
-target_link_libraries(mnist autograd_core)
+# add_executable(test_mnist test/cpp/test_mnist.cpp)
+# target_link_libraries(test_mnist autograd_core)
 
-add_executable(fast_mnist autograd/mnist/fast_mnist.cpp)
-target_link_libraries(fast_mnist autograd_core)
+# add_executable(test_fast_mnist test/cpp/test_fast_mnist.cpp)
+# target_link_libraries(test_fast_mnist autograd_core)
 
-add_executable(test_mnist test/cpp/test_mnist.cpp)
-target_link_libraries(test_mnist autograd_core)
+# add_executable(test_mem_pool test/cpp/test_mem_pool.cpp)
+# target_link_libraries(test_mem_pool autograd_core)
 
-add_executable(test_fast_mnist test/cpp/test_fast_mnist.cpp)
-target_link_libraries(test_fast_mnist autograd_core)
+#add_executable(bench_nn test/benchmarks/bench_nn.cpp)
+#target_link_libraries(bench_nn autograd_core benchmark::benchmark)
+#
+#add_executable(bench_fast_layer test/benchmarks/bench_fast_layer.cpp)
+#target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
 
-add_executable(test_mem_pool test/cpp/test_mem_pool.cpp)
-target_link_libraries(test_mem_pool autograd_core)
+ add_executable(bench_mat test/benchmarks/wrapper/bench_mat.cpp)
+ target_link_libraries(bench_mat autograd_core benchmark::benchmark)
 
-add_executable(bench_nn test/benchmarks/bench_nn.cpp)
-target_link_libraries(bench_nn autograd_core benchmark::benchmark)
+ add_executable(bench_ops test/benchmarks/wrapper/bench_ops.cpp)
+ target_link_libraries(bench_ops autograd_core benchmark::benchmark)
 
-add_executable(bench_fast_layer test/benchmarks/bench_fast_layer.cpp)
-target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
-
-add_executable(bench_mat test/benchmarks/bench_mat.cpp)
-target_link_libraries(bench_mat autograd_core benchmark::benchmark)
-
-add_executable(bench_ops test/benchmarks/bench_ops.cpp)
-target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+add_executable(bench_mem_pool test/benchmarks/mem_pool/bench_mem_pool.cpp)
+target_link_libraries(bench_mem_pool autograd_core benchmark::benchmark)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if (NOT CLANG_FORMAT_EXE)

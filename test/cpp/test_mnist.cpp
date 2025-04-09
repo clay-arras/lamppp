@@ -1,58 +1,50 @@
-#include "autograd/engine/wrapper_engine.h"
-#include "autograd/nn/fast_layer.h"
+#include <memory>
+#include <vector>
+#include "autograd/engine/engine.h"
+#include "autograd/nn/nn.h"
 #include "autograd/util/csv_reader.h"
+
+using std::vector;
 
 namespace {
 
-SharedValue relu_func(const SharedValue& v) {
-    return SharedValue(v.getPtr()->relu());
+std::vector<std::shared_ptr<Value>> softmax(
+    std::vector<std::shared_ptr<Value>> x) {
+  assert((int)x.size() == 10);
+  std::shared_ptr<Value> denom = std::make_shared<Value>(Value(1e-4));
+  for (const auto& i : x)
+    denom = denom + i->exp();
+  for (auto& i : x)
+    i = i->exp() / denom;
+  return x;
 }
 
-SharedValue exp_func(const SharedValue& v) {
-    return v.exp();
-}
-
-Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> relu(Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x) {
-    x = x.unaryExpr(&relu_func);
-    return x;
-}
-
-Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> softmax(Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x) {
-    // for (auto row=x.rowwise().begin(); row != x.rowwise().end(); ++row) {
-    //   *row = row->unaryExpr(&exp_func);
-    //   SharedValue denom = SharedValue(1e-4) + row->sum();
-    //   *row = *row / denom;
-    // }
-    return x;
-}
-
-Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> forward(
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x, FastLayer& w1,
-    FastLayer& w2) {
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> z1 = w1(x, relu);
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> z2 = w2(z1, softmax);
-    return z2;
+std::vector<std::shared_ptr<Value>> forward(
+    const std::vector<std::shared_ptr<Value>>& x, Layer& w1, Layer& w2) {
+  std::vector<std::shared_ptr<Value>> z1 = w1(std::move(x));
+  std::vector<std::shared_ptr<Value>> z2 = w2(z1, false);
+  return softmax(z2);
 }
 
 }
 
 int main() {
-    auto [data, label] = readCSV("data/mnist_dummy.csv");
-    data.resize(1000);
-    label.resize(1000);
-    int n = static_cast<int>(data.size());
+  auto [data, label] = readCSV("data/mnist_dummy.csv");
+  data.resize(100);
+  label.resize(100);
+  int n = static_cast<int>(data.size());
 
-    int nin = 28 * 28;
-    FastLayer w1(nin, 256);
-    FastLayer w2(256, 10);
+  int nin = 28 * 28;
+  Layer w1(nin, 256);
+  Layer w2(256, 10);
 
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> input_matrix(data.size(), 28 * 28);
-    for (size_t i = 0; i < data.size(); ++i) {
-        for (size_t j = 0; j < data[i].size(); ++j) {
-            input_matrix(i, j) = SharedValue(data[i][j]);
-        }
-    }
-
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> y_pred = forward(input_matrix, w1, w2);
-    return 0;
+  std::vector<std::vector<std::shared_ptr<Value>>> y_pred;
+  for (const std::vector<double>& item : data) {
+    std::vector<std::shared_ptr<Value>> ptrs;
+    ptrs.reserve(item.size());
+    for (double i : item)
+      ptrs.push_back(std::make_shared<Value>(Value(i)));
+    y_pred.push_back(forward(ptrs, w1, w2));
+  }
+  return 0;
 }

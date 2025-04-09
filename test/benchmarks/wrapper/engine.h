@@ -7,7 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include "autograd/engine/value_pool.h"
+#include "test/benchmarks/mem_pool/value_pool.h"
 
 void add_backward(void* ctx);
 void mul_backward(void* ctx);

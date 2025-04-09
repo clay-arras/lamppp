@@ -6,5 +6,6 @@ checkpoint/
 data/
 poetry.lock
 .venv/
+.idea/
 
 FlameGraph/

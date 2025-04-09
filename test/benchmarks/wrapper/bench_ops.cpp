@@ -1,7 +1,6 @@
 #include <benchmark/benchmark.h>
-#include "autograd/engine/wrapper_engine.h"
+#include "wrapper_engine.h"
 #include "autograd/engine/variable.h"
-#include "test/cpp/dummy_value.h"
 
 namespace {
 
@@ -50,30 +49,6 @@ void BM_OperationsVariable(benchmark::State& state) {
       Variable sub = values1[i] - values2[i];
       Variable mul = values1[i] * values2[i];
       Variable div = values1[i] / values2[i];
-      benchmark::DoNotOptimize(add);
-      benchmark::DoNotOptimize(sub);
-      benchmark::DoNotOptimize(mul);
-      benchmark::DoNotOptimize(div);
-    }
-  }
-}
-
-void BM_OperationsFloat(benchmark::State& state) {
-  const int iterations = 10000;
-  std::vector<Float> values1(iterations);
-  std::vector<Float> values2(iterations);
-  
-  for (int i = 0; i < iterations; ++i) {
-    values1[i] = Float(generateRandom());
-    values2[i] = Float(generateRandom());
-  }
-  
-  for (auto _ : state) {
-    for (int i = 0; i < iterations; ++i) {
-      Float add = values1[i] + values2[i];
-      Float sub = values1[i] - values2[i];
-      Float mul = values1[i] * values2[i];
-      Float div = values1[i] / values2[i];
       benchmark::DoNotOptimize(add);
       benchmark::DoNotOptimize(sub);
       benchmark::DoNotOptimize(mul);
@@ -177,7 +152,6 @@ void BM_OperationsSharedPtrValue(benchmark::State& state) {
 
 BENCHMARK(BM_OperationsSharedValue);
 BENCHMARK(BM_OperationsSharedPtrValue);
-BENCHMARK(BM_OperationsFloat);
 BENCHMARK(BM_OperationsVariable);
 BENCHMARK(BM_OperationsDouble);
 BENCHMARK(BM_OperationsDoubleWrapper);

@@ -2,9 +2,8 @@
 #ifndef _VARIABLE_H_
 #define _VARIABLE_H_
 
-#include "function.h"
+#include "autograd/engine/function.h"
 #include <memory>
-#include <utility>
 
 class Function;
 
@@ -28,6 +27,7 @@ public:
         : impl_(std::make_shared<VariableImpl>(data, false)) {}
 
     std::shared_ptr<VariableImpl> impl_;
+
     float& grad() { return impl_->grad; }
     float& data() { return impl_->data; }
     std::shared_ptr<Function>& grad_fn() { return impl_->_grad_fn; }

@@ -1,7 +1,7 @@
 #include "value_pool.h"
+#include <cassert>
 #include <cstddef>
 #include <mutex>
-#include <cassert> 
 
 thread_local std::vector<void*> ValueMemoryPool::local_pool_;
 

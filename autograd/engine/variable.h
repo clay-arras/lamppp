@@ -54,6 +54,10 @@ public:
     bool operator!=(const Variable& other) const;
     bool operator<=(const Variable& other) const;
     bool operator>=(const Variable& other) const;
+    
+    Variable exp() const;
+    Variable log() const;
+    Variable relu() const;
 };
 
 

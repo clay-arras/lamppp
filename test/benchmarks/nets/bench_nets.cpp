@@ -1,3 +1,10 @@
+/*
+-----------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+-----------------------------------------------------------------------
+BM_EngineForwardProp/100     2.1245e+10 ns   2.1238e+10 ns            1
+BM_FastEngineForwardProp/100 2.3388e+10 ns   2.3382e+10 ns            1
+*/
 #include <benchmark/benchmark.h>
 #include <vector>
 #include "autograd/engine/variable.h"
@@ -7,8 +14,9 @@
 
 using std::vector;
 
-namespace {
+namespace slow {
 
+namespace {
 std::vector<Variable> softmax(
     std::vector<Variable> x) {
   assert((int)x.size() == 10);
@@ -86,6 +94,10 @@ void BM_EngineBackwardProp(benchmark::State& state) {
 
 }  // namespace
 
+}
+
+namespace matrix {
+
 namespace {
 
 Variable relu_func(const Variable& v) {
@@ -96,25 +108,26 @@ Variable exp_func(const Variable& v) {
     return v.exp();
 }
 
-Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> relu(Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic>& x) {
+Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> reluMat(Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic>& x) {
     x = x.unaryExpr(&relu_func);
     return x;
 }
 
-Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> softmax(Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic>& x) {
-    // for (auto row=x.rowwise().begin(); row != x.rowwise().end(); ++row) {
-    //   *row = row->unaryExpr(&exp_func);
-    //   Variable denom = Variable(1e-4) + row->sum();
-    //   *row = *row / denom;
-    // }
+Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> softmaxMat(Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic>& x) {
+    for (int i = 0; i < x.rows(); ++i) {
+      auto row = x.row(i);
+      row = row.unaryExpr(&exp_func);
+      Variable denom = Variable(1e-4) + row.sum();
+      row = row / denom;
+    }
     return x;
 }
 
 Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> forward(
     Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic>& x, FastLayer& w1,
     FastLayer& w2) {
-    Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> z1 = w1(x, relu);
-    Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> z2 = w2(z1, softmax);
+    Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> z1 = w1(x, reluMat);
+    Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> z2 = w2(z1, softmaxMat);
     return z2;
 }
 
@@ -153,19 +166,15 @@ void BM_FastEngineBackwardProp(benchmark::State& state) {
   FastLayer w1(nin, 256);
   FastLayer w2(256, 10);
 
-  std::vector<Eigen::Matrix<Variable, Eigen::Dynamic, 1>> y_pred;
-  for (const std::vector<double>& item : data) {
-    Eigen::Matrix<Variable, Eigen::Dynamic, 1> x(item.size(), 1);
-
-    std::vector<Variable> shared_values;
-    shared_values.reserve(item.size());
-    for (double val : item) {
-      shared_values.emplace_back(val);
-    }
-    x = Eigen::Map<Eigen::Matrix<Variable, Eigen::Dynamic, 1>>(
-        shared_values.data(), shared_values.size());
-    y_pred.push_back(forward(x, w1, w2));
+  Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> input_matrix(data.size(), 28 * 28);
+  for (size_t i = 0; i < data.size(); ++i) {
+      for (size_t j = 0; j < data[i].size(); ++j) {
+          input_matrix(i, j) = Variable(data[i][j]);
+      }
   }
+
+  Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic>
+    y_pred = forward(input_matrix, w1, w2);
 
   for (auto _ : state) {
     Variable loss = Variable(0);
@@ -173,7 +182,7 @@ void BM_FastEngineBackwardProp(benchmark::State& state) {
       Variable cross_entropy = Variable(0);
       for (int j = 0; j < 10; j++) {
         if (j == label[i]) {
-          Variable pred_value = y_pred[i](j, 0) + Variable(1e-10);
+          Variable pred_value = y_pred(i, j) + Variable(1e-10);
           cross_entropy = cross_entropy + pred_value.log();
         }
       }
@@ -185,5 +194,7 @@ void BM_FastEngineBackwardProp(benchmark::State& state) {
 // BENCHMARK(BM_FastEngineBackwardProp)->Arg(10);
 
 }  // namespace
+
+}
 
 BENCHMARK_MAIN();

@@ -9,16 +9,18 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g")
 find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
 
-add_library(autograd_core
+add_library(autograd_core # next step: split into different bench envs
         test/benchmarks/wrapper/engine.cpp
         test/benchmarks/wrapper/grad.cpp
         test/benchmarks/wrapper/wrapper_engine.cpp
         test/benchmarks/mem_pool/value_pool.cpp
     autograd/engine/variable.cpp
+    autograd/engine/functions/basic_ops.cpp
+    autograd/engine/functions/unary_ops.cpp
         test/benchmarks/mem_pool/variable_mem.cpp
     autograd/engine/function.cpp
-#    autograd/nn/nn.cpp
-#    autograd/nn/fast_layer.cpp
+   test/benchmarks/nets/nn.cpp
+   test/benchmarks/nets/fast_layer.cpp
     autograd/util/csv_reader.cpp
         test/benchmarks/mem_pool/variable_pool.cpp
         test/benchmarks/mem_pool/variable_pool.h
@@ -53,8 +55,8 @@ target_include_directories(autograd_core PUBLIC
 #add_executable(bench_nn test/benchmarks/bench_nn.cpp)
 #target_link_libraries(bench_nn autograd_core benchmark::benchmark)
 #
-#add_executable(bench_fast_layer test/benchmarks/bench_fast_layer.cpp)
-#target_link_libraries(bench_fast_layer autograd_core benchmark::benchmark)
+add_executable(bench_nets test/benchmarks/nets/bench_nets.cpp)
+target_link_libraries(bench_nets autograd_core benchmark::benchmark)
 
  add_executable(bench_mat test/benchmarks/wrapper/bench_mat.cpp)
  target_link_libraries(bench_mat autograd_core benchmark::benchmark)

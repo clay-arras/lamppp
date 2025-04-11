@@ -23,7 +23,8 @@ FastLayer::FastLayer(int nin, int nout) : nin_(nin), nout_(nout) {
   bias_ = bias_.unaryExpr(random_shared);
 }
 
-Matrix FastLayer::operator()(Matrix& x, const std::function<Matrix(Matrix&)>& activ) {
+Matrix FastLayer::operator()(Matrix& x,
+                             const std::function<Matrix(Matrix&)>& activ) {
   Matrix a;
   a = x * weights_;
   for (int i = 0; i < a.rows(); i++) {

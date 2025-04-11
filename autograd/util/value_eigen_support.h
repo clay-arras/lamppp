@@ -1,7 +1,7 @@
 #include <Eigen/Core>
 #include <cmath>
-#include "autograd/engine/wrapper_engine.h"
 #include "autograd/engine/variable.h"
+#include "autograd/engine/wrapper_engine.h"
 
 /**
  * @brief Specialization of NumTraits for SharedValue type.
@@ -57,16 +57,13 @@ struct NumTraits<SharedValue> : NumTraits<float> {
 };
 }  // namespace Eigen
 
-
-
 namespace Eigen {
 template <>
 struct NumTraits<Variable> : NumTraits<float> {
   using Real = Variable;  ///< The real type corresponding to Variable.
   using NonInteger =
-      Variable;  ///< The non-integer type corresponding to Variable.
-  using Nested =
-      Variable;  ///< The nested type corresponding to Variable.
+      Variable;             ///< The non-integer type corresponding to Variable.
+  using Nested = Variable;  ///< The nested type corresponding to Variable.
 
   enum {
     IsComplex = 0,  ///< Indicates that Variable is not a complex type.

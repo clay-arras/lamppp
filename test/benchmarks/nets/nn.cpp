@@ -13,14 +13,12 @@ Neuron::Neuron(int nin) {
 }
 
 std::vector<Variable> Neuron::parameters() {
-  std::vector<Variable> ret(this->weights_.begin(),
-                             this->weights_.end());
+  std::vector<Variable> ret(this->weights_.begin(), this->weights_.end());
   ret.push_back(this->bias_);
   return ret;
 }
 
-Variable Neuron::operator()(
-    const std::vector<Variable>& x) {
+Variable Neuron::operator()(const std::vector<Variable>& x) {
   Variable ret = Variable(this->bias_.data());
   for (int i = 0; i < static_cast<int>(x.size()); i++) {
     ret = ret + (this->weights_[i] * x[i]);
@@ -43,8 +41,8 @@ std::vector<Variable> Layer::parameters() {
   return params;
 }
 
-std::vector<Variable> Layer::operator()(
-    const std::vector<Variable>& x, bool activ) {
+std::vector<Variable> Layer::operator()(const std::vector<Variable>& x,
+                                        bool activ) {
   std::vector<Variable> ret;
   for (auto& neuron : this->neurons_) {
     Variable val = (*neuron)(x);

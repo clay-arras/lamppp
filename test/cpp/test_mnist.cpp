@@ -26,7 +26,7 @@ std::vector<std::shared_ptr<Value>> forward(
   return softmax(z2);
 }
 
-}
+}  // namespace
 
 int main() {
   auto [data, label] = readCSV("data/mnist_dummy.csv");

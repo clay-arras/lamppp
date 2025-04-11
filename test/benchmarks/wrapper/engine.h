@@ -34,7 +34,7 @@ class Value : public std::enable_shared_from_this<Value> {
 
   explicit Value(double data, bool requires_grad = false,
                  std::vector<std::shared_ptr<Value>> children = {},
-                 double grad = 0.0);  // TODO(nlin): need to add destructor
+                 double grad = 0.0);
   static std::shared_ptr<Value> create(const Value& value);
   static void destroy(Value* ptr);
   Value(const Value& other);

@@ -48,7 +48,8 @@ class FastLayer {
    */
   Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> operator()(
       Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x,
-      const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>(
+      const std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic,
+                                        Eigen::Dynamic>(
           Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>&)>& activ);
 };
 

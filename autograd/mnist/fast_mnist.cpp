@@ -25,29 +25,36 @@ int main() {
 
   std::function<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>(
       Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>&)>
-      softmax = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x) {
-        x = x.unaryExpr([](const SharedValue& v) { return v.exp(); });
-        for (auto row = x.rowwise().begin(); row != x.rowwise().end(); ++row) {
-          SharedValue denom = SharedValue(1e-4) + row->sum();
-          *row = *row / denom;
-        }
-        return x;
+      softmax =
+          [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x) {
+            x = x.unaryExpr([](const SharedValue& v) { return v.exp(); });
+            for (auto row = x.rowwise().begin(); row != x.rowwise().end();
+                 ++row) {
+              SharedValue denom = SharedValue(1e-4) + row->sum();
+              *row = *row / denom;
+            }
+            return x;
+          };
+
+  auto forward =
+      [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x) {
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> z1 =
+            w1(x, relu);
+        Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> z2 =
+            w2(z1, softmax);
+        return z2;
       };
 
-  auto forward = [&](Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>& x) {
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> z1 = w1(x, relu);
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> z2 = w2(z1, softmax);
-    return z2;
-  };
-
-  std::vector<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>> y_pred;
+  std::vector<Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic>>
+      y_pred;
   for (const std::vector<double>& item : data) {
-    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> x(1, item.size());
+    Eigen::Matrix<SharedValue, Eigen::Dynamic, Eigen::Dynamic> x(1,
+                                                                 item.size());
 
     for (size_t j = 0; j < item.size(); ++j) {
       x(0, j) = SharedValue(item[j]);
     }
-    
+
     y_pred.push_back(forward(x));
   }
   SharedValue loss = SharedValue(0);

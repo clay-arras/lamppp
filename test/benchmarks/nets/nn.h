@@ -13,8 +13,7 @@ class Neuron : public std::enable_shared_from_this<Neuron> {
  public:
   explicit Neuron(int nin);
   std::vector<Variable> parameters();
-  Variable operator()(
-      const std::vector<Variable>& x);
+  Variable operator()(const std::vector<Variable>& x);
 };
 
 class Layer : public std::enable_shared_from_this<Layer> {
@@ -24,8 +23,8 @@ class Layer : public std::enable_shared_from_this<Layer> {
  public:
   Layer(int nin, int nout);
   std::vector<Variable> parameters();
-  std::vector<Variable> operator()(
-      const std::vector<Variable>& x, bool activ = true);
+  std::vector<Variable> operator()(const std::vector<Variable>& x,
+                                   bool activ = true);
 };
 
 class MultiLayerPerceptron
@@ -36,8 +35,7 @@ class MultiLayerPerceptron
  public:
   MultiLayerPerceptron(int nin, const std::vector<int>& nouts);
   std::vector<Variable> parameters();
-  std::vector<Variable> operator()(
-      const std::vector<Variable>& x);
+  std::vector<Variable> operator()(const std::vector<Variable>& x);
 };
 
 #endif  //_NN_H_

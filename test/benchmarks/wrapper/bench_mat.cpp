@@ -8,8 +8,8 @@ BM_MatrixMultiplicationDouble        11449974 ns     11444813 ns           61
 */
 #include <benchmark/benchmark.h>
 #include <Eigen/Core>
-#include "wrapper_engine.h"
 #include "variable.h"
+#include "wrapper_engine.h"
 
 namespace {
 
@@ -43,24 +43,21 @@ void BM_MatrixMultiplicationSharedValue(benchmark::State& state) {
 
 void BM_MatrixMultiplicationVariable(benchmark::State& state) {
 
-  Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> mat1(kRows1,
-                                                                kCols1);
-  Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> mat2(kCols1,
-                                                                kCols2);
+  Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> mat1(kRows1, kCols1);
+  Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> mat2(kCols1, kCols2);
 
   auto init_fn = [](const Variable&) {
     return Variable((2.0F * (static_cast<float>(rand()) / RAND_MAX) - 1.0F) /
                     1000);
   };
 
-  mat1 = mat1.unaryExpr(
-      [&init_fn](const Variable& val) { return init_fn(val); });
-  mat2 = mat2.unaryExpr(
-      [&init_fn](const Variable& val) { return init_fn(val); });
+  mat1 =
+      mat1.unaryExpr([&init_fn](const Variable& val) { return init_fn(val); });
+  mat2 =
+      mat2.unaryExpr([&init_fn](const Variable& val) { return init_fn(val); });
 
   for (auto _ : state) {
-    Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> res =
-        mat1 * mat2;
+    Eigen::Matrix<Variable, Eigen::Dynamic, Eigen::Dynamic> res = mat1 * mat2;
     benchmark::DoNotOptimize(res);
   }
 }

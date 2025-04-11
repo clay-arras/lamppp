@@ -19,12 +19,12 @@ BM_VarNoMemPool       75.4 ns         75.4 ns     10089873
 
 #include <benchmark/benchmark.h>
 #include <boost/pool/pool_alloc.hpp>
+#include <boost/pool/poolfwd.hpp>
 #include <memory>
 #include "value_pool.h"
 #include "variable.h"
 #include "variable_mem.h"
 #include "variable_pool.h"
-#include <boost/pool/poolfwd.hpp>
 
 namespace {
 
@@ -32,61 +32,61 @@ ValueMemoryPool int_pool(10000, sizeof(int));
 boost::fast_pool_allocator<void> alloc;
 
 void deleter(int* ptr) {
-    int_pool.deallocate(static_cast<void*>(ptr));
+  int_pool.deallocate(static_cast<void*>(ptr));
 }
 
-void BM_IntMemPool(benchmark::State &state) {
-    for (auto _ : state) {
-        void* raw_memory = static_cast<int*>(int_pool.allocate());
-        int* block = new (raw_memory) int(-1);
-        std::shared_ptr<int> ptr(block, &deleter);
-        benchmark::DoNotOptimize(ptr);
-    }
+void BM_IntMemPool(benchmark::State& state) {
+  for (auto _ : state) {
+    void* raw_memory = static_cast<int*>(int_pool.allocate());
+    int* block = new (raw_memory) int(-1);
+    std::shared_ptr<int> ptr(block, &deleter);
+    benchmark::DoNotOptimize(ptr);
+  }
 }
 
-void BM_IntPoolAlloc(benchmark::State &state) {
+void BM_IntPoolAlloc(benchmark::State& state) {
   for (auto _ : state) {
     auto ptr = std::allocate_shared<int>(alloc, -1);
     benchmark::DoNotOptimize(ptr);
   }
 }
 
-void BM_IntNoMemPool(benchmark::State &state) {
-    for (auto _ : state) {
-        auto ptr = std::make_shared<int>(-1);
-        benchmark::DoNotOptimize(ptr);
-    }
+void BM_IntNoMemPool(benchmark::State& state) {
+  for (auto _ : state) {
+    auto ptr = std::make_shared<int>(-1);
+    benchmark::DoNotOptimize(ptr);
+  }
 }
 
 BENCHMARK(BM_IntMemPool);
 BENCHMARK(BM_IntPoolAlloc);
 BENCHMARK(BM_IntNoMemPool);
 
-void BM_VarMemPool(benchmark::State &state) {
-    for (auto _ : state) {
-        VariableMem var(-1.0F);
-        benchmark::DoNotOptimize(var);
-    }
+void BM_VarMemPool(benchmark::State& state) {
+  for (auto _ : state) {
+    VariableMem var(-1.0F);
+    benchmark::DoNotOptimize(var);
+  }
 }
 
-void BM_VarPoolAlloc(benchmark::State &state) {
+void BM_VarPoolAlloc(benchmark::State& state) {
   for (auto _ : state) {
     VariablePool var(-1.0F);
     benchmark::DoNotOptimize(var);
   }
 }
 
-void BM_VarNoMemPool(benchmark::State &state) {
-    for (auto _ : state) {
-        Variable var(-1.0F);
-        benchmark::DoNotOptimize(var);
-    }
+void BM_VarNoMemPool(benchmark::State& state) {
+  for (auto _ : state) {
+    Variable var(-1.0F);
+    benchmark::DoNotOptimize(var);
+  }
 }
 
 BENCHMARK(BM_VarMemPool);
 BENCHMARK(BM_VarPoolAlloc);
 BENCHMARK(BM_VarNoMemPool);
 
-}
+}  // namespace
 
 BENCHMARK_MAIN();

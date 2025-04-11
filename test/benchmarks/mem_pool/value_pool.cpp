@@ -42,7 +42,7 @@ void* ValueMemoryPool::allocate() {
 void ValueMemoryPool::deallocate(void* value) {
   local_pool_.push_back(value);
 
-  if (local_pool_.size() > 1000) {  // TODO(nlin): do resize better
+  if (local_pool_.size() > 1000) {
     std::lock_guard<std::mutex> lock(global_mutex_);
     for (size_t i = 0; i < 500; i++) {
       global_pool_.push_back(local_pool_.back());

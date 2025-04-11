@@ -3,7 +3,7 @@
 #include "autograd/engine/functions/unary_ops.h"
 #include <memory>
 
-Variable Variable::operator+(const Variable& other) const {
+Variable Variable::operator+(const Variable& other) const { // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
     auto add_fn = std::make_shared<Add>();
     variable_list result = add_fn->apply({*this, other});
     result[0].grad_fn() = add_fn;

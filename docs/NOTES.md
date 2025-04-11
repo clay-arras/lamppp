@@ -116,13 +116,12 @@ questions:
 - b) the speed of matrix computations
 - also a decision: do I want to switch matrix providers or not
 
-- also: do I want the variable to store a TENSOR or store a SINGLE VARIABLE
-
 // organize the code base, put tests in a designated test folder, clean up the tests and benchmarks
 // next: Have 1 main branch, then a bunch of tests in the testing folder; have two versions of files, once it's been decided, then incorporate it into the main branch.
 
-- also add pragma once to all files
-
 a) make the variable support Tensors, NOT single variables.
+b) do closer testing with bench_nets to figure out where it's spending the most time, and compare that to the regular for loop version
+c) ok we're going to switch to tensors anyway, lets just do that next
 
--fopenmp, and #pragma omp
+- also add pragma once to all files
+- fopenmp, and #pragma omp

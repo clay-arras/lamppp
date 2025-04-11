@@ -1,3 +1,11 @@
+/* 04/09/25
+-----------------------------------------------------------------------------
+Benchmark                                   Time             CPU   Iterations
+-----------------------------------------------------------------------------
+BM_MatrixMultiplicationSharedValue 1553881315 ns   1553586661 ns            1
+BM_MatrixMultiplicationVariable    2464257752 ns   2463430186 ns            1
+BM_MatrixMultiplicationDouble        11449974 ns     11444813 ns           61
+*/
 #include <benchmark/benchmark.h>
 #include <Eigen/Core>
 #include "wrapper_engine.h"

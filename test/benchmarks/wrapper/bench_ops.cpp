@@ -1,3 +1,13 @@
+/* 04/09/25
+----------------------------------------------------------------------
+Benchmark                            Time             CPU   Iterations
+----------------------------------------------------------------------
+BM_OperationsSharedValue      21551953 ns     21531577 ns           32
+BM_OperationsSharedPtrValue   20713172 ns     20699420 ns           34
+BM_OperationsVariable         19521069 ns     19509833 ns           32
+BM_OperationsDouble              82369 ns        82341 ns         8579
+BM_OperationsDoubleWrapper      174572 ns       174547 ns         3864
+*/
 #include <benchmark/benchmark.h>
 #include "wrapper_engine.h"
 #include "autograd/engine/variable.h"

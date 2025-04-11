@@ -14,6 +14,7 @@ public:
     Tensor(const std::vector<float>& data, const std::vector<int>& shape)
         : data(data), shape(shape) {}
 
+    const int size() const;
     Tensor operator+(const Tensor& other) const; 
     Tensor operator-(const Tensor& other) const; 
     Tensor operator*(const Tensor& other) const; 
@@ -28,6 +29,8 @@ public:
     Tensor log() const;
     Tensor exp() const;
     Tensor relu() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
 
 private:
     Eigen::Map<Eigen::MatrixXf> as_matrix(int rows, int cols) const {

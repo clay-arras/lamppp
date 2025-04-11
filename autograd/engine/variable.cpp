@@ -35,6 +35,22 @@ Variable Variable::operator/(const Variable& other) const {
 
 bool Variable::operator==(const Variable& other) const {
     return impl_ == other.impl_;
+} // TODO(nlin): implement broadcasting later
+
+Variable Variable::operator+(float other) const {
+    return *this + Variable(Tensor(std::vector<float>(impl_->data.data.size(), other), impl_->data.shape));
+}
+
+Variable Variable::operator-(float other) const {
+    return *this - Variable(Tensor(std::vector<float>(impl_->data.data.size(), other), impl_->data.shape));
+}
+
+Variable Variable::operator*(float other) const {
+    return *this * Variable(Tensor(std::vector<float>(impl_->data.data.size(), other), impl_->data.shape));
+}
+
+Variable Variable::operator/(float other) const {
+    return *this / Variable(Tensor(std::vector<float>(impl_->data.data.size(), other), impl_->data.shape));
 }
 
 Variable Variable::exp() const {
@@ -69,6 +85,9 @@ void Variable::backward() {
 void Variable::dfs(const Variable& v, std::unordered_set<Variable>& visited, std::vector<Variable>& topo) const {
   if (visited.find(v) == visited.end()) {
     visited.insert(v);
+    if (v.grad_fn() == nullptr || v.grad_fn()->saved_inputs == nullptr) { // when would saved_inputs be zero???
+        return;
+    }
     for (const auto& child : *(v.grad_fn()->saved_inputs)) {
       dfs(child, visited, topo);
     }

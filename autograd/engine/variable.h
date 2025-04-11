@@ -18,8 +18,11 @@ struct VariableImpl {
     std::shared_ptr<Function> _grad_fn;    
     bool requires_grad;
 
-    explicit VariableImpl(Tensor data, bool requires_grad = false) 
-        : data(std::move(data)), requires_grad(requires_grad) {}
+    explicit VariableImpl(Tensor data, bool requires_grad = false) {
+        this->data = std::move(data);
+        this->grad = Tensor(std::vector<float>(this->data.data.size(), 0.0F), this->data.shape);
+        this->requires_grad = requires_grad;
+    }
 };
 
 class Variable {
@@ -28,8 +31,8 @@ public:
         : impl_(std::make_shared<VariableImpl>(Tensor({0.0F}, {1}), false)) {}  
     explicit Variable(std::shared_ptr<VariableImpl> &impl) 
         : impl_(std::move(impl)) {}
-    explicit Variable(const Tensor& data) 
-        : impl_(std::make_shared<VariableImpl>(data, false)) {}  
+    explicit Variable(const Tensor& data, bool requires_grad = false) 
+        : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
     std::shared_ptr<VariableImpl> impl_;
     Tensor& grad() { return impl_->grad; }  

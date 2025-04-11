@@ -1,64 +1,79 @@
 #pragma once
+#include <vector>
 #ifndef _VARIABLE_H_
 #define _VARIABLE_H_
 
 #include "function.h"
 #include <memory>
 #include <utility>
+#include <unordered_set>
+#include <functional>
+#include "tensor.h"
 
 class Function;
 
 struct VariableImpl {
-    float data;
-    float grad;
+    Tensor data;  
+    Tensor grad;  
     std::shared_ptr<Function> _grad_fn;    
     bool requires_grad;
 
-    explicit VariableImpl(float data, bool requires_grad = false) 
-        : data(data), requires_grad(requires_grad) {}
+    explicit VariableImpl(Tensor data, bool requires_grad = false) 
+        : data(std::move(data)), requires_grad(requires_grad) {}
 };
 
 class Variable {
 public:
     Variable() 
-        : impl_(std::make_shared<VariableImpl>(0.0F, false)) {}
+        : impl_(std::make_shared<VariableImpl>(Tensor({0.0F}, {1}), false)) {}  
     explicit Variable(std::shared_ptr<VariableImpl> &impl) 
         : impl_(std::move(impl)) {}
-    explicit Variable(float data) 
-        : impl_(std::make_shared<VariableImpl>(data, false)) {}
+    explicit Variable(const Tensor& data) 
+        : impl_(std::make_shared<VariableImpl>(data, false)) {}  
 
     std::shared_ptr<VariableImpl> impl_;
-    float& grad() { return impl_->grad; }
-    float& data() { return impl_->data; }
+    Tensor& grad() { return impl_->grad; }  
+    Tensor& data() { return impl_->data; }  
     std::shared_ptr<Function>& grad_fn() { return impl_->_grad_fn; }
+    void set_grad_fn(std::shared_ptr<Function> grad_fn) {
+        impl_->_grad_fn = std::move(grad_fn);
+    }
     bool& requires_grad() { return impl_->requires_grad; }
 
-    const float& grad() const { return impl_->grad; }
-    const float& data() const { return impl_->data; }
+    const Tensor& grad() const { return impl_->grad; } 
+    const Tensor& data() const { return impl_->data; } 
     const std::shared_ptr<Function>& grad_fn() const { return impl_->_grad_fn; }
     bool requires_grad() const { return impl_->requires_grad; }
+
+    void backward();
+    std::vector<Variable> topological_sort();
 
     Variable operator+(const Variable& other) const;
     Variable operator-(const Variable& other) const;
     Variable operator*(const Variable& other) const;
     Variable operator/(const Variable& other) const;
-
-    Variable& operator+=(const Variable& other);
-    Variable& operator-=(const Variable& other);
-    Variable& operator*=(const Variable& other);
-    Variable& operator/=(const Variable& other);
-
-    bool operator<(const Variable& other) const;
-    bool operator>(const Variable& other) const;
     bool operator==(const Variable& other) const;
-    bool operator!=(const Variable& other) const;
-    bool operator<=(const Variable& other) const;
-    bool operator>=(const Variable& other) const;
-    
+
+    Variable operator+(float other) const;
+    Variable operator-(float other) const;
+    Variable operator*(float other) const;
+    Variable operator/(float other) const;
+
     Variable exp() const;
     Variable log() const;
     Variable relu() const;
+
+private:
+    void dfs(const Variable& v, std::unordered_set<Variable>& visited, std::vector<Variable>& topo) const;
 };
 
+namespace std {
+    template<>
+    struct hash<Variable> {
+        size_t operator()(const Variable& v) const {
+            return std::hash<void*>{}(v.impl_.get());
+        }
+    };
+}
 
-#endif // _VARIABLE_H_
+#endif

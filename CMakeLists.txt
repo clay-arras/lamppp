@@ -10,20 +10,21 @@ find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
 
 add_library(autograd_core # next step: split into different bench envs
-        test/benchmarks/wrapper/engine.cpp
-        test/benchmarks/wrapper/grad.cpp
-        test/benchmarks/wrapper/wrapper_engine.cpp
-        test/benchmarks/mem_pool/value_pool.cpp
+        # test/benchmarks/wrapper/engine.cpp
+        # test/benchmarks/wrapper/grad.cpp
+        # test/benchmarks/wrapper/wrapper_engine.cpp
+        # test/benchmarks/mem_pool/value_pool.cpp
     autograd/engine/variable.cpp
     autograd/engine/functions/basic_ops.cpp
     autograd/engine/functions/unary_ops.cpp
-        test/benchmarks/mem_pool/variable_mem.cpp
+        # test/benchmarks/mem_pool/variable_mem.cpp
     autograd/engine/function.cpp
-   test/benchmarks/nets/nn.cpp
-   test/benchmarks/nets/fast_layer.cpp
+    autograd/engine/tensor.cpp
+#    test/benchmarks/nets/nn.cpp
+#    test/benchmarks/nets/fast_layer.cpp
     autograd/util/csv_reader.cpp
-        test/benchmarks/mem_pool/variable_pool.cpp
-        test/benchmarks/mem_pool/variable_pool.h
+        # test/benchmarks/mem_pool/variable_pool.cpp
+        # test/benchmarks/mem_pool/variable_pool.h
 )
 
 target_include_directories(autograd_core PUBLIC
@@ -55,17 +56,20 @@ target_include_directories(autograd_core PUBLIC
 #add_executable(bench_nn test/benchmarks/bench_nn.cpp)
 #target_link_libraries(bench_nn autograd_core benchmark::benchmark)
 #
-add_executable(bench_nets test/benchmarks/nets/bench_nets.cpp)
-target_link_libraries(bench_nets autograd_core benchmark::benchmark)
+# add_executable(bench_nets test/benchmarks/nets/bench_nets.cpp)
+# target_link_libraries(bench_nets autograd_core benchmark::benchmark)
 
- add_executable(bench_mat test/benchmarks/wrapper/bench_mat.cpp)
- target_link_libraries(bench_mat autograd_core benchmark::benchmark)
+#  add_executable(bench_mat test/benchmarks/wrapper/bench_mat.cpp)
+#  target_link_libraries(bench_mat autograd_core benchmark::benchmark)
 
- add_executable(bench_ops test/benchmarks/wrapper/bench_ops.cpp)
- target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+#  add_executable(bench_ops test/benchmarks/wrapper/bench_ops.cpp)
+#  target_link_libraries(bench_ops autograd_core benchmark::benchmark)
 
-add_executable(bench_mem_pool test/benchmarks/mem_pool/bench_mem_pool.cpp)
-target_link_libraries(bench_mem_pool autograd_core benchmark::benchmark)
+# add_executable(bench_mem_pool test/benchmarks/mem_pool/bench_mem_pool.cpp)
+# target_link_libraries(bench_mem_pool autograd_core benchmark::benchmark)
+
+add_executable(test_playground test/cpp/test_playground.cpp)
+target_link_libraries(test_playground autograd_core benchmark::benchmark)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if (NOT CLANG_FORMAT_EXE)

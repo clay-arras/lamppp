@@ -15,3 +15,9 @@ jacobian for higher dimensional matrices: to calculate the jacobian, you flatten
 - flattening and reshaping (into and out of 2D matrices; with Eigen::Map it's O(1))
 
 resource: https://cs231n.stanford.edu/handouts/derivatives.pdf
+
+matrix operations: matmul
+reduction operations: sum, mean, max, min
+creation operatioons: zeros, ones, rand, tensor
+element-wise operations: +, -, \*, /
+unary operations: relu, tanh

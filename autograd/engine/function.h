@@ -12,6 +12,7 @@ using function_list = std::vector<std::pair<std::shared_ptr<Function>, int>>;
 
 struct Function : public std::enable_shared_from_this<Function>{
     std::vector<std::pair<std::shared_ptr<Function>, int>> function_list;
+    std::unique_ptr<variable_list> saved_inputs; // TODO(nlin): should this be unique_ptr
 
     Function() = default;
     virtual ~Function() = default;

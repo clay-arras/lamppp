@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <vector>
-#include "autograd/engine/variable.h"
+#include "variable.h"
 
 class Neuron : public std::enable_shared_from_this<Neuron> {
  private:

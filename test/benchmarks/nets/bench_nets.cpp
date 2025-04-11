@@ -7,7 +7,7 @@ BM_FastEngineForwardProp/100 2.3388e+10 ns   2.3382e+10 ns            1
 */
 #include <benchmark/benchmark.h>
 #include <vector>
-#include "autograd/engine/variable.h"
+#include "variable.h"
 #include "autograd/util/csv_reader.h"
 #include "fast_layer.h"
 #include "nn.h"

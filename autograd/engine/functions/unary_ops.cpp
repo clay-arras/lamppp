@@ -3,11 +3,11 @@
 #include <cassert>
 #include <cmath>
 
-variable_list Exponential::apply(const variable_list& inputs) {
+variable_list Exponential::apply(const variable_list& inputs) { // TODO(nlin): need to fix these with backward
     assert(inputs.size() == 1);
     const Variable& self = inputs[0];
 
-    Variable result = Variable(std::exp(self.data()));
+    Variable result = Variable(self.data().exp());
     return {result};
 }
 
@@ -15,7 +15,7 @@ variable_list Logarithm::apply(const variable_list& inputs) {
     assert(inputs.size() == 1);
     const Variable& self = inputs[0];
 
-    Variable result = Variable(std::log(self.data()));
+    Variable result = Variable(self.data().log());
     return {result};
 }
 
@@ -23,6 +23,6 @@ variable_list ReLU::apply(const variable_list& inputs) {
     assert(inputs.size() == 1);
     const Variable& self = inputs[0];
 
-    Variable result = Variable(std::max(self.data(), 0.0F));
+    Variable result = Variable(self.data().relu());
     return {result};
 }

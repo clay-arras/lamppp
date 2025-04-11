@@ -2,8 +2,6 @@
 #include "autograd/engine/functions/basic_ops.h"
 #include "autograd/engine/functions/unary_ops.h"
 #include <memory>
-#include <unordered_set>
-#include <algorithm>
 
 Variable Variable::operator+(const Variable& other) const { // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
     auto add_fn = std::make_shared<Add>();
@@ -33,10 +31,6 @@ Variable Variable::operator/(const Variable& other) const {
     return result[0];
 }
 
-bool Variable::operator==(const Variable& other) const {
-    return impl_ == other.impl_;
-}
-
 Variable Variable::exp() const {
     auto exp_fn = std::make_shared<Exponential>();
     variable_list result = exp_fn->apply({*this});
@@ -56,31 +50,4 @@ Variable Variable::relu() const {
     variable_list result = relu_fn->apply({*this});
     result[0].grad_fn() = relu_fn;
     return result[0];
-}
-
-void Variable::backward() {
-  std::vector<Variable> topo = topological_sort();
-  impl_->grad = Tensor(std::vector<float>(impl_->data.data.size(), 1), impl_->data.shape); // make this better with getters
-  for (Variable& node : topo) {
-    node.backward();
-  }
-}
-
-void Variable::dfs(const Variable& v, std::unordered_set<Variable>& visited, std::vector<Variable>& topo) const {
-  if (visited.find(v) == visited.end()) {
-    visited.insert(v);
-    for (const auto& child : *(v.grad_fn()->saved_inputs)) {
-      dfs(child, visited, topo);
-    }
-    topo.push_back(v);
-  }
-}
-
-std::vector<Variable> Variable::topological_sort() {
-  std::unordered_set<Variable> visited;
-  std::vector<Variable> topo;
-
-  dfs(*this, visited, topo);
-  std::reverse(topo.begin(), topo.end());
-  return topo;
 }

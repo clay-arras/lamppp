@@ -1,9 +1,12 @@
 #include "basic_ops.h"
 #include <cassert>
-#include <iostream>
 #include <memory>
 #include "autograd/engine/function.h"
 #include "autograd/engine/variable.h"
+#include "autograd/engine/tensor_ops.h"
+#include "autograd/engine/variable_ops.h"
+
+namespace autograd {
 
 variable_list AddBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
@@ -21,10 +24,13 @@ variable_list AddBackward::apply(const variable_list& gradOutputs) {
 variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
-  const Variable& self = (*saved_inputs)[0];
-  const Variable& other = (*saved_inputs)[1];
+  Variable& self = (*saved_inputs)[0];
+  Variable& other = (*saved_inputs)[1];
 
-  variable_list grad_inputs = {grad, grad * -1.0F};
+  self.incr_grad(grad.grad());
+  other.incr_grad((-1.0F) * grad.grad());
+
+  variable_list grad_inputs = {(-1.0F) * grad, grad};
   return grad_inputs;
 }
 
@@ -44,8 +50,11 @@ variable_list MultiplyBackward::apply(const variable_list& gradOutputs) {
 variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
-  const Variable& self = (*saved_inputs)[0];
-  const Variable& other = (*saved_inputs)[1];
+  Variable& self = (*saved_inputs)[0];
+  Variable& other = (*saved_inputs)[1];
+
+  self.incr_grad(grad.grad() / other.data());
+  other.incr_grad((-1.0F) * (self.data() * grad.grad() / (other.data() * other.data())));
 
   variable_list grad_inputs = {grad / other,
                                (grad * self * -1.0F) / (other * other)};
@@ -104,4 +113,6 @@ variable_list Divide::apply(const variable_list& inputs) {
       std::make_unique<variable_list>(variable_list{self, other});
   result.set_grad_fn(backward_fn);
   return {result};
+}
+
 }

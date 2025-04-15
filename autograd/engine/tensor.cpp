@@ -2,6 +2,8 @@
 #include <cassert>
 #include <iostream>
 
+namespace autograd {
+
 Tensor Tensor::operator+(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
@@ -31,34 +33,6 @@ Tensor Tensor::operator/(const Tensor& other) const {
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
   res = as_array() / other.as_array();
-  return Tensor(res_data, shape);
-}
-
-Tensor Tensor::operator+(float other) const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() + other;
-  return Tensor(res_data, shape);
-}
-
-Tensor Tensor::operator-(float other) const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() - other;
-  return Tensor(res_data, shape);
-}
-
-Tensor Tensor::operator*(float other) const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() * other;
-  return Tensor(res_data, shape);
-}
-
-Tensor Tensor::operator/(float other) const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() / other;
   return Tensor(res_data, shape);
 }
 
@@ -116,4 +90,6 @@ std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
   }
   os << "])";
   return os;
+}
+
 }

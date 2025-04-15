@@ -10,6 +10,8 @@
 #include "function.h"
 #include "tensor.h"
 
+namespace autograd {
+
 class Function;
 
 struct VariableImpl {
@@ -64,12 +66,6 @@ class Variable {
   Variable operator-(const Variable& other) const;
   Variable operator*(const Variable& other) const;
   Variable operator/(const Variable& other) const;
-  bool operator==(const Variable& other) const;
-
-  Variable operator+(float other) const;
-  Variable operator-(float other) const;
-  Variable operator*(float other) const;
-  Variable operator/(float other) const;
 
   Variable exp() const;
   Variable log() const;
@@ -82,10 +78,16 @@ class Variable {
            std::vector<Variable>& topo) const;
 };
 
+inline bool operator==(const Variable& lhs, const Variable& rhs) {
+  return lhs.impl_.get() == rhs.impl_.get();
+}
+
+} // namespace autograd
+
 namespace std {
 template <>
-struct hash<Variable> {
-  size_t operator()(const Variable& v) const {
+struct hash<autograd::Variable> {
+  size_t operator()(const autograd::Variable& v) const {
     return std::hash<void*>{}(v.impl_.get());
   }
 };

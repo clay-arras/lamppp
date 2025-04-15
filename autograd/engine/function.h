@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 
+namespace autograd {
+
 class Variable;
 struct Function;
 
@@ -23,5 +25,7 @@ struct Function : public std::enable_shared_from_this<Function> {
     return apply(inputs);
   }
 };
+
+}
 
 #endif  // _FUNCTION_H_

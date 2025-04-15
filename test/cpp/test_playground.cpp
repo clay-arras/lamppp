@@ -1,88 +1,54 @@
 #include <iostream>
-#include <unordered_set>
 #include "autograd/engine/tensor.h"
+#include "autograd/engine/variable_ops.h"
 #include "autograd/engine/variable.h"
 
+namespace autograd {
+
 namespace {
-using std::make_shared;
-
-void test_tensor_operations() {
-  Tensor a({1.0, 2.0, 3.0, 4.0}, {2, 2});  // 2x2 tensor
-  Tensor b({5.0, 6.0, 7.0, 8.0}, {2, 2});  // 2x2 tensor
-
-  Tensor c = a + b;
-  std::cout << "a + b: ";
-  for (const auto& val : c.data)
-    std::cout << val << " ";
-  std::cout << std::endl;
-
-  Tensor d = a - b;
-  std::cout << "a - b: ";
-  for (const auto& val : d.data)
-    std::cout << val << " ";
-  std::cout << std::endl;
-
-  Tensor e = a * b;
-  std::cout << "a * b: ";
-  for (const auto& val : e.data)
-    std::cout << val << " ";
-  std::cout << std::endl;
-
-  Tensor f = a.matmul(b);
-  std::cout << "a matmul b: ";
-  for (const auto& val : f.data)
-    std::cout << val << " ";
-  std::cout << std::endl;
-
-  Tensor g = a.log();
-  std::cout << "log(a): ";
-  for (const auto& val : g.data)
-    std::cout << val << " ";
-  std::cout << std::endl;
-
-  Tensor h = a.relu();
-  std::cout << "ReLU(a): ";
-  for (const auto& val : h.data)
-    std::cout << val << " ";
-  std::cout << std::endl;
-}
 
 void test_backward_operations() {
-  Tensor a({1.0, 2.0, -1.0, 0.0}, {2, 2});
-  std::shared_ptr<VariableImpl> var_impl_a = make_shared<VariableImpl>(a, true);  // requires gradient
-  Variable var_a = Variable(var_impl_a);
+  std::vector<float> x_data = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+  std::vector<float> y_data = {0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
+  std::vector<float> z_data = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8};
+  std::vector<int> shape = {2, 2, 2};
 
-  Tensor b({7.0, 6.0, -9.0, 2.0}, {2, 2});
-  std::shared_ptr<VariableImpl> var_impl_b = make_shared<VariableImpl>(b, true);  // requires gradient
-  Variable var_b = Variable(var_impl_b);
+  Variable x(Tensor(x_data, shape), true);
+  Variable y(Tensor(y_data, shape), true);
+  Variable z(Tensor(z_data, shape), true);
 
-  Tensor c({9.0, 10.0, -1.0, -1.0}, {2, 2});
-  std::shared_ptr<VariableImpl> var_impl_c = make_shared<VariableImpl>(c, true);  // requires gradient
-  Variable var_c = Variable(var_impl_c);
+  // Compute forward pass
+  Variable a = x + y;
+  Variable b = x - z;
+  Variable c = y * z;
+  Variable d = x / (y + 0.1F);
+  Variable e = (x + 0.1F).log();
+  Variable f = z.exp();
 
-  Variable var_d = var_a*var_b + var_c;
-  var_d.backward();
+  Variable g = a * b + c;
+  Variable h = d * e - f;
 
-  std::cout << "Var_A: " << var_a << std::endl;
-  std::cout << "Var_B: " << var_b << std::endl;
-  std::cout << "Var_C: " << var_c << std::endl;
+  Variable result = g + h * (e + 0.1F);
+
+  result.backward();
+
+  // Print gradients
+  std::cout << "Gradient of x:" << std::endl;
+  std::cout << x.grad() << std::endl;
+
+  std::cout << "\nGradient of y:" << std::endl;
+  std::cout << y.grad() << std::endl;
+
+  std::cout << "\nGradient of z:" << std::endl;
+  std::cout << z.grad() << std::endl;
+
+}
+
 }
 
 }  // namespace
 
 int main() {
-  std::unordered_set<Variable> x;
-
-  std::vector<float> data_b = {5.0, 6.0, 7.0, 8.0};
-  std::vector<int> shape_b = {2, 2};
-  Tensor b(data_b, shape_b);
-
-  std::shared_ptr<VariableImpl> var_impl_b =
-      std::make_shared<VariableImpl>(b, true);  // requires gradient
-  Variable var_a = Variable(var_impl_b);
-  assert(x.find(var_a) == x.end());
-
-  // test_tensor_operations();
-  test_backward_operations();
+  autograd::test_backward_operations();
   return 0;
 }

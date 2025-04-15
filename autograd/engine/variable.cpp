@@ -6,6 +6,8 @@
 #include "autograd/engine/functions/basic_ops.h"
 #include "autograd/engine/functions/unary_ops.h"
 
+namespace autograd {
+
 Variable Variable::operator+(const Variable& other)
     const {  // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
   auto add_fn = std::make_shared<Add>(); // TODO(nlin): need to remove the pointer, maybe make the AddFn static or something
@@ -29,34 +31,6 @@ Variable Variable::operator/(const Variable& other) const {
   auto div_fn = std::make_shared<Divide>();
   variable_list result = div_fn->apply({*this, other});
   return result[0];
-}
-
-bool Variable::operator==(const Variable& other) const {
-  return impl_->data == other.impl_->data;
-}  // TODO(nlin): implement broadcasting later
-
-Variable Variable::operator+(float other) const {
-  return *this +
-         Variable(Tensor(std::vector<float>(impl_->data.data.size(), other),
-                         impl_->data.shape));
-}
-
-Variable Variable::operator-(float other) const {
-  return *this -
-         Variable(Tensor(std::vector<float>(impl_->data.data.size(), other),
-                         impl_->data.shape));
-}
-
-Variable Variable::operator*(float other) const {
-  return *this *
-         Variable(Tensor(std::vector<float>(impl_->data.data.size(), other),
-                         impl_->data.shape));
-}
-
-Variable Variable::operator/(float other) const {
-  return *this /
-         Variable(Tensor(std::vector<float>(impl_->data.data.size(), other),
-                         impl_->data.shape));
 }
 
 Variable Variable::exp() const {
@@ -122,4 +96,6 @@ std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   os << ", grad=" << obj.grad();
   os << ", grad_fn=" << obj.grad_fn() << ")";
   return os;
+}
+
 }

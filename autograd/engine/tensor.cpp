@@ -95,6 +95,10 @@ Tensor Tensor::relu() const {
   return Tensor(res_data, shape);
 }
 
+bool Tensor::operator==(const Tensor& other) const {
+  return data == other.data;
+}
+
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
   os << "Tensor(data=[";
   for (size_t i = 0; i < obj.data.size(); i++) {

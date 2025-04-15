@@ -37,6 +37,14 @@ class Variable {
 
   std::shared_ptr<VariableImpl> impl_;
   Tensor& grad() { return impl_->grad; }
+  void zero_grad() {
+    impl_->grad =
+        Tensor(std::vector<float>(data().data.size(), 0.0F), data().shape);
+  }
+  void incr_grad(const Tensor& other_grad) {
+    impl_->grad = impl_->grad + other_grad;
+  }
+
   Tensor& data() { return impl_->data; }
   std::shared_ptr<Function>& grad_fn() { return impl_->_grad_fn; }
   void set_grad_fn(std::shared_ptr<Function> grad_fn) {
@@ -66,6 +74,8 @@ class Variable {
   Variable exp() const;
   Variable log() const;
   Variable relu() const;
+
+  friend std::ostream& operator<<(std::ostream& os, const Variable& obj);
 
  private:
   void dfs(const Variable& v, std::unordered_set<Variable>& visited,

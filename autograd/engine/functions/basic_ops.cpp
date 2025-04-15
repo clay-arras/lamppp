@@ -1,5 +1,6 @@
 #include "basic_ops.h"
 #include <cassert>
+#include <iostream>
 #include <memory>
 #include "autograd/engine/function.h"
 #include "autograd/engine/variable.h"
@@ -7,6 +8,12 @@
 variable_list AddBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
+  Variable& self = (*saved_inputs)[0];
+  Variable& other = (*saved_inputs)[1];
+
+  self.incr_grad(grad.grad());
+  other.incr_grad(grad.grad());
+
   variable_list grad_inputs = {grad, grad};
   return grad_inputs;
 }
@@ -14,6 +21,9 @@ variable_list AddBackward::apply(const variable_list& gradOutputs) {
 variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
+  const Variable& self = (*saved_inputs)[0];
+  const Variable& other = (*saved_inputs)[1];
+
   variable_list grad_inputs = {grad, grad * -1.0F};
   return grad_inputs;
 }
@@ -21,8 +31,11 @@ variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
 variable_list MultiplyBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
-  const Variable& self = (*saved_inputs)[0];
-  const Variable& other = (*saved_inputs)[1];
+  Variable& self = (*saved_inputs)[0];
+  Variable& other = (*saved_inputs)[1];
+
+  self.incr_grad(other.data() * grad.grad());
+  other.incr_grad(self.data() * grad.grad());
 
   variable_list grad_inputs = {other * grad, self * grad};
   return grad_inputs;

@@ -1,8 +1,10 @@
 #include <iostream>
+#include <unordered_set>
 #include "autograd/engine/tensor.h"
 #include "autograd/engine/variable.h"
 
 namespace {
+using std::make_shared;
 
 void test_tensor_operations() {
   Tensor a({1.0, 2.0, 3.0, 4.0}, {2, 2});  // 2x2 tensor
@@ -42,45 +44,45 @@ void test_tensor_operations() {
   std::cout << "ReLU(a): ";
   for (const auto& val : h.data)
     std::cout << val << " ";
+  std::cout << std::endl;
 }
 
 void test_backward_operations() {
-  std::vector<float> data_a = {1.0, 2.0, 3.0, 4.0};
-  std::vector<int> shape_a = {2, 2};
-  Tensor a(data_a, shape_a);
-
-  std::vector<float> data_b = {5.0, 6.0, 7.0, 8.0};
-  std::vector<int> shape_b = {2, 2};
-  Tensor b(data_b, shape_b);
-
-  std::shared_ptr<VariableImpl> var_impl_a =
-      std::make_shared<VariableImpl>(a, true);  // requires gradient
+  Tensor a({1.0, 2.0, -1.0, 0.0}, {2, 2});
+  std::shared_ptr<VariableImpl> var_impl_a = make_shared<VariableImpl>(a, true);  // requires gradient
   Variable var_a = Variable(var_impl_a);
-  std::shared_ptr<VariableImpl> var_impl_b =
-      std::make_shared<VariableImpl>(b, true);  // requires gradient
+
+  Tensor b({7.0, 6.0, -9.0, 2.0}, {2, 2});
+  std::shared_ptr<VariableImpl> var_impl_b = make_shared<VariableImpl>(b, true);  // requires gradient
   Variable var_b = Variable(var_impl_b);
 
-  Variable var_c = var_a + var_b;  // a + b
-  Variable var_d = var_a * var_b;  // a * b
+  Tensor c({9.0, 10.0, -1.0, -1.0}, {2, 2});
+  std::shared_ptr<VariableImpl> var_impl_c = make_shared<VariableImpl>(c, true);  // requires gradient
+  Variable var_c = Variable(var_impl_c);
 
-  var_c.backward();
+  Variable var_d = var_a*var_b + var_c;
   var_d.backward();
 
-  std::cout << "Gradients for a after a + b: " << var_a.grad().data[0] << ", "
-            << var_a.grad().data[1] << std::endl;  // Expected: [1, 1]
-  std::cout << "Gradients for b after a + b: " << var_b.grad().data[0] << ", "
-            << var_b.grad().data[1] << std::endl;  // Expected: [1, 1]
-
-  std::cout << "Gradients for a after a * b: " << var_a.grad().data[0] << ", "
-            << var_a.grad().data[1] << std::endl;  // Expected: [b, b]
-  std::cout << "Gradients for b after a * b: " << var_b.grad().data[0] << ", "
-            << var_b.grad().data[1] << std::endl;  // Expected: [a, a]
+  std::cout << "Var_A: " << var_a << std::endl;
+  std::cout << "Var_B: " << var_b << std::endl;
+  std::cout << "Var_C: " << var_c << std::endl;
 }
 
 }  // namespace
 
 int main() {
-  test_tensor_operations();
+  std::unordered_set<Variable> x;
+
+  std::vector<float> data_b = {5.0, 6.0, 7.0, 8.0};
+  std::vector<int> shape_b = {2, 2};
+  Tensor b(data_b, shape_b);
+
+  std::shared_ptr<VariableImpl> var_impl_b =
+      std::make_shared<VariableImpl>(b, true);  // requires gradient
+  Variable var_a = Variable(var_impl_b);
+  assert(x.find(var_a) == x.end());
+
+  // test_tensor_operations();
   test_backward_operations();
   return 0;
 }

@@ -21,3 +21,5 @@ reduction operations: sum, mean, max, min
 creation operatioons: zeros, ones, rand, tensor
 element-wise operations: +, -, \*, /
 unary operations: relu, tanh
+
+add some debug stuff (like cout, refactor some code)

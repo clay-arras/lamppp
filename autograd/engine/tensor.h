@@ -29,6 +29,7 @@ class Tensor {
   Tensor log() const;
   Tensor exp() const;
   Tensor relu() const;
+  bool operator==(const Tensor& other) const;
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
 

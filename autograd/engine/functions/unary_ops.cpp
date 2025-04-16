@@ -14,7 +14,7 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   Variable exp_var(self.data().exp());
   self.incr_grad(exp_var.data() * grad.grad()); // TODO(nlin): maybe will this result in recursion? higher order derivatives
 
-  variable_list grad_inputs = {exp_var * grad}; 
+  variable_list grad_inputs = {}; 
   return grad_inputs;
 }
 
@@ -26,7 +26,7 @@ variable_list LogarithmBackward::apply(const variable_list& gradOutputs) {
   Variable recip_var(1 / self);
   self.incr_grad(recip_var.data() * grad.grad());
 
-  variable_list grad_inputs = {recip_var * grad}; 
+  variable_list grad_inputs = {}; 
   return grad_inputs;
 }
 
@@ -38,7 +38,7 @@ variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
   Variable relu_var(self >= 0.0F);
   self.incr_grad(relu_var.data() * grad.grad());
 
-  variable_list grad_inputs = {relu_var * grad}; 
+  variable_list grad_inputs = {}; 
   return grad_inputs;
 }
 

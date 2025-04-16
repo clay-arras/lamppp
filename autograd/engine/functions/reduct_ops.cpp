@@ -39,7 +39,7 @@ variable_list SummationBackward::apply(const variable_list& gradOutputs) {
   
   self.incr_grad(backgrad);
 
-  variable_list grad_inputs = {grad}; 
+  variable_list grad_inputs = {}; 
   return grad_inputs;
 }
 

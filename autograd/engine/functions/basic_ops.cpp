@@ -4,7 +4,6 @@
 #include "autograd/engine/function.h"
 #include "autograd/engine/variable.h"
 #include "autograd/engine/tensor_ops.h"
-#include "autograd/engine/variable_ops.h"
 
 namespace autograd {
 
@@ -17,7 +16,7 @@ variable_list AddBackward::apply(const variable_list& gradOutputs) {
   self.incr_grad(grad.grad());
   other.incr_grad(grad.grad());
 
-  variable_list grad_inputs = {grad, grad};
+  variable_list grad_inputs = {};
   return grad_inputs;
 }
 
@@ -30,7 +29,7 @@ variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
   self.incr_grad(grad.grad());
   other.incr_grad((-1.0F) * grad.grad());
 
-  variable_list grad_inputs = {(-1.0F) * grad, grad};
+  variable_list grad_inputs = {};
   return grad_inputs;
 }
 
@@ -43,7 +42,7 @@ variable_list MultiplyBackward::apply(const variable_list& gradOutputs) {
   self.incr_grad(other.data() * grad.grad());
   other.incr_grad(self.data() * grad.grad());
 
-  variable_list grad_inputs = {other * grad, self * grad};
+  variable_list grad_inputs = {};
   return grad_inputs;
 }
 
@@ -56,8 +55,7 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   self.incr_grad(grad.grad() / other.data());
   other.incr_grad((-1.0F) * (self.data() * grad.grad() / (other.data() * other.data())));
 
-  variable_list grad_inputs = {grad / other,
-                               (grad * self * -1.0F) / (other * other)};
+  variable_list grad_inputs = {};
   return grad_inputs;
 }
 

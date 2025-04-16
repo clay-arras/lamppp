@@ -89,8 +89,10 @@ Tensor Tensor::matmul(const Tensor& other)
   assert(shape.size() == 2);
   assert(other.shape.size() == 2);
   assert(shape[1] == other.shape[0]);
+
   std::vector<float> res_data(shape[0] * other.shape[1]);
   Eigen::Map<Eigen::MatrixXf> res(res_data.data(), shape[0], other.shape[1]);
+
   res = as_matrix(shape[0], shape[1]) *
         other.as_matrix(other.shape[0], other.shape[1]);
   return Tensor(res_data, {shape[0], other.shape[1]});
@@ -98,10 +100,14 @@ Tensor Tensor::matmul(const Tensor& other)
 
 Tensor Tensor::transpose() const {
   std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array().transpose());
-  std::vector<int> new_shape = shape;
-  reverse(new_shape.begin(), new_shape.end());
+  std::vector<int> new_shape = {shape[1], shape[0]};
+
+  Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> res_matrix(
+      res_data.data(), new_shape[0], new_shape[1]);
+  Eigen::Map<const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> src_matrix(
+      data.data(), shape[0], shape[1]);
+      
+  res_matrix = src_matrix.transpose();
   return Tensor(res_data, new_shape);
 }
 

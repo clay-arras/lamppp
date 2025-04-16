@@ -43,10 +43,10 @@ class Tensor {
   Tensor min(int axis) const;
 
   Eigen::Map<Eigen::MatrixXf> as_matrix(int rows, int cols) const {
-    return Eigen::Map<Eigen::MatrixXf>(const_cast<float*>(data.data()), rows,
-                                      cols);
+    return Eigen::Map<Eigen::MatrixXf>(const_cast<float*>(data.data()), rows, cols);
   }
-    Eigen::Map<Eigen::ArrayXf> as_array() const {
+
+  Eigen::Map<Eigen::ArrayXf> as_array() const {
     return Eigen::Map<Eigen::ArrayXf>(const_cast<float*>(data.data()),
                                      data.size());
   }

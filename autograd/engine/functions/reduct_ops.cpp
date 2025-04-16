@@ -18,7 +18,7 @@ variable_list SummationBackward::apply(const variable_list& gradOutputs) {
     const int cols = self.data().shape[1];
     
     Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data.data(), rows, cols);
-    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.data().data.data(), cols);
+    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data.data(), cols);
     
     for (int c = 0; c < cols; c++) {
       result_mat.col(c).setConstant(grad_vec(c));
@@ -28,7 +28,7 @@ variable_list SummationBackward::apply(const variable_list& gradOutputs) {
     const int cols = self.data().shape[1];
     
     Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data.data(), rows, cols);
-    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.data().data.data(), rows);
+    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data.data(), rows);
     
     for (int r = 0; r < rows; r++) {
       result_mat.row(r).setConstant(grad_vec(r));

@@ -12,8 +12,8 @@ variable_list MatrixMultiplicationBackward::apply(const variable_list& gradOutpu
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  self.incr_grad(grad.data().matmul(other.data().transpose()));
-  other.incr_grad(self.data().transpose().matmul(grad.data()));
+  self.incr_grad(grad.grad().matmul(other.data().transpose()));
+  other.incr_grad(self.data().transpose().matmul(grad.grad()));
 
   variable_list grad_inputs = {grad, grad}; // TODO(nlin): remove these maybe, this isn't right
   return grad_inputs;

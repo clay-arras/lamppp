@@ -59,11 +59,116 @@ void test_neural_network() {
   std::cout << weights2.grad() << std::endl;
 }
 
+void test_autograd_ops() {
+
+  // std::vector<float> weights1_data = {0.1, 0.3, 0.2, 0.4};
+  // std::vector<float> inputs_data = {0.05, 0.25, 0.15, 0.35};
+  // std::vector<float> weights2_data = {0.01, 0.03, 0.02, 0.04};
+
+  std::vector<float> weights1_data = {0.1, 0.2, 0.3, 0.4};
+  std::vector<float> inputs_data = {0.05, 0.15, 0.25, 0.35};
+  std::vector<float> weights2_data = {0.01, 0.02, 0.03, 0.04};
+  std::vector<int> shape_2x2 = {2, 2};
+
+  Variable weights1(Tensor(weights1_data, shape_2x2), true);
+  Variable inputs(Tensor(inputs_data, shape_2x2), true);
+  Variable weights2(Tensor(weights2_data, shape_2x2), true);
+
+  Variable layer1 = weights1.matmul(inputs.transpose());
+  Variable layer1_activated = layer1.relu();
+
+  Variable layer2 = layer1_activated.matmul(weights2);
+  Variable layer2_sum = layer2.sum(1);
+  
+  std::vector<float> ones_data = {1.0, 1.0};
+  std::vector<int> shape_1x2 = {1, 2};
+  Variable ones(Tensor(ones_data, shape_1x2), false);
+  
+  Variable layer2_expanded = layer2_sum.matmul(ones);
+  
+  Variable layer3 = layer2_expanded * weights1;
+  Variable loss = layer3.sum(0).sum(1);
+  
+  std::cout << "\nNeural Network Test Results:" << std::endl;
+  std::cout << "Weights1:" << std::endl;
+  std::cout << weights1 << std::endl;
+
+  std::cout << "Layer1:" << std::endl;
+  std::cout << layer1 << std::endl;
+
+  std::cout << "Layer1 Activated:" << std::endl;
+  std::cout << layer1_activated << std::endl;
+
+  std::cout << "Layer2:" << std::endl;
+  std::cout << layer2 << std::endl;
+
+  std::cout << "Layer2 Sum:" << std::endl;
+  std::cout << layer2_sum << std::endl;
+
+  std::cout << "Layer2 Expanded:" << std::endl;
+  std::cout << layer2_expanded << std::endl;
+
+  std::cout << "Layer3:" << std::endl;
+  std::cout << layer3 << std::endl;
+
+  loss.backward();
+  
+  std::cout << "\nNeural Network Test Results:" << std::endl;
+  std::cout << "Gradient of weights1:" << std::endl;
+  std::cout << weights1.grad() << std::endl;
+
+  std::cout << "Gradient of layer1:" << std::endl;
+  std::cout << layer1.grad() << std::endl;
+
+  std::cout << "Gradient of layer1_activated:" << std::endl;
+  std::cout << layer1_activated.grad() << std::endl;
+
+  std::cout << "Gradient of layer2:" << std::endl;
+  std::cout << layer2.grad() << std::endl;
+
+  std::cout << "Gradient of layer2_sum:" << std::endl;
+  std::cout << layer2_sum.grad() << std::endl;
+
+  std::cout << "Gradient of layer2_expanded:" << std::endl;
+  std::cout << layer2_expanded.grad() << std::endl;
+
+  std::cout << "Gradient of layer3:" << std::endl;
+  std::cout << layer3.grad() << std::endl;
+
+}
+
+
+void test_matmul() {
+  std::vector<float> weights1_data = {0.1, 0.2, 0.3, 0.4};
+  std::vector<float> inputs_data = {0.05, 0.15, 0.25, 0.35};
+  std::vector<float> weights2_data = {0.01, 0.02, 0.03, 0.04};
+  std::vector<int> shape_2x2 = {2, 2};
+
+  Variable weights1(Tensor(weights1_data, shape_2x2), true);
+  Variable inputs(Tensor(inputs_data, shape_2x2), true);
+  Variable weights2(Tensor(weights2_data, shape_2x2), true);
+
+  std::cout << "WEIGHTS1: " << weights1 << std::endl;
+  std::cout << "INPUT: " << inputs.transpose() << std::endl;
+  Variable layer1 = weights1.matmul(inputs.transpose());
+  std::cout << "LAYER1: " << layer1 << std::endl;
+
+  std::cout << "---" << std::endl;
+  std::cout << "LAYER1: " << layer1 << std::endl;
+  std::cout << "WEIGHTS2: " << weights2 << std::endl;
+  Variable layer2 = layer1.matmul(weights2);
+  std::cout << "LAYER2: " << layer2 << std::endl;
+}
+
+
+
 }  // namespace
 
 }  // namespace autograd
 
 int main() {
+  // autograd::test_matmul();
+  // autograd::test_autograd_ops();
   autograd::test_neural_network();
   return 0;
 }

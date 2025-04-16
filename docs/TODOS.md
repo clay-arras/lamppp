@@ -32,3 +32,5 @@ improvements:
 
 - create matmul
 - make mnist test run
+
+- TODO: need to make generalized tensors with the silly trick TODO IMPORTANT

@@ -40,7 +40,7 @@ Tensor Tensor::operator==(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() == other.as_array());
+  res = (as_array() == other.as_array()).cast<float>();
   return Tensor(res_data, shape);
 }
 
@@ -48,7 +48,7 @@ Tensor Tensor::operator!=(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() != other.as_array());
+  res = (as_array() != other.as_array()).cast<float>();
   return Tensor(res_data, shape);
 }
 
@@ -56,7 +56,7 @@ Tensor Tensor::operator>=(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() >= other.as_array());
+  res = (as_array() >= other.as_array()).cast<float>();
   return Tensor(res_data, shape);
 }
 
@@ -64,7 +64,7 @@ Tensor Tensor::operator<=(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() <= other.as_array());
+  res = (as_array() <= other.as_array()).cast<float>();
   return Tensor(res_data, shape);
 }
 
@@ -72,7 +72,7 @@ Tensor Tensor::operator>(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() > other.as_array());
+  res = (as_array() > other.as_array()).cast<float>();
   return Tensor(res_data, shape);
 }
 
@@ -80,7 +80,7 @@ Tensor Tensor::operator<(const Tensor& other) const {
   assert(shape == other.shape);
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() < other.as_array());
+  res = (as_array() < other.as_array()).cast<float>();
   return Tensor(res_data, shape);
 }
 
@@ -89,18 +89,20 @@ Tensor Tensor::matmul(const Tensor& other)
   assert(shape.size() == 2);
   assert(other.shape.size() == 2);
   assert(shape[1] == other.shape[0]);
-  std::vector<float> res_data(data.size());
+  std::vector<float> res_data(shape[0] * other.shape[1]);
   Eigen::Map<Eigen::MatrixXf> res(res_data.data(), shape[0], other.shape[1]);
   res = as_matrix(shape[0], shape[1]) *
         other.as_matrix(other.shape[0], other.shape[1]);
-  return Tensor(res_data, shape);
+  return Tensor(res_data, {shape[0], other.shape[1]});
 }
 
-Tensor Tensor::T() const {
+Tensor Tensor::transpose() const {
   std::vector<float> res_data(data.size());
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
   res = (as_array().transpose());
-  return Tensor(res_data, shape);
+  std::vector<int> new_shape = shape;
+  reverse(new_shape.begin(), new_shape.end());
+  return Tensor(res_data, new_shape);
 }
 
 Tensor Tensor::log() const {
@@ -122,6 +124,25 @@ Tensor Tensor::relu() const {
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
   res = as_array().max(0.0F);
   return Tensor(res_data, shape);
+}
+
+Tensor Tensor::sum(int axis) const{
+  assert(axis >= 0 && axis < static_cast<int>(shape.size()));
+  std::vector<int> new_shape = shape;
+  // new_shape.erase(new_shape.begin() + axis);
+  new_shape[axis] = 1;
+
+  std::vector<float> res_data(data.size() / shape[axis]);
+  if (axis == 0) {
+    Eigen::Map<Eigen::Matrix<float, 1, Eigen::Dynamic>> res(res_data.data(), 1, shape[1]);
+    res = as_array().reshaped(shape[0], shape[1]).colwise().sum().array();
+  } else if (axis == 1) {
+    Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, 1>> res(res_data.data(), shape[0], 1);
+    res = as_array().reshaped(shape[0], shape[1]).rowwise().sum().array();
+  } else {
+    assert(0); // TODO(nlin): need to implement general thingy with collapsing!!!!
+  }
+  return Tensor(res_data, new_shape);
 }
 
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {

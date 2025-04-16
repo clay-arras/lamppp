@@ -31,11 +31,16 @@ class Tensor {
   Tensor operator<(const Tensor& other) const;
 
   Tensor matmul(const Tensor& other) const;
-  Tensor T() const;
+  Tensor transpose() const;
 
   Tensor log() const;
   Tensor exp() const;
   Tensor relu() const;
+
+  Tensor sum(int axis) const;
+  Tensor mean(int axis) const;
+  Tensor max(int axis) const;
+  Tensor min(int axis) const;
 
   Eigen::Map<Eigen::MatrixXf> as_matrix(int rows, int cols) const {
     return Eigen::Map<Eigen::MatrixXf>(const_cast<float*>(data.data()), rows,

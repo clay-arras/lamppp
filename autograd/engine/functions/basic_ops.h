@@ -2,7 +2,7 @@
 
 namespace autograd {
 
-struct Add : public Function {
+struct Add : public Function { // TODO(nlin): make them match pytorch names
   variable_list apply(const variable_list& inputs) override;
 };
 

@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include "autograd/engine/functions/basic_ops.h"
 #include "autograd/engine/functions/unary_ops.h"
+#include "autograd/engine/functions/matrix_ops.h"
+#include "autograd/engine/functions/reduct_ops.h"
 
 namespace autograd {
 
@@ -22,11 +24,11 @@ void Variable::backward() {
   }
 }
 
-void Variable::dfs(const Variable& v, std::unordered_set<Variable>& visited,
+void Variable::dfs(const Variable& v, std::unordered_set<void*>& visited,
                    std::vector<Variable>& topo) const {
-  if (visited.find(v) ==
+  if (visited.find(static_cast<void*>(v.impl_.get())) ==
       visited.end()) {  // TODO(nlin): when would saved_inputs be zero???
-    visited.insert(v);
+    visited.insert(static_cast<void*>(v.impl_.get()));
     if (v.grad_fn() == nullptr || v.grad_fn()->saved_inputs == nullptr) {
       topo.push_back(v);
       return;
@@ -39,7 +41,7 @@ void Variable::dfs(const Variable& v, std::unordered_set<Variable>& visited,
 }
 
 std::vector<Variable> Variable::topological_sort() {
-  std::unordered_set<Variable> visited;
+  std::unordered_set<void*> visited;
   std::vector<Variable> topo;
 
   dfs(*this, visited, topo);
@@ -88,6 +90,24 @@ Variable Variable::log() const {
 Variable Variable::relu() const {
   auto relu_fn = std::make_shared<ReLU>();
   variable_list result = relu_fn->apply({*this});
+  return result[0];
+}
+
+Variable Variable::matmul(const Variable& other) const {
+  auto matmul_fn = std::make_shared<MatrixMultiplication>();
+  variable_list result = matmul_fn->apply({*this, other});
+  return result[0];
+}
+
+Variable Variable::transpose() const {
+  auto transpose_fn = std::make_shared<Transpose>();
+  variable_list result = transpose_fn->apply({*this});
+  return result[0];
+}
+
+Variable Variable::sum(int axis) const {
+  auto sum_fn = std::make_shared<Summation>(axis);
+  variable_list result = sum_fn->apply({*this});
   return result[0];
 }
 

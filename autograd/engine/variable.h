@@ -75,6 +75,9 @@ class Variable {
   Variable operator<(const Variable& other) const;
 
   Variable matmul(const Variable& other) const;
+  Variable transpose() const;
+  Variable sum(int axis = -1) const;
+
   Variable exp() const;
   Variable log() const;
   Variable relu() const;
@@ -82,13 +85,9 @@ class Variable {
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);
 
  private:
-  void dfs(const Variable& v, std::unordered_set<Variable>& visited,
+  void dfs(const Variable& v, std::unordered_set<void*>& visited,
            std::vector<Variable>& topo) const;
 };
-
-inline bool operator==(const Variable& lhs, const Variable& rhs) {
-  return lhs.impl_.get() == rhs.impl_.get();
-}
 
 } // namespace autograd
 

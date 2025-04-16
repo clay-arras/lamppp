@@ -56,6 +56,7 @@ int main() {
 
 
   for (int i=0; i<10; i++) {
+
     Variable a1 = inputs.transpose().matmul(weights1);
     Variable z1 = a1.relu();
     Variable a2 = z1.matmul(weights2); // 1200 x 10
@@ -72,8 +73,8 @@ int main() {
     loss.backward();
 
     float learning_rate = 0.0001;
-    weights1 = Variable(weights1.data() - learning_rate * weights1.grad(), true);
-    weights2 = Variable(weights2.data() - learning_rate * weights2.grad(), true);
+    weights1 = Variable(weights1.data() + learning_rate * weights1.grad(), true);
+    weights2 = Variable(weights2.data() + learning_rate * weights2.grad(), true);
 
   }
 }

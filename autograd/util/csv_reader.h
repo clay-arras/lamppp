@@ -15,7 +15,7 @@
  * @param filename The name of the CSV file to read.
  * @return A pair containing a vector of data rows and a vector of labels.
  */
-std::pair<std::vector<std::vector<double>>, std::vector<int>> readCSV(
+std::pair<std::vector<std::vector<float>>, std::vector<std::vector<float>>> readCSV(
     const std::string& filename);
 
 #endif

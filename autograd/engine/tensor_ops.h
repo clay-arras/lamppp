@@ -17,9 +17,22 @@ Tensor operator-(float scalar, const Tensor& tensor);
 Tensor operator*(float scalar, const Tensor& tensor);
 Tensor operator/(float scalar, const Tensor& tensor);
 
-bool operator==(const Tensor& lhs, const Tensor& rhs);
+Tensor operator==(const Tensor& tensor, float scalar);
+Tensor operator!=(const Tensor& tensor, float scalar);
+Tensor operator>=(const Tensor& tensor, float scalar);
+Tensor operator<=(const Tensor& tensor, float scalar);
+Tensor operator>(const Tensor& tensor, float scalar);
+Tensor operator<(const Tensor& tensor, float scalar);
+
+Tensor operator==(float scalar, const Tensor& tensor);
+Tensor operator!=(float scalar, const Tensor& tensor);
+Tensor operator>=(float scalar, const Tensor& tensor);
+Tensor operator<=(float scalar, const Tensor& tensor);
+Tensor operator>(float scalar, const Tensor& tensor);
+Tensor operator<(float scalar, const Tensor& tensor);
 
 } // namespace ops
+
 } // namespace autograd
 
 #endif // _TENSOR_OPS_H_ 

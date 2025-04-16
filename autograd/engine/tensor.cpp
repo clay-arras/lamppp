@@ -36,6 +36,54 @@ Tensor Tensor::operator/(const Tensor& other) const {
   return Tensor(res_data, shape);
 }
 
+Tensor Tensor::operator==(const Tensor& other) const {
+  assert(shape == other.shape);
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array() == other.as_array());
+  return Tensor(res_data, shape);
+}
+
+Tensor Tensor::operator!=(const Tensor& other) const {
+  assert(shape == other.shape);
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array() != other.as_array());
+  return Tensor(res_data, shape);
+}
+
+Tensor Tensor::operator>=(const Tensor& other) const {
+  assert(shape == other.shape);
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array() >= other.as_array());
+  return Tensor(res_data, shape);
+}
+
+Tensor Tensor::operator<=(const Tensor& other) const {
+  assert(shape == other.shape);
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array() <= other.as_array());
+  return Tensor(res_data, shape);
+}
+
+Tensor Tensor::operator>(const Tensor& other) const {
+  assert(shape == other.shape);
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array() > other.as_array());
+  return Tensor(res_data, shape);
+}
+
+Tensor Tensor::operator<(const Tensor& other) const {
+  assert(shape == other.shape);
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array() < other.as_array());
+  return Tensor(res_data, shape);
+}
+
 Tensor Tensor::matmul(const Tensor& other)
     const {  // TODO(nlin): maybe implement as static method that takes in A and B?
   assert(shape.size() == 2);
@@ -45,6 +93,13 @@ Tensor Tensor::matmul(const Tensor& other)
   Eigen::Map<Eigen::MatrixXf> res(res_data.data(), shape[0], other.shape[1]);
   res = as_matrix(shape[0], shape[1]) *
         other.as_matrix(other.shape[0], other.shape[1]);
+  return Tensor(res_data, shape);
+}
+
+Tensor Tensor::T() const {
+  std::vector<float> res_data(data.size());
+  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
+  res = (as_array().transpose());
   return Tensor(res_data, shape);
 }
 
@@ -67,10 +122,6 @@ Tensor Tensor::relu() const {
   Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
   res = as_array().max(0.0F);
   return Tensor(res_data, shape);
-}
-
-bool Tensor::operator==(const Tensor& other) const {
-  return data == other.data;
 }
 
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {

@@ -22,9 +22,17 @@ class Tensor {
   Tensor operator-(const Tensor& other) const;
   Tensor operator*(const Tensor& other) const;
   Tensor operator/(const Tensor& other) const;
-  bool operator==(const Tensor& other) const;
+
+  Tensor operator==(const Tensor& other) const;
+  Tensor operator!=(const Tensor& other) const;
+  Tensor operator>=(const Tensor& other) const;
+  Tensor operator<=(const Tensor& other) const;
+  Tensor operator>(const Tensor& other) const;
+  Tensor operator<(const Tensor& other) const;
 
   Tensor matmul(const Tensor& other) const;
+  Tensor T() const;
+
   Tensor log() const;
   Tensor exp() const;
   Tensor relu() const;

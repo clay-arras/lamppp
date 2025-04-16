@@ -67,6 +67,14 @@ class Variable {
   Variable operator*(const Variable& other) const;
   Variable operator/(const Variable& other) const;
 
+  Variable operator==(const Variable& other) const;
+  Variable operator!=(const Variable& other) const;
+  Variable operator>=(const Variable& other) const;
+  Variable operator<=(const Variable& other) const;
+  Variable operator>(const Variable& other) const;
+  Variable operator<(const Variable& other) const;
+
+  Variable matmul(const Variable& other) const;
   Variable exp() const;
   Variable log() const;
   Variable relu() const;

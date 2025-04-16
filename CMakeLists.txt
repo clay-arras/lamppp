@@ -16,6 +16,7 @@ add_library(autograd_core # TODO: next step: split into different bench envs
     autograd/engine/tensor_ops.cpp
     autograd/engine/functions/basic_ops.cpp
     autograd/engine/functions/unary_ops.cpp
+    autograd/engine/functions/matrix_ops.cpp
     autograd/engine/function.cpp
     autograd/util/csv_reader.cpp
 )

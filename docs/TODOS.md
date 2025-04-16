@@ -20,5 +20,15 @@ Also:
 
 - make the leaf, requires_grad optimization
 
-- improvements:
-- a) make the leaf, fix everything else
+improvements:
+
+- a) make the is_leaf
+- b) clean up @variable.h
+- c) fix the requires_grad double calculating
+- d) fix the unnecessary shared_ptr making???
+
+<!-- - fix relu -->
+<!-- - fix mapping with > ==, etc. -->
+
+- create matmul
+- make mnist test run

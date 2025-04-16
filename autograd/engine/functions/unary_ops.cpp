@@ -31,17 +31,14 @@ variable_list LogarithmBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
-  assert(0); // NOTE: not implemented for now, PLEASE ADD MASKING WITH EIGEN S.T == returns a tensor mask
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
   
-  Tensor mask(self.data().data, self.data().shape);
-  for (auto& val : mask.data) {
-    val = (val > 0) ? 1.0F : 0.0F;
-  }
-  Variable mask_var(mask);
-  variable_list grad_inputs = {grad * mask_var}; 
+  Variable relu_var(self >= 0.0F);
+  self.incr_grad(relu_var.data() * grad.grad());
+
+  variable_list grad_inputs = {relu_var * grad}; 
   return grad_inputs;
 }
 
@@ -70,17 +67,13 @@ variable_list Logarithm::apply(const variable_list& inputs) {
 }
 
 variable_list ReLU::apply(const variable_list& inputs) {
-  assert(0); // TODO(nlin): NOT IMPLEMENTED
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
   Variable result = Variable(self.data().relu(), self.requires_grad());
-  
-  if (self.requires_grad()) {
-    auto backward_fn = std::make_shared<ReLUBackward>();
-    backward_fn->saved_inputs = std::make_unique<variable_list>(variable_list{self});
-    result.set_grad_fn(backward_fn);
-  }
+  auto backward_fn = std::make_shared<ReLUBackward>();
+  backward_fn->saved_inputs = std::make_unique<variable_list>(variable_list{self});
+  result.set_grad_fn(backward_fn);
   
   return {result};
 }

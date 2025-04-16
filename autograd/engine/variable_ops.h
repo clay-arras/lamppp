@@ -17,7 +17,19 @@ Variable operator-(float scalar, const Variable& var);
 Variable operator*(float scalar, const Variable& var);
 Variable operator/(float scalar, const Variable& var);
 
-bool operator==(const Variable& lhs, const Variable& rhs);
+Variable operator==(const Variable& var, float scalar);
+Variable operator!=(const Variable& var, float scalar);
+Variable operator>=(const Variable& var, float scalar);
+Variable operator<=(const Variable& var, float scalar);
+Variable operator>(const Variable& var, float scalar);
+Variable operator<(const Variable& var, float scalar);
+
+Variable operator==(float scalar, const Variable& var);
+Variable operator!=(float scalar, const Variable& var);
+Variable operator>=(float scalar, const Variable& var);
+Variable operator<=(float scalar, const Variable& var);
+Variable operator>(float scalar, const Variable& var);
+Variable operator<(float scalar, const Variable& var);
 
 } // namespace ops
 } // namespace autograd

@@ -16,7 +16,7 @@ jacobian for higher dimensional matrices: to calculate the jacobian, you flatten
 
 resource: https://cs231n.stanford.edu/handouts/derivatives.pdf
 
-matrix operations: matmul
+matrix operations: matmul, transpose
 reduction operations: sum, mean, max, min
 creation operatioons: zeros, ones, rand, tensor
 element-wise operations: +, -, \*, /

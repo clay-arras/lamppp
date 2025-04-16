@@ -26,5 +26,4 @@ struct ReLUBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
 
-
 }

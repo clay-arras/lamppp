@@ -8,6 +8,46 @@
 
 namespace autograd {
 
+void Variable::backward() {
+  std::vector<Variable> topo = topological_sort();
+  impl_->grad =
+      Tensor(std::vector<float>(impl_->data.data.size(), 1),
+             impl_->data.shape);  // TODO(nlin): make this better with getters
+  assert(!topo.empty());
+  for (Variable& node :
+       topo) {  // TODO(nlin): what is this, how to get upstream grad?
+    if (node.grad_fn() != nullptr) {
+      node.grad_fn()->apply({node});
+    }
+  }
+}
+
+void Variable::dfs(const Variable& v, std::unordered_set<Variable>& visited,
+                   std::vector<Variable>& topo) const {
+  if (visited.find(v) ==
+      visited.end()) {  // TODO(nlin): when would saved_inputs be zero???
+    visited.insert(v);
+    if (v.grad_fn() == nullptr || v.grad_fn()->saved_inputs == nullptr) {
+      topo.push_back(v);
+      return;
+    }
+    for (const auto& child : *(v.grad_fn()->saved_inputs)) {
+      dfs(child, visited, topo);
+    }
+    topo.push_back(v);
+  }
+}
+
+std::vector<Variable> Variable::topological_sort() {
+  std::unordered_set<Variable> visited;
+  std::vector<Variable> topo;
+
+  dfs(*this, visited, topo);
+  std::reverse(topo.begin(), topo.end());
+  return topo;
+}
+
+
 Variable Variable::operator+(const Variable& other)
     const {  // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
   auto add_fn = std::make_shared<Add>(); // TODO(nlin): need to remove the pointer, maybe make the AddFn static or something
@@ -51,43 +91,28 @@ Variable Variable::relu() const {
   return result[0];
 }
 
-void Variable::backward() {
-  std::vector<Variable> topo = topological_sort();
-  impl_->grad =
-      Tensor(std::vector<float>(impl_->data.data.size(), 1),
-             impl_->data.shape);  // TODO(nlin): make this better with getters
-  assert(!topo.empty());
-  for (Variable& node :
-       topo) {  // TODO(nlin): what is this, how to get upstream grad?
-    if (node.grad_fn() != nullptr) {
-      node.grad_fn()->apply({node});
-    }
-  }
+Variable Variable::operator==(const Variable& other) const { // TODO(nlin): separation of responsibility: maybe this is bad and just remove all this and keep it to tensor maybe? 
+  return Variable(data() == other.data(), false);
 }
 
-void Variable::dfs(const Variable& v, std::unordered_set<Variable>& visited,
-                   std::vector<Variable>& topo) const {
-  if (visited.find(v) ==
-      visited.end()) {  // TODO(nlin): when would saved_inputs be zero???
-    visited.insert(v);
-    if (v.grad_fn() == nullptr || v.grad_fn()->saved_inputs == nullptr) {
-      topo.push_back(v);
-      return;
-    }
-    for (const auto& child : *(v.grad_fn()->saved_inputs)) {
-      dfs(child, visited, topo);
-    }
-    topo.push_back(v);
-  }
+Variable Variable::operator!=(const Variable& other) const {
+  return Variable(data() != other.data(), false);
 }
 
-std::vector<Variable> Variable::topological_sort() {
-  std::unordered_set<Variable> visited;
-  std::vector<Variable> topo;
+Variable Variable::operator>=(const Variable& other) const {
+  return Variable(data() >= other.data(), false);
+}
 
-  dfs(*this, visited, topo);
-  std::reverse(topo.begin(), topo.end());
-  return topo;
+Variable Variable::operator<=(const Variable& other) const {
+  return Variable(data() <= other.data(), false);
+}
+
+Variable Variable::operator>(const Variable& other) const {
+  return Variable(data() > other.data(), false);
+}
+
+Variable Variable::operator<(const Variable& other) const {
+  return Variable(data() < other.data(), false);
 }
 
 std::ostream& operator<<(std::ostream& os, const Variable& obj) {

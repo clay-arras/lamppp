@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(autograd_cpp)
 
+set(Python_EXECUTABLE ".venv/bin/python")
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,6 +11,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g")
 
 find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
+set(PYBIND11_FINDPYTHON ON)
+find_package(pybind11 CONFIG REQUIRED)
 
 add_library(autograd_core # TODO: next step: split into different bench envs 
     autograd/engine/variable.cpp
@@ -32,6 +37,9 @@ target_link_libraries(test_playground autograd_core)
 
 add_executable(mnist autograd/examples/mnist.cpp)
 target_link_libraries(mnist autograd_core)
+
+pybind11_add_module(cpp_custom_bind test/cpp/test_stress.cpp)
+target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if (NOT CLANG_FORMAT_EXE)

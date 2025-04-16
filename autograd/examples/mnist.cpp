@@ -49,32 +49,30 @@ int main() {
   Variable weights2(Tensor(w2_data, {256, 10}), true);
 
   std::vector<float> flattened_data = flatten(data);
-  Variable inputs(Tensor(flattened_data, {784, 1200}), true);
+  Variable inputs(Tensor(flattened_data, {784, 1200}), false);
 
   std::vector<float> flattened_labels = flatten(label);
-  Variable labels(Tensor(flattened_labels, {10, 1200}), true); // IS THIS SHAPE RIGHT
-
+  Variable labels(Tensor(flattened_labels, {10, 1200}), false); 
 
   for (int i=0; i<10; i++) {
-
     Variable a1 = inputs.transpose().matmul(weights1);
     Variable z1 = a1.relu();
     Variable a2 = z1.matmul(weights2); // 1200 x 10
 
     Variable exp = a2.exp();
+    Variable exp_tmp = a2.exp(); // 1200 x 1
     std::vector<float> broad_data(10, 1);
     Variable broad(Tensor(broad_data, {1, 10}), false);
-    Variable denom = exp.sum(1).matmul(broad) + 1e-10F; // 1200 x 10
+    Variable denom = exp_tmp.sum(1).matmul(broad) + 1e-10F; // 1200 x 10
 
     Variable z2 = exp / denom;
 
-    Variable loss = (-1.0F) * (z2.log() * labels.transpose()).sum(0).sum(1);
+    Variable loss = ((-1.0F) * z2.log()*labels.transpose()).sum(0).sum(1) / 1200;
     std::cout << loss << std::endl;
     loss.backward();
 
-    float learning_rate = 0.0001;
-    weights1 = Variable(weights1.data() + learning_rate * weights1.grad(), true);
-    weights2 = Variable(weights2.data() + learning_rate * weights2.grad(), true);
-
+    float learning_rate = 0.01;
+    weights1 = Variable(weights1.data() - learning_rate * weights1.grad(), true);
+    weights2 = Variable(weights2.data() - learning_rate * weights2.grad(), true);
   }
 }

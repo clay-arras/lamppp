@@ -13,9 +13,21 @@ struct Summation : public Function {
   variable_list apply(const variable_list& inputs) override;
 };
 
+struct Maximum : public Function {
+  int axis;
+  explicit Maximum(int axis) : axis(axis) {}
+  variable_list apply(const variable_list& inputs) override;
+};
+
 struct SummationBackward : public Function {
   int axis;
   explicit SummationBackward(int axis) : axis(axis) {}
+  variable_list apply(const variable_list& gradOutputs) override;
+};
+
+struct MaximumBackward : public Function {
+  int axis;
+  explicit MaximumBackward(int axis) : axis(axis) {}
   variable_list apply(const variable_list& gradOutputs) override;
 };
 

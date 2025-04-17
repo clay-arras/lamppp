@@ -109,6 +109,12 @@ Variable Variable::sum(int axis) const {
   return result[0];
 }
 
+Variable Variable::max(int axis) const {
+  auto max_fn = std::make_shared<Maximum>(axis);
+  variable_list result = max_fn->apply({*this});
+  return result[0];
+}
+
 Variable Variable::operator==(const Variable& other)
     const {  // TODO(nlin): separation of responsibility: maybe this is bad and just remove all this and keep it to tensor maybe?
   return Variable(data() == other.data(), false);

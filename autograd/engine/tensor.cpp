@@ -149,7 +149,28 @@ Tensor Tensor::sum(int axis) const {
   } else {
     assert(
         0);  // TODO(nlin): need to implement general thingy with collapsing!!!!
-  }
+  } // TODO(nlin): this is disgusting please refactor ASAP
+  return Tensor(res_data, new_shape);
+}
+
+Tensor Tensor::max(int axis) const {
+  assert(axis >= 0 && axis < static_cast<int>(shape.size()));
+  std::vector<int> new_shape = shape;
+  new_shape[axis] = 1;
+
+  std::vector<float> res_data(data.size() / shape[axis]);
+  if (axis == 0) {
+    Eigen::Map<Eigen::Matrix<float, 1, Eigen::Dynamic>> res(res_data.data(), 1,
+                                                            shape[1]);
+    res = as_array().reshaped(shape[0], shape[1]).colwise().maxCoeff().array();
+  } else if (axis == 1) {
+    Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, 1>> res(res_data.data(),
+                                                            shape[0], 1);
+    res = as_array().reshaped(shape[0], shape[1]).rowwise().maxCoeff().array();
+  } else {
+    assert(
+        0);  
+  } 
   return Tensor(res_data, new_shape);
 }
 

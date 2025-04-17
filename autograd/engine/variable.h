@@ -70,7 +70,8 @@ class Variable {
 
   Variable matmul(const Variable& other) const;
   Variable transpose() const;
-  Variable sum(int axis = -1) const;
+  Variable sum(int axis) const;
+  Variable max(int axis) const;
 
   Variable exp() const;
   Variable log() const;

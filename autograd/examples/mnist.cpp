@@ -2,6 +2,7 @@
 #include <cassert>
 #include <iostream>
 #include "autograd/engine/tensor_ops.h"
+#include "autograd/engine/constructor.h"
 #include "autograd/engine/variable.h"
 #include "autograd/engine/variable_ops.h"
 #include "autograd/util/csv_reader.h"
@@ -12,6 +13,8 @@
 
 using autograd::Tensor;
 using autograd::Variable;
+using autograd::rand;
+using autograd::tensor;
 
 namespace {
 
@@ -67,13 +70,11 @@ float calculate_accuracy(const Variable& weights1, const Variable& weights2,
                         const std::vector<std::vector<float>>& data, 
                         const std::vector<std::vector<float>>& labels) {
   int batch_size = data.size();
+
+  Variable target_inputs = tensor(data, false);
+  Variable target_labels = tensor(labels, false);
   
-  std::vector<float> flattened_data = flatten(data);
-  Variable inputs(Tensor(flattened_data, {784, batch_size}), false);
-  std::vector<float> flattened_labels = flatten(labels);
-  Variable target_labels(Tensor(flattened_labels, {10, batch_size}), false);
-  
-  Variable a1 = inputs.transpose().matmul(weights1);
+  Variable a1 = target_inputs.matmul(weights1);
   Variable z1 = a1.relu();
   Variable a2 = z1.matmul(weights2);
   
@@ -85,7 +86,7 @@ float calculate_accuracy(const Variable& weights1, const Variable& weights2,
   
   Variable z2 = exp / denom;
   
-  Variable true_scores = (z2 * target_labels.transpose()).sum(1);
+  Variable true_scores = (z2 * target_labels).sum(1);
   Variable max_scores = z2.max(1);
   Variable correct = (true_scores == max_scores).sum(0).sum(1) / batch_size;
   
@@ -98,36 +99,21 @@ int main() {
   auto [train_data, train_label] = readCSV("data/mnist_train.csv");
   auto [test_data, test_label] = readCSV("data/mnist_test.csv");
 
-  std::vector<float> w1_data;
-  w1_data.reserve(784 * 256);
-  for (int i = 0; i < 784 * 256; i++) {
-    w1_data.push_back(static_cast<float>(rand()) /
-                      static_cast<float>(RAND_MAX) * 0.01F);
-  }
-  std::vector<float> w2_data;
-  w2_data.reserve(256 * 10);
-  for (int i = 0; i < 256 * 10; i++) {
-    w2_data.push_back(static_cast<float>(rand()) /
-                      static_cast<float>(RAND_MAX) * 0.01F);
-  }
-
-  Variable weights1(Tensor(w1_data, {784, 256}), true);
-  Variable weights2(Tensor(w2_data, {256, 10}), true);
+  Variable weights1 = rand({784, 256}, true) / 100;
+  Variable weights2 = rand({256, 10}, true) / 100;
 
   int epochs = 1e9;
-  int batch_size = 128;
+  int batch_size = 128; 
 
   for (int i = 0; i < epochs; i++) {
     std::vector<std::vector<float>> out_data;
     std::vector<std::vector<float>> out_labels;
     sample_batch_sample(train_data, train_label, batch_size, out_data, out_labels);
 
-    std::vector<float> flattened_data = flatten(out_data);
-    Variable inputs(Tensor(flattened_data, {784, batch_size}), false);
-    std::vector<float> flattened_labels = flatten(out_labels);
-    Variable labels(Tensor(flattened_labels, {10, batch_size}), false);
+    Variable inputs = tensor(out_data, false);
+    Variable labels = tensor(out_labels, false);
 
-    Variable a1 = inputs.transpose().matmul(weights1);
+    Variable a1 = inputs.matmul(weights1);
     Variable z1 = a1.relu();
     Variable a2 = z1.matmul(weights2);  // 1200 x 10
 
@@ -136,15 +122,14 @@ int main() {
     std::vector<float> broad_data(10, 1);
     Variable broad(Tensor(broad_data, {1, 10}), false);
     Variable denom = exp_tmp.sum(1).matmul(broad) + 1e-10F;  // 1200 x 10
-
     Variable z2 = exp / denom;
 
     Variable loss =
-        ((-1.0F) * z2.log() * labels.transpose()).sum(0).sum(1) / 1200;
+        ((-1.0F) * z2.log() * labels).sum(0).sum(1) / 1200;
     loss.backward();
 
     if (i % 100 == 0) {
-      Variable true_scores = (z2 * labels.transpose()).sum(1); // 128 x 1
+      Variable true_scores = (z2 * labels).sum(1); // 128 x 1
       Variable max_scores = z2.max(1);
       Variable correct = (true_scores == max_scores).sum(0).sum(1) / batch_size;
       std::cout << "Iteration " << i << " - Training accuracy: " << correct.data().data[0] << std::endl;

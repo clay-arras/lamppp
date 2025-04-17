@@ -1,12 +1,13 @@
-#include "basic_ops.h"
-#include <cassert>
 #include "matrix_ops.h"
+#include <cassert>
 #include "autograd/engine/function.h"
 #include "autograd/engine/variable.h"
+#include "basic_ops.h"
 
 namespace autograd {
 
-variable_list MatrixMultiplicationBackward::apply(const variable_list& gradOutputs) {
+variable_list MatrixMultiplicationBackward::apply(
+    const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
@@ -15,7 +16,8 @@ variable_list MatrixMultiplicationBackward::apply(const variable_list& gradOutpu
   self.incr_grad(grad.grad().matmul(other.data().transpose()));
   other.incr_grad(self.data().transpose().matmul(grad.grad()));
 
-  variable_list grad_inputs = {}; // TODO(nlin): remove these maybe, this isn't right
+  variable_list grad_inputs =
+      {};  // TODO(nlin): remove these maybe, this isn't right
   return grad_inputs;
 }
 
@@ -26,7 +28,7 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
 
   self.incr_grad(grad.grad().transpose());
 
-  variable_list grad_inputs = {}; 
+  variable_list grad_inputs = {};
   return grad_inputs;
 }
 
@@ -55,4 +57,4 @@ variable_list Transpose::apply(const variable_list& inputs) {
   return {result};
 }
 
-}
+}  // namespace autograd

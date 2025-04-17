@@ -1,6 +1,6 @@
 #include "tensor_ops.h"
-#include <cassert>
 #include <Eigen/Core>
+#include <cassert>
 
 namespace autograd {
 inline namespace ops {
@@ -145,7 +145,6 @@ Tensor operator<(float scalar, const Tensor& tensor) {
   return Tensor(res_data, tensor.shape);
 }
 
+}  // namespace ops
 
-} // namespace ops
-
-} // namespace autograd 
+}  // namespace autograd

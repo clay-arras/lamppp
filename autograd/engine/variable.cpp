@@ -4,20 +4,18 @@
 #include <memory>
 #include <unordered_set>
 #include "autograd/engine/functions/basic_ops.h"
-#include "autograd/engine/functions/unary_ops.h"
 #include "autograd/engine/functions/matrix_ops.h"
 #include "autograd/engine/functions/reduct_ops.h"
+#include "autograd/engine/functions/unary_ops.h"
 
 namespace autograd {
 
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad =
-      Tensor(std::vector<float>(impl_->data.data.size(), 1),
-             impl_->data.shape);  // TODO(nlin): make this better with getters
-  assert(!topo.empty());
-  for (Variable& node :
-       topo) {  // TODO(nlin): what is this, how to get upstream grad?
+      Tensor(std::vector<float>(impl_->data.size(), 1),
+             impl_->data.shape);  
+  for (Variable& node : topo) {
     if (node.grad_fn() != nullptr) {
       node.grad_fn()->apply({node});
     }
@@ -49,10 +47,10 @@ std::vector<Variable> Variable::topological_sort() {
   return topo;
 }
 
-
 Variable Variable::operator+(const Variable& other)
     const {  // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
-  auto add_fn = std::make_shared<Add>(); // TODO(nlin): need to remove the pointer, maybe make the AddFn static or something
+  auto add_fn = std::make_shared<
+      Add>();  // TODO(nlin): need to remove the pointer, maybe make the AddFn static or something
   variable_list result = add_fn->apply({*this, other});
   return result[0];
 }
@@ -111,7 +109,8 @@ Variable Variable::sum(int axis) const {
   return result[0];
 }
 
-Variable Variable::operator==(const Variable& other) const { // TODO(nlin): separation of responsibility: maybe this is bad and just remove all this and keep it to tensor maybe? 
+Variable Variable::operator==(const Variable& other)
+    const {  // TODO(nlin): separation of responsibility: maybe this is bad and just remove all this and keep it to tensor maybe?
   return Variable(data() == other.data(), false);
 }
 
@@ -143,4 +142,4 @@ std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   return os;
 }
 
-}
+}  // namespace autograd

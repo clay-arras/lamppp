@@ -32,13 +32,13 @@ target_include_directories(autograd_core PUBLIC
     ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(test_playground test/cpp/test_playground.cpp)
+add_executable(test_playground test/cpp/stress/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)
 
 add_executable(mnist autograd/examples/mnist.cpp)
 target_link_libraries(mnist autograd_core)
 
-pybind11_add_module(cpp_custom_bind test/cpp/test_stress.cpp)
+pybind11_add_module(cpp_custom_bind test/cpp/stress/test_stress.cpp)
 target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)

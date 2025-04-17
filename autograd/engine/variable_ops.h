@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef _VARIABLE_OPS_H_
 #define _VARIABLE_OPS_H_
 
@@ -31,7 +32,7 @@ Variable operator<=(float scalar, const Variable& var);
 Variable operator>(float scalar, const Variable& var);
 Variable operator<(float scalar, const Variable& var);
 
-} // namespace ops
-} // namespace autograd
+}  // namespace ops
+}  // namespace autograd
 
-#endif // _VARIABLE_OPS_H_ 
+#endif  // _VARIABLE_OPS_H_

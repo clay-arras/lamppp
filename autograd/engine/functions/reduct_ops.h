@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef _REDUCT_OPS_H_
+#define _REDUCT_OPS_H_
+
 #include "autograd/engine/function.h"
 
 namespace autograd {
@@ -14,4 +19,6 @@ struct SummationBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
 
-}
+}  // namespace autograd
+
+#endif  // _REDUCT_OPS_H_

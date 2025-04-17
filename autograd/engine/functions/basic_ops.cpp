@@ -2,8 +2,8 @@
 #include <cassert>
 #include <memory>
 #include "autograd/engine/function.h"
-#include "autograd/engine/variable.h"
 #include "autograd/engine/tensor_ops.h"
+#include "autograd/engine/variable.h"
 
 namespace autograd {
 
@@ -53,7 +53,8 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   Variable& other = (*saved_inputs)[1];
 
   self.incr_grad(grad.grad() / other.data());
-  other.incr_grad((-1.0F) * (self.data() * grad.grad() / (other.data() * other.data())));
+  other.incr_grad((-1.0F) *
+                  (self.data() * grad.grad() / (other.data() * other.data())));
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -113,4 +114,4 @@ variable_list Divide::apply(const variable_list& inputs) {
   return {result};
 }
 
-}
+}  // namespace autograd

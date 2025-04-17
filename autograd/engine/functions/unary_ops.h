@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef _UNARY_OPS_H_
+#define _UNARY_OPS_H_
+
 #include <autograd/engine/function.h>
 
 namespace autograd {
@@ -26,4 +31,6 @@ struct ReLUBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
 
-}
+}  // namespace autograd
+
+#endif  // _UNARY_OPS_H_

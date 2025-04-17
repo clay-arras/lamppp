@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef _TENSOR_OPS_H_
 #define _TENSOR_OPS_H_
 
@@ -31,8 +32,8 @@ Tensor operator<=(float scalar, const Tensor& tensor);
 Tensor operator>(float scalar, const Tensor& tensor);
 Tensor operator<(float scalar, const Tensor& tensor);
 
-} // namespace ops
+}  // namespace ops
 
-} // namespace autograd
+}  // namespace autograd
 
-#endif // _TENSOR_OPS_H_ 
+#endif  // _TENSOR_OPS_H_

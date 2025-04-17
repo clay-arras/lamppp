@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+
 #ifndef _VARIABLE_H_
 #define _VARIABLE_H_
 
@@ -7,6 +7,7 @@
 #include <memory>
 #include <unordered_set>
 #include <utility>
+#include <vector>
 #include "function.h"
 #include "tensor.h"
 
@@ -22,7 +23,7 @@ struct VariableImpl {
 
   explicit VariableImpl(Tensor data, bool requires_grad = false) {
     this->data = std::move(data);
-    this->grad = Tensor(std::vector<float>(this->data.data.size(), 0.0F),
+    this->grad = Tensor(std::vector<float>(this->data.size(), 0.0F),
                         this->data.shape);
     this->requires_grad = requires_grad;
   }
@@ -30,29 +31,22 @@ struct VariableImpl {
 
 class Variable {
  public:
-  Variable()
-      : impl_(std::make_shared<VariableImpl>(Tensor({0.0F}, {1}), false)) {}
   explicit Variable(std::shared_ptr<VariableImpl>& impl)
       : impl_(std::move(impl)) {}
   explicit Variable(const Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
   std::shared_ptr<VariableImpl> impl_;
-  Tensor& grad() { return impl_->grad; }
+
   void zero_grad() {
-    impl_->grad =
-        Tensor(std::vector<float>(data().data.size(), 0.0F), data().shape);
+    impl_->grad = Tensor(std::vector<float>(data().size(), 0.0F), data().shape);
   }
   void incr_grad(const Tensor& other_grad) {
     impl_->grad = impl_->grad + other_grad;
   }
-
-  Tensor& data() { return impl_->data; }
-  std::shared_ptr<Function>& grad_fn() { return impl_->_grad_fn; }
   void set_grad_fn(std::shared_ptr<Function> grad_fn) {
     impl_->_grad_fn = std::move(grad_fn);
   }
-  bool& requires_grad() { return impl_->requires_grad; }
 
   const Tensor& grad() const { return impl_->grad; }
   const Tensor& data() const { return impl_->data; }
@@ -89,7 +83,7 @@ class Variable {
            std::vector<Variable>& topo) const;
 };
 
-} // namespace autograd
+}  // namespace autograd
 
 namespace std {
 template <>

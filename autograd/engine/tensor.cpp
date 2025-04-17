@@ -104,9 +104,9 @@ Tensor Tensor::transpose() const {
 
   Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> res_matrix(
       res_data.data(), new_shape[0], new_shape[1]);
-  Eigen::Map<const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> src_matrix(
-      data.data(), shape[0], shape[1]);
-      
+  Eigen::Map<const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>>
+      src_matrix(data.data(), shape[0], shape[1]);
+
   res_matrix = src_matrix.transpose();
   return Tensor(res_data, new_shape);
 }
@@ -132,21 +132,23 @@ Tensor Tensor::relu() const {
   return Tensor(res_data, shape);
 }
 
-Tensor Tensor::sum(int axis) const{
+Tensor Tensor::sum(int axis) const {
   assert(axis >= 0 && axis < static_cast<int>(shape.size()));
   std::vector<int> new_shape = shape;
-  // new_shape.erase(new_shape.begin() + axis);
   new_shape[axis] = 1;
 
   std::vector<float> res_data(data.size() / shape[axis]);
   if (axis == 0) {
-    Eigen::Map<Eigen::Matrix<float, 1, Eigen::Dynamic>> res(res_data.data(), 1, shape[1]);
+    Eigen::Map<Eigen::Matrix<float, 1, Eigen::Dynamic>> res(res_data.data(), 1,
+                                                            shape[1]);
     res = as_array().reshaped(shape[0], shape[1]).colwise().sum().array();
   } else if (axis == 1) {
-    Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, 1>> res(res_data.data(), shape[0], 1);
+    Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, 1>> res(res_data.data(),
+                                                            shape[0], 1);
     res = as_array().reshaped(shape[0], shape[1]).rowwise().sum().array();
   } else {
-    assert(0); // TODO(nlin): need to implement general thingy with collapsing!!!!
+    assert(
+        0);  // TODO(nlin): need to implement general thingy with collapsing!!!!
   }
   return Tensor(res_data, new_shape);
 }
@@ -170,4 +172,4 @@ std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
   return os;
 }
 
-}
+}  // namespace autograd

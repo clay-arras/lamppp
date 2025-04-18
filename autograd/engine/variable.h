@@ -32,13 +32,11 @@ struct VariableImpl {
 
 
 // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
-// TODO(nlin): need to remove the pointer, maybe make the AddFn static or something
-
 struct VariableOpFact {
   template <typename Op, typename... Args>
-  static variable_list apply(variable_list variables, Args&&... args) { // TODO(nlin): get rid of the make_shared, it's unnecessary
-    auto op_fn = std::make_shared<Op>(std::forward<Args>(args)...); 
-    variable_list result = op_fn->template apply<Args...>(variables, std::forward<Args>(args)...);
+  static variable_list apply(variable_list variables, Args&&... args) {
+    Op op_fn(std::forward<Args>(args)...);
+    variable_list result = op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
     return result;
   }
 };

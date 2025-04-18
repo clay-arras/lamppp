@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <numeric>
 
 #ifndef _FUNCTION_H_
 #define _FUNCTION_H_

@@ -1,15 +1,6 @@
-# MicroGrad C++
+# AutoGrad C++
 
-A from-scratch implementation of autograd in both Python and C++, inspired by Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd), with MNIST digit classification in multiple implementations.
-
-## Core Implementations
-
-- **Pure Python Autograd Engine**: Complete autograd implementation from scratch in Python
-- **Pure C++ Autograd Engine**: Full autograd system rebuilt from the ground up in C++
-- **MNIST Implementations**:
-  - Using only basic PyTorch vector operations
-  - Using only our custom Python autograd engine
-  - Using our C++ autograd engine from scratch
+A C++ implementation of automatic differentiation (autograd) from scratch. This project includes MNIST digit classification to demonstrate the capabilities of the autograd engine.
 
 ## Architecture
 
@@ -17,47 +8,47 @@ The project is organized into several key components:
 
 - **Engine Module**: Core autograd implementation with automatic differentiation
 
-  - `Value` class with operator overloading for computational graph construction
+  - `Variable` class with operator overloading for computational graph construction
+  - `Function` and specialized operation classes for forward/backward propagation
+  - `Tensor` class for n-dimensional array operations
   - Backward pass with topological sort for efficient gradient computation
-  - Support for higher-order derivatives
 
-- **Neural Network Module**: Modular neural network building blocks
+- **Operations**: Rich set of differentiable operations
 
-  - `Neuron`, `Layer`, and `MultiLayerPerceptron` classes for network construction
-  - Support for activation functions (ReLU, tanh) and customizable architectures
-  - Fast layer implementations for optimized performance
+  - Basic operations: add, subtract, multiply, divide
+  - Unary operations: exp, log, relu
+  - Matrix operations: matrix multiplication, transpose
+  - Reduction operations: sum, max
 
-- **MNIST Module**: Implementations for digit classification
+- **MNIST Example**: Digit classification implementation
 
-  - Standard implementation with automatic differentiation
-  - Fast implementation with optimized batch processing
+  - Neural network implementation using the autograd framework
+  - Data loading and preprocessing utilities
 
 - **Utility Module**: Supporting functionality
   - CSV data loading utilities for datasets
-  - Eigen integration for matrix operations with autograd values
+  - Eigen integration for efficient matrix operations
 
 ## Requirements
 
 - C++17 compatible compiler (g++-14 recommended)
 - CMake 3.10+
-- Python 3.11+
-- Eigen 3.4+ (for matrix operations)
-- clang-format (for code formatting)
-- clang-tidy (for static analysis)
+- Eigen 3.4+ for matrix operations
+- Google Benchmark (for running benchmarks)
+- clang-format and clang-tidy for code formatting and static analysis
 
 ## Features
 
-- **Comprehensive Autograd Engine**: Support for operations (+, -, \*, /, pow, exp, log) with automatic differentiation
-- **Modern C++ Design**: Extensive use of smart pointers and RAII principles
-- **Neural Network Framework**: Modular architecture with customizable layers and activation functions
-- **Performance Optimizations**: Batch processing capabilities with mathematical optimizations
-- **Eigen Integration**: Seamless integration with the Eigen library for efficient matrix operations
+- **Modern C++ Design**: Use of templates, CRTP pattern, and smart pointers
+- **Comprehensive Autograd Engine**: Support for a wide range of operations with automatic differentiation
+- **Performance Optimizations**: Efficient memory management and matrix operations
+- **Eigen Integration**: Seamless integration with the Eigen library
 
 ## Building and Running
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/autograd_cpp.git
+git clone https://github.com/clay-arras/autograd_cpp.git
 cd autograd_cpp
 
 # Create build directory and generate build files
@@ -72,18 +63,40 @@ cmake --build .
 ./mnist
 
 # Run tests
-./test_engine
-./test_nn
-./test_mnist
-./test_fast_mnist
+./test_playground
 
-# Format code (optional)
+# Format code
 cmake --build . --target format
+```
+
+## Project Structure
+
+```
+autograd/
+├── engine/              # Core autograd components
+│   ├── functions/       # Implementations of differentiable operations
+│   │   ├── basic_ops.*  # Addition, subtraction, multiplication, division
+│   │   ├── matrix_ops.* # Matrix operations (matmul, transpose)
+│   │   ├── reduct_ops.* # Reduction operations (sum, max)
+│   │   └── unary_ops.*  # Unary operations (exp, log, relu)
+│   ├── variable.*       # Variable class for autograd
+│   ├── function.*       # Base function class
+│   ├── forward_function.* # Template for forward operations
+│   └── tensor.*         # Tensor implementation
+├── examples/            # Example implementations
+│   └── mnist.*          # MNIST digit classifier
+└── util/                # Utility functions
+    └── csv_reader.*     # CSV file loading utility
+
+test/
+├── cpp/                 # C++ tests
+├── python/              # Python tests
+└── benchmarks/          # Performance benchmarks
 ```
 
 ## Future Developments
 
-- Improved parallelization strategies
-- CUDA support for GPU acceleration
-- Expanded operation support
-- Optimization algorithms (Adam, RMSProp)
+- GPU acceleration
+- More neural network layers
+- Optimization algorithms (SGD, Adam, etc.)
+- Additional operation support

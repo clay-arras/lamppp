@@ -5,6 +5,7 @@
 
 #include "function.h"
 #include "variable.h"
+#include <numeric>
 
 namespace autograd {
 

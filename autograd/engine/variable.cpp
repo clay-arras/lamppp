@@ -47,72 +47,56 @@ std::vector<Variable> Variable::topological_sort() {
   return topo;
 }
 
-Variable Variable::operator+(const Variable& other)
-    const {  // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
-  auto add_fn = std::make_shared<
-      Add>();  // TODO(nlin): need to remove the pointer, maybe make the AddFn static or something
-  variable_list result = add_fn->apply({*this, other});
-  return result[0];
+std::ostream& operator<<(std::ostream& os, const Variable& obj) {
+  os << "Variable(requires_grad=" << obj.requires_grad();
+  os << ", data=" << obj.data();
+  os << ", grad=" << obj.grad();
+  os << ", grad_fn=" << obj.grad_fn() << ")";
+  return os;
+}
+
+Variable Variable::operator+(const Variable& other) const {  
+  return VariableOpFact::apply<Add>({*this, other})[0];
 }
 
 Variable Variable::operator-(const Variable& other) const {
-  auto sub_fn = std::make_shared<Subtract>();
-  variable_list result = sub_fn->apply({*this, other});
-  return result[0];
+  return VariableOpFact::apply<Subtract>({*this, other})[0];
 }
 
 Variable Variable::operator*(const Variable& other) const {
-  auto mul_fn = std::make_shared<Multiply>();
-  variable_list result = mul_fn->apply({*this, other});
-  return result[0];
+  return VariableOpFact::apply<Multiply>({*this, other})[0];
 }
 
 Variable Variable::operator/(const Variable& other) const {
-  auto div_fn = std::make_shared<Divide>();
-  variable_list result = div_fn->apply({*this, other});
-  return result[0];
+  return VariableOpFact::apply<Divide>({*this, other})[0];
 }
 
 Variable Variable::exp() const {
-  auto exp_fn = std::make_shared<Exponential>();
-  variable_list result = exp_fn->apply({*this});
-  return result[0];
+  return VariableOpFact::apply<Exponential>({*this})[0];
 }
 
 Variable Variable::log() const {
-  auto log_fn = std::make_shared<Logarithm>();
-  variable_list result = log_fn->apply({*this});
-  return result[0];
+  return VariableOpFact::apply<Logarithm>({*this})[0];
 }
 
 Variable Variable::relu() const {
-  auto relu_fn = std::make_shared<ReLU>();
-  variable_list result = relu_fn->apply({*this});
-  return result[0];
+  return VariableOpFact::apply<ReLU>({*this})[0];
 }
 
 Variable Variable::matmul(const Variable& other) const {
-  auto matmul_fn = std::make_shared<MatrixMultiplication>();
-  variable_list result = matmul_fn->apply({*this, other});
-  return result[0];
+  return VariableOpFact::apply<MatrixMultiplication>({*this, other})[0];
 }
 
 Variable Variable::transpose() const {
-  auto transpose_fn = std::make_shared<Transpose>();
-  variable_list result = transpose_fn->apply({*this});
-  return result[0];
+  return VariableOpFact::apply<Transpose>({*this})[0];
 }
 
 Variable Variable::sum(int axis) const {
-  auto sum_fn = std::make_shared<Summation>(axis);
-  variable_list result = sum_fn->apply({*this});
-  return result[0];
+  return VariableOpFact::apply<Summation>({*this}, axis)[0];
 }
 
 Variable Variable::max(int axis) const {
-  auto max_fn = std::make_shared<Maximum>(axis);
-  variable_list result = max_fn->apply({*this});
-  return result[0];
+  return VariableOpFact::apply<Maximum>({*this}, axis)[0];
 }
 
 Variable Variable::operator==(const Variable& other)
@@ -138,14 +122,6 @@ Variable Variable::operator>(const Variable& other) const {
 
 Variable Variable::operator<(const Variable& other) const {
   return Variable(data() < other.data(), false);
-}
-
-std::ostream& operator<<(std::ostream& os, const Variable& obj) {
-  os << "Variable(requires_grad=" << obj.requires_grad();
-  os << ", data=" << obj.data();
-  os << ", grad=" << obj.grad();
-  os << ", grad_fn=" << obj.grad_fn() << ")";
-  return os;
 }
 
 }  // namespace autograd

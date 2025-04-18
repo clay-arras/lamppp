@@ -90,30 +90,18 @@ variable_list MaximumBackward::apply(const variable_list& gradOutputs) { // TODO
   return grad_inputs;
 }
 
-variable_list Summation::apply(const variable_list& inputs) {
+Tensor Summation::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  Variable result = Variable(self.data().sum(axis), true);
-  auto backward_fn = std::make_shared<SummationBackward>(axis);
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self});
-  backward_fn->axis = axis;
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data().sum(axis);
 }
 
-variable_list Maximum::apply(const variable_list& inputs) {
-  assert(inputs.size() == 1);
+Tensor Maximum::execute(const variable_list& inputs) const {
+  assert(inputs.size() == 1); 
   const Variable& self = inputs[0];
 
-  Variable result = Variable(self.data().max(axis), true);
-  auto backward_fn = std::make_shared<MaximumBackward>(axis);
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self});
-  backward_fn->axis = axis;
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data().max(axis);
 }
 
 }  // namespace autograd

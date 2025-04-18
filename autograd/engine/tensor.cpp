@@ -174,10 +174,16 @@ Tensor Tensor::max(int axis) const {
   return Tensor(res_data, new_shape);
 }
 
+const int kMaxPrintNumel = 20;
+
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
   os << "Tensor(data=[";
   for (size_t i = 0; i < obj.data.size(); i++) {
     os << obj.data[i];
+    if (i >= kMaxPrintNumel) {
+      os << "...";
+      break;
+    }
     if (i < obj.data.size() - 1) {
       os << ", ";
     }

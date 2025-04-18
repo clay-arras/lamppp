@@ -60,58 +60,37 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
-variable_list Add::apply(
-    const variable_list&
-        inputs) {  // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
+// TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
+Tensor Add::execute(const variable_list& inputs) {  
   assert(inputs.size() == 2);
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  Variable result = Variable(self.data() + other.data(), true);
-  auto backward_fn = std::make_shared<AddBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self, other});
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data() + other.data();
 }
 
-variable_list Subtract::apply(const variable_list& inputs) {
+Tensor Subtract::execute(const variable_list& inputs) {
   assert(inputs.size() == 2);
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  Variable result = Variable(self.data() - other.data(), true);
-  auto backward_fn = std::make_shared<SubtractBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self, other});
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data() - other.data();
 }
 
-variable_list Multiply::apply(const variable_list& inputs) {
+Tensor Multiply::execute(const variable_list& inputs) {
   assert(inputs.size() == 2);
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  Variable result = Variable(self.data() * other.data(), true);
-  auto backward_fn = std::make_shared<MultiplyBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self, other});
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data() * other.data();
 }
 
-variable_list Divide::apply(const variable_list& inputs) {
+Tensor Divide::execute(const variable_list& inputs) {
   assert(inputs.size() == 2);
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  Variable result = Variable(self.data() / other.data(), true);
-  auto backward_fn = std::make_shared<DivideBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self, other});
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data() / other.data();
 }
 
 }  // namespace autograd

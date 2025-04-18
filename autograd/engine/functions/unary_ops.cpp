@@ -1,6 +1,7 @@
 #include "unary_ops.h"
 #include <cassert>
 #include <cmath>
+#include "autograd/engine/tensor.h"
 #include "autograd/engine/variable.h"
 #include "autograd/engine/variable_ops.h"
 
@@ -11,7 +12,7 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable exp_var(self.data().exp());
+  Variable exp_var(self.data().exp()); // TODO(nlin): these can all be cached!!!
   self.incr_grad(
       exp_var.data() *
       grad.grad());  // TODO(nlin): maybe will this result in recursion? higher order derivatives
@@ -44,43 +45,25 @@ variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
-variable_list Exponential::apply(const variable_list& inputs) {
+Tensor Exponential::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  Variable result = Variable(self.data().exp(), self.requires_grad());
-  auto backward_fn = std::make_shared<ExponentialBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self});
-  result.set_grad_fn(backward_fn);
-
-  return {result};
+  return self.data().exp();
 }
 
-variable_list Logarithm::apply(const variable_list& inputs) {
+Tensor Logarithm::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  Variable result = Variable(self.data().log(), self.requires_grad());
-  auto backward_fn = std::make_shared<LogarithmBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self});
-  result.set_grad_fn(backward_fn);
-
-  return {result};
+  return self.data().log();
 }
 
-variable_list ReLU::apply(const variable_list& inputs) {
+Tensor ReLU::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  Variable result = Variable(self.data().relu(), self.requires_grad());
-  auto backward_fn = std::make_shared<ReLUBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self});
-  result.set_grad_fn(backward_fn);
-
-  return {result};
+  return self.data().relu();
 }
 
 }  // namespace autograd

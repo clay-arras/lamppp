@@ -31,29 +31,19 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
-variable_list MatrixMultiplication::apply(const variable_list& inputs) {
+Tensor MatrixMultiplication::execute(const variable_list& inputs) {
   assert(inputs.size() == 2);
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  Variable result = Variable(self.data().matmul(other.data()), true);
-  auto backward_fn = std::make_shared<MatrixMultiplicationBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self, other});
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data().matmul(other.data());
 }
 
-variable_list Transpose::apply(const variable_list& inputs) {
+Tensor Transpose::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  Variable result = Variable(self.data().transpose(), true);
-  auto backward_fn = std::make_shared<TransposeBackward>();
-  backward_fn->saved_inputs =
-      std::make_unique<variable_list>(variable_list{self});
-  result.set_grad_fn(backward_fn);
-  return {result};
+  return self.data().transpose();
 }
 
 }  // namespace autograd

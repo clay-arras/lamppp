@@ -4,16 +4,9 @@
 #define _MATRIX_OPS_H_
 
 #include "autograd/engine/function.h"
+#include "autograd/engine/forward_function.h"
 
 namespace autograd {
-
-struct MatrixMultiplication : public Function {
-  variable_list apply(const variable_list& inputs) override;
-};
-
-struct Transpose : public Function {
-  variable_list apply(const variable_list& inputs) override;
-};
 
 struct MatrixMultiplicationBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
@@ -21,6 +14,16 @@ struct MatrixMultiplicationBackward : public Function {
 
 struct TransposeBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
+};
+
+struct MatrixMultiplication : public ForwardFunction<MatrixMultiplication> {
+  using DefaultBackward = MatrixMultiplicationBackward;
+  static Tensor execute(const variable_list& inputs);
+};
+
+struct Transpose : public ForwardFunction<Transpose> {
+  using DefaultBackward = TransposeBackward;
+  static Tensor execute(const variable_list& inputs);
 };
 
 }  // namespace autograd

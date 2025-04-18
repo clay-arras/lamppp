@@ -1,6 +1,6 @@
-# AutoGrad C++
+# Lamp
 
-A C++ implementation of automatic differentiation (autograd) from scratch. This project includes MNIST digit classification to demonstrate the capabilities of the autograd engine.
+A lightweight C++ machine learning library from scratch, using Eigen as a backend. This project includes MNIST digit classification to demonstrate the capabilities of the autograd engine.
 
 ## Architecture
 

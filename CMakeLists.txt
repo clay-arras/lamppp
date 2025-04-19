@@ -27,15 +27,13 @@ add_library(autograd_core # TODO: next step: split into different bench envs
     autograd/engine/functions/matrix_ops.cpp
     autograd/engine/functions/reduct_ops.cpp
     autograd/util/csv_reader.cpp
+    autograd/util/batch_sample.cpp
 )
 
 target_include_directories(autograd_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${EIGEN3_INCLUDE_DIRS}
 )
-
-add_executable(test_playground test/cpp/stress/test_playground.cpp)
-target_link_libraries(test_playground autograd_core)
 
 add_executable(mnist autograd/examples/mnist.cpp)
 target_link_libraries(mnist autograd_core)

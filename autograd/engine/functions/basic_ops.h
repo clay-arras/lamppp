@@ -30,17 +30,17 @@ struct Add : public ForwardFunction<Add> {
 };
 
 struct Subtract : public ForwardFunction<Subtract> {
-  using DefaultBackward = AddBackward;
+  using DefaultBackward = SubtractBackward;
   static Tensor execute(const variable_list& inputs);
 };
 
 struct Multiply : public ForwardFunction<Multiply> {
-  using DefaultBackward = AddBackward;
+  using DefaultBackward = MultiplyBackward;
   static Tensor execute(const variable_list& inputs);
 };
 
 struct Divide : public ForwardFunction<Divide> {
-  using DefaultBackward = AddBackward;
+  using DefaultBackward = DivideBackward;
   static Tensor execute(const variable_list& inputs);
 };
 

@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef _CONSTRUCTOR_H_
+#define _CONSTRUCTOR_H_
+
 #include "variable.h"
 #include <cassert>
 
@@ -39,4 +44,5 @@ Variable tensor(const std::vector<V>& data, bool requires_grad = false) {
 
 }
 
+#endif // _CONSTRUCTOR_H_
 }

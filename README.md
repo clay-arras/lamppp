@@ -48,8 +48,8 @@ The project is organized into several key components:
 
 ```bash
 # Clone the repository
-git clone https://github.com/clay-arras/autograd_cpp.git
-cd autograd_cpp
+git clone https://github.com/clay-arras/lamp.git
+cd lamp
 
 # Create build directory and generate build files
 mkdir -p build

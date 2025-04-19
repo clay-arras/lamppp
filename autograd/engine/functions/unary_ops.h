@@ -3,8 +3,8 @@
 #ifndef _UNARY_OPS_H_
 #define _UNARY_OPS_H_
 
-#include <autograd/engine/function.h>
 #include <autograd/engine/forward_function.h>
+#include <autograd/engine/function.h>
 
 namespace autograd {
 
@@ -34,7 +34,6 @@ struct ReLU : public ForwardFunction<ReLU> {
   using DefaultBackward = ReLUBackward;
   static Tensor execute(const variable_list& inputs);
 };
-
 
 }  // namespace autograd
 

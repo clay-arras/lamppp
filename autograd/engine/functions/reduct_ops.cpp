@@ -5,7 +5,9 @@
 
 namespace autograd {
 
-variable_list SummationBackward::apply(const variable_list& gradOutputs) { // TODO(nlin): need to make this more general, this is disgusting
+variable_list SummationBackward::apply(
+    const variable_list&
+        gradOutputs) {  // TODO(nlin): need to make this more general, this is disgusting
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
@@ -43,7 +45,9 @@ variable_list SummationBackward::apply(const variable_list& gradOutputs) { // TO
   return grad_inputs;
 }
 
-variable_list MaximumBackward::apply(const variable_list& gradOutputs) { // TODO(nlin): this is disgusting + slow, values can be cached
+variable_list MaximumBackward::apply(
+    const variable_list&
+        gradOutputs) {  // TODO(nlin): this is disgusting + slow, values can be cached
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
@@ -98,7 +102,7 @@ Tensor Summation::execute(const variable_list& inputs) const {
 }
 
 Tensor Maximum::execute(const variable_list& inputs) const {
-  assert(inputs.size() == 1); 
+  assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
   return self.data().max(axis);

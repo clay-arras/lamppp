@@ -4,6 +4,7 @@
 #define _TENSOR_H
 
 #include <Eigen/Core>
+#include <numeric>
 #include <vector>
 
 namespace autograd {
@@ -47,12 +48,26 @@ class Tensor {
                                        cols);
   }
 
-  Eigen::Map<Eigen::ArrayXf> as_array() const {
-    return Eigen::Map<Eigen::ArrayXf>(const_cast<float*>(data.data()),
-                                      data.size());
+  Eigen::Map<Eigen::ArrayXXf> as_array() const {
+    return Eigen::Map<Eigen::ArrayXXf>(const_cast<float*>(data.data()),
+                                      data.size(), 1);
   }
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
+};
+
+struct TensorOpFact {
+  template <typename EigenOpFn, typename... OtherTensors>
+  static Tensor apply(const EigenOpFn& op_fn, std::vector<int> out_shape,
+                      const Tensor& tensor,
+                      const OtherTensors&... other_tensors) {
+    int sz = std::accumulate(out_shape.begin(), out_shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = op_fn(tensor, other_tensors...);
+    return Tensor(res_data, out_shape);
+  }
 };
 
 }  // namespace autograd

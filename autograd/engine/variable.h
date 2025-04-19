@@ -24,19 +24,18 @@ struct VariableImpl {
 
   explicit VariableImpl(Tensor data, bool requires_grad = false) {
     this->data = std::move(data);
-    this->grad = Tensor(std::vector<float>(this->data.size(), 0.0F),
-                        this->data.shape);
+    this->grad =
+        Tensor(std::vector<float>(this->data.size(), 0.0F), this->data.shape);
     this->requires_grad = requires_grad;
   }
 };
 
-
-// TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
 struct VariableOpFact {
   template <typename Op, typename... Args>
   static variable_list apply(variable_list variables, Args&&... args) {
     Op op_fn(std::forward<Args>(args)...);
-    variable_list result = op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
+    variable_list result =
+        op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
     return result;
   }
 };

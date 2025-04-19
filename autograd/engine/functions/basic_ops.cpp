@@ -61,7 +61,7 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
 }
 
 // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
-Tensor Add::execute(const variable_list& inputs) {  
+Tensor Add::execute(const variable_list& inputs) {
   assert(inputs.size() == 2);
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];

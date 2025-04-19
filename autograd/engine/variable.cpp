@@ -13,8 +13,7 @@ namespace autograd {
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad =
-      Tensor(std::vector<float>(impl_->data.size(), 1),
-             impl_->data.shape);  
+      Tensor(std::vector<float>(impl_->data.size(), 1), impl_->data.shape);
   for (Variable& node : topo) {
     if (node.grad_fn() != nullptr) {
       node.grad_fn()->apply({node});
@@ -24,8 +23,7 @@ void Variable::backward() {
 
 void Variable::dfs(const Variable& v, std::unordered_set<void*>& visited,
                    std::vector<Variable>& topo) const {
-  if (visited.find(static_cast<void*>(v.impl_.get())) ==
-      visited.end()) {  // TODO(nlin): when would saved_inputs be zero???
+  if (visited.find(static_cast<void*>(v.impl_.get())) == visited.end()) {
     visited.insert(static_cast<void*>(v.impl_.get()));
     if (v.grad_fn() == nullptr || v.grad_fn()->saved_inputs == nullptr) {
       topo.push_back(v);
@@ -55,7 +53,7 @@ std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   return os;
 }
 
-Variable Variable::operator+(const Variable& other) const {  
+Variable Variable::operator+(const Variable& other) const {
   return VariableOpFact::apply<Add>({*this, other})[0];
 }
 

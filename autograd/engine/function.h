@@ -3,9 +3,9 @@
 #ifndef _FUNCTION_H_
 #define _FUNCTION_H_
 
+#include <cassert>
 #include <memory>
 #include <vector>
-#include <cassert>
 
 namespace autograd {
 

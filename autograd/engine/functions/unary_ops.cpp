@@ -12,7 +12,8 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable exp_var(self.data().exp()); // TODO(nlin): these can all be cached!!!
+  Variable exp_var(
+      self.data().exp());  // TODO(nlin): these can all be cached!!!
   self.incr_grad(
       exp_var.data() *
       grad.grad());  // TODO(nlin): maybe will this result in recursion? higher order derivatives

@@ -38,7 +38,7 @@ target_include_directories(autograd_core PUBLIC
 add_executable(mnist autograd/examples/mnist.cpp)
 target_link_libraries(mnist autograd_core)
 
-pybind11_add_module(cpp_custom_bind test/cpp/stress/test_stress.cpp)
+pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
 target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)

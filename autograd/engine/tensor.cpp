@@ -6,130 +6,134 @@ namespace autograd {
 
 Tensor Tensor::operator+(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() + other.as_array();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return a.as_array() + b.as_array();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator-(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() - other.as_array();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return a.as_array() - b.as_array();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator*(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() * other.as_array();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return a.as_array() * b.as_array();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator/(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array() / other.as_array();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return a.as_array() / b.as_array();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator==(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() == other.as_array()).cast<float>();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return (a.as_array() == b.as_array()).cast<float>();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator!=(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() != other.as_array()).cast<float>();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return (a.as_array() != b.as_array()).cast<float>();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator>=(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() >= other.as_array()).cast<float>();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return (a.as_array() >= b.as_array()).cast<float>();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator<=(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() <= other.as_array()).cast<float>();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return (a.as_array() <= b.as_array()).cast<float>();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator>(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() > other.as_array()).cast<float>();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return (a.as_array() > b.as_array()).cast<float>();
+      },
+      this->shape, *this, other);
 }
 
 Tensor Tensor::operator<(const Tensor& other) const {
   assert(shape == other.shape);
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = (as_array() < other.as_array()).cast<float>();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        return (a.as_array() < b.as_array()).cast<float>();
+      },
+      this->shape, *this, other);
 }
 
-Tensor Tensor::matmul(const Tensor& other)
-    const {  // TODO(nlin): maybe implement as static method that takes in A and B?
-  assert(shape.size() == 2);
-  assert(other.shape.size() == 2);
+Tensor Tensor::matmul(const Tensor& other) const {
+  assert(shape.size() == 2 && other.shape.size() == 2);
   assert(shape[1] == other.shape[0]);
-
-  std::vector<float> res_data(shape[0] * other.shape[1]);
-  Eigen::Map<Eigen::MatrixXf> res(res_data.data(), shape[0], other.shape[1]);
-
-  res = as_matrix(shape[0], shape[1]) *
-        other.as_matrix(other.shape[0], other.shape[1]);
-  return Tensor(res_data, {shape[0], other.shape[1]});
+  return TensorOpFact::apply(
+      [](const Tensor& a, const Tensor& b) {
+        // std::vector<float> res_data(a.shape[0] * b.shape[1]);
+        // Eigen::Map<Eigen::MatrixXf> res(res_data.data(), a.shape[0], b.shape[1]);
+        // res = (a.as_matrix(a.shape[0], a.shape[1]) *
+        //         b.as_matrix(b.shape[0], b.shape[1]));
+        
+        // std::vector<float> ret_data(a.shape[0] * b.shape[1]);
+        // Eigen::Map<Eigen::ArrayXXf> ret(ret_data.data(), a.shape[0] * b.shape[1], 1);
+        // return ret;
+      },
+      {shape[0], other.shape[1]}, *this, other);
 }
 
 Tensor Tensor::transpose() const {
-  std::vector<float> res_data(data.size());
-  std::vector<int> new_shape = {shape[1], shape[0]};
-
-  Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> res_matrix(
-      res_data.data(), new_shape[0], new_shape[1]);
-  Eigen::Map<const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>>
-      src_matrix(data.data(), shape[0], shape[1]);
-
-  res_matrix = src_matrix.transpose();
-  return Tensor(res_data, new_shape);
+  assert(shape.size() == 2);
+  return TensorOpFact::apply(
+      [](const Tensor& a) {
+        return a.as_matrix(a.shape[0], a.shape[1]).transpose().array();
+      },
+      {shape[1], shape[0]}, *this);
 }
 
 Tensor Tensor::log() const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array().log();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply([](const Tensor& a) { return a.as_array().log(); },
+                             this->shape, *this);
 }
 
 Tensor Tensor::exp() const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array().exp();
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply([](const Tensor& a) { return a.as_array().exp(); },
+                             this->shape, *this);
 }
 
 Tensor Tensor::relu() const {
-  std::vector<float> res_data(data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), data.size());
-  res = as_array().max(0.0F);
-  return Tensor(res_data, shape);
+  return TensorOpFact::apply(
+      [](const Tensor& a) { return a.as_array().max(0.0F); }, this->shape,
+      *this);
 }
 
 Tensor Tensor::sum(int axis) const {
@@ -149,7 +153,7 @@ Tensor Tensor::sum(int axis) const {
   } else {
     assert(
         0);  // TODO(nlin): need to implement general thingy with collapsing!!!!
-  } // TODO(nlin): this is disgusting please refactor ASAP
+  }  // TODO(nlin): this is disgusting please refactor ASAP
   return Tensor(res_data, new_shape);
 }
 
@@ -168,9 +172,8 @@ Tensor Tensor::max(int axis) const {
                                                             shape[0], 1);
     res = as_array().reshaped(shape[0], shape[1]).rowwise().maxCoeff().array();
   } else {
-    assert(
-        0);  
-  } 
+    assert(0);
+  }
   return Tensor(res_data, new_shape);
 }
 

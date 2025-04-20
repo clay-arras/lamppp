@@ -27,10 +27,11 @@ improvements:
 - c) fix the requires_grad double calculating
 - d) fix the unnecessary shared_ptr making???
 
-<!-- - fix relu -->
-<!-- - fix mapping with > ==, etc. -->
-
 - create matmul
 - make mnist test run
-
 - TODO: need to make generalized tensors with the silly trick TODO IMPORTANT
+
+sum_test.py
+unary_test.py
+matmul_test.py
+binary_test.py

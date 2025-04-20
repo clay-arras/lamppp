@@ -1,0 +1,135 @@
+# ----------------------------------------
+# PyTorch/Caffe2 Operator Micro-benchmarks
+# ----------------------------------------
+# Tag : short
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 2.704
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 6.964
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 692.095
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 5.027
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 7.167
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 811.260
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 2.716
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 7.212
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 687.289
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 3.792
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 11.556
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 719.883
+
+# ----------------------------------------
+# PyTorch/Caffe2 Operator Micro-benchmarks
+# ----------------------------------------
+# Tag : short
+
+# Benchmarking PyTorch: relu
+# Mode: Eager
+# Name: relu_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 3.234
+
+# Benchmarking PyTorch: relu
+# Mode: Eager
+# Name: relu_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 6.500
+
+# Benchmarking PyTorch: relu
+# Mode: Eager
+# Name: relu_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 155.005
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 4.861
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 14.968
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 747.343
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_M128_N128
+# Input: M: 128, N: 128
+Forward Execution Time (us) : 5.292
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_M256_N256
+# Input: M: 256, N: 256
+Forward Execution Time (us) : 17.386
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_M1024_N1024
+# Input: M: 1024, N: 1024
+Forward Execution Time (us) : 802.541

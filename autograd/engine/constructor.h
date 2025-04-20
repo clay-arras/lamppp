@@ -18,6 +18,7 @@ template <typename>
 struct IsVector : std::false_type {};
 template <typename U, typename Alloc>
 struct IsVector<std::vector<U, Alloc>> : std::true_type {};
+
 struct TensorHelper {
   std::vector<float> data;
   std::vector<int> shape;

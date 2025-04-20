@@ -6,143 +6,103 @@ namespace autograd {
 inline namespace ops {
 
 Tensor operator+(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = tensor.as_array() + scalar;
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor + scalar_tensor;
 }
 
 Tensor operator-(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = tensor.as_array() - scalar;
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor - scalar_tensor;
 }
 
 Tensor operator*(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = tensor.as_array() * scalar;
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor * scalar_tensor;
 }
 
 Tensor operator/(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = tensor.as_array() / scalar;
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor / scalar_tensor;
 }
 
 Tensor operator+(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = scalar + tensor.as_array();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor + tensor;
 }
 
 Tensor operator-(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = scalar - tensor.as_array();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor - tensor;
 }
 
 Tensor operator*(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = scalar * tensor.as_array();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor * tensor;
 }
 
 Tensor operator/(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = scalar / tensor.as_array();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor / tensor;
 }
 
 Tensor operator==(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (tensor.as_array() == scalar).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor == scalar_tensor;
 }
 
 Tensor operator!=(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (tensor.as_array() != scalar).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor != scalar_tensor;
 }
 
 Tensor operator>=(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (tensor.as_array() >= scalar).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor >= scalar_tensor;
 }
 
 Tensor operator<=(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (tensor.as_array() <= scalar).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor <= scalar_tensor;
 }
 
 Tensor operator>(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (tensor.as_array() > scalar).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor > scalar_tensor;
 }
 
 Tensor operator<(const Tensor& tensor, float scalar) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (tensor.as_array() < scalar).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return tensor < scalar_tensor;
 }
 
 Tensor operator==(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (scalar == tensor.as_array()).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor == tensor;
 }
 
 Tensor operator!=(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (scalar != tensor.as_array()).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor != tensor;
 }
 
 Tensor operator>=(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (scalar >= tensor.as_array()).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor >= tensor;
 }
 
 Tensor operator<=(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (scalar <= tensor.as_array()).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor <= tensor;
 }
 
 Tensor operator>(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (scalar > tensor.as_array()).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor > tensor;
 }
 
 Tensor operator<(float scalar, const Tensor& tensor) {
-  std::vector<float> res_data(tensor.data.size());
-  Eigen::Map<Eigen::ArrayXf> res(res_data.data(), tensor.data.size());
-  res = (scalar < tensor.as_array()).cast<float>();
-  return Tensor(res_data, tensor.shape);
+  Tensor scalar_tensor(std::vector<float>(tensor.data.size(), scalar), tensor.shape);
+  return scalar_tensor < tensor;
 }
 
 }  // namespace ops

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #ifndef _TENSOR_H_
 #define _TENSOR_H
 
@@ -58,14 +59,15 @@ class Tensor {
 
 struct TensorOpFact {
   template <typename EigenOpFn, typename... OtherTensors>
-  static Tensor apply(const EigenOpFn& op_fn, std::vector<int> out_shape,
+  static Tensor apply(const EigenOpFn& op_fn, const std::vector<int>& out_shape,
                       const Tensor& tensor,
                       const OtherTensors&... other_tensors) {
     int sz = std::accumulate(out_shape.begin(), out_shape.end(), 1,
                              std::multiplies<>());
+    assert(sz == out_shape[0] * out_shape[1]);
     std::vector<float> res_data(sz);
     Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
-    res = op_fn(tensor, other_tensors...);
+    res = op_fn(tensor, other_tensors...).reshaped(sz, 1);
     return Tensor(res_data, out_shape);
   }
 };

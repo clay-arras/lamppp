@@ -99,14 +99,9 @@ Tensor Tensor::matmul(const Tensor& other) const {
   assert(shape[1] == other.shape[0]);
   return TensorOpFact::apply(
       [](const Tensor& a, const Tensor& b) {
-        // std::vector<float> res_data(a.shape[0] * b.shape[1]);
-        // Eigen::Map<Eigen::MatrixXf> res(res_data.data(), a.shape[0], b.shape[1]);
-        // res = (a.as_matrix(a.shape[0], a.shape[1]) *
-        //         b.as_matrix(b.shape[0], b.shape[1]));
-        
-        // std::vector<float> ret_data(a.shape[0] * b.shape[1]);
-        // Eigen::Map<Eigen::ArrayXXf> ret(ret_data.data(), a.shape[0] * b.shape[1], 1);
-        // return ret;
+        return (a.as_matrix(a.shape[0], a.shape[1]) *
+                b.as_matrix(b.shape[0], b.shape[1]))
+                .array().eval();
       },
       {shape[0], other.shape[1]}, *this, other);
 }

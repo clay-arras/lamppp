@@ -21,6 +21,13 @@ struct EigenBackend : AbstractBackend {
     TensorImpl matmul(const TensorImpl& a, const TensorImpl& b) override;
     TensorImpl transpose(const TensorImpl& a) override;
 
+    TensorImpl equal(const TensorImpl& a, const TensorImpl& b) override;
+    TensorImpl not_equal(const TensorImpl& a, const TensorImpl& b) override;
+    TensorImpl greater_equal(const TensorImpl& a, const TensorImpl& b) override;
+    TensorImpl less_equal(const TensorImpl& a, const TensorImpl& b) override;
+    TensorImpl greater_than(const TensorImpl& a, const TensorImpl& b) override;
+    TensorImpl less_than(const TensorImpl& a, const TensorImpl& b) override;
+
     TensorImpl sum(const TensorImpl& a, int axis) override;
     // TensorImpl mean(const TensorImpl& a, int axis) override;
     // TensorImpl max(const TensorImpl& a, int axis) override;

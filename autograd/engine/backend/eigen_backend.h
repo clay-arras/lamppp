@@ -29,8 +29,8 @@ struct EigenBackend : AbstractBackend {
     TensorImpl less_than(const TensorImpl& a, const TensorImpl& b) override;
 
     TensorImpl sum(const TensorImpl& a, int axis) override;
+    TensorImpl max(const TensorImpl& a, int axis) override;
     // TensorImpl mean(const TensorImpl& a, int axis) override;
-    // TensorImpl max(const TensorImpl& a, int axis) override;
     // TensorImpl min(const TensorImpl& a, int axis) override;
 
     static Eigen::Map<Eigen::MatrixXf> as_matrix(const TensorImpl& impl, int rows, int cols) {

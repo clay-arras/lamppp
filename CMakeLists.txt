@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
-project(autograd_cpp)
+project(autograd_cpp LANGUAGES CXX CUDA)
 
 set(Python_EXECUTABLE ".venv/bin/python")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
-set(CMAKE_CXX_STANDARD 17)40268309
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ffast-math -DNDEBUG") # bench
 add_definitions(-DEIGEN_NO_DEBUG)
@@ -14,7 +14,14 @@ find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
 set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
-find_package(MKL CONFIG REQUIRED)
+# find_package(MKL CONFIG REQUIRED)
+find_package(CUDA  REQUIRED)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+
+message(${CUDA_INCLUDE_DIRS})
+message(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 
 add_library(autograd_core # TODO: next step: split into different bench envs 
     autograd/engine/variable.cpp
@@ -23,6 +30,8 @@ add_library(autograd_core # TODO: next step: split into different bench envs
     autograd/engine/tensor_ops.cpp
     autograd/engine/function.cpp
     autograd/engine/constructor.cpp
+    autograd/engine/backend.cpp
+    autograd/engine/backend/eigen_backend.cpp
     autograd/engine/forward_function.cpp
     autograd/engine/functions/basic_ops.cpp
     autograd/engine/functions/unary_ops.cpp
@@ -30,14 +39,17 @@ add_library(autograd_core # TODO: next step: split into different bench envs
     autograd/engine/functions/reduct_ops.cpp
     autograd/util/csv_reader.cpp
     autograd/util/batch_sample.cpp
+
+    autograd/engine/backend/cuda_backend.cpp
+    autograd/cuda/basic_kern.cu
 )
 
-target_compile_definitions(autograd_core
-  PUBLIC EIGEN_USE_MKL_ALL 
+target_compile_definitions(autograd_core PUBLIC 
+    # EIGEN_USE_MKL_ALL 
 )
 target_link_libraries(autograd_core PUBLIC 
     Eigen3::Eigen 
-    MKL::MKL
+    # MKL::MKL
 ) 
 
 target_include_directories(autograd_core PUBLIC
@@ -50,6 +62,9 @@ target_link_libraries(mnist autograd_core)
 
 add_executable(bench_ops test/benchmarks/bench_ops.cpp)
 target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+
+add_executable(test_playground test/cpp/test_playground.cpp)
+target_link_libraries(test_playground autograd_core benchmark::benchmark)
 
 pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
 target_link_libraries(cpp_custom_bind PRIVATE autograd_core)

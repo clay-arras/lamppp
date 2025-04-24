@@ -43,6 +43,66 @@ TensorImpl EigenBackend::div(const TensorImpl& a, const TensorImpl& b) {
     return TensorImpl(res_data, a.shape);
 }
 
+TensorImpl EigenBackend::equal(const TensorImpl& a, const TensorImpl& b) {
+    assert(a.shape == b.shape);
+    int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = (as_array(a) == as_array(b)).cast<float>();
+    return TensorImpl(res_data, a.shape);
+}
+
+TensorImpl EigenBackend::not_equal(const TensorImpl& a, const TensorImpl& b) {
+    assert(a.shape == b.shape);
+    int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = (as_array(a) != as_array(b)).cast<float>();
+    return TensorImpl(res_data, a.shape);
+}
+
+TensorImpl EigenBackend::greater_equal(const TensorImpl& a, const TensorImpl& b) {
+    assert(a.shape == b.shape);
+    int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = (as_array(a) >= as_array(b)).cast<float>();
+    return TensorImpl(res_data, a.shape);
+}
+
+TensorImpl EigenBackend::less_equal(const TensorImpl& a, const TensorImpl& b) {
+    assert(a.shape == b.shape);
+    int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = (as_array(a) <= as_array(b)).cast<float>();
+    return TensorImpl(res_data, a.shape);
+}
+
+TensorImpl EigenBackend::greater_than(const TensorImpl& a, const TensorImpl& b) {
+    assert(a.shape == b.shape);
+    int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = (as_array(a) > as_array(b)).cast<float>();
+    return TensorImpl(res_data, a.shape);
+}
+
+TensorImpl EigenBackend::less_than(const TensorImpl& a, const TensorImpl& b) {
+    assert(a.shape == b.shape);
+    int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
+                             std::multiplies<>());
+    std::vector<float> res_data(sz);
+    Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
+    res = (as_array(a) < as_array(b)).cast<float>();
+    return TensorImpl(res_data, a.shape);
+}
+
 TensorImpl EigenBackend::log(const TensorImpl& a) {
     int sz = std::accumulate(a.shape.begin(), a.shape.end(), 1,
                              std::multiplies<>());
@@ -115,6 +175,28 @@ TensorImpl EigenBackend::sum(const TensorImpl& a, int axis) {
         res = as_array(a).reshaped(a.shape[0], a.shape[1]).rowwise().sum();
     } else {
         assert(0);  // Only supporting 2D tensors for now
+    }
+    
+    return TensorImpl(res_data, new_shape);
+}
+
+TensorImpl EigenBackend::max(const TensorImpl& a, int axis) {
+    assert(axis >= 0 && axis < static_cast<int>(a.shape.size()));
+    std::vector<int> new_shape = a.shape;
+    new_shape[axis] = 1;
+
+    std::vector<float> res_data(a.data.size() / a.shape[axis]);
+    
+    if (axis == 0) {
+        Eigen::Map<Eigen::Matrix<float, 1, Eigen::Dynamic>> res(res_data.data(), 1,
+                                                                a.shape[1]);
+        res = as_array(a).reshaped(a.shape[0], a.shape[1]).colwise().maxCoeff();
+    } else if (axis == 1) {
+        Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, 1>> res(res_data.data(),
+                                                                a.shape[0], 1);
+        res = as_array(a).reshaped(a.shape[0], a.shape[1]).rowwise().maxCoeff();
+    } else {
+        assert(0);  
     }
     
     return TensorImpl(res_data, new_shape);

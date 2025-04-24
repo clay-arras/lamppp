@@ -28,8 +28,8 @@ struct AbstractBackend { // TODO(nlin): consider compile-time polymorphism, this
     virtual TensorImpl less_than(const TensorImpl& a, const TensorImpl& b) = 0;
 
     virtual TensorImpl sum(const TensorImpl& a, int axis) = 0;
+    virtual TensorImpl max(const TensorImpl& a, int axis) = 0;
     // virtual TensorImpl mean(const TensorImpl& a, int axis) = 0;
-    // virtual TensorImpl max(const TensorImpl& a, int axis) = 0;
     // virtual TensorImpl min(const TensorImpl& a, int axis) = 0;
     
     virtual ~AbstractBackend() = default;

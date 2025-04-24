@@ -8,7 +8,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
-#include "autograd/engine/tensor_impl.h"
+#include "tensor_impl.h"
 
 namespace autograd {
 
@@ -25,6 +25,9 @@ class Tensor {
 
   const std::vector<float>& data() const { return impl_->data; }
   const std::vector<int>& shape() const { return impl_->shape; }
+
+  std::vector<float>& data() { return impl_->data; }
+  std::vector<int>& shape() { return impl_->shape; }
 
   Tensor operator+(const Tensor& other) const;
   Tensor operator-(const Tensor& other) const;

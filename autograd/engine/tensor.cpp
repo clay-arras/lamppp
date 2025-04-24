@@ -23,27 +23,27 @@ Tensor Tensor::operator/(const Tensor& other) const {
 }
 
 Tensor Tensor::operator==(const Tensor& other) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator!=(const Tensor& other) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().not_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator>=(const Tensor& other) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().greater_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator<=(const Tensor& other) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().less_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator>(const Tensor& other) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().greater_than(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator<(const Tensor& other) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().less_than(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::log() const {
@@ -71,7 +71,7 @@ Tensor Tensor::sum(int axis) const {
 }
 
 Tensor Tensor::max(int axis) const {
-  return Tensor(); // Placeholder
+  return Tensor(std::make_shared<TensorImpl>(EigenBackend().max(*impl_, axis)));
 }
 
 const int kMaxPrintNumel = 20;

@@ -13,7 +13,7 @@ namespace autograd {
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad =
-      Tensor(std::vector<float>(impl_->data.size(), 1), impl_->data.shape);
+      Tensor(std::vector<float>(impl_->data.size(), 1), impl_->data.shape());
   for (Variable& node : topo) {
     if (node.grad_fn() != nullptr) {
       node.grad_fn()->apply({node});

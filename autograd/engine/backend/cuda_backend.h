@@ -4,10 +4,6 @@
 #define _CUDA_BACKEND_H_
 
 #include "autograd/engine/backend.h"
-#include "autograd/cuda/basic_kern.cuh"
-#include "autograd/cuda/matrix_kern.cuh"
-#include "autograd/cuda/unary_kern.cuh"
-#include "autograd/cuda/binary_kern.cuh"
 
 namespace autograd {
 
@@ -32,8 +28,8 @@ struct CudaBackend : AbstractBackend {
     TensorImpl less_than(const TensorImpl& a, const TensorImpl& b) override;
 
     TensorImpl sum(const TensorImpl& a, int axis) override;
+    TensorImpl max(const TensorImpl& a, int axis) override;
     // TensorImpl mean(const TensorImpl& a, int axis) override;
-    // TensorImpl max(const TensorImpl& a, int axis) override;
     // TensorImpl min(const TensorImpl& a, int axis) override;
 
 };

@@ -25,7 +25,7 @@ struct VariableImpl {
   explicit VariableImpl(Tensor data, bool requires_grad = false) {
     this->data = std::move(data);
     this->grad =
-        Tensor(std::vector<float>(this->data.size(), 0.0F), this->data.shape);
+        Tensor(std::vector<float>(this->data.size(), 0.0F), this->data.shape());
     this->requires_grad = requires_grad;
   }
 };
@@ -50,7 +50,7 @@ class Variable {
   std::shared_ptr<VariableImpl> impl_;
 
   void zero_grad() {
-    impl_->grad = Tensor(std::vector<float>(data().size(), 0.0F), data().shape);
+    impl_->grad = Tensor(std::vector<float>(data().size(), 0.0F), data().shape());
   }
   void incr_grad(const Tensor& other_grad) {
     impl_->grad = impl_->grad + other_grad;

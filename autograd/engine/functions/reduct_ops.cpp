@@ -1,5 +1,4 @@
 #include "reduct_ops.h"
-#include <Eigen/Core>
 #include <cassert>
 #include "autograd/engine/variable.h"
 

@@ -5,14 +5,16 @@ set(Python_EXECUTABLE ".venv/bin/python")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)40268309
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ffast-math -DNDEBUG") # bench
+add_definitions(-DEIGEN_NO_DEBUG)
 
 find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
 set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
+find_package(MKL CONFIG REQUIRED)
 
 add_library(autograd_core # TODO: next step: split into different bench envs 
     autograd/engine/variable.cpp
@@ -29,6 +31,14 @@ add_library(autograd_core # TODO: next step: split into different bench envs
     autograd/util/csv_reader.cpp
     autograd/util/batch_sample.cpp
 )
+
+target_compile_definitions(autograd_core
+  PUBLIC EIGEN_USE_MKL_ALL 
+)
+target_link_libraries(autograd_core PUBLIC 
+    Eigen3::Eigen 
+    MKL::MKL
+) 
 
 target_include_directories(autograd_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

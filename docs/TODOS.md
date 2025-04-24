@@ -35,3 +35,18 @@ sum_test.py
 unary_test.py
 matmul_test.py
 binary_test.py
+
+add some tests for each operation
+make it row based instead of column based
+
+add reshaping, 2+d operators, x.reshape(new_shape)), broadcasting
+add more pytorch operators (minimum, mean, sigmoid, tanh, x.sqrt(), x.abs(), x.clamp(min, max), x.floor(), x.ceil(),
+add leaf DO THIS LAST + requires_grad for backward
+
+getting documentation with
+adding benchmarks for speed
+add nn module
+
+next step: refactor max
+next: add templates and different data types
+also: look into lazy eval AND how I CAN INCORPORATE THAT INTO EIGEN TYPES FOR SPEED

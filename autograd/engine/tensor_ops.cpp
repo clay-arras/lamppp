@@ -1,5 +1,4 @@
 #include "tensor_ops.h"
-#include <Eigen/Core>
 #include <cassert>
 
 namespace autograd {

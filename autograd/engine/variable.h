@@ -50,7 +50,8 @@ class Variable {
   std::shared_ptr<VariableImpl> impl_;
 
   void zero_grad() {
-    impl_->grad = Tensor(std::vector<float>(data().size(), 0.0F), data().shape());
+    impl_->grad =
+        Tensor(std::vector<float>(data().size(), 0.0F), data().shape());
   }
   void incr_grad(const Tensor& other_grad) {
     impl_->grad = impl_->grad + other_grad;

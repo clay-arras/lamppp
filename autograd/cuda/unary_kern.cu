@@ -7,21 +7,21 @@ inline namespace cuda {
 
 namespace {
 
-__global__ void exp(int size, float* in, float* out) {
+__global__ void vecExpKernel(int size, float* in, float* out) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         out[i] = std::exp(in[i]);
     }
 }
 
-__global__ void log(int size, float* in, float* out) {
+__global__ void vecLogKernel(int size, float* in, float* out) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         out[i] = std::log(in[i]);
     }
 }
 
-__global__ void relu(int size, float* in, float* out) {
+__global__ void vecReluKernel(int size, float* in, float* out) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         out[i] = std::max(0.0F, in[i]);
@@ -41,7 +41,7 @@ extern "C" void vecExp(int size, float* in, float* out) {
 
   int threads = 256;
   int blocks = (size + threads - 1) / threads;
-  exp<<<blocks, threads>>>(size, d_in, d_out);
+  vecExpKernel<<<blocks, threads>>>(size, d_in, d_out);
 
   cudaMemcpy(out, d_out, bytes, cudaMemcpyDeviceToHost);
 
@@ -60,7 +60,7 @@ extern "C" void vecLog(int size, float* in, float* out) {
 
   int threads = 256;
   int blocks = (size + threads - 1) / threads;
-  log<<<blocks, threads>>>(size, d_in, d_out);
+  vecLogKernel<<<blocks, threads>>>(size, d_in, d_out);
 
   cudaMemcpy(out, d_out, bytes, cudaMemcpyDeviceToHost);
 
@@ -79,7 +79,7 @@ extern "C" void vecRelu(int size, float* in, float* out) {
 
   int threads = 256;
   int blocks = (size + threads - 1) / threads;
-  relu<<<blocks, threads>>>(size, d_in, d_out);
+  vecReluKernel<<<blocks, threads>>>(size, d_in, d_out);
 
   cudaMemcpy(out, d_out, bytes, cudaMemcpyDeviceToHost);
 

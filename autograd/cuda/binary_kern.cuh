@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-__global__ void equal(int size,
+__global__ void vecEqualKernel(int size,
                       const float* A,
                       const float* B,
                       float* C);
@@ -18,7 +18,7 @@ void vecEqual(int size,
               const float* B,
               float* C);
 
-__global__ void not_equal(int size,
+__global__ void vecNotEqualKernel(int size,
                           const float* A,
                           const float* B,
                           float* C);
@@ -27,7 +27,7 @@ void vecNotEqual(int size,
                  const float* B,
                  float* C);
 
-__global__ void greater_equal(int size,
+__global__ void vecGreaterEqualKernel(int size,
                               const float* A,
                               const float* B,
                               float* C);
@@ -36,7 +36,7 @@ void vecGreaterEqual(int size,
                      const float* B,
                      float* C);
 
-__global__ void less_equal(int size,
+__global__ void vecLessEqualKernel(int size,
                            const float* A,
                            const float* B,
                            float* C);
@@ -45,7 +45,7 @@ void vecLessEqual(int size,
                   const float* B,
                   float* C);
 
-__global__ void greater_than(int size,
+__global__ void vecGreaterThanKernel(int size,
                              const float* A,
                              const float* B,
                              float* C);
@@ -54,7 +54,7 @@ void vecGreaterThan(int size,
                     const float* B,
                     float* C);
 
-__global__ void less_than(int size,
+__global__ void vecLessThanKernel(int size,
                           const float* A,
                           const float* B,
                           float* C);

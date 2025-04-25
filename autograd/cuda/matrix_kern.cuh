@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-__global__ void matmul(const float* A,
+__global__ void cudaMatmulKernel(const float* A,
                        const float* B,
                        float* C,
                        int m,

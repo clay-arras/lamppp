@@ -6,7 +6,7 @@ inline namespace cuda {
 
 namespace {
 
-__global__ void matmul(const float* A, const float* B, float* C, int m, int n, int k) {
+__global__ void cudaMatmulKernel(const float* A, const float* B, float* C, int m, int n, int k) {
     int i = threadIdx.x + (blockIdx.x * blockDim.x);
     int j = threadIdx.y + (blockIdx.y * blockDim.y);
 
@@ -36,7 +36,7 @@ extern "C" void cudaMatMul(const float* A, const float* B, float* C, int m, int 
 
   dim3 threads(16, 16);
   dim3 blocks((m + threads.x - 1) / threads.x, (n + threads.y - 1) / threads.y);
-  matmul<<<blocks, threads>>>(d_a, d_b, d_c, m, n, k);
+  cudaMatmulKernel<<<blocks, threads>>>(d_a, d_b, d_c, m, n, k);
 
   cudaMemcpy(C, d_c, bytes_c, cudaMemcpyDeviceToHost);
 

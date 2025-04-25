@@ -9,21 +9,21 @@
 extern "C" {
 #endif
 
-__global__ void exp(int size,
+__global__ void vecExpKernel(int size,
                     float* in,
                     float* out);
 void vecExp(int size,
             float* in,
             float* out);
 
-__global__ void log(int size,
+__global__ void vecLogKernel(int size,
                     float* in,
                     float* out);
 void vecLog(int size,
             float* in,
             float* out);
 
-__global__ void relu(int size,
+__global__ void vecReluKernel(int size,
                      float* in,
                      float* out);
 void vecRelu(int size,

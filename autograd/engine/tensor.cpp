@@ -7,43 +7,53 @@
 namespace autograd {
 
 Tensor Tensor::operator+(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().add(*impl_, *other.impl_)));
+  return Tensor(
+      std::make_shared<TensorImpl>(EigenBackend().add(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator-(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().sub(*impl_, *other.impl_)));
+  return Tensor(
+      std::make_shared<TensorImpl>(EigenBackend().sub(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator*(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().mul(*impl_, *other.impl_)));
+  return Tensor(
+      std::make_shared<TensorImpl>(EigenBackend().mul(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator/(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().div(*impl_, *other.impl_)));
+  return Tensor(
+      std::make_shared<TensorImpl>(EigenBackend().div(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator==(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().equal(*impl_, *other.impl_)));
+  return Tensor(
+      std::make_shared<TensorImpl>(EigenBackend().equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator!=(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().not_equal(*impl_, *other.impl_)));
+  return Tensor(std::make_shared<TensorImpl>(
+      EigenBackend().not_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator>=(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().greater_equal(*impl_, *other.impl_)));
+  return Tensor(std::make_shared<TensorImpl>(
+      EigenBackend().greater_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator<=(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().less_equal(*impl_, *other.impl_)));
+  return Tensor(std::make_shared<TensorImpl>(
+      EigenBackend().less_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator>(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().greater_than(*impl_, *other.impl_)));
+  return Tensor(std::make_shared<TensorImpl>(
+      EigenBackend().greater_than(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator<(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().less_than(*impl_, *other.impl_)));
+  return Tensor(std::make_shared<TensorImpl>(
+      EigenBackend().less_than(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::log() const {
@@ -59,7 +69,8 @@ Tensor Tensor::relu() const {
 }
 
 Tensor Tensor::matmul(const Tensor& other) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().matmul(*impl_, *other.impl_)));
+  return Tensor(std::make_shared<TensorImpl>(
+      EigenBackend().matmul(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::transpose() const {

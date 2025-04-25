@@ -76,12 +76,12 @@ PYBIND11_MODULE(cpp_custom_bind, m) {
   py::class_<Tensor>(m, "cTensor")
       .def(py::init<std::vector<float>, std::vector<int>>(), py::arg("data"),
            py::arg("shape"))
-      .def_property("data", 
-                   [](Tensor& t) -> std::vector<float>& { return t.data(); },
-                   [](Tensor& t, const std::vector<float>& d) { t.data() = d; })
-      .def_property("shape", 
-                   [](Tensor& t) -> std::vector<int>& { return t.shape(); },
-                   [](Tensor& t, const std::vector<int>& s) { t.shape() = s; });
+      .def_property(
+          "data", [](Tensor& t) -> std::vector<float>& { return t.data(); },
+          [](Tensor& t, const std::vector<float>& d) { t.data() = d; })
+      .def_property(
+          "shape", [](Tensor& t) -> std::vector<int>& { return t.shape(); },
+          [](Tensor& t, const std::vector<int>& s) { t.shape() = s; });
 
   py::class_<Variable>(m, "cVariable")
       .def(py::init<Tensor, bool>(), py::arg("data"),

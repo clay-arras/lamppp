@@ -4,10 +4,10 @@
 #define _TENSOR_H
 
 #include <Eigen/Core>
+#include <iostream>
+#include <memory>
 #include <numeric>
 #include <vector>
-#include <memory>
-#include <iostream>
 #include "tensor_impl.h"
 
 namespace autograd {
@@ -15,8 +15,7 @@ namespace autograd {
 class Tensor {
  public:
   Tensor() = default;
-  explicit Tensor(std::shared_ptr<TensorImpl> impl)
-      : impl_(std::move(impl)) {}
+  explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(std::move(impl)) {}
   explicit Tensor(const std::vector<float>& data, const std::vector<int>& shape)
       : impl_(std::make_shared<TensorImpl>(data, shape)) {}
 
@@ -73,4 +72,4 @@ struct TensorOpFact {
 
 }  // namespace autograd
 
-#endif // TENSOR_H
+#endif  // TENSOR_H

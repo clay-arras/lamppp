@@ -11,10 +11,10 @@ struct TensorImpl {
   std::vector<float> data;
   std::vector<int> shape;
 
-  TensorImpl(const std::vector<float>& data, const std::vector<int>& shape) 
-    : data(data), shape(shape) {};
+  TensorImpl(const std::vector<float>& data, const std::vector<int>& shape)
+      : data(data), shape(shape){};
 };
 
-} // namespace autograd
+}  // namespace autograd
 
-#endif // TENSOR_IMPL_H 
+#endif  // TENSOR_IMPL_H

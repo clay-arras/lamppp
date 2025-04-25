@@ -14,14 +14,9 @@ find_package(Eigen3 REQUIRED)
 find_package(benchmark REQUIRED)
 set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11 CONFIG REQUIRED)
-# find_package(MKL CONFIG REQUIRED)
 find_package(CUDA  REQUIRED)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-
-message(${CUDA_INCLUDE_DIRS})
-message(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
-include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 
 add_library(autograd_core # TODO: next step: split into different bench envs 
     autograd/engine/variable.cpp
@@ -44,17 +39,15 @@ add_library(autograd_core # TODO: next step: split into different bench envs
     autograd/cuda/basic_kern.cu
 )
 
-target_compile_definitions(autograd_core PUBLIC 
-    # EIGEN_USE_MKL_ALL 
-)
+target_compile_definitions(autograd_core PUBLIC)
 target_link_libraries(autograd_core PUBLIC 
     Eigen3::Eigen 
-    # MKL::MKL
 ) 
 
 target_include_directories(autograd_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${EIGEN3_INCLUDE_DIRS}
+    ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
 )
 
 add_executable(mnist autograd/examples/mnist.cpp)

@@ -120,6 +120,11 @@ Checks: >
   -llvmlibc-implementation-in-namespace,
   -llvmlibc-callee-namespace
 
+CompileFlags: # for it to ignore unknown nvcc commands
+  Remove:
+    - "-forward-unknown-to-host-compiler"
+    - "-Xcompiler=-fPIC"
+
 # Turn all the warnings from the checks above into errors.
 WarningsAsErrors: "*"
 

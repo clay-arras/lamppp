@@ -13,21 +13,21 @@ __global__ void vecExpKernel(int size,
                     float* in,
                     float* out);
 void vecExp(int size,
-            float* in,
+            const float* in,
             float* out);
 
 __global__ void vecLogKernel(int size,
                     float* in,
                     float* out);
 void vecLog(int size,
-            float* in,
+            const float* in,
             float* out);
 
 __global__ void vecReluKernel(int size,
                      float* in,
                      float* out);
 void vecRelu(int size,
-             float* in,
+             const float* in,
              float* out);
 
 #ifdef __cplusplus

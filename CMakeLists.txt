@@ -37,6 +37,10 @@ add_library(
   autograd/util/batch_sample.cpp
   autograd/engine/backend/cuda_backend.cpp
   autograd/cuda/basic_kern.cu
+  autograd/cuda/unary_kern.cu
+  autograd/cuda/binary_kern.cu
+  autograd/cuda/matrix_kern.cu
+  autograd/cuda/reduct_kern.cu
 )
 
 target_compile_definitions(autograd_core PUBLIC)

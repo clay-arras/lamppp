@@ -1,15 +1,15 @@
-#include <iostream>
 #include "autograd/engine/backend/cuda_backend.h"
+#include "autograd/engine/backend/eigen_backend.h"
 #include "autograd/engine/tensor_impl.h"
 
 int main() {
+  autograd::TensorImpl a({7, 4, 2, 4}, {2, 2});
+  autograd::TensorImpl b({2, 1, -1, 3, 4, 5}, {2, 3});
+  autograd::TensorImpl c = autograd::EigenBackend().matmul(a, b);
+  autograd::TensorImpl d = autograd::CudaBackend().matmul(a, b);
 
-  autograd::TensorImpl a({1, 2, 3, 4, 5, 6}, {6});
-  autograd::TensorImpl b({4, 2, 6, 1, 3, 7}, {6});
 
-  autograd::TensorImpl c = autograd::CudaBackend().add(a, b);
-  for (float i : c.data) {
-    std::cout << i << " ";
-  }
-  std::cout << std::endl;
+  assert(c.data == d.data);
+  assert(c.shape == d.shape);
+  
 }

@@ -1,88 +1,89 @@
 #include "tensor.h"
 #include <cassert>
 #include <iostream>
-#include "backend/eigen_backend.h"
+// #include "backend/eigen_backend.h"
+#include "backend/cuda_backend.h"
 #include "tensor_impl.h"
 
 namespace autograd {
 
 Tensor Tensor::operator+(const Tensor& other) const {
   return Tensor(
-      std::make_shared<TensorImpl>(EigenBackend().add(*impl_, *other.impl_)));
+      std::make_shared<TensorImpl>(CudaBackend().add(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator-(const Tensor& other) const {
   return Tensor(
-      std::make_shared<TensorImpl>(EigenBackend().sub(*impl_, *other.impl_)));
+      std::make_shared<TensorImpl>(CudaBackend().sub(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator*(const Tensor& other) const {
   return Tensor(
-      std::make_shared<TensorImpl>(EigenBackend().mul(*impl_, *other.impl_)));
+      std::make_shared<TensorImpl>(CudaBackend().mul(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator/(const Tensor& other) const {
   return Tensor(
-      std::make_shared<TensorImpl>(EigenBackend().div(*impl_, *other.impl_)));
+      std::make_shared<TensorImpl>(CudaBackend().div(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator==(const Tensor& other) const {
   return Tensor(
-      std::make_shared<TensorImpl>(EigenBackend().equal(*impl_, *other.impl_)));
+      std::make_shared<TensorImpl>(CudaBackend().equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator!=(const Tensor& other) const {
   return Tensor(std::make_shared<TensorImpl>(
-      EigenBackend().not_equal(*impl_, *other.impl_)));
+      CudaBackend().not_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator>=(const Tensor& other) const {
   return Tensor(std::make_shared<TensorImpl>(
-      EigenBackend().greater_equal(*impl_, *other.impl_)));
+      CudaBackend().greater_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator<=(const Tensor& other) const {
   return Tensor(std::make_shared<TensorImpl>(
-      EigenBackend().less_equal(*impl_, *other.impl_)));
+      CudaBackend().less_equal(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator>(const Tensor& other) const {
   return Tensor(std::make_shared<TensorImpl>(
-      EigenBackend().greater_than(*impl_, *other.impl_)));
+      CudaBackend().greater_than(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::operator<(const Tensor& other) const {
   return Tensor(std::make_shared<TensorImpl>(
-      EigenBackend().less_than(*impl_, *other.impl_)));
+      CudaBackend().less_than(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::log() const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().log(*impl_)));
+  return Tensor(std::make_shared<TensorImpl>(CudaBackend().log(*impl_)));
 }
 
 Tensor Tensor::exp() const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().exp(*impl_)));
+  return Tensor(std::make_shared<TensorImpl>(CudaBackend().exp(*impl_)));
 }
 
 Tensor Tensor::relu() const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().relu(*impl_)));
+  return Tensor(std::make_shared<TensorImpl>(CudaBackend().relu(*impl_)));
 }
 
 Tensor Tensor::matmul(const Tensor& other) const {
   return Tensor(std::make_shared<TensorImpl>(
-      EigenBackend().matmul(*impl_, *other.impl_)));
+      CudaBackend().matmul(*impl_, *other.impl_)));
 }
 
 Tensor Tensor::transpose() const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().transpose(*impl_)));
+  return Tensor(std::make_shared<TensorImpl>(CudaBackend().transpose(*impl_)));
 }
 
 Tensor Tensor::sum(int axis) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().sum(*impl_, axis)));
+  return Tensor(std::make_shared<TensorImpl>(CudaBackend().sum(*impl_, axis)));
 }
 
 Tensor Tensor::max(int axis) const {
-  return Tensor(std::make_shared<TensorImpl>(EigenBackend().max(*impl_, axis)));
+  return Tensor(std::make_shared<TensorImpl>(CudaBackend().max(*impl_, axis)));
 }
 
 const int kMaxPrintNumel = 20;

@@ -11,7 +11,7 @@ __global__ void cudaMatmulKernel(const float* A, const float* B, float* C, int m
     int j = threadIdx.y + (blockIdx.y * blockDim.y);
 
     if (i < m && j < n) {
-        int sum = 0;
+        float sum = 0;
         for (int t=0; t<k; t++) { // NOTE: A is MxK, B is KxN, C is MxN
             // sum += A[(i*k) + t] * B[(n*t) + j]; // row major implementation
             sum += A[i + m*t] * B[t + k*j]; // TODO(nlin): this can be made faster but whatever

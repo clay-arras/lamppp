@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #ifndef TENSOR_IMPL_H
 #define TENSOR_IMPL_H
 
@@ -8,16 +9,16 @@
 
 namespace autograd {
 
-// enum class DataType { i32, f32 };
-
 struct TensorImpl {
   virtual ~TensorImpl() = default;
+  virtual std::shared_ptr<TensorImpl> clone() const = 0;
+
   virtual const void* data_ptr() const = 0;
   virtual const int data_size()
       const = 0;  // TODO: I really have to switch to size_t, this just bothers me
   virtual const std::vector<int>& shape() const = 0;
 
-  virtual std::shared_ptr<TensorImpl> add(const TensorImpl& a,
+  virtual std::shared_ptr<TensorImpl> add(const TensorImpl& a, // TODO: these can just take one argument, other
                                           const TensorImpl& b) = 0;
   virtual std::shared_ptr<TensorImpl> sub(const TensorImpl& a,
                                           const TensorImpl& b) = 0;
@@ -50,6 +51,8 @@ struct TensorImpl {
   virtual std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) = 0;
   virtual std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) = 0;
 
+  virtual void fill(void* item) = 0;
+
   virtual void print(std::ostream& os) const = 0;
   friend std::ostream& operator<<(std::ostream& os, const TensorImpl& obj) {
     obj.print(os);
@@ -63,6 +66,11 @@ class TensorImplModel : public TensorImpl {
   TensorImplModel(const std::vector<DataType>& data,
                   const std::vector<int>& shape)
       : _data(data), _shape(shape){};
+
+  std::shared_ptr<TensorImpl> clone() const override {
+      return std::make_shared<TensorImplModel<DataType, Backend>>(_data, _shape);
+  }
+
 
   const void* data_ptr() const override {
     return static_cast<const void*>(_data.data());
@@ -137,6 +145,14 @@ class TensorImplModel : public TensorImpl {
   }
   std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) override {
     return Backend().max(a, axis);
+  }
+
+  void fill(void* item) override {
+    if (auto ptr = static_cast<DataType *>(item)) {
+      std::fill(_data.begin(), _data.end(), *ptr);
+    } else {
+      assert(false);
+    }
   }
 
   const int kMaxPrintNumel = 20;

@@ -51,6 +51,7 @@
 // #include "autograd/autograd_umbrella.h"
 #include "autograd/engine/backend/cuda_backend.h"
 #include "autograd/engine/tensor.h"
+#include "autograd/engine/variable.h"
 
 int main() {
   std::vector<int> data1 = {1, 2, 3};
@@ -58,14 +59,17 @@ int main() {
   autograd::Tensor tensor1 =
       autograd::Tensor::create<int, autograd::CudaBackend<int>>(data1,
                                                                     shape1);
+  autograd::Variable var1(tensor1, false);
 
   std::vector<int> data2 = {4, 5, 6};
   std::vector<int> shape2 = {3};
   autograd::Tensor tensor2 =
       autograd::Tensor::create<int, autograd::CudaBackend<int>>(data2,
                                                                     shape2);
+  autograd::Variable var2(tensor1, false);
 
-  autograd::Tensor result = tensor1 + tensor2;
+  // autograd::Tensor result = tensor1 + tensor2;
+  autograd::Variable result = var1 + var2;
 
   std::cout << "Result of tensor addition: " << result << std::endl;
 

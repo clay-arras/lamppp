@@ -21,10 +21,11 @@ struct VariableImpl {
   std::shared_ptr<Function> _grad_fn;
   bool requires_grad;
 
-  explicit VariableImpl(Tensor data, bool requires_grad = false) {
+  explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
+    Tensor tmp(data);
+    this->grad = std::move(tmp);
+    this->grad.fill(1);
     this->data = std::move(data);
-    this->grad =
-        Tensor(std::vector<float>(this->data.size(), 0.0F), this->data.shape());
     this->requires_grad = requires_grad;
   }
 };
@@ -37,11 +38,16 @@ class Variable {
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
   std::shared_ptr<VariableImpl> impl_;
-
-  void zero_grad() {
-    impl_->grad =
-        Tensor(std::vector<float>(data().size(), 0.0F), data().shape());
+  template <typename DataType, typename Backend>
+  static Variable create(const std::vector<DataType>& data,
+                       const std::vector<int>& shape, 
+                       bool requires_grad = false) {
+    std::shared_ptr<TensorImpl> impl =
+        std::make_shared<TensorImplModel<DataType, Backend>>(data, shape);
+    return Variable(Tensor(impl), requires_grad);
   }
+
+  void zero_grad() { impl_->grad.fill(0.0); }
   void incr_grad(const Tensor& other_grad) {
     impl_->grad = impl_->grad + other_grad;
   }

@@ -6,114 +6,123 @@ namespace autograd {
 inline namespace ops {
 
 Variable operator+(const Variable& var, float scalar) {
-  return var + Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                               var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var + Variable(scalar_tensor);
 }
 
 Variable operator-(const Variable& var, float scalar) {
-  return var - Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                               var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var - Variable(scalar_tensor);
 }
 
 Variable operator*(const Variable& var, float scalar) {
-  return var * Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                               var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var * Variable(scalar_tensor);
 }
 
 Variable operator/(const Variable& var, float scalar) {
-  return var / Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                               var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var / Variable(scalar_tensor);
 }
 
 Variable operator+(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator+(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) + var;
 }
 
 Variable operator-(float scalar, const Variable& var) {
-  return Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                         var.data().shape())) -
-         var;
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) - var;
 }
 
 Variable operator*(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator*(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) * var;
 }
 
 Variable operator/(float scalar, const Variable& var) {
-  return Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                         var.data().shape())) /
-         var;
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) / var;
 }
 
 Variable operator==(const Variable& var, float scalar) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return var.operator==(scalar_var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var == Variable(scalar_tensor);
 }
 
 Variable operator!=(const Variable& var, float scalar) {
-  return var != Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                                var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var != Variable(scalar_tensor);
 }
 
 Variable operator>=(const Variable& var, float scalar) {
-  return var >= Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                                var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var >= Variable(scalar_tensor);
 }
 
 Variable operator<=(const Variable& var, float scalar) {
-  return var <= Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                                var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var <= Variable(scalar_tensor);
 }
 
 Variable operator>(const Variable& var, float scalar) {
-  return var > Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                               var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var > Variable(scalar_tensor);
 }
 
 Variable operator<(const Variable& var, float scalar) {
-  return var < Variable(Tensor(std::vector<float>(var.data().size(), scalar),
-                               var.data().shape()));
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return var < Variable(scalar_tensor);
 }
 
 Variable operator==(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator==(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) == var;
 }
 
 Variable operator!=(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator!=(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) != var;
 }
 
 Variable operator>=(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator>=(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) >= var;
 }
 
 Variable operator<=(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator<=(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) <= var;
 }
 
 Variable operator>(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator>(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) > var;
 }
 
 Variable operator<(float scalar, const Variable& var) {
-  Variable scalar_var(Tensor(std::vector<float>(var.data().size(), scalar),
-                             var.data().shape()));
-  return scalar_var.operator<(var);
+  Tensor scalar_tensor(var.data());
+  scalar_tensor.fill(scalar);
+  return Variable(scalar_tensor) < var;
 }
 
 }  // namespace ops

@@ -14,10 +14,26 @@ namespace autograd {
 
 class Tensor {
  public:
+  Tensor() = default;
+  Tensor(const Tensor&& other) noexcept : impl_(std::move(other.impl_)) {}
+  Tensor& operator=(const Tensor& other) {
+    if (this != &other) {
+      impl_ = other.impl_->clone();
+    }
+    return *this;
+  }
+  Tensor& operator=(Tensor&& other) noexcept {
+    if (this != &other) {
+      impl_ = std::move(other.impl_);
+    }
+    return *this;
+  }
   // template<typename DataType, typename Backend>
   // explicit Tensor(const std::vector<DataType>& data, const std::vector<int>& shape)
   //     : impl_(std::make_shared<TensorImplModel<DataType, Backend>>(data, shape)) {}
   explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(std::move(impl)) {}
+  explicit Tensor(const Tensor& other) 
+         : impl_(other.impl_->clone()) {}
 
   std::shared_ptr<TensorImpl>
       impl_;  // TODO: this should probably be a unique ptr
@@ -35,6 +51,18 @@ class Tensor {
     return std::span<T>(impl_->data_ptr());
   }
   const std::vector<int>& shape() const { return impl_->shape(); }
+
+  template<typename T>
+  void fill(T item) {
+    void* ptr = static_cast<void*> (new T());
+    impl_->fill(ptr);
+  }
+  // Tensor& operator=(const Tensor& other) {
+  //   if (this != &other) {
+  //     impl_ = std::make_shared<TensorImpl>(*other.impl_); 
+  //   }
+  //   return *this;
+  // }
 
   Tensor operator+(const Tensor& other) const;
   Tensor operator-(const Tensor& other) const;

@@ -1,4 +1,3 @@
-#include "mnist.h"
 #include <algorithm>
 #include <cassert>
 #include <iostream>

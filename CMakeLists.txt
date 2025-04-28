@@ -24,18 +24,15 @@ add_library(
   autograd/engine/variable_ops.cpp
   autograd/engine/tensor.cpp
   autograd/engine/tensor_ops.cpp
-  autograd/engine/function.cpp
   autograd/engine/constructor.cpp
-  autograd/engine/backend.cpp
   autograd/engine/backend/eigen_backend.cpp
-  autograd/engine/forward_function.cpp
+  autograd/engine/backend/cuda_backend.cpp
   autograd/engine/functions/basic_ops.cpp
   autograd/engine/functions/unary_ops.cpp
   autograd/engine/functions/matrix_ops.cpp
   autograd/engine/functions/reduct_ops.cpp
   autograd/util/csv_reader.cpp
   autograd/util/batch_sample.cpp
-  autograd/engine/backend/cuda_backend.cpp
   autograd/cuda/basic_kern.cu
   autograd/cuda/unary_kern.cu
   autograd/cuda/binary_kern.cu

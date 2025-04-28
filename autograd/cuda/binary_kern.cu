@@ -4,57 +4,60 @@ namespace autograd {
 
 inline namespace cuda {
 
-namespace {
-
-__global__ void vecEqualKernel(int size, const float* A, const float* B, float* C) {
+template <typename T>
+__global__ void vecEqualKernel(int size, const T* A, const T* B, T* C) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] == B[i]) ? 1.0F : 0.0F;
     }
 }
 
-__global__ void vecNotEqualKernel(int size, const float* A, const float* B, float* C) {
+template <typename T>
+__global__ void vecNotEqualKernel(int size, const T* A, const T* B, T* C) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] != B[i]) ? 1.0F : 0.0F;
     }
 }
 
-__global__ void vecGreaterEqualKernel(int size, const float* A, const float* B, float* C) {
+template <typename T>
+__global__ void vecGreaterEqualKernel(int size, const T* A, const T* B, T* C) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] >= B[i]) ? 1.0F : 0.0F;
     }
 }
 
-__global__ void vecLessEqualKernel(int size, const float* A, const float* B, float* C) {
+template <typename T>
+__global__ void vecLessEqualKernel(int size, const T* A, const T* B, T* C) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] <= B[i]) ? 1.0F : 0.0F;
     }
 }
 
-__global__ void vecGreaterThanKernel(int size, const float* A, const float* B, float* C) {
+template <typename T>
+__global__ void vecGreaterThanKernel(int size, const T* A, const T* B, T* C) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] > B[i]) ? 1.0F : 0.0F;
     }
 }
 
-__global__ void vecLessThanKernel(int size, const float* A, const float* B, float* C) {
+template <typename T>
+__global__ void vecLessThanKernel(int size, const T* A, const T* B, T* C) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] < B[i]) ? 1.0F : 0.0F;
     }
 }
 
-} // anonymous namespace
-
-extern "C" void vecEqual(int size, const float* A, const float* B, float* C) {
-  float *d_a;
-  float *d_b;
-  float *d_c;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecEqual(int size, const T* A, const T* B, T* C) {
+  T *d_a;
+  T *d_b;
+  T *d_c;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_a, bytes);
   cudaMalloc(&d_b, bytes);
@@ -73,11 +76,12 @@ extern "C" void vecEqual(int size, const float* A, const float* B, float* C) {
   cudaFree(d_c);
 }
 
-extern "C" void vecNotEqual(int size, const float* A, const float* B, float* C) {
-  float *d_a;
-  float *d_b;
-  float *d_c;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecNotEqual(int size, const T* A, const T* B, T* C) {
+  T *d_a;
+  T *d_b;
+  T *d_c;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_a, bytes);
   cudaMalloc(&d_b, bytes);
@@ -96,11 +100,12 @@ extern "C" void vecNotEqual(int size, const float* A, const float* B, float* C) 
   cudaFree(d_c);
 }
 
-extern "C" void vecGreaterEqual(int size, const float* A, const float* B, float* C) {
-  float *d_a;
-  float *d_b;
-  float *d_c;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecGreaterEqual(int size, const T* A, const T* B, T* C) {
+  T *d_a;
+  T *d_b;
+  T *d_c;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_a, bytes);
   cudaMalloc(&d_b, bytes);
@@ -119,11 +124,12 @@ extern "C" void vecGreaterEqual(int size, const float* A, const float* B, float*
   cudaFree(d_c);
 }
 
-extern "C" void vecLessEqual(int size, const float* A, const float* B, float* C) {
-  float *d_a;
-  float *d_b;
-  float *d_c;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecLessEqual(int size, const T* A, const T* B, T* C) {
+  T *d_a;
+  T *d_b;
+  T *d_c;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_a, bytes);
   cudaMalloc(&d_b, bytes);
@@ -142,11 +148,12 @@ extern "C" void vecLessEqual(int size, const float* A, const float* B, float* C)
   cudaFree(d_c);
 }
 
-extern "C" void vecGreaterThan(int size, const float* A, const float* B, float* C) {
-  float *d_a;
-  float *d_b;
-  float *d_c;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecGreaterThan(int size, const T* A, const T* B, T* C) {
+  T *d_a;
+  T *d_b;
+  T *d_c;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_a, bytes);
   cudaMalloc(&d_b, bytes);
@@ -165,11 +172,12 @@ extern "C" void vecGreaterThan(int size, const float* A, const float* B, float* 
   cudaFree(d_c);
 }
 
-extern "C" void vecLessThan(int size, const float* A, const float* B, float* C) {
-  float *d_a;
-  float *d_b;
-  float *d_c;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecLessThan(int size, const T* A, const T* B, T* C) {
+  T *d_a;
+  T *d_b;
+  T *d_c;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_a, bytes);
   cudaMalloc(&d_b, bytes);
@@ -187,6 +195,14 @@ extern "C" void vecLessThan(int size, const float* A, const float* B, float* C) 
   cudaFree(d_b);
   cudaFree(d_c);
 }
+
+// Explicit template instantiations
+template void vecEqual<float>(int size, const float* A, const float* B, float* C);
+template void vecNotEqual<float>(int size, const float* A, const float* B, float* C);
+template void vecGreaterEqual<float>(int size, const float* A, const float* B, float* C);
+template void vecLessEqual<float>(int size, const float* A, const float* B, float* C);
+template void vecGreaterThan<float>(int size, const float* A, const float* B, float* C);
+template void vecLessThan<float>(int size, const float* A, const float* B, float* C);
 
 } // namespace cuda
 

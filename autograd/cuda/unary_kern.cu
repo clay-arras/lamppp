@@ -1,39 +1,39 @@
 #include "unary_kern.cuh"
-#include <cmath>
 
 namespace autograd {
 
 inline namespace cuda {
 
-namespace {
-
-__global__ void vecExpKernel(int size, float* in, float* out) {
+// Kernels moved outside anonymous namespace
+template <typename T>
+__global__ void vecExpKernel(int size, T* in, T* out) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         out[i] = expf(in[i]);
     }
 }
 
-__global__ void vecLogKernel(int size, float* in, float* out) {
+template <typename T>
+__global__ void vecLogKernel(int size, T* in, T* out) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         out[i] = logf(in[i]);
     }
 }
 
-__global__ void vecReluKernel(int size, float* in, float* out) {
+template <typename T>
+__global__ void vecReluKernel(int size, T* in, T* out) {
     int i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         out[i] = fmaxf(0.0F, in[i]);
     }
 }
 
-} // anonymous namespace
-
-extern "C" void vecExp(int size, const float* in, float* out) {
-  float *d_in;
-  float *d_out;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecExp(int size, const T* in, T* out) {
+  T *d_in;
+  T *d_out;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_in, bytes);
   cudaMalloc(&d_out, bytes);
@@ -49,10 +49,11 @@ extern "C" void vecExp(int size, const float* in, float* out) {
   cudaFree(d_out);
 }
 
-extern "C" void vecLog(int size, const float* in, float* out) {
-  float *d_in;
-  float *d_out;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecLog(int size, const T* in, T* out) {
+  T *d_in;
+  T *d_out;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_in, bytes);
   cudaMalloc(&d_out, bytes);
@@ -68,10 +69,11 @@ extern "C" void vecLog(int size, const float* in, float* out) {
   cudaFree(d_out);
 }
 
-extern "C" void vecRelu(int size, const float* in, float* out) {
-  float *d_in;
-  float *d_out;
-  size_t bytes = size * sizeof(float);
+template <typename T>
+void vecRelu(int size, const T* in, T* out) {
+  T *d_in;
+  T *d_out;
+  size_t bytes = size * sizeof(T);
 
   cudaMalloc(&d_in, bytes);
   cudaMalloc(&d_out, bytes);
@@ -86,6 +88,11 @@ extern "C" void vecRelu(int size, const float* in, float* out) {
   cudaFree(d_in);
   cudaFree(d_out);
 }
+
+// Explicit template instantiations
+template void vecExp<float>(int size, const float* in, float* out);
+template void vecLog<float>(int size, const float* in, float* out);
+template void vecRelu<float>(int size, const float* in, float* out);
 
 } // namespace cuda
 

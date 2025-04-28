@@ -1,8 +1,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "autograd/engine/tensor.h"
 #include "autograd/engine/function.h"
+#include "autograd/engine/tensor.h"
 
 namespace py = pybind11;
 

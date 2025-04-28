@@ -6,65 +6,79 @@
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
 
+namespace autograd {
+inline namespace cuda {
+
+template <typename T>
 __global__ void vecEqualKernel(int size,
-                      const float* A,
-                      const float* B,
-                      float* C);
+                      const T* A,
+                      const T* B,
+                      T* C);
+template <typename T>
 void vecEqual(int size,
-              const float* A,
-              const float* B,
-              float* C);
+              const T* A,
+              const T* B,
+              T* C);
 
+template <typename T>
 __global__ void vecNotEqualKernel(int size,
-                          const float* A,
-                          const float* B,
-                          float* C);
+                          const T* A,
+                          const T* B,
+                          T* C);
+template <typename T>
 void vecNotEqual(int size,
-                 const float* A,
-                 const float* B,
-                 float* C);
+                 const T* A,
+                 const T* B,
+                 T* C);
 
+template <typename T>
 __global__ void vecGreaterEqualKernel(int size,
-                              const float* A,
-                              const float* B,
-                              float* C);
+                              const T* A,
+                              const T* B,
+                              T* C);
+template <typename T>
 void vecGreaterEqual(int size,
-                     const float* A,
-                     const float* B,
-                     float* C);
+                     const T* A,
+                     const T* B,
+                     T* C);
 
+template <typename T>
 __global__ void vecLessEqualKernel(int size,
-                           const float* A,
-                           const float* B,
-                           float* C);
+                           const T* A,
+                           const T* B,
+                           T* C);
+template <typename T>
 void vecLessEqual(int size,
-                  const float* A,
-                  const float* B,
-                  float* C);
+                  const T* A,
+                  const T* B,
+                  T* C);
 
+template <typename T>
 __global__ void vecGreaterThanKernel(int size,
-                             const float* A,
-                             const float* B,
-                             float* C);
+                             const T* A,
+                             const T* B,
+                             T* C);
+template <typename T>
 void vecGreaterThan(int size,
-                    const float* A,
-                    const float* B,
-                    float* C);
+                    const T* A,
+                    const T* B,
+                    T* C);
 
+template <typename T>
 __global__ void vecLessThanKernel(int size,
-                          const float* A,
-                          const float* B,
-                          float* C);
+                          const T* A,
+                          const T* B,
+                          T* C);
+template <typename T>
 void vecLessThan(int size,
-                 const float* A,
-                 const float* B,
-                 float* C);
+                 const T* A,
+                 const T* B,
+                 T* C);
 
-#ifdef __cplusplus
-} // extern "C"
+} // namespace cuda
+} // namespace autograd
+
 #endif
 
 #endif // _BINARY_KERN_CUH_

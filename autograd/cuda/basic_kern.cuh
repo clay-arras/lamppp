@@ -6,48 +6,63 @@
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
 
+namespace autograd {
+
+inline namespace cuda {
+
+template <typename T>
 __global__ void vecAddKernel(int size,
-                             const float* A,
-                             const float* B,
-                             float* C);
+                             const T* A,
+                             const T* B,
+                             T* C);
+template <typename T>
 void vecAdd(int size,
-            const float* A,
-            const float* B,
-            float* C);
+            const T* A,
+            const T* B,
+            T* C);
 
+template <typename T>
 __global__ void vecSubKernel(int size,
-                             const float* A,
-                             const float* B,
-                             float* C);
+                             const T* A,
+                             const T* B,
+                             T* C);
+template <typename T>
 void vecSub(int size,
-            const float* A,
-            const float* B,
-            float* C);
+            const T* A,
+            const T* B,
+            T* C);
 
+template <typename T>
 __global__ void vecMulKernel(int size,
-                             const float* A,
-                             const float* B,
-                             float* C);
+                             const T* A,
+                             const T* B,
+                             T* C);
+template <typename T>
 void vecMul(int size,
-            const float* A,
-            const float* B,
-            float* C);
+            const T* A,
+            const T* B,
+            T* C);
 
+template <typename T>
 __global__ void vecDivKernel(int size,
-                             const float* A,
-                             const float* B,
-                             float* C);
+                             const T* A,
+                             const T* B,
+                             T* C);
+template <typename T>
 void vecDiv(int size,
-            const float* A,
-            const float* B,
-            float* C);
+            const T* A,
+            const T* B,
+            T* C);
 
-#ifdef __cplusplus
 
-} // extern "C"
+// #define X(TYPE) extern template void vecAdd<TYPE>(int, const TYPE*, const TYPE*, TYPE*);
+// #include "autograd/engine/supported_types.def"
+// #undef  X
+
+} // namespace cuda
+
+} // namespace autograd
 
 #endif
 

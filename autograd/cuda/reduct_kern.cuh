@@ -6,35 +6,41 @@
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
 
-__global__ void vecSumKernel(const float* in,
-                             float* out,
+namespace autograd {
+inline namespace cuda {
+
+template <typename T>
+__global__ void vecSumKernel(const T* in,
+                             T* out,
                              const int* shape,
                              int* stride,
                              int axis, 
                              int outSize);
-__global__ void vecMaxKernel(const float* in,
-                             float* out,
+template <typename T>
+__global__ void vecMaxKernel(const T* in,
+                             T* out,
                              const int* shape,
                              int* stride,
                              int axis, 
                              int outSize);
 
-void vecSum(const float* in,
-            float* out,
+template <typename T>
+void vecSum(const T* in,
+            T* out,
             const int* shape,
             int axis,
             int ndims);
-void vecMax(const float* in,
-            float* out,
+template <typename T>
+void vecMax(const T* in,
+            T* out,
             const int* shape,
             int axis, 
             int ndims);
 
-#ifdef __cplusplus
-} // extern "C"
+} // namespace cuda
+} // namespace autograd
+
 #endif
 
 #endif // _REDUCT_KERN_CUH_

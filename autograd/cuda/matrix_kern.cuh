@@ -6,35 +6,41 @@
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
 
-__global__ void cudaMatmulKernel(const float* A,
-                       const float* B,
-                       float* C,
+namespace autograd {
+inline namespace cuda {
+
+template <typename T>
+__global__ void cudaMatmulKernel(const T* A,
+                       const T* B,
+                       T* C,
                        int m,
                        int n,
                        int k);
 
-void cudaMatMul(const float* A,
-                const float* B,
-                float* C,
+template <typename T>
+void cudaMatMul(const T* A,
+                const T* B,
+                T* C,
                 int m,
                 int n,
                 int k);
 
-__global__ void cudaTransposeKernel(const float* in,
-                                    float* out,
+template <typename T>
+__global__ void cudaTransposeKernel(const T* in,
+                                    T* out,
                                     int m,
                                     int n); 
 
-void cudaTranspose(const float* in,
-                              float* out,
+template <typename T>
+void cudaTranspose(const T* in,
+                              T* out,
                               int m,
                               int n);
 
-#ifdef __cplusplus
-} // extern "C"
+} // namespace cuda
+} // namespace autograd
+
 #endif
 
 #endif // _MATRIX_KERN_CUH_

@@ -6,32 +6,41 @@
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
 
+namespace autograd {
+inline namespace cuda {
+
+template <typename T>
 __global__ void vecExpKernel(int size,
-                    float* in,
-                    float* out);
+                    T* in,
+                    T* out);
+template <typename T>
 void vecExp(int size,
-            const float* in,
-            float* out);
+            const T* in,
+            T* out);
 
+template <typename T>
 __global__ void vecLogKernel(int size,
-                    float* in,
-                    float* out);
+                    T* in,
+                    T* out);
+template <typename T>
 void vecLog(int size,
-            const float* in,
-            float* out);
+            const T* in,
+            T* out);
 
+template <typename T>
 __global__ void vecReluKernel(int size,
-                     float* in,
-                     float* out);
+                     T* in,
+                     T* out);
+template <typename T>
 void vecRelu(int size,
-             const float* in,
-             float* out);
+             const T* in,
+             T* out);
 
-#ifdef __cplusplus
-} // extern "C"
+} // namespace cuda
+
+} // namespace autograd
+
 #endif
 
 #endif // _UNARY_KERN_CUH_

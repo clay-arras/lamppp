@@ -20,19 +20,19 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 add_library(
   autograd_core # TODO: next step: split into different bench envs
-  autograd/engine/variable.cpp
-  autograd/engine/variable_ops.cpp
+  # autograd/engine/variable.cpp
+  # autograd/engine/variable_ops.cpp
   autograd/engine/tensor.cpp
-  autograd/engine/tensor_ops.cpp
-  autograd/engine/constructor.cpp
-  autograd/engine/backend/eigen_backend.cpp
+  # autograd/engine/tensor_ops.cpp
+  # autograd/engine/constructor.cpp
+  # autograd/engine/backend/eigen_backend.cpp
   autograd/engine/backend/cuda_backend.cpp
-  autograd/engine/functions/basic_ops.cpp
-  autograd/engine/functions/unary_ops.cpp
-  autograd/engine/functions/matrix_ops.cpp
-  autograd/engine/functions/reduct_ops.cpp
-  autograd/util/csv_reader.cpp
-  autograd/util/batch_sample.cpp
+  # autograd/engine/functions/basic_ops.cpp
+  # autograd/engine/functions/unary_ops.cpp
+  # autograd/engine/functions/matrix_ops.cpp
+  # autograd/engine/functions/reduct_ops.cpp
+  # autograd/util/csv_reader.cpp
+  # autograd/util/batch_sample.cpp
   autograd/cuda/basic_kern.cu
   autograd/cuda/unary_kern.cu
   autograd/cuda/binary_kern.cu
@@ -48,17 +48,17 @@ target_include_directories(
                        ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
 )
 
-add_executable(mnist autograd/examples/mnist.cpp)
-target_link_libraries(mnist autograd_core)
+# add_executable(mnist autograd/examples/mnist.cpp)
+# target_link_libraries(mnist autograd_core)
 
-add_executable(bench_ops test/benchmarks/bench_ops.cpp)
-target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+# add_executable(bench_ops test/benchmarks/bench_ops.cpp)
+# target_link_libraries(bench_ops autograd_core benchmark::benchmark)
 
 add_executable(test_playground test/cpp/test_playground.cpp)
-target_link_libraries(test_playground autograd_core benchmark::benchmark)
+target_link_libraries(test_playground autograd_core)
 
-pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
-target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
+# pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
+# target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(NOT CLANG_FORMAT_EXE)

@@ -1,6 +1,4 @@
-#include "autograd/engine/backend/cuda_backend.h"
-#include "autograd/engine/backend/eigen_backend.h"
-#include "autograd/engine/tensor_impl.h"
+#include "autograd/autograd_umbrella.h"
 
 int main() {
   autograd::TensorImpl a({7, 4, 2, 4}, {2, 2});
@@ -11,5 +9,4 @@ int main() {
 
   assert(c.data == d.data);
   assert(c.shape == d.shape);
-  
 }

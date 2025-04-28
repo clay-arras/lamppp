@@ -8,7 +8,6 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include "function.h"
 #include "tensor.h"
 
 namespace autograd {
@@ -27,16 +26,6 @@ struct VariableImpl {
     this->grad =
         Tensor(std::vector<float>(this->data.size(), 0.0F), this->data.shape());
     this->requires_grad = requires_grad;
-  }
-};
-
-struct VariableOpFact {
-  template <typename Op, typename... Args>
-  static variable_list apply(variable_list variables, Args&&... args) {
-    Op op_fn(std::forward<Args>(args)...);
-    variable_list result =
-        op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
-    return result;
   }
 };
 
@@ -94,6 +83,18 @@ class Variable {
  private:
   void dfs(const Variable& v, std::unordered_set<void*>& visited,
            std::vector<Variable>& topo) const;
+};
+
+using variable_list = std::vector<Variable>;
+
+struct VariableOpFact {
+  template <typename Op, typename... Args>
+  static variable_list apply(variable_list variables, Args&&... args) {
+    Op op_fn(std::forward<Args>(args)...);
+    variable_list result =
+        op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
+    return result;
+  }
 };
 
 }  // namespace autograd

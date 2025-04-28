@@ -5,18 +5,14 @@
 
 #include <cassert>
 #include <memory>
-#include <vector>
+#include "variable.h"
 
 namespace autograd {
 
 class Variable;
 struct Function;
 
-using variable_list = std::vector<Variable>;
-using function_list = std::vector<std::pair<std::shared_ptr<Function>, int>>;
-
 struct Function : public std::enable_shared_from_this<Function> {
-  std::vector<std::pair<std::shared_ptr<Function>, int>> function_list;
   std::unique_ptr<variable_list> saved_inputs;
 
   Function() = default;

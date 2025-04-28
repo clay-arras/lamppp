@@ -53,17 +53,16 @@
 #include "autograd/engine/tensor.h"
 
 int main() {
-  // Create two tensors
-  std::vector<float> data1 = {1.0f, 2.0f, 3.0f};
+  std::vector<int> data1 = {1, 2, 3};
   std::vector<int> shape1 = {3};
   autograd::Tensor tensor1 =
-      autograd::Tensor::create<float, autograd::CudaBackend<float>>(data1,
+      autograd::Tensor::create<int, autograd::CudaBackend<int>>(data1,
                                                                     shape1);
 
-  std::vector<float> data2 = {4.0f, 5.0f, 6.0f};
+  std::vector<int> data2 = {4, 5, 6};
   std::vector<int> shape2 = {3};
   autograd::Tensor tensor2 =
-      autograd::Tensor::create<float, autograd::CudaBackend<float>>(data2,
+      autograd::Tensor::create<int, autograd::CudaBackend<int>>(data2,
                                                                     shape2);
 
   autograd::Tensor result = tensor1 + tensor2;

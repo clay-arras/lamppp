@@ -138,11 +138,12 @@ void vecMax(const T* in,
     cudaFree(d_stride);
     
     delete[] h_stride;
-
 }
 
-template void vecSum<float>(const float* in, float* out, const int* shape, int axis, int ndims);
-template void vecMax<float>(const float* in, float* out, const int* shape, int axis, int ndims);
+#define X(TYPE) template void vecSum<TYPE>(const TYPE*, TYPE*, const int*, int, int); \
+                 template void vecMax<TYPE>(const TYPE*, TYPE*, const int*, int, int);
+#include "autograd/engine/supported_types.def"
+#undef  X
 
 } // namespace cuda
 

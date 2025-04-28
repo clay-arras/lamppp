@@ -204,7 +204,7 @@ template <typename DataType>
 std::shared_ptr<TensorImpl> CudaBackend<DataType>::less_equal(
     const TensorImpl& a, const TensorImpl& b) {
   assert(a.data_size() == b.data_size());
-  std::vector<float> c(a.data_size());
+  std::vector<DataType> c(a.data_size());
   vecLessEqual<DataType>(a.data_size(),
                          static_cast<const DataType*>(a.data_ptr()),
                          static_cast<const DataType*>(b.data_ptr()), c.data());

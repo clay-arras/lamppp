@@ -83,9 +83,10 @@ void cudaTranspose(const T* in,
   cudaFree(d_out);
 }
 
-// Explicit template instantiations
-template void cudaMatMul<float>(const float* A, const float* B, float* C, int m, int n, int k);
-template void cudaTranspose<float>(const float* in, float* out, int m, int n);
+#define X(TYPE) template void cudaMatMul<TYPE>(const TYPE*, const TYPE*, TYPE*, int, int, int); \
+                 template void cudaTranspose<TYPE>(const TYPE*, TYPE*, int, int);
+#include "autograd/engine/supported_types.def"
+#undef  X
 
 } // namespace cuda
 

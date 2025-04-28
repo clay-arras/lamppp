@@ -89,10 +89,11 @@ void vecRelu(int size, const T* in, T* out) {
   cudaFree(d_out);
 }
 
-// Explicit template instantiations
-template void vecExp<float>(int size, const float* in, float* out);
-template void vecLog<float>(int size, const float* in, float* out);
-template void vecRelu<float>(int size, const float* in, float* out);
+#define X(TYPE) template void vecExp<TYPE>(int, const TYPE*, TYPE*); \
+                 template void vecLog<TYPE>(int, const TYPE*, TYPE*); \
+                 template void vecRelu<TYPE>(int, const TYPE*, TYPE*);
+#include "autograd/engine/supported_types.def"
+#undef  X
 
 } // namespace cuda
 

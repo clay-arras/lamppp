@@ -196,13 +196,14 @@ void vecLessThan(int size, const T* A, const T* B, T* C) {
   cudaFree(d_c);
 }
 
-// Explicit template instantiations
-template void vecEqual<float>(int size, const float* A, const float* B, float* C);
-template void vecNotEqual<float>(int size, const float* A, const float* B, float* C);
-template void vecGreaterEqual<float>(int size, const float* A, const float* B, float* C);
-template void vecLessEqual<float>(int size, const float* A, const float* B, float* C);
-template void vecGreaterThan<float>(int size, const float* A, const float* B, float* C);
-template void vecLessThan<float>(int size, const float* A, const float* B, float* C);
+#define X(TYPE) template void vecEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecNotEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecGreaterEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecLessEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecGreaterThan<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecLessThan<TYPE>(int, const TYPE*, const TYPE*, TYPE*);
+#include "autograd/engine/supported_types.def"
+#undef  X
 
 } // namespace cuda
 

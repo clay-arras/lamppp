@@ -133,12 +133,13 @@ void vecDiv(int size, const T* A, const T* B, T* C) {
   cudaFree(d_c);
 }
 
+#define X(TYPE) template void vecAdd<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecSub<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecMul<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecDiv<TYPE>(int, const TYPE*, const TYPE*, TYPE*);
+#include "autograd/engine/supported_types.def"
+#undef  X
 
-// Explicit template instantiations
-template void vecAdd<float>(int size, const float* A, const float* B, float* C);
-template void vecSub<float>(int size, const float* A, const float* B, float* C);
-template void vecMul<float>(int size, const float* A, const float* B, float* C);
-template void vecDiv<float>(int size, const float* A, const float* B, float* C);
 
 } // namespace cuda
 } // namespace autograd

@@ -56,10 +56,6 @@ void vecDiv(int size,
             T* C);
 
 
-// #define X(TYPE) extern template void vecAdd<TYPE>(int, const TYPE*, const TYPE*, TYPE*);
-// #include "autograd/engine/supported_types.def"
-// #undef  X
-
 } // namespace cuda
 
 } // namespace autograd

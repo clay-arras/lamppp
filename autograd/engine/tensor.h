@@ -1,5 +1,6 @@
 #pragma once
 
+#include "autograd/engine/backend/cuda_backend.h"
 #ifndef _TENSOR_H_
 #define _TENSOR_H
 
@@ -28,11 +29,17 @@ class Tensor {
     }
     return *this;
   }
-  // template<typename DataType, typename Backend>
-  // explicit Tensor(const std::vector<DataType>& data, const std::vector<int>& shape)
-  //     : impl_(std::make_shared<TensorImplModel<DataType, Backend>>(data, shape)) {}
+
+  template<typename DataType>
+  Tensor(const std::vector<DataType>& data, const std::vector<int>& shape)
+      : impl_(std::make_shared<TensorImplModel<DataType, CudaBackend<DataType>>>(data, shape)) {}
+
+  template<typename DataType, typename Backend>
+  Tensor(const std::vector<DataType>& data, const std::vector<int>& shape)
+      : impl_(std::make_shared<TensorImplModel<DataType, Backend>>(data, shape)) {}
+
   explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(std::move(impl)) {}
-  explicit Tensor(const Tensor& other) 
+  Tensor(const Tensor& other) 
          : impl_(other.impl_->clone()) {}
 
   std::shared_ptr<TensorImpl>
@@ -47,8 +54,8 @@ class Tensor {
 
   const int size() const { return impl_->data_size(); }
   template <typename T>
-  const std::span<T>& data() const {
-    return std::span<T>(impl_->data_ptr());
+  std::span<const T> data() const {
+    return std::span<const T>(static_cast<const T*>(impl_->data_ptr()), impl_->data_size());
   }
   const std::vector<int>& shape() const { return impl_->shape(); }
 

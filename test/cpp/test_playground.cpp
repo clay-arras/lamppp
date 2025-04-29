@@ -66,9 +66,8 @@ int main() {
   autograd::Tensor tensor2 =
       autograd::Tensor::create<int, autograd::CudaBackend<int>>(data2,
                                                                     shape2);
-  autograd::Variable var2(tensor1, false);
+  autograd::Variable var2(tensor2, false);
 
-  // autograd::Tensor result = tensor1 + tensor2;
   autograd::Variable result = var1 + var2;
 
   std::cout << "Result of tensor addition: " << result << std::endl;

@@ -31,8 +31,8 @@ add_library(
   autograd/engine/functions/unary_ops.cpp
   autograd/engine/functions/matrix_ops.cpp
   autograd/engine/functions/reduct_ops.cpp
-  # autograd/util/csv_reader.cpp
-  # autograd/util/batch_sample.cpp
+  autograd/util/csv_reader.cpp
+  autograd/util/batch_sample.cpp
   autograd/cuda/basic_kern.cu
   autograd/cuda/unary_kern.cu
   autograd/cuda/binary_kern.cu
@@ -57,8 +57,8 @@ target_include_directories(
 add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)
 
-# pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
-# target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
+pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
+target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(NOT CLANG_FORMAT_EXE)

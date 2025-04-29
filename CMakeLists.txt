@@ -57,6 +57,9 @@ target_include_directories(
 add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)
 
+add_executable(test_debug test/python/stress/test_debug.cpp)
+target_link_libraries(test_debug autograd_core)
+
 pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
 target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 

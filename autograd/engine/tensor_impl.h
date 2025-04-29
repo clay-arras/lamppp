@@ -1,9 +1,10 @@
 #pragma once
 
-#include <cassert>
+#include <iostream>
 #ifndef TENSOR_IMPL_H
 #define TENSOR_IMPL_H
 
+#include <cassert>
 #include <memory>
 #include <vector>
 
@@ -18,38 +19,27 @@ struct TensorImpl {
       const = 0;  // TODO: I really have to switch to size_t, this just bothers me
   virtual const std::vector<int>& shape() const = 0;
 
-  virtual std::shared_ptr<TensorImpl> add(const TensorImpl& a, // TODO: these can just take one argument, other
-                                          const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> sub(const TensorImpl& a,
-                                          const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> mul(const TensorImpl& a,
-                                          const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> div(const TensorImpl& a,
-                                          const TensorImpl& b) = 0;
+  virtual std::shared_ptr<TensorImpl> add(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> sub(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> mul(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> div(const TensorImpl& other) = 0;
 
-  virtual std::shared_ptr<TensorImpl> log(const TensorImpl& a) = 0;
-  virtual std::shared_ptr<TensorImpl> exp(const TensorImpl& a) = 0;
-  virtual std::shared_ptr<TensorImpl> relu(const TensorImpl& a) = 0;
+  virtual std::shared_ptr<TensorImpl> log() = 0;
+  virtual std::shared_ptr<TensorImpl> exp() = 0;
+  virtual std::shared_ptr<TensorImpl> relu() = 0;
 
-  virtual std::shared_ptr<TensorImpl> matmul(const TensorImpl& a,
-                                             const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> transpose(const TensorImpl& a) = 0;
+  virtual std::shared_ptr<TensorImpl> matmul(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> transpose() = 0;
 
-  virtual std::shared_ptr<TensorImpl> equal(const TensorImpl& a,
-                                            const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> not_equal(const TensorImpl& a,
-                                                const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> greater_equal(const TensorImpl& a,
-                                                    const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> less_equal(const TensorImpl& a,
-                                                 const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> greater_than(const TensorImpl& a,
-                                                   const TensorImpl& b) = 0;
-  virtual std::shared_ptr<TensorImpl> less_than(const TensorImpl& a,
-                                                const TensorImpl& b) = 0;
+  virtual std::shared_ptr<TensorImpl> equal(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> not_equal(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> greater_equal(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> less_equal(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> greater_than(const TensorImpl& other) = 0;
+  virtual std::shared_ptr<TensorImpl> less_than(const TensorImpl& other) = 0;
 
-  virtual std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) = 0;
-  virtual std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) = 0;
+  virtual std::shared_ptr<TensorImpl> sum(int axis) = 0;
+  virtual std::shared_ptr<TensorImpl> max(int axis) = 0;
 
   virtual void fill(void* item) = 0;
 
@@ -79,75 +69,67 @@ class TensorImplModel : public TensorImpl {
   }
   const std::vector<int>& shape() const override { return _shape; }
 
-  std::shared_ptr<TensorImpl> add(const TensorImpl& a,
-                                  const TensorImpl& b) override {
-    return Backend().add(a, b);
+  std::shared_ptr<TensorImpl> add(const TensorImpl& other) override {
+    return Backend().add(*this, other);
   }
-  std::shared_ptr<TensorImpl> sub(const TensorImpl& a,
-                                  const TensorImpl& b) override {
-    return Backend().sub(a, b);
+  std::shared_ptr<TensorImpl> sub(const TensorImpl& other) override {
+    return Backend().sub(*this, other);
   }
-  std::shared_ptr<TensorImpl> mul(const TensorImpl& a,
-                                  const TensorImpl& b) override {
-    return Backend().mul(a, b);
+  std::shared_ptr<TensorImpl> mul(const TensorImpl& other) override {
+    return Backend().mul(*this, other);
   }
-  std::shared_ptr<TensorImpl> div(const TensorImpl& a,
-                                  const TensorImpl& b) override {
-    return Backend().div(a, b);
+  std::shared_ptr<TensorImpl> div(const TensorImpl& other) override {
+    return Backend().div(*this, other);
   }
 
-  std::shared_ptr<TensorImpl> log(const TensorImpl& a) override {
-    return Backend().log(a);
+  std::shared_ptr<TensorImpl> log() override {
+    return Backend().log(*this);
   }
-  std::shared_ptr<TensorImpl> exp(const TensorImpl& a) override {
-    return Backend().exp(a);
+  std::shared_ptr<TensorImpl> exp() override {
+    return Backend().exp(*this);
   }
-  std::shared_ptr<TensorImpl> relu(const TensorImpl& a) override {
-    return Backend().relu(a);
-  }
-
-  std::shared_ptr<TensorImpl> matmul(const TensorImpl& a,
-                                     const TensorImpl& b) override {
-    return Backend().matmul(a, b);
-  }
-  std::shared_ptr<TensorImpl> transpose(const TensorImpl& a) override {
-    return Backend().transpose(a);
+  std::shared_ptr<TensorImpl> relu() override {
+    return Backend().relu(*this);
   }
 
-  std::shared_ptr<TensorImpl> equal(const TensorImpl& a,
-                                    const TensorImpl& b) override {
-    return Backend().equal(a, b);
+  std::shared_ptr<TensorImpl> matmul(const TensorImpl& other) override {
+    return Backend().matmul(*this, other);
   }
-  std::shared_ptr<TensorImpl> not_equal(const TensorImpl& a,
-                                        const TensorImpl& b) override {
-    return Backend().not_equal(a, b);
-  }
-  std::shared_ptr<TensorImpl> greater_equal(const TensorImpl& a,
-                                            const TensorImpl& b) override {
-    return Backend().greater_equal(a, b);
-  }
-  std::shared_ptr<TensorImpl> less_equal(const TensorImpl& a,
-                                         const TensorImpl& b) override {
-    return Backend().less_equal(a, b);
-  }
-  std::shared_ptr<TensorImpl> greater_than(const TensorImpl& a,
-                                           const TensorImpl& b) override {
-    return Backend().greater_than(a, b);
-  }
-  std::shared_ptr<TensorImpl> less_than(const TensorImpl& a,
-                                        const TensorImpl& b) override {
-    return Backend().less_than(a, b);
+  std::shared_ptr<TensorImpl> transpose() override {
+    return Backend().transpose(*this);
   }
 
-  std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) override {
-    return Backend().sum(a, axis);
+  std::shared_ptr<TensorImpl> equal(const TensorImpl& other) override {
+    return Backend().equal(*this, other);
   }
-  std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) override {
-    return Backend().max(a, axis);
+  std::shared_ptr<TensorImpl> not_equal(const TensorImpl& other) override {
+    return Backend().not_equal(*this, other);
+  }
+  std::shared_ptr<TensorImpl> greater_equal(const TensorImpl& other) override {
+    return Backend().greater_equal(*this, other);
+  }
+  std::shared_ptr<TensorImpl> less_equal(const TensorImpl& other) override {
+    return Backend().less_equal(*this, other);
+  }
+  std::shared_ptr<TensorImpl> greater_than(const TensorImpl& other) override {
+    return Backend().greater_than(*this, other);
+  }
+  std::shared_ptr<TensorImpl> less_than(const TensorImpl& other) override {
+    return Backend().less_than(*this, other);
+  }
+
+  std::shared_ptr<TensorImpl> sum(int axis) override {
+    return Backend().sum(*this, axis);
+  }
+  std::shared_ptr<TensorImpl> max(int axis) override {
+    return Backend().max(*this, axis);
   }
 
   void fill(void* item) override {
-    if (auto ptr = static_cast<DataType *>(item)) {
+    std::cout << *static_cast<DataType*>(item) << std::endl;
+    if (auto ptr = static_cast<DataType*>(item)) {
+      std::cout << "Data type: " << typeid(DataType).name() << std::endl;
+      std::cout << "3: " << *ptr << std::endl;
       std::fill(_data.begin(), _data.end(), *ptr);
     } else {
       assert(false);

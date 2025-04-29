@@ -1,9 +1,9 @@
 #pragma once
 
-#include "autograd/engine/backend/cuda_backend.h"
 #ifndef _TENSOR_H_
 #define _TENSOR_H
 
+#include "autograd/engine/backend/cuda_backend.h"
 #include <Eigen/Core>
 #include <iostream>
 #include <memory>
@@ -62,8 +62,11 @@ class Tensor {
 
   template<typename T>
   void fill(T item) {
-    void* ptr = static_cast<void*> (new T());
-    impl_->fill(ptr);
+    std::cout << "1: " << item << std::endl;
+    // Create the item on the stack to avoid memory leaks
+    T stack_item = item;
+    // Pass the address of the stack item, which will be properly cast by the implementation
+    impl_->fill(&stack_item);
   }
 
   Tensor operator+(const Tensor& other) const;

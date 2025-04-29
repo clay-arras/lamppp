@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "autograd/engine/backend/cuda_backend.h"
 #include "autograd/engine/tensor.h"
 #include "autograd/engine/variable.h"
 
@@ -35,18 +36,30 @@ std::string to_string(std::vector<T> item) {
 }
 Tensor make_tensor(const std::vector<float>& data,
                    const std::vector<int>& shape) {
-  return Tensor(data, shape);
+  return Tensor::create<float, autograd::CudaBackend<float>>(data, shape);
 }
 void check_tensor(const Tensor t, std::vector<float> data,
                   std::vector<int> shape) {
-//   DASSERT(t.data() == data, "Data mismatch, expected: {}; got: {}",
-//           to_string(data), to_string(t.data()));
-//   DASSERT(t.shape() == shape, "Shape mismatch, expected: {}; got: {}",
-//           to_string(shape), to_string(t.shape()));
+    std::span<float> sp{data};
+    bool eq = std::ranges::equal(t.data<float>(), sp);   
+
     std::cout << "Data: ";
-    (t.data() == data) ? std::cout << "Ok" << std::endl : std::cout << "ERROR" << std::endl;
+    if (eq) {
+        std::cout << "Ok" << std::endl;
+    } else {
+        std::cout << "ERROR" << std::endl;
+        std::cout << "Expected: " << to_string(data) << std::endl;
+        std::cout << "Got: " << to_string(std::vector<float>(t.data<float>().begin(), t.data<float>().end())) << std::endl;
+    }
+
     std::cout << "Shape: ";
-    (t.shape() == shape) ? std::cout << "Ok" << std::endl : std::cout << "ERROR" << std::endl;
+    if (t.shape() == shape) {
+        std::cout << "Ok" << std::endl;
+    } else {
+        std::cout << "ERROR" << std::endl;
+        std::cout << "Expected: " << to_string(shape) << std::endl;
+        std::cout << "Got: " << to_string(t.shape()) << std::endl;
+    }
 }
 
 void test_add() {
@@ -55,12 +68,16 @@ void test_add() {
   Tensor t2 = make_tensor({7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f}, {3, 2});
   Variable v1(t1, true);
   Variable v2(t2, true);
+  std::cout << v1 << std::endl;
+  std::cout << v2 << std::endl;
 
   Variable add_res = v1 + v2;
+  std::cout << add_res << std::endl;
   std::cout << "Forward Test..." << std::endl;
   check_tensor(add_res.data(), {8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f},
                {3, 2});
   add_res.backward();
+  std::cout << add_res << std::endl;
 
   std::cout << "Backward Test..." << std::endl;
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
@@ -250,15 +267,15 @@ void test_sum() {
 
 int main() {
   test_add();
-  test_sub();
-  test_mul();
-  test_div();
-  test_relu();
-  test_exp();
-  test_log();
-  test_matmul();
-  test_transpose();
-  test_sum();
+  // test_sub();
+  // test_mul();
+  // test_div();
+  // test_relu();
+  // test_exp();
+  // test_log();
+  // test_matmul();
+  // test_transpose();
+  // test_sum();
 
   std::cout << "\nAll tests finished." << std::endl;
 

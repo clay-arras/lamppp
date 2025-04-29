@@ -71,7 +71,6 @@ class TensorImplModel : public TensorImpl {
       return std::make_shared<TensorImplModel<DataType, Backend>>(_data, _shape);
   }
 
-
   const void* data_ptr() const override {
     return static_cast<const void*>(_data.data());
   }

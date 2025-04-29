@@ -26,4 +26,5 @@ Variable rand(const std::vector<int>& shape, bool requires_grad) {
 }
 
 }  // namespace functional
+
 }  // namespace autograd

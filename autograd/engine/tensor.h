@@ -44,6 +44,7 @@ class Tensor {
 
   std::shared_ptr<TensorImpl>
       impl_;  // TODO: this should probably be a unique ptr
+
   template <typename DataType, typename Backend>
   static Tensor create(const std::vector<DataType>& data,
                        const std::vector<int>& shape) {
@@ -64,12 +65,6 @@ class Tensor {
     void* ptr = static_cast<void*> (new T());
     impl_->fill(ptr);
   }
-  // Tensor& operator=(const Tensor& other) {
-  //   if (this != &other) {
-  //     impl_ = std::make_shared<TensorImpl>(*other.impl_); 
-  //   }
-  //   return *this;
-  // }
 
   Tensor operator+(const Tensor& other) const;
   Tensor operator-(const Tensor& other) const;
@@ -97,21 +92,6 @@ class Tensor {
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
 };
-
-// struct TensorOpFact {
-//   template <typename EigenOpFn, typename... OtherTensors>
-//   static Tensor apply(const EigenOpFn& op_fn, const std::vector<int>& out_shape,
-//                       const Tensor& tensor,
-//                       const OtherTensors&... other_tensors) {
-//     int sz = std::accumulate(out_shape.begin(), out_shape.end(), 1,
-//                              std::multiplies<>());
-//     assert(sz == out_shape[0] * out_shape[1]);
-//     std::vector<float> res_data(sz);
-//     Eigen::Map<Eigen::ArrayXXf> res(res_data.data(), sz, 1);
-//     res = op_fn(tensor, other_tensors...).reshaped(sz, 1);
-//     return Tensor(res_data, out_shape);
-//   }
-// };
 
 }  // namespace autograd
 

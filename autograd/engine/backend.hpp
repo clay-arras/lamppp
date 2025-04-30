@@ -4,7 +4,7 @@
 #define BACKEND_H
 
 #include <memory>
-#include "autograd/engine/tensor_impl.h"
+#include "autograd/engine/tensor_impl.hpp"
 
 namespace autograd {
 

@@ -1,9 +1,9 @@
-#include "unary_ops.h"
+#include "unary_ops.hpp"
 #include <cassert>
 #include <cmath>
-#include "autograd/engine/tensor.h"
-#include "autograd/engine/variable.h"
-#include "autograd/engine/variable_ops.h"
+#include "autograd/engine/tensor.hpp"
+#include "autograd/engine/variable.hpp"
+#include "autograd/engine/variable_ops.hpp"
 
 namespace autograd {
 

@@ -5,7 +5,7 @@
 
 #include <cassert>
 #include <memory>
-#include "variable.h"
+#include "variable.hpp"
 
 namespace autograd {
 

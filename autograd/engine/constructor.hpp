@@ -4,7 +4,7 @@
 #define _CONSTRUCTOR_H_
 
 #include <cassert>
-#include "variable.h"
+#include "variable.hpp"
 
 namespace autograd {
 

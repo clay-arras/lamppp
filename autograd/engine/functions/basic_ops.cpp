@@ -1,9 +1,9 @@
-#include "basic_ops.h"
+#include "basic_ops.hpp"
 #include <cassert>
 #include <memory>
-#include "autograd/engine/function.h"
-#include "autograd/engine/tensor_ops.h"
-#include "autograd/engine/variable.h"
+#include "autograd/engine/function.hpp"
+#include "autograd/engine/tensor_ops.hpp"
+#include "autograd/engine/variable.hpp"
 
 namespace autograd {
 

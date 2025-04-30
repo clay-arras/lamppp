@@ -11,7 +11,7 @@
 #include "autograd/cuda/matrix_kern.cuh"
 #include "autograd/cuda/reduct_kern.cuh"
 #include "autograd/cuda/unary_kern.cuh"
-#include "autograd/engine/backend.h"
+#include "autograd/engine/backend.hpp"
 
 namespace autograd {
 

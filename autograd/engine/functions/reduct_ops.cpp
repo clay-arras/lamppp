@@ -1,6 +1,6 @@
-#include "reduct_ops.h"
+#include "reduct_ops.hpp"
 #include <cassert>
-#include "autograd/engine/variable.h"
+#include "autograd/engine/variable.hpp"
 
 namespace autograd {
 

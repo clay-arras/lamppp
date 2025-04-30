@@ -1,16 +1,15 @@
 #pragma once
 
-#include <any>
 #ifndef _TENSOR_H_
 #define _TENSOR_H
 
-#include "autograd/engine/backend/cuda_backend.h"
+#include "autograd/engine/backend/cuda_backend.hpp"
 #include <Eigen/Core>
 #include <iostream>
 #include <memory>
 #include <span>
 #include <vector>
-#include "tensor_impl.h"
+#include "tensor_impl.hpp"
 
 namespace autograd {
 
@@ -67,13 +66,7 @@ class Tensor {
 
   template<typename T>
   void fill(T item) {
-    // std::cout << "Data type: " << typeid(T).name() << std::endl;
-    // std::cout << "1: " << item << std::endl;
-
     any_type gen = item;
-    // std::any gen = item;
-    // void* ptr = static_cast<void*> (new T(item));
-    // std::cout << "2: " << *static_cast<T*>(ptr) << std::endl;
     impl_->fill(gen);
   }
 

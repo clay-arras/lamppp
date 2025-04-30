@@ -1,6 +1,6 @@
-#include "constructor.h"
+#include "constructor.hpp"
 #include <numeric>
-#include "autograd/engine/variable.h"
+#include "autograd/engine/variable.hpp"
 
 namespace autograd {
 

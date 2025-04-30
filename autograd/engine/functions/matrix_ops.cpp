@@ -1,7 +1,7 @@
-#include "matrix_ops.h"
+#include "matrix_ops.hpp"
 #include <cassert>
-#include "autograd/engine/function.h"
-#include "autograd/engine/variable.h"
+#include "autograd/engine/function.hpp"
+#include "autograd/engine/variable.hpp"
 
 namespace autograd {
 

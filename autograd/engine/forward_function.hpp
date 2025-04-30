@@ -4,8 +4,8 @@
 #define _FORWARD_FUNCTION_H_
 
 #include <numeric>
-#include "function.h"
-#include "variable.h"
+#include "function.hpp"
+#include "variable.hpp"
 
 namespace autograd {
 

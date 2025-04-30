@@ -1,16 +1,14 @@
 #pragma once
 
-#include <any>
-#include <iostream>
-#include <variant>
 #ifndef TENSOR_IMPL_H
 #define TENSOR_IMPL_H
 
 #include <cassert>
+#include <iostream>
+#include <variant>
 #include <memory>
 #include <vector>
-
-using any_type = std::variant<double, float, int>;
+#include "supported_types.hpp"
 
 namespace autograd {
 
@@ -46,8 +44,6 @@ struct TensorImpl {
   virtual std::shared_ptr<TensorImpl> sum(int axis) = 0;
   virtual std::shared_ptr<TensorImpl> max(int axis) = 0;
 
-  // virtual void fill(void* item) = 0;
-  // virtual void fill(std::any item) = 0;
   virtual void fill(any_type item) = 0;
 
   virtual void print(std::ostream& os) const = 0;
@@ -151,18 +147,6 @@ class TensorImplModel : public TensorImpl {
     } else {
         assert(false && "Unsupported type for fill operation");
     }
-
-    // std::cout << "Data type: " << typeid(DataType).name() << std::endl;
-    // std::cout << "Data type: " << item.type().name() << std::endl;
-    // std::cout << *static_cast<DataType*>(item) << std::endl;
-    // if (auto ptr = static_cast<DataType*>(item)) {
-    // if (auto ptr = static_cast<DataType*>(item)) {
-    //   std::cout << "Data type: " << typeid(DataType).name() << std::endl;
-    //   std::cout << "3: " << *ptr << std::endl;
-    //   std::fill(_data.begin(), _data.end(), *ptr);
-    // } else {
-    //   assert(false);
-    // }
   }
 
   const int kMaxPrintNumel = 20;

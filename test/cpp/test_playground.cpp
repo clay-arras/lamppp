@@ -1,8 +1,9 @@
 #include <vector>
 // #include "autograd/autograd_umbrella.h"
-#include "autograd/engine/backend/cuda_backend.h"
-#include "autograd/engine/tensor.h"
-#include "autograd/engine/variable.h"
+#include "autograd/engine/backend/cuda_backend.hpp"
+#include "autograd/engine/tensor.hpp"
+#include "autograd/engine/variable.hpp"
+#include "autograd/engine/variable_ops.hpp"
 
 int main() {
   std::vector<int> data1 = {1, 2, 3, 4, 5, 6};

@@ -6,9 +6,10 @@
 #include <string>
 #include <vector>
 
-#include "autograd/engine/backend/cuda_backend.h"
-#include "autograd/engine/tensor.h"
-#include "autograd/engine/variable.h"
+#include "autograd/engine/backend/cuda_backend.hpp"
+#include "autograd/engine/tensor.hpp"
+#include "autograd/engine/variable.hpp"
+#include "autograd/engine/variable_ops.hpp"
 
 using autograd::Tensor;
 using autograd::Variable;
@@ -169,7 +170,7 @@ void test_relu() {
   Tensor t1 = make_tensor({-1.0f, 2.0f, -3.0f, 4.0f, 0.0f, -6.0f}, {3, 2});
   Variable v1(t1, true);
 
-  Variable relu_res = v1.relu();
+  Variable relu_res = autograd::relu(v1);
   std::cout << "Forward Test..." << std::endl;
   check_tensor(relu_res.data(), {0.0f, 2.0f, 0.0f, 4.0f, 0.0f, 0.0f}, {3, 2});
   relu_res.backward();
@@ -185,7 +186,7 @@ void test_exp() {
   Tensor t1 = make_tensor({1.0f, 2.0f, 0.0f, -1.0f, 5.0f, -2.0f}, {3, 2});
   Variable v1(t1, true);
 
-  Variable exp_res = v1.exp();
+  Variable exp_res = autograd::exp(v1);
   std::cout << "Forward Test..." << std::endl;
   check_tensor(exp_res.data(), 
                {expf(1.0f), expf(2.0f), expf(0.0f), expf(-1.0f), expf(5.0f), expf(-2.0f)}, 
@@ -205,7 +206,7 @@ void test_log() {
   Tensor t1 = make_tensor({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f}, {3, 2});
   Variable v1(t1, true);
 
-  Variable log_res = v1.log();
+  Variable log_res = autograd::log(v1);
   std::cout << "Forward Test..." << std::endl;
   check_tensor(log_res.data(), 
                {logf(1.0f), logf(2.0f), logf(3.0f), logf(4.0f), logf(5.0f), logf(6.0f)}, 
@@ -227,7 +228,7 @@ void test_matmul() {
   Variable v1(t1, true);
   Variable v2(t2, true);
 
-  Variable matmul_res = v1.matmul(v2);
+  Variable matmul_res = autograd::matmul(v1, v2);
   std::cout << "Forward Test..." << std::endl;
   check_tensor(matmul_res.data(), {9.0f, 12.0f, 15.0f}, {3, 1});
   matmul_res.backward();
@@ -244,7 +245,7 @@ void test_transpose() {
   Tensor t1 = make_tensor({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f}, {3, 2});  // 3x2
   Variable v1(t1, true);
 
-  Variable transpose_res = v1.transpose();
+  Variable transpose_res = autograd::transpose(v1);
   std::cout << "Forward Test..." << std::endl;
   check_tensor(transpose_res.data(), {1.0f, 4.0f, 2.0f, 5.0f, 3.0f, 6.0f}, {2, 3});
   transpose_res.backward();
@@ -260,7 +261,7 @@ void test_sum() {
   Tensor t1 = make_tensor({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f}, {3, 2});  // 3x2
   Variable v1(t1, true);
 
-  Variable sum_res_axis1 = v1.sum(1);
+  Variable sum_res_axis1 = autograd::sum(v1, 1);
   std::cout << "Sum Forward Test..." << std::endl;
   check_tensor(sum_res_axis1.data(), {5.0f, 7.0f, 9.0f}, {3, 1});
   sum_res_axis1.backward();

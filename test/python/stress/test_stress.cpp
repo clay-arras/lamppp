@@ -1,8 +1,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "autograd/engine/function.h"
-#include "autograd/engine/tensor.h"
+#include "autograd/engine/function.hpp"
+#include "autograd/engine/tensor.hpp"
+#include "autograd/engine/variable_ops.hpp"
 
 namespace py = pybind11;
 
@@ -36,37 +37,37 @@ Variable div_cust(const Variable& a, const Variable& b) {
 }
 
 Variable relu_cust(const Variable& a) {
-  Variable c = a.relu();
+  Variable c = autograd::relu(a);
   c.backward();
   return c;
 }
 
 Variable exp_cust(const Variable& a) {
-  Variable c = a.exp();
+  Variable c = autograd::exp(a);
   c.backward();
   return c;
 }
 
 Variable log_cust(const Variable& a) {
-  Variable c = a.log();
+  Variable c = autograd::log(a);
   c.backward();
   return c;
 }
 
 Variable matmul_cust(const Variable& a, const Variable& b) {
-  Variable c = a.matmul(b);
+  Variable c = autograd::matmul(a, b);
   c.backward();
   return c;
 }
 
 Variable transpose_cust(const Variable& a) {
-  Variable c = a.transpose();
+  Variable c = autograd::transpose(a);
   c.backward();
   return c;
 }
 
 Variable sum_cust(const Variable& a, int axis) {
-  Variable c = a.sum(axis);
+  Variable c = autograd::sum(a, axis);
   c.backward();
   return c;
 }

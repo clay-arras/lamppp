@@ -1,4 +1,4 @@
-#include "tensor_ops.h"
+#include "tensor_ops.hpp"
 #include <cassert>
 
 namespace autograd {

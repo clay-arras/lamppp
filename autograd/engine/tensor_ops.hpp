@@ -3,7 +3,7 @@
 #ifndef _TENSOR_OPS_H_
 #define _TENSOR_OPS_H_
 
-#include "tensor.h"
+#include "tensor.hpp"
 
 namespace autograd {
 inline namespace ops {

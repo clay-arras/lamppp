@@ -13,9 +13,7 @@ variable_list AddBackward::apply(const variable_list& gradOutputs) {
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  std::cout << "BEFORE INCR GRAD" << self.grad() << std::endl;
   self.incr_grad(grad.grad());
-  std::cout << "AFTER INCR GRAD" << self.grad() << std::endl;
   other.incr_grad(grad.grad());
 
   variable_list grad_inputs = {};

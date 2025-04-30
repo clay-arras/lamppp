@@ -1,12 +1,16 @@
 #pragma once
 
+#include <any>
 #include <iostream>
+#include <variant>
 #ifndef TENSOR_IMPL_H
 #define TENSOR_IMPL_H
 
 #include <cassert>
 #include <memory>
 #include <vector>
+
+using any_type = std::variant<double, float, int>;
 
 namespace autograd {
 
@@ -15,6 +19,7 @@ struct TensorImpl {
   virtual std::shared_ptr<TensorImpl> clone() const = 0;
 
   virtual const void* data_ptr() const = 0;
+  virtual void* data_ptr() = 0;
   virtual const int data_size()
       const = 0;  // TODO: I really have to switch to size_t, this just bothers me
   virtual const std::vector<int>& shape() const = 0;
@@ -41,7 +46,9 @@ struct TensorImpl {
   virtual std::shared_ptr<TensorImpl> sum(int axis) = 0;
   virtual std::shared_ptr<TensorImpl> max(int axis) = 0;
 
-  virtual void fill(void* item) = 0;
+  // virtual void fill(void* item) = 0;
+  // virtual void fill(std::any item) = 0;
+  virtual void fill(any_type item) = 0;
 
   virtual void print(std::ostream& os) const = 0;
   friend std::ostream& operator<<(std::ostream& os, const TensorImpl& obj) {
@@ -63,6 +70,9 @@ class TensorImplModel : public TensorImpl {
 
   const void* data_ptr() const override {
     return static_cast<const void*>(_data.data());
+  }
+  void* data_ptr() override {
+    return static_cast<void*>(_data.data());
   }
   const int data_size() const override {
     return static_cast<int>(_data.size());
@@ -125,15 +135,34 @@ class TensorImplModel : public TensorImpl {
     return Backend().max(*this, axis);
   }
 
-  void fill(void* item) override {
-    std::cout << *static_cast<DataType*>(item) << std::endl;
-    if (auto ptr = static_cast<DataType*>(item)) {
-      std::cout << "Data type: " << typeid(DataType).name() << std::endl;
-      std::cout << "3: " << *ptr << std::endl;
-      std::fill(_data.begin(), _data.end(), *ptr);
+  void fill(any_type item) override {
+    if (std::holds_alternative<int>(item)) {
+        int i = std::get<int>(item);
+        DataType fillItem = static_cast<DataType>(i);
+        std::fill(_data.begin(), _data.end(), fillItem);
+    } else if (std::holds_alternative<float>(item)) {
+        float f = std::get<float>(item);
+        DataType fillItem = static_cast<DataType>(f);
+        std::fill(_data.begin(), _data.end(), fillItem);
+    } else if (std::holds_alternative<double>(item)) {
+        double d = std::get<double>(item);
+        DataType fillItem = static_cast<DataType>(d);
+        std::fill(_data.begin(), _data.end(), fillItem);
     } else {
-      assert(false);
+        assert(false && "Unsupported type for fill operation");
     }
+
+    // std::cout << "Data type: " << typeid(DataType).name() << std::endl;
+    // std::cout << "Data type: " << item.type().name() << std::endl;
+    // std::cout << *static_cast<DataType*>(item) << std::endl;
+    // if (auto ptr = static_cast<DataType*>(item)) {
+    // if (auto ptr = static_cast<DataType*>(item)) {
+    //   std::cout << "Data type: " << typeid(DataType).name() << std::endl;
+    //   std::cout << "3: " << *ptr << std::endl;
+    //   std::fill(_data.begin(), _data.end(), *ptr);
+    // } else {
+    //   assert(false);
+    // }
   }
 
   const int kMaxPrintNumel = 20;

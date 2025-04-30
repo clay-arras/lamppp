@@ -49,10 +49,10 @@ class Variable {
 
   void zero_grad() { impl_->grad.fill(0.0); }
   void incr_grad(const Tensor& other_grad) {
-    std::cout << "BEFORE IN " << impl_->grad << std::endl;
-    std::cout << "BEFORE IN OTHER" << other_grad << std::endl;
+    // std::cout << "BEFORE IN " << impl_->grad << std::endl;
+    // std::cout << "BEFORE IN OTHER" << other_grad << std::endl;
     impl_->grad = impl_->grad + other_grad;
-    std::cout << "AFTER IN " << impl_->grad << std::endl;
+    // std::cout << "AFTER IN " << impl_->grad << std::endl;
   }
   void set_grad_fn(std::shared_ptr<Function> grad_fn) {
     impl_->_grad_fn = std::move(grad_fn);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <any>
 #ifndef _TENSOR_H_
 #define _TENSOR_H
 
@@ -58,15 +59,22 @@ class Tensor {
   std::span<const T> data() const {
     return std::span<const T>(static_cast<const T*>(impl_->data_ptr()), impl_->data_size());
   }
+  template <typename T>
+  T* data_ptr() const {
+    return static_cast<T*>(impl_->data_ptr());
+  }
   const std::vector<int>& shape() const { return impl_->shape(); }
 
   template<typename T>
   void fill(T item) {
-    std::cout << "1: " << item << std::endl;
-    // Create the item on the stack to avoid memory leaks
-    T stack_item = item;
-    // Pass the address of the stack item, which will be properly cast by the implementation
-    impl_->fill(&stack_item);
+    // std::cout << "Data type: " << typeid(T).name() << std::endl;
+    // std::cout << "1: " << item << std::endl;
+
+    any_type gen = item;
+    // std::any gen = item;
+    // void* ptr = static_cast<void*> (new T(item));
+    // std::cout << "2: " << *static_cast<T*>(ptr) << std::endl;
+    impl_->fill(gen);
   }
 
   Tensor operator+(const Tensor& other) const;

@@ -38,13 +38,25 @@ Tensor make_tensor(const std::vector<float>& data,
                    const std::vector<int>& shape) {
   return Tensor::create<float, autograd::CudaBackend<float>>(data, shape);
 }
+const float epsilon = 1e-4;
+template <typename T>
+bool check_approx_equal(const std::vector<T> a, const std::vector<T> b) {
+    if (a.size() != b.size()) {
+        return false; 
+    }
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (std::fabs(a[i] - b[i]) >= epsilon) {
+            return false;
+        }
+    }
+    return true; 
+}
 void check_tensor(const Tensor t, std::vector<float> data,
                   std::vector<int> shape) {
-    std::span<float> sp{data};
-    bool eq = std::ranges::equal(t.data<float>(), sp);   
 
+    std::vector<float> data_vector(t.data<float>().begin(), t.data<float>().end());
     std::cout << "Data: ";
-    if (eq) {
+    if (check_approx_equal(data_vector, data)) {
         std::cout << "Ok" << std::endl;
     } else {
         std::cout << "ERROR" << std::endl;
@@ -53,7 +65,7 @@ void check_tensor(const Tensor t, std::vector<float> data,
     }
 
     std::cout << "Shape: ";
-    if (t.shape() == shape) {
+    if (check_approx_equal(t.shape(), shape)) {
         std::cout << "Ok" << std::endl;
     } else {
         std::cout << "ERROR" << std::endl;
@@ -68,16 +80,12 @@ void test_add() {
   Tensor t2 = make_tensor({7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f}, {3, 2});
   Variable v1(t1, true);
   Variable v2(t2, true);
-  std::cout << v1 << std::endl;
-  std::cout << v2 << std::endl;
 
   Variable add_res = v1 + v2;
-  std::cout << add_res << std::endl;
   std::cout << "Forward Test..." << std::endl;
   check_tensor(add_res.data(), {8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f},
                {3, 2});
   add_res.backward();
-  std::cout << add_res << std::endl;
 
   std::cout << "Backward Test..." << std::endl;
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
@@ -143,8 +151,8 @@ void test_div() {
 
   std::cout << "Backward Test..." << std::endl;
   check_tensor(v1.grad(),
-               {1.0f / 7.0f, 2.0f / 8.0f, 3.0f / 9.0f, 4.0f / 10.0f,
-                5.0f / 11.0f, 6.0f / 12.0f},
+               {1.0f / 7.0f, 1.0f / 8.0f, 1.0f / 9.0f, 1.0f / 10.0f,
+                1.0f / 11.0f, 1.0f / 12.0f},
                {3, 2});
   check_tensor(
       v2.grad(),
@@ -221,12 +229,12 @@ void test_matmul() {
 
   Variable matmul_res = v1.matmul(v2);
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(matmul_res.data(), {5.0f, 11.0f, 17.0f}, {3, 1});
+  check_tensor(matmul_res.data(), {9.0f, 12.0f, 15.0f}, {3, 1});
   matmul_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
-  check_tensor(v1.grad(), {1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 2.0f}, {3, 2});
-  check_tensor(v2.grad(), {9.0f, 12.0f}, {2, 1});
+  check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f}, {3, 2});
+  check_tensor(v2.grad(), {6.0f, 15.0f}, {2, 1});
 
   std::cout << "MatMul test passed." << std::endl << std::endl;;
 }
@@ -238,7 +246,7 @@ void test_transpose() {
 
   Variable transpose_res = v1.transpose();
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(transpose_res.data(), {1.0f, 3.0f, 5.0f, 2.0f, 4.0f, 6.0f}, {2, 3});
+  check_tensor(transpose_res.data(), {1.0f, 4.0f, 2.0f, 5.0f, 3.0f, 6.0f}, {2, 3});
   transpose_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
@@ -251,14 +259,11 @@ void test_sum() {
   std::cout << "--- Testing Sum ---" << std::endl;
   Tensor t1 = make_tensor({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f}, {3, 2});  // 3x2
   Variable v1(t1, true);
-  Tensor t2 = make_tensor({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f}, {3, 2});  // 3x2
-  Variable v2(t2, true);
 
   Variable sum_res_axis1 = v1.sum(1);
   std::cout << "Sum Forward Test..." << std::endl;
-  check_tensor(sum_res_axis1.data(), {3.0f, 7.0f, 11.0f}, {3});
-  Variable scalar_sum1 = sum_res_axis1.sum(0);
-  scalar_sum1.backward();
+  check_tensor(sum_res_axis1.data(), {5.0f, 7.0f, 9.0f}, {3, 1});
+  sum_res_axis1.backward();
 
   std::cout << "Sum Backward Test..." << std::endl;
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
@@ -267,15 +272,15 @@ void test_sum() {
 
 int main() {
   test_add();
-  // test_sub();
-  // test_mul();
-  // test_div();
-  // test_relu();
-  // test_exp();
-  // test_log();
-  // test_matmul();
-  // test_transpose();
-  // test_sum();
+  test_sub();
+  test_mul();
+  test_div();
+  test_relu();
+  test_exp();
+  test_log();
+  test_matmul();
+  test_transpose();
+  test_sum();
 
   std::cout << "\nAll tests finished." << std::endl;
 

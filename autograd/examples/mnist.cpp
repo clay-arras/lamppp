@@ -2,12 +2,12 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
-#include "autograd/engine/constructor.h"
-#include "autograd/engine/tensor_ops.h"
-#include "autograd/engine/variable.h"
-#include "autograd/engine/variable_ops.h"
-#include "autograd/util/batch_sample.h"
-#include "autograd/util/csv_reader.h"
+#include "autograd/engine/constructor.hpp"
+#include "autograd/engine/tensor_ops.hpp"
+#include "autograd/engine/variable.hpp"
+#include "autograd/engine/variable_ops.hpp"
+#include "autograd/util/batch_sample.hpp"
+#include "autograd/util/csv_reader.hpp"
 
 using autograd::ones;
 using autograd::rand;

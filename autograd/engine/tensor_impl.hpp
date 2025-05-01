@@ -3,6 +3,7 @@
 #ifndef TENSOR_IMPL_H
 #define TENSOR_IMPL_H
 
+#include "autograd/engine/backend.hpp"
 #include <cassert>
 #include <iostream>
 #include <variant>
@@ -12,7 +13,7 @@
 
 namespace autograd {
 
-struct TensorImpl {
+struct TensorImpl : public virtual AbstractBackend {
   virtual ~TensorImpl() = default;
   virtual std::shared_ptr<TensorImpl> clone() const = 0;
 
@@ -21,28 +22,6 @@ struct TensorImpl {
   virtual const int data_size()
       const = 0;  // TODO: I really have to switch to size_t, this just bothers me
   virtual const std::vector<int>& shape() const = 0;
-
-  virtual std::shared_ptr<TensorImpl> add(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> sub(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> mul(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> div(const TensorImpl& other) = 0;
-
-  virtual std::shared_ptr<TensorImpl> log() = 0;
-  virtual std::shared_ptr<TensorImpl> exp() = 0;
-  virtual std::shared_ptr<TensorImpl> relu() = 0;
-
-  virtual std::shared_ptr<TensorImpl> matmul(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> transpose() = 0;
-
-  virtual std::shared_ptr<TensorImpl> equal(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> not_equal(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> greater_equal(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> less_equal(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> greater_than(const TensorImpl& other) = 0;
-  virtual std::shared_ptr<TensorImpl> less_than(const TensorImpl& other) = 0;
-
-  virtual std::shared_ptr<TensorImpl> sum(int axis) = 0;
-  virtual std::shared_ptr<TensorImpl> max(int axis) = 0;
 
   virtual void fill(any_type item) = 0;
 
@@ -54,7 +33,11 @@ struct TensorImpl {
 };
 
 template <typename DataType, typename Backend>
-class TensorImplModel : public TensorImpl {
+class TensorImplModel : public TensorImpl, public virtual Backend {
+ private:
+  std::vector<DataType> _data;
+  std::vector<int> _shape;
+
  public:
   TensorImplModel(const std::vector<DataType>& data,
                   const std::vector<int>& shape)
@@ -75,78 +58,20 @@ class TensorImplModel : public TensorImpl {
   }
   const std::vector<int>& shape() const override { return _shape; }
 
-  std::shared_ptr<TensorImpl> add(const TensorImpl& other) override {
-    return Backend().add(*this, other);
-  }
-  std::shared_ptr<TensorImpl> sub(const TensorImpl& other) override {
-    return Backend().sub(*this, other);
-  }
-  std::shared_ptr<TensorImpl> mul(const TensorImpl& other) override {
-    return Backend().mul(*this, other);
-  }
-  std::shared_ptr<TensorImpl> div(const TensorImpl& other) override {
-    return Backend().div(*this, other);
-  }
-
-  std::shared_ptr<TensorImpl> log() override {
-    return Backend().log(*this);
-  }
-  std::shared_ptr<TensorImpl> exp() override {
-    return Backend().exp(*this);
-  }
-  std::shared_ptr<TensorImpl> relu() override {
-    return Backend().relu(*this);
-  }
-
-  std::shared_ptr<TensorImpl> matmul(const TensorImpl& other) override {
-    return Backend().matmul(*this, other);
-  }
-  std::shared_ptr<TensorImpl> transpose() override {
-    return Backend().transpose(*this);
-  }
-
-  std::shared_ptr<TensorImpl> equal(const TensorImpl& other) override {
-    return Backend().equal(*this, other);
-  }
-  std::shared_ptr<TensorImpl> not_equal(const TensorImpl& other) override {
-    return Backend().not_equal(*this, other);
-  }
-  std::shared_ptr<TensorImpl> greater_equal(const TensorImpl& other) override {
-    return Backend().greater_equal(*this, other);
-  }
-  std::shared_ptr<TensorImpl> less_equal(const TensorImpl& other) override {
-    return Backend().less_equal(*this, other);
-  }
-  std::shared_ptr<TensorImpl> greater_than(const TensorImpl& other) override {
-    return Backend().greater_than(*this, other);
-  }
-  std::shared_ptr<TensorImpl> less_than(const TensorImpl& other) override {
-    return Backend().less_than(*this, other);
-  }
-
-  std::shared_ptr<TensorImpl> sum(int axis) override {
-    return Backend().sum(*this, axis);
-  }
-  std::shared_ptr<TensorImpl> max(int axis) override {
-    return Backend().max(*this, axis);
-  }
-
   void fill(any_type item) override {
-    if (std::holds_alternative<int>(item)) {
-        int i = std::get<int>(item);
-        DataType fillItem = static_cast<DataType>(i);
-        std::fill(_data.begin(), _data.end(), fillItem);
-    } else if (std::holds_alternative<float>(item)) {
-        float f = std::get<float>(item);
-        DataType fillItem = static_cast<DataType>(f);
-        std::fill(_data.begin(), _data.end(), fillItem);
-    } else if (std::holds_alternative<double>(item)) {
-        double d = std::get<double>(item);
-        DataType fillItem = static_cast<DataType>(d);
-        std::fill(_data.begin(), _data.end(), fillItem);
-    } else {
-        assert(false && "Unsupported type for fill operation");
-    }
+    DataType value;
+    bool converted = false;
+    
+    std::visit([&](auto&& arg) {
+      using ArgType = std::decay_t<decltype(arg)>;
+      if constexpr (std::is_convertible_v<ArgType, DataType>) {
+        value = static_cast<DataType>(arg);
+        converted = true;
+      }
+    }, item);
+    
+    assert(converted && "Unsupported type for fill operation");
+    std::fill(_data.begin(), _data.end(), value);
   }
 
   const int kMaxPrintNumel = 20;
@@ -172,10 +97,6 @@ class TensorImplModel : public TensorImpl {
     os << "], dataType=" << typeid(DataType).name();
     os << ", backend=" << typeid(Backend).name() << ")";
   }
-
- private:
-  std::vector<DataType> _data;
-  std::vector<int> _shape;
 };
 
 }  // namespace autograd

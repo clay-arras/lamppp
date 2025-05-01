@@ -4,9 +4,10 @@
 #define BACKEND_H
 
 #include <memory>
-#include "autograd/engine/tensor_impl.hpp"
 
 namespace autograd {
+
+struct TensorImpl;
 
 struct
     AbstractBackend {  // TODO(nlin): consider compile-time polymorphism, this not being static is costing ~10ns
@@ -42,8 +43,6 @@ struct
 
   virtual std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) = 0;
   virtual std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) = 0;
-  // virtual std::shared_ptr<TensorImpl> mean(const TensorImpl& a, int axis) = 0;
-  // virtual std::shared_ptr<TensorImpl> min(const TensorImpl& a, int axis) = 0;
 
   virtual ~AbstractBackend() = default;
 };

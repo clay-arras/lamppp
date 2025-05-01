@@ -97,14 +97,14 @@ Tensor Summation::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  return self.data().sum(axis);
+  return sum(self.data(), axis);
 }
 
 Tensor Maximum::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  return self.data().max(axis);
+  return max(self.data(), axis);
 }
 
 }  // namespace autograd

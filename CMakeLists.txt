@@ -21,9 +21,7 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 add_library(
   autograd_core # TODO: next step: split into different bench envs
   autograd/engine/variable.cpp
-  autograd/engine/variable_ops.cpp
   autograd/engine/tensor.cpp
-  autograd/engine/tensor_ops.cpp
   # autograd/engine/constructor.cpp
   # autograd/engine/backend/eigen_backend.cpp
   autograd/engine/backend/cuda_backend.cpp
@@ -31,8 +29,8 @@ add_library(
   autograd/engine/functions/unary_ops.cpp
   autograd/engine/functions/matrix_ops.cpp
   autograd/engine/functions/reduct_ops.cpp
+  autograd/engine/functions/binary_ops.cpp
   autograd/util/csv_reader.cpp
-  autograd/util/batch_sample.cpp
   autograd/cuda/basic_kern.cu
   autograd/cuda/unary_kern.cu
   autograd/cuda/binary_kern.cu

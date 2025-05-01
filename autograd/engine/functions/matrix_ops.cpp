@@ -12,8 +12,8 @@ variable_list MatrixMultiplicationBackward::apply(
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  self.incr_grad(grad.grad().matmul(other.data().transpose()));
-  other.incr_grad(self.data().transpose().matmul(grad.grad()));
+  self.incr_grad(matmul(grad.grad(), transpose(other.data())));
+  other.incr_grad(matmul(transpose(self.data()), grad.grad()));
 
   variable_list grad_inputs =
       {};  // TODO(nlin): remove these maybe, this isn't right
@@ -25,7 +25,7 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  self.incr_grad(grad.grad().transpose());
+  self.incr_grad(transpose(grad.grad()));
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -36,14 +36,14 @@ Tensor MatrixMultiplication::execute(const variable_list& inputs) {
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  return self.data().matmul(other.data());
+  return matmul(self.data(), other.data());
 }
 
 Tensor Transpose::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  return self.data().transpose();
+  return transpose(self.data());
 }
 
 }  // namespace autograd

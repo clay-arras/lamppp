@@ -13,7 +13,7 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   Variable& self = (*saved_inputs)[0];
 
   Variable exp_var(
-      self.data().exp());  // TODO(nlin): these can all be cached!!!
+      exp(self.data()));  // TODO(nlin): these can all be cached!!!
   self.incr_grad(
       exp_var.data() *
       grad.grad());  // TODO(nlin): maybe will this result in recursion? higher order derivatives
@@ -50,21 +50,21 @@ Tensor Exponential::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  return self.data().exp();
+  return exp(self.data());
 }
 
 Tensor Logarithm::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  return self.data().log();
+  return log(self.data());
 }
 
 Tensor ReLU::execute(const variable_list& inputs) {
   assert(inputs.size() == 1);
   const Variable& self = inputs[0];
 
-  return self.data().relu();
+  return relu(self.data());
 }
 
 }  // namespace autograd

@@ -3,6 +3,7 @@
 #ifndef _CUDA_BACKEND_H_
 #define _CUDA_BACKEND_H_
 
+#include "autograd/engine/tensor_impl.hpp"
 #include <cassert>
 #include <memory>
 #include <vector>
@@ -13,10 +14,10 @@
 #include "autograd/cuda/unary_kern.cuh"
 #include "autograd/engine/backend.hpp"
 
-namespace autograd {
+namespace autograd { // need to refactor asap
 
 template <typename DataType>
-struct CudaBackend : AbstractBackend {
+struct CudaBackend : public virtual AbstractBackend {
   std::shared_ptr<TensorImpl> add(const TensorImpl& a,
                                   const TensorImpl& b) override;
   std::shared_ptr<TensorImpl> sub(const TensorImpl& a,
@@ -49,9 +50,7 @@ struct CudaBackend : AbstractBackend {
 
   std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) override;
   std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) override;
-  // TensorImpl mean(const TensorImpl& a, int axis) override;
-  // TensorImpl min(const TensorImpl& a, int axis) override;
-};
+}; // TODO: make a factory / struct for these methods; they are TOO REPETITIVE
 
 template <typename DataType>
 std::shared_ptr<TensorImpl> CudaBackend<DataType>::add(const TensorImpl& a,

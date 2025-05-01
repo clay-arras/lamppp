@@ -15,23 +15,27 @@ variable_list SummationBackward::apply(
   Tensor backgrad(zeros, self.data().shape());
 
   if (axis == 0) {
-    const int rows = self.data().shape()[0];
-    const int cols = self.data().shape()[1];
+    const size_t rows = self.data().shape()[0];
+    const size_t cols = self.data().shape()[1];
 
-    Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data_ptr<float>(), rows, cols);
-    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data<float>().data(), cols);
+    Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data_ptr<float>(), rows,
+                                           cols);
+    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data<float>().data(),
+                                               cols);
 
-    for (int c = 0; c < cols; c++) {
+    for (size_t c = 0; c < cols; c++) {
       result_mat.col(c).setConstant(grad_vec(c));
     }
   } else if (axis == 1) {
-    const int rows = self.data().shape()[0];
-    const int cols = self.data().shape()[1];
+    const size_t rows = self.data().shape()[0];
+    const size_t cols = self.data().shape()[1];
 
-    Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data_ptr<float>(), rows, cols);
-    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data<float>().data(), rows);
+    Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data_ptr<float>(), rows,
+                                           cols);
+    Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data<float>().data(),
+                                               rows);
 
-    for (int r = 0; r < rows; r++) {
+    for (size_t r = 0; r < rows; r++) {
       result_mat.row(r).setConstant(grad_vec(r));
     }
   } else {
@@ -57,28 +61,28 @@ variable_list MaximumBackward::apply(
   // Tensor max_mask = self.data().max(axis);
 
   // if (axis == 0) {
-  //   const int rows = self.data().shape()[0];
-  //   const int cols = self.data().shape()[1];
+  //   const size_t rows = self.data().shape()[0];
+  //   const size_t cols = self.data().shape()[1];
 
   //   Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data().data(), rows, cols);
   //   Eigen::Map<Eigen::MatrixXf> mask_mat(mask.data().data(), rows, cols);
   //   Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data().data(), cols);
   //   Eigen::Map<const Eigen::VectorXf> max_vec(max_mask.data().data(), cols);
 
-  //   for (int c = 0; c < cols; c++) {
+  //   for (size_t c = 0; c < cols; c++) {
   //     result_mat.col(c).setConstant(grad_vec(c));
   //     mask_mat.col(c).setConstant(max_vec(c));
   //   }
   // } else if (axis == 1) {
-  //   const int rows = self.data().shape()[0];
-  //   const int cols = self.data().shape()[1];
+  //   const size_t rows = self.data().shape()[0];
+  //   const size_t cols = self.data().shape()[1];
 
   //   Eigen::Map<Eigen::MatrixXf> result_mat(backgrad.data().data(), rows, cols);
   //   Eigen::Map<Eigen::MatrixXf> mask_mat(mask.data().data(), rows, cols);
   //   Eigen::Map<const Eigen::VectorXf> grad_vec(grad.grad().data().data(), rows);
   //   Eigen::Map<const Eigen::VectorXf> max_vec(max_mask.data().data(), rows);
 
-  //   for (int r = 0; r < rows; r++) {
+  //   for (size_t r = 0; r < rows; r++) {
   //     result_mat.row(r).setConstant(grad_vec(r));
   //     mask_mat.row(r).setConstant(max_vec(r));
   //   }

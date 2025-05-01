@@ -1,5 +1,6 @@
 #pragma once
 
+#include "autograd/engine/scalar.hpp"
 #ifndef _CONSTRUCTOR_H_
 #define _CONSTRUCTOR_H_
 
@@ -10,9 +11,9 @@ namespace autograd {
 
 inline namespace functional {
 
-Variable zeros(const std::vector<int>& shape, bool requires_grad = false);
-Variable ones(const std::vector<int>& shape, bool requires_grad = false);
-Variable rand(const std::vector<int>& shape, bool requires_grad = false);
+Variable zeros(const std::vector<size_t>& shape, bool requires_grad = false);
+Variable ones(const std::vector<size_t>& shape, bool requires_grad = false);
+Variable rand(const std::vector<size_t>& shape, bool requires_grad = false);
 
 template <typename>
 struct IsVector : std::false_type {};
@@ -20,10 +21,10 @@ template <typename U, typename Alloc>
 struct IsVector<std::vector<U, Alloc>> : std::true_type {};
 
 struct TensorHelper {
-  std::vector<float> data;
-  std::vector<int> shape;
+  std::vector<Scalar> data;
+  std::vector<size_t> shape;
   template <class T>
-  void unroll(const std::vector<T>& tensor, int depth = 0) {
+  void unroll(const std::vector<T>& tensor, size_t depth = 0) {
     if (depth >= shape.size()) {
       shape.push_back(tensor.size());
     }
@@ -34,7 +35,7 @@ struct TensorHelper {
       }
     } else {
       data.insert(data.end(), tensor.begin(),
-                  tensor.end());  // TODO(nlin): can use memcpy, it's faster
+                  tensor.end()); 
     }
   }
 };

@@ -5,55 +5,55 @@ namespace autograd {
 inline namespace cuda {
 
 template <typename T>
-__global__ void vecEqualKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecEqualKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] == B[i]) ? 1.0F : 0.0F;
     }
 }
 
 template <typename T>
-__global__ void vecNotEqualKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecNotEqualKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] != B[i]) ? 1.0F : 0.0F;
     }
 }
 
 template <typename T>
-__global__ void vecGreaterEqualKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecGreaterEqualKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] >= B[i]) ? 1.0F : 0.0F;
     }
 }
 
 template <typename T>
-__global__ void vecLessEqualKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecLessEqualKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] <= B[i]) ? 1.0F : 0.0F;
     }
 }
 
 template <typename T>
-__global__ void vecGreaterThanKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecGreaterThanKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] > B[i]) ? 1.0F : 0.0F;
     }
 }
 
 template <typename T>
-__global__ void vecLessThanKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecLessThanKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = (A[i] < B[i]) ? 1.0F : 0.0F;
     }
 }
 
 template <typename T>
-void vecEqual(int size, const T* A, const T* B, T* C) {
+void vecEqual(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -65,8 +65,8 @@ void vecEqual(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
   vecEqualKernel<<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -77,7 +77,7 @@ void vecEqual(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecNotEqual(int size, const T* A, const T* B, T* C) {
+void vecNotEqual(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -89,8 +89,8 @@ void vecNotEqual(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
   vecNotEqualKernel<<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -101,7 +101,7 @@ void vecNotEqual(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecGreaterEqual(int size, const T* A, const T* B, T* C) {
+void vecGreaterEqual(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -113,8 +113,8 @@ void vecGreaterEqual(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
   vecGreaterEqualKernel<<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -125,7 +125,7 @@ void vecGreaterEqual(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecLessEqual(int size, const T* A, const T* B, T* C) {
+void vecLessEqual(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -137,8 +137,8 @@ void vecLessEqual(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
   vecLessEqualKernel<<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -149,7 +149,7 @@ void vecLessEqual(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecGreaterThan(int size, const T* A, const T* B, T* C) {
+void vecGreaterThan(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -161,8 +161,8 @@ void vecGreaterThan(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
   vecGreaterThanKernel<<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -173,7 +173,7 @@ void vecGreaterThan(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecLessThan(int size, const T* A, const T* B, T* C) {
+void vecLessThan(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -185,8 +185,8 @@ void vecLessThan(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
   vecLessThanKernel<<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -196,12 +196,12 @@ void vecLessThan(int size, const T* A, const T* B, T* C) {
   cudaFree(d_c);
 }
 
-#define X(TYPE) template void vecEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecNotEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecGreaterEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecLessEqual<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecGreaterThan<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecLessThan<TYPE>(int, const TYPE*, const TYPE*, TYPE*);
+#define X(TYPE) template void vecEqual<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecNotEqual<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecGreaterEqual<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecLessEqual<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecGreaterThan<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecLessThan<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*);
 #include "autograd/engine/supported_types.def"
 #undef  X
 

@@ -6,13 +6,13 @@ inline namespace cuda {
 
 // Kernels moved outside anonymous namespace
 template <typename T>
-__global__ void cudaMatmulKernel(const T* A, const T* B, T* C, int m, int n, int k) {
-    int i = threadIdx.x + (blockIdx.x * blockDim.x);
-    int j = threadIdx.y + (blockIdx.y * blockDim.y);
+__global__ void cudaMatmulKernel(const T* A, const T* B, T* C, size_t m, size_t n, size_t k) {
+    size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
+    size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
 
     if (i < m && j < n) {
         T sum = 0;
-        for (int t=0; t<k; t++) { // NOTE: A is MxK, B is KxN, C is MxN
+        for (size_t t=0; t<k; t++) { // NOTE: A is MxK, B is KxN, C is MxN
             // sum += A[(i*k) + t] * B[(n*t) + j]; // row major implementation
             sum += A[i + m*t] * B[t + k*j]; // TODO(nlin): this can be made faster but whatever
         }
@@ -23,10 +23,10 @@ __global__ void cudaMatmulKernel(const T* A, const T* B, T* C, int m, int n, int
 template <typename T>
 __global__ void cudaTransposeKernel(const T* in,
                                     T* out,
-                                    int m,
-                                    int n) {
-    int i = threadIdx.x + (blockIdx.x * blockDim.x);
-    int j = threadIdx.y + (blockIdx.y * blockDim.y);
+                                    size_t m,
+                                    size_t n) {
+    size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
+    size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
 
     if (i < m && j < n) {
         out[(i*n) + j] = in[(j*m) + i];
@@ -34,7 +34,7 @@ __global__ void cudaTransposeKernel(const T* in,
 }
 
 template <typename T>
-void cudaMatMul(const T* A, const T* B, T* C, int m, int n, int k) {
+void cudaMatMul(const T* A, const T* B, T* C, size_t m, size_t n, size_t k) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -62,8 +62,8 @@ void cudaMatMul(const T* A, const T* B, T* C, int m, int n, int k) {
 template <typename T>
 void cudaTranspose(const T* in,
                               T* out,
-                              int m,
-                              int n) {
+                              size_t m,
+                              size_t n) {
   T *d_in;
   T *d_out;
   size_t bytes_in = m * n * sizeof(T);
@@ -83,8 +83,8 @@ void cudaTranspose(const T* in,
   cudaFree(d_out);
 }
 
-#define X(TYPE) template void cudaMatMul<TYPE>(const TYPE*, const TYPE*, TYPE*, int, int, int); \
-                 template void cudaTranspose<TYPE>(const TYPE*, TYPE*, int, int);
+#define X(TYPE) template void cudaMatMul<TYPE>(const TYPE*, const TYPE*, TYPE*, size_t, size_t, size_t); \
+                 template void cudaTranspose<TYPE>(const TYPE*, TYPE*, size_t, size_t);
 #include "autograd/engine/supported_types.def"
 #undef  X
 

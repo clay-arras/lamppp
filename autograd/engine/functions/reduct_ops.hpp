@@ -9,28 +9,28 @@
 namespace autograd {
 
 struct SummationBackward : public Function {
-  int axis;
-  explicit SummationBackward(int axis) : axis(axis) {}
+  size_t axis;
+  explicit SummationBackward(size_t axis) : axis(axis) {}
   variable_list apply(const variable_list& gradOutputs) override;
 };
 
 struct MaximumBackward : public Function {
-  int axis;
-  explicit MaximumBackward(int axis) : axis(axis) {}
+  size_t axis;
+  explicit MaximumBackward(size_t axis) : axis(axis) {}
   variable_list apply(const variable_list& gradOutputs) override;
 };
 
 struct Summation : public ForwardFunction<Summation> {
   using DefaultBackward = SummationBackward;
-  int axis;
-  explicit Summation(int axis) : axis(axis) {}
+  size_t axis;
+  explicit Summation(size_t axis) : axis(axis) {}
   Tensor execute(const variable_list& inputs) const;
 };
 
 struct Maximum : public ForwardFunction<Maximum> {
   using DefaultBackward = MaximumBackward;
-  int axis;
-  explicit Maximum(int axis) : axis(axis) {}
+  size_t axis;
+  explicit Maximum(size_t axis) : axis(axis) {}
   Tensor execute(const variable_list& inputs) const;
 };
 

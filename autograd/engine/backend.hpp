@@ -41,8 +41,8 @@ struct
   virtual std::shared_ptr<TensorImpl> less_than(const TensorImpl& a,
                                                 const TensorImpl& b) = 0;
 
-  virtual std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) = 0;
-  virtual std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) = 0;
+  virtual std::shared_ptr<TensorImpl> sum(const TensorImpl& a, size_t axis) = 0;
+  virtual std::shared_ptr<TensorImpl> max(const TensorImpl& a, size_t axis) = 0;
 
   virtual ~AbstractBackend() = default;
 };

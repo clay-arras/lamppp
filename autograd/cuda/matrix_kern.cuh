@@ -14,29 +14,29 @@ template <typename T>
 __global__ void cudaMatmulKernel(const T* A,
                        const T* B,
                        T* C,
-                       int m,
-                       int n,
-                       int k);
+                       size_t m,
+                       size_t n,
+                       size_t k);
 
 template <typename T>
 void cudaMatMul(const T* A,
                 const T* B,
                 T* C,
-                int m,
-                int n,
-                int k);
+                size_t m,
+                size_t n,
+                size_t k);
 
 template <typename T>
 __global__ void cudaTransposeKernel(const T* in,
                                     T* out,
-                                    int m,
-                                    int n); 
+                                    size_t m,
+                                    size_t n); 
 
 template <typename T>
 void cudaTranspose(const T* in,
                               T* out,
-                              int m,
-                              int n);
+                              size_t m,
+                              size_t n);
 
 } // namespace cuda
 } // namespace autograd

@@ -22,7 +22,7 @@ struct VariableImpl {
   bool requires_grad;
 
   explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
-    Tensor tmp(data); 
+    Tensor tmp(data);
     this->grad = std::move(tmp);
     this->grad.fill(0);
     this->data = std::move(data);
@@ -39,8 +39,8 @@ class Variable {
 
   template <typename DataType, typename Backend>
   static Variable create(const std::vector<DataType>& data,
-                       const std::vector<int>& shape, 
-                       bool requires_grad = false) {
+                         const std::vector<size_t>& shape,
+                         bool requires_grad = false) {
     std::shared_ptr<TensorImpl> impl =
         std::make_shared<TensorImplModel<DataType, Backend>>(data, shape);
     return Variable(Tensor(impl), requires_grad);

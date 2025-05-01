@@ -3,7 +3,6 @@
 #ifndef _CUDA_BACKEND_H_
 #define _CUDA_BACKEND_H_
 
-#include "autograd/engine/tensor_impl.hpp"
 #include <cassert>
 #include <memory>
 #include <vector>
@@ -13,8 +12,9 @@
 #include "autograd/cuda/reduct_kern.cuh"
 #include "autograd/cuda/unary_kern.cuh"
 #include "autograd/engine/backend.hpp"
+#include "autograd/engine/tensor_impl.hpp"
 
-namespace autograd { // need to refactor asap
+namespace autograd {  // need to refactor asap
 
 template <typename DataType>
 struct CudaBackend : public virtual AbstractBackend {
@@ -48,9 +48,9 @@ struct CudaBackend : public virtual AbstractBackend {
   std::shared_ptr<TensorImpl> less_than(const TensorImpl& a,
                                         const TensorImpl& b) override;
 
-  std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) override;
-  std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) override;
-}; // TODO: make a factory / struct for these methods; they are TOO REPETITIVE
+  std::shared_ptr<TensorImpl> sum(const TensorImpl& a, size_t axis) override;
+  std::shared_ptr<TensorImpl> max(const TensorImpl& a, size_t axis) override;
+};  // TODO: make a factory / struct for these methods; they are TOO REPETITIVE
 
 template <typename DataType>
 std::shared_ptr<TensorImpl> CudaBackend<DataType>::add(const TensorImpl& a,
@@ -135,30 +135,30 @@ std::shared_ptr<TensorImpl> CudaBackend<DataType>::matmul(const TensorImpl& a,
                                                           const TensorImpl& b) {
   assert(a.shape().size() == 2 && b.shape().size() == 2);
   assert(a.shape()[1] == b.shape()[0]);
-  int m = a.shape()[0];
-  int n = b.shape()[1];
-  int k = a.shape()[1];
+  size_t m = a.shape()[0];
+  size_t n = b.shape()[1];
+  size_t k = a.shape()[1];
   std::vector<DataType> c(m * n);
   cudaMatMul<DataType>(static_cast<const DataType*>(a.data_ptr()),
                        static_cast<const DataType*>(b.data_ptr()), c.data(), m,
                        n, k);
   return std::static_pointer_cast<TensorImpl>(
       std::make_shared<TensorImplModel<DataType, CudaBackend<DataType>>>(
-          c, std::vector<int>{m, n}));
+          c, std::vector<size_t>{m, n}));
 }
 
 template <typename DataType>
 std::shared_ptr<TensorImpl> CudaBackend<DataType>::transpose(
     const TensorImpl& a) {
   assert(a.shape().size() == 2);
-  int m = a.shape()[0];
-  int n = a.shape()[1];
+  size_t m = a.shape()[0];
+  size_t n = a.shape()[1];
   std::vector<DataType> c(m * n);
   cudaTranspose<DataType>(static_cast<const DataType*>(a.data_ptr()), c.data(),
                           m, n);
   return std::static_pointer_cast<TensorImpl>(
       std::make_shared<TensorImplModel<DataType, CudaBackend<DataType>>>(
-          c, std::vector<int>{n, m}));
+          c, std::vector<size_t>{n, m}));
 }
 
 template <typename DataType>
@@ -240,12 +240,12 @@ std::shared_ptr<TensorImpl> CudaBackend<DataType>::less_than(
 
 template <typename DataType>
 std::shared_ptr<TensorImpl> CudaBackend<DataType>::sum(const TensorImpl& a,
-                                                       int axis) {
+                                                       size_t axis) {
   assert(a.data_size() > 0);
   std::vector<DataType> c(a.data_size() / a.shape()[axis]);
   vecSum<DataType>(static_cast<const DataType*>(a.data_ptr()), c.data(),
                    a.shape().data(), axis, a.shape().size());
-  std::vector<int> new_shape(a.shape().begin(), a.shape().end());
+  std::vector<size_t> new_shape(a.shape().begin(), a.shape().end());
   new_shape[axis] = 1;
   return std::static_pointer_cast<TensorImpl>(
       std::make_shared<TensorImplModel<DataType, CudaBackend<DataType>>>(
@@ -254,12 +254,12 @@ std::shared_ptr<TensorImpl> CudaBackend<DataType>::sum(const TensorImpl& a,
 
 template <typename DataType>
 std::shared_ptr<TensorImpl> CudaBackend<DataType>::max(const TensorImpl& a,
-                                                       int axis) {
+                                                       size_t axis) {
   assert(a.data_size() > 0);
   std::vector<DataType> c(a.data_size() / a.shape()[axis]);
   vecMax<DataType>(static_cast<const DataType*>(a.data_ptr()), c.data(),
                    a.shape().data(), axis, a.shape().size());
-  std::vector<int> new_shape(a.shape().begin(), a.shape().end());
+  std::vector<size_t> new_shape(a.shape().begin(), a.shape().end());
   new_shape[axis] = 1;
   return std::static_pointer_cast<TensorImpl>(
       std::make_shared<TensorImplModel<DataType, CudaBackend<DataType>>>(

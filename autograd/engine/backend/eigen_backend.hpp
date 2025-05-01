@@ -29,13 +29,13 @@
 //   std::shared_ptr<TensorImpl> greater_than(const TensorImpl& a, const TensorImpl& b) override;
 //   std::shared_ptr<TensorImpl> less_than(const TensorImpl& a, const TensorImpl& b) override;
 
-//   std::shared_ptr<TensorImpl> sum(const TensorImpl& a, int axis) override;
-//   std::shared_ptr<TensorImpl> max(const TensorImpl& a, int axis) override;
-//   // TensorImpl mean(const TensorImpl& a, int axis) override;
-//   // TensorImpl min(const TensorImpl& a, int axis) override;
+//   std::shared_ptr<TensorImpl> sum(const TensorImpl& a, size_t axis) override;
+//   std::shared_ptr<TensorImpl> max(const TensorImpl& a, size_t axis) override;
+//   // TensorImpl mean(const TensorImpl& a, size_t axis) override;
+//   // TensorImpl min(const TensorImpl& a, size_t axis) override;
 
-//   static Eigen::Map<Eigen::MatrixXf> as_matrix(const TensorImpl& impl, int rows,
-//                                                int cols) {
+//   static Eigen::Map<Eigen::MatrixXf> as_matrix(const TensorImpl& impl, size_t rows,
+//                                                size_t cols) {
 //     return Eigen::Map<Eigen::MatrixXf>(const_cast<float*>(impl.data_ptr()),
 //                                        rows, cols);
 //   }

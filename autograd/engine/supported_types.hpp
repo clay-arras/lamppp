@@ -9,8 +9,7 @@
 #define X(TYPE) TYPE,
 using any_type = std::variant<
 #include "autograd/engine/supported_types.def"
-autograd::Scalar
->;
+    autograd::Scalar>;
 #undef X
 
 #endif  // _SUPPORTED_TYPES_H_

@@ -1,10 +1,10 @@
 #include "variable.hpp"
 #include <algorithm>
+#include <autograd/engine/forward_function.hpp>
+#include <autograd/engine/function.hpp>
 #include <iostream>
 #include <memory>
 #include <unordered_set>
-#include <autograd/engine/forward_function.hpp>
-#include <autograd/engine/function.hpp>
 
 namespace autograd {
 

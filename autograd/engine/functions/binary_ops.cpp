@@ -20,7 +20,7 @@ variable_list LessBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
-  
+
   variable_list grad_inputs = {};
   return grad_inputs;
 }
@@ -30,7 +30,7 @@ variable_list LessEqualBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
-  
+
   variable_list grad_inputs = {};
   return grad_inputs;
 }
@@ -40,7 +40,7 @@ variable_list NotEqualBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
-  
+
   variable_list grad_inputs = {};
   return grad_inputs;
 }
@@ -50,7 +50,7 @@ variable_list GreaterBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
-  
+
   variable_list grad_inputs = {};
   return grad_inputs;
 }
@@ -60,7 +60,7 @@ variable_list GreaterEqualBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
-  
+
   variable_list grad_inputs = {};
   return grad_inputs;
 }

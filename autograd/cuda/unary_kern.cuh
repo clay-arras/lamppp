@@ -11,29 +11,29 @@ namespace autograd {
 inline namespace cuda {
 
 template <typename T>
-__global__ void vecExpKernel(int size,
+__global__ void vecExpKernel(size_t size,
                     T* in,
                     T* out);
 template <typename T>
-void vecExp(int size,
+void vecExp(size_t size,
             const T* in,
             T* out);
 
 template <typename T>
-__global__ void vecLogKernel(int size,
+__global__ void vecLogKernel(size_t size,
                     T* in,
                     T* out);
 template <typename T>
-void vecLog(int size,
+void vecLog(size_t size,
             const T* in,
             T* out);
 
 template <typename T>
-__global__ void vecReluKernel(int size,
+__global__ void vecReluKernel(size_t size,
                      T* in,
                      T* out);
 template <typename T>
-void vecRelu(int size,
+void vecRelu(size_t size,
              const T* in,
              T* out);
 

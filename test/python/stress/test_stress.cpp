@@ -9,6 +9,7 @@ namespace py = pybind11;
 
 using autograd::Tensor;
 using autograd::Variable;
+using std::vector;
 
 namespace {
 
@@ -76,12 +77,18 @@ Variable sum_cust(const Variable& a, int axis) {
 
 PYBIND11_MODULE(cpp_custom_bind, m) {
   py::class_<Tensor>(m, "cTensor")
-      .def(py::init<std::vector<float>, std::vector<int>>(), py::arg("data"),
+      .def(py::init<const std::vector<float>, const std::vector<size_t>>(), py::arg("data"),
            py::arg("shape"))
       .def_property(
-          "data", [](Tensor& t) -> const std::vector<float>& { return std::vector<float>(t.data<float>().begin(), t.data<float>().end()); }, nullptr)
+          "data",
+          [](Tensor& t) -> std::vector<float> {
+            return vector<float>(t.data<float>().begin(), t.data<float>().end());
+          },
+          nullptr)
       .def_property(
-          "shape", [](Tensor& t) -> const std::vector<int>& { return t.shape(); }, nullptr);
+          "shape",
+          [](Tensor& t) -> const std::vector<size_t>& { return t.shape(); },
+          nullptr);
 
   py::class_<Variable>(m, "cVariable")
       .def(py::init<Tensor, bool>(), py::arg("data"),

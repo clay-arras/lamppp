@@ -4,41 +4,40 @@ namespace autograd {
 
 inline namespace cuda {
 
-// Kernels moved outside anonymous namespace
 template <typename T>
-__global__ void vecAddKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecAddKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = A[i] + B[i];
     }
 }
 
 template <typename T>
-__global__ void vecSubKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecSubKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = A[i] - B[i];
     }
 }
 
 template <typename T>
-__global__ void vecMulKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecMulKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = A[i] * B[i];
     }
 }
 
 template <typename T>
-__global__ void vecDivKernel(int size, const T* A, const T* B, T* C) {
-    int i = (blockIdx.x * blockDim.x) + threadIdx.x;
+__global__ void vecDivKernel(size_t size, const T* A, const T* B, T* C) {
+    size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
         C[i] = A[i] / B[i];
     }
 }
 
 template <typename T>
-void vecAdd(int size, const T* A, const T* B, T* C) {
+void vecAdd(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -50,8 +49,8 @@ void vecAdd(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks  = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks  = (size + threads - 1) / threads;
   vecAddKernel<T><<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -62,7 +61,7 @@ void vecAdd(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecSub(int size, const T* A, const T* B, T* C) {
+void vecSub(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -74,8 +73,8 @@ void vecSub(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks  = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks  = (size + threads - 1) / threads;
   vecSubKernel<T><<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -86,7 +85,7 @@ void vecSub(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecMul(int size, const T* A, const T* B, T* C) {
+void vecMul(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -98,8 +97,8 @@ void vecMul(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks  = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks  = (size + threads - 1) / threads;
   vecMulKernel<T><<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -110,7 +109,7 @@ void vecMul(int size, const T* A, const T* B, T* C) {
 }
 
 template <typename T>
-void vecDiv(int size, const T* A, const T* B, T* C) {
+void vecDiv(size_t size, const T* A, const T* B, T* C) {
   T *d_a;
   T *d_b;
   T *d_c;
@@ -122,8 +121,8 @@ void vecDiv(int size, const T* A, const T* B, T* C) {
   cudaMemcpy(d_a, A, bytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, B, bytes, cudaMemcpyHostToDevice);
 
-  int threads = 256;
-  int blocks  = (size + threads - 1) / threads;
+  size_t threads = 256;
+  size_t blocks  = (size + threads - 1) / threads;
   vecDivKernel<T><<<blocks, threads>>>(size, d_a, d_b, d_c);
 
   cudaMemcpy(C, d_c, bytes, cudaMemcpyDeviceToHost);
@@ -133,10 +132,10 @@ void vecDiv(int size, const T* A, const T* B, T* C) {
   cudaFree(d_c);
 }
 
-#define X(TYPE) template void vecAdd<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecSub<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecMul<TYPE>(int, const TYPE*, const TYPE*, TYPE*); \
-                 template void vecDiv<TYPE>(int, const TYPE*, const TYPE*, TYPE*);
+#define X(TYPE) template void vecAdd<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecSub<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecMul<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*); \
+                 template void vecDiv<TYPE>(size_t, const TYPE*, const TYPE*, TYPE*);
 #include "autograd/engine/supported_types.def"
 #undef  X
 

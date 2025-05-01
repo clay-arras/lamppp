@@ -3,11 +3,11 @@
 #ifndef _VARIABLE_OPS_H_
 #define _VARIABLE_OPS_H_
 
+#include "autograd/engine/functions/basic_ops.hpp"
+#include "autograd/engine/functions/binary_ops.hpp"
 #include "autograd/engine/functions/matrix_ops.hpp"
 #include "autograd/engine/functions/reduct_ops.hpp"
 #include "autograd/engine/functions/unary_ops.hpp"
-#include "autograd/engine/functions/basic_ops.hpp"
-#include "autograd/engine/functions/binary_ops.hpp"
 #include "autograd/engine/scalar.hpp"
 #include "variable.hpp"
 
@@ -24,49 +24,50 @@ struct VariableOpFact {
   }
 };
 
-template<class OpTag>
+template <class OpTag>
 inline Variable binary_op(Variable const& a, Variable const& b) {
-  return VariableOpFact::apply<OpTag>({a,b})[0];
+  return VariableOpFact::apply<OpTag>({a, b})[0];
 }
-template<class OpTag>
+template <class OpTag>
 inline Variable binary_op(Variable const& v, Scalar s) {
-  Tensor tmp(v.data()); tmp.fill(s);
+  Tensor tmp(v.data());
+  tmp.fill(s);
   return binary_op<OpTag>(v, Variable(tmp));
 }
-template<class OpTag>
+template <class OpTag>
 inline Variable binary_op(Scalar s, Variable const& v) {
-  Tensor tmp(v.data()); tmp.fill(s);
+  Tensor tmp(v.data());
+  tmp.fill(s);
   return binary_op<OpTag>(Variable(tmp), v);
 }
 
-#define DECL_BINARY_OP(op, tag) \
+#define DECL_BINARY_OP(op, tag)                                       \
   inline Variable operator op(Variable const& a, Variable const& b) { \
-    return binary_op<tag>(a, b); \
-  } \
-  inline Variable operator op(Variable const& v, Scalar s) { \
-    return binary_op<tag>(v, s); \
-  } \
-  inline Variable operator op(Scalar s, Variable const& v) { \
-    return binary_op<tag>(s, v); \
+    return binary_op<tag>(a, b);                                      \
+  }                                                                   \
+  inline Variable operator op(Variable const& v, Scalar s) {          \
+    return binary_op<tag>(v, s);                                      \
+  }                                                                   \
+  inline Variable operator op(Scalar s, Variable const& v) {          \
+    return binary_op<tag>(s, v);                                      \
   }
 
 #define FORALL_BINARY_OPS(_) \
- _(+, Add) \
- _(-, Subtract) \
- _(*, Multiply) \
- _(/, Divide) \
- _(==, Equal) \
- _(!=, NotEqual) \
- _(>=, GreaterEqual) \
- _(<=, LessEqual) \
- _(>, Greater) \
- _(<, Less)
+  _(+, Add)                  \
+  _(-, Subtract)             \
+  _(*, Multiply)             \
+  _(/, Divide)               \
+  _(==, Equal)               \
+  _(!=, NotEqual)            \
+  _(>=, GreaterEqual)        \
+  _(<=, LessEqual)           \
+  _(>, Greater)              \
+  _(<, Less)
 
 FORALL_BINARY_OPS(DECL_BINARY_OP)
 
 #undef FORALL_BINARY_OPS
 #undef DECL_BINARY_OP
-
 
 inline Variable matmul(const Variable& a, const Variable& b) {
   return VariableOpFact::apply<MatrixMultiplication>({a, b})[0];
@@ -76,11 +77,11 @@ inline Variable transpose(const Variable& a) {
   return VariableOpFact::apply<Transpose>({a})[0];
 }
 
-inline Variable sum(const Variable& a, int axis) {
+inline Variable sum(const Variable& a, size_t axis) {
   return VariableOpFact::apply<Summation>({a}, axis)[0];
 }
 
-inline Variable max(const Variable& a, int axis) {
+inline Variable max(const Variable& a, size_t axis) {
   return VariableOpFact::apply<Maximum>({a}, axis)[0];
 }
 

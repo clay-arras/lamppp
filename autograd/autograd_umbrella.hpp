@@ -4,7 +4,6 @@
 #define _AUTOGRAD_UMBRELLA_H_
 
 #include "autograd/engine/backend/cuda_backend.hpp"
-#include "autograd/engine/backend/eigen_backend.hpp"
 #include "autograd/engine/function.hpp"
 #include "autograd/engine/tensor_ops.hpp"
 #include "autograd/engine/variable.hpp"

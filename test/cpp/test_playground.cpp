@@ -7,16 +7,14 @@
 
 int main() {
   std::vector<int> data1 = {1, 2, 3, 4, 5, 6};
-  std::vector<int> shape1 = {3, 2};
+  std::vector<size_t> shape1 = {3, 2};
   autograd::Tensor tensor1 =
-      autograd::Tensor::create<int, autograd::CudaBackend<int>>(data1,
-                                                                    shape1);
+      autograd::Tensor::create<int, autograd::CudaBackend<int>>(data1, shape1);
   autograd::Variable var1(tensor1, true);
 
   std::vector<int> data2 = {7, 8, 9, 10, 11, 12};
   autograd::Tensor tensor2 =
-      autograd::Tensor::create<int, autograd::CudaBackend<int>>(data2,
-                                                                    shape1);
+      autograd::Tensor::create<int, autograd::CudaBackend<int>>(data2, shape1);
   autograd::Variable var2(tensor2, true);
 
   autograd::Variable result = var1 + var2;

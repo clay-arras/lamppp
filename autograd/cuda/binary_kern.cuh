@@ -11,67 +11,67 @@ namespace autograd {
 inline namespace cuda {
 
 template <typename T>
-__global__ void vecEqualKernel(int size,
+__global__ void vecEqualKernel(size_t size,
                       const T* A,
                       const T* B,
                       T* C);
 template <typename T>
-void vecEqual(int size,
+void vecEqual(size_t size,
               const T* A,
               const T* B,
               T* C);
 
 template <typename T>
-__global__ void vecNotEqualKernel(int size,
+__global__ void vecNotEqualKernel(size_t size,
                           const T* A,
                           const T* B,
                           T* C);
 template <typename T>
-void vecNotEqual(int size,
+void vecNotEqual(size_t size,
                  const T* A,
                  const T* B,
                  T* C);
 
 template <typename T>
-__global__ void vecGreaterEqualKernel(int size,
+__global__ void vecGreaterEqualKernel(size_t size,
                               const T* A,
                               const T* B,
                               T* C);
 template <typename T>
-void vecGreaterEqual(int size,
+void vecGreaterEqual(size_t size,
                      const T* A,
                      const T* B,
                      T* C);
 
 template <typename T>
-__global__ void vecLessEqualKernel(int size,
+__global__ void vecLessEqualKernel(size_t size,
                            const T* A,
                            const T* B,
                            T* C);
 template <typename T>
-void vecLessEqual(int size,
+void vecLessEqual(size_t size,
                   const T* A,
                   const T* B,
                   T* C);
 
 template <typename T>
-__global__ void vecGreaterThanKernel(int size,
+__global__ void vecGreaterThanKernel(size_t size,
                              const T* A,
                              const T* B,
                              T* C);
 template <typename T>
-void vecGreaterThan(int size,
+void vecGreaterThan(size_t size,
                     const T* A,
                     const T* B,
                     T* C);
 
 template <typename T>
-__global__ void vecLessThanKernel(int size,
+__global__ void vecLessThanKernel(size_t size,
                           const T* A,
                           const T* B,
                           T* C);
 template <typename T>
-void vecLessThan(int size,
+void vecLessThan(size_t size,
                  const T* A,
                  const T* B,
                  T* C);

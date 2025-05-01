@@ -13,30 +13,30 @@ inline namespace cuda {
 template <typename T>
 __global__ void vecSumKernel(const T* in,
                              T* out,
-                             const int* shape,
-                             int* stride,
-                             int axis, 
-                             int outSize);
+                             const size_t* shape,
+                             size_t* stride,
+                             size_t axis, 
+                             size_t outSize);
 template <typename T>
 __global__ void vecMaxKernel(const T* in,
                              T* out,
-                             const int* shape,
-                             int* stride,
-                             int axis, 
-                             int outSize);
+                             const size_t* shape,
+                             size_t* stride,
+                             size_t axis, 
+                             size_t outSize);
 
 template <typename T>
 void vecSum(const T* in,
             T* out,
-            const int* shape,
-            int axis,
-            int ndims);
+            const size_t* shape,
+            size_t axis,
+            size_t ndims);
 template <typename T>
 void vecMax(const T* in,
             T* out,
-            const int* shape,
-            int axis, 
-            int ndims);
+            const size_t* shape,
+            size_t axis, 
+            size_t ndims);
 
 } // namespace cuda
 } // namespace autograd

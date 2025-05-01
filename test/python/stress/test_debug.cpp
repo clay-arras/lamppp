@@ -36,43 +36,47 @@ std::string to_string(std::vector<T> item) {
   return str + "}";
 }
 Tensor make_tensor(const std::vector<float>& data,
-                   const std::vector<int>& shape) {
+                   const std::vector<size_t>& shape) {
   return Tensor::create<float, autograd::CudaBackend<float>>(data, shape);
 }
 const float epsilon = 1e-4;
 template <typename T>
 bool check_approx_equal(const std::vector<T> a, const std::vector<T> b) {
-    if (a.size() != b.size()) {
-        return false; 
+  if (a.size() != b.size()) {
+    return false;
+  }
+  for (size_t i = 0; i < a.size(); ++i) {
+    if (std::fabs(a[i] - b[i]) >= epsilon) {
+      return false;
     }
-    for (size_t i = 0; i < a.size(); ++i) {
-        if (std::fabs(a[i] - b[i]) >= epsilon) {
-            return false;
-        }
-    }
-    return true; 
+  }
+  return true;
 }
 void check_tensor(const Tensor t, std::vector<float> data,
-                  std::vector<int> shape) {
+                  std::vector<size_t> shape) {
 
-    std::vector<float> data_vector(t.data<float>().begin(), t.data<float>().end());
-    std::cout << "Data: ";
-    if (check_approx_equal(data_vector, data)) {
-        std::cout << "Ok" << std::endl;
-    } else {
-        std::cout << "ERROR" << std::endl;
-        std::cout << "Expected: " << to_string(data) << std::endl;
-        std::cout << "Got: " << to_string(std::vector<float>(t.data<float>().begin(), t.data<float>().end())) << std::endl;
-    }
+  std::vector<float> data_vector(t.data<float>().begin(),
+                                 t.data<float>().end());
+  std::cout << "Data: ";
+  if (check_approx_equal(data_vector, data)) {
+    std::cout << "Ok" << std::endl;
+  } else {
+    std::cout << "ERROR" << std::endl;
+    std::cout << "Expected: " << to_string(data) << std::endl;
+    std::cout << "Got: "
+              << to_string(std::vector<float>(t.data<float>().begin(),
+                                              t.data<float>().end()))
+              << std::endl;
+  }
 
-    std::cout << "Shape: ";
-    if (check_approx_equal(t.shape(), shape)) {
-        std::cout << "Ok" << std::endl;
-    } else {
-        std::cout << "ERROR" << std::endl;
-        std::cout << "Expected: " << to_string(shape) << std::endl;
-        std::cout << "Got: " << to_string(t.shape()) << std::endl;
-    }
+  std::cout << "Shape: ";
+  if (check_approx_equal(t.shape(), shape)) {
+    std::cout << "Ok" << std::endl;
+  } else {
+    std::cout << "ERROR" << std::endl;
+    std::cout << "Expected: " << to_string(shape) << std::endl;
+    std::cout << "Got: " << to_string(t.shape()) << std::endl;
+  }
 }
 
 void test_add() {
@@ -188,14 +192,16 @@ void test_exp() {
 
   Variable exp_res = autograd::exp(v1);
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(exp_res.data(), 
-               {expf(1.0f), expf(2.0f), expf(0.0f), expf(-1.0f), expf(5.0f), expf(-2.0f)}, 
+  check_tensor(exp_res.data(),
+               {expf(1.0f), expf(2.0f), expf(0.0f), expf(-1.0f), expf(5.0f),
+                expf(-2.0f)},
                {3, 2});
   exp_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
-  check_tensor(v1.grad(), 
-               {expf(1.0f), expf(2.0f), expf(0.0f), expf(-1.0f), expf(5.0f), expf(-2.0f)}, 
+  check_tensor(v1.grad(),
+               {expf(1.0f), expf(2.0f), expf(0.0f), expf(-1.0f), expf(5.0f),
+                expf(-2.0f)},
                {3, 2});
 
   std::cout << "Exp test passed." << std::endl << std::endl;
@@ -208,14 +214,16 @@ void test_log() {
 
   Variable log_res = autograd::log(v1);
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(log_res.data(), 
-               {logf(1.0f), logf(2.0f), logf(3.0f), logf(4.0f), logf(5.0f), logf(6.0f)}, 
-               {3, 2});
+  check_tensor(
+      log_res.data(),
+      {logf(1.0f), logf(2.0f), logf(3.0f), logf(4.0f), logf(5.0f), logf(6.0f)},
+      {3, 2});
   log_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
-  check_tensor(v1.grad(), 
-               {1.0f/1.0f, 1.0f/2.0f, 1.0f/3.0f, 1.0f/4.0f, 1.0f/5.0f, 1.0f/6.0f}, 
+  check_tensor(v1.grad(),
+               {1.0f / 1.0f, 1.0f / 2.0f, 1.0f / 3.0f, 1.0f / 4.0f, 1.0f / 5.0f,
+                1.0f / 6.0f},
                {3, 2});
 
   std::cout << "Log test passed." << std::endl << std::endl;
@@ -237,7 +245,8 @@ void test_matmul() {
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f}, {3, 2});
   check_tensor(v2.grad(), {6.0f, 15.0f}, {2, 1});
 
-  std::cout << "MatMul test passed." << std::endl << std::endl;;
+  std::cout << "MatMul test passed." << std::endl << std::endl;
+  ;
 }
 
 void test_transpose() {
@@ -247,13 +256,15 @@ void test_transpose() {
 
   Variable transpose_res = autograd::transpose(v1);
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(transpose_res.data(), {1.0f, 4.0f, 2.0f, 5.0f, 3.0f, 6.0f}, {2, 3});
+  check_tensor(transpose_res.data(), {1.0f, 4.0f, 2.0f, 5.0f, 3.0f, 6.0f},
+               {2, 3});
   transpose_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
 
-  std::cout << "Transpose test passed." << std::endl << std::endl;;
+  std::cout << "Transpose test passed." << std::endl << std::endl;
+  ;
 }
 
 void test_sum() {

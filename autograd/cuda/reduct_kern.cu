@@ -14,12 +14,12 @@ __global__ void vecSumKernel(const T* in,
     size_t i = blockDim.x * blockIdx.x + threadIdx.x;
 
     if (i < outSize) {
-        size_t outer = stride[axis];
-        size_t inner = stride[axis+1];            
+        size_t outer = stride[axis+1];
+        size_t inner = stride[axis];            
         size_t idx   = (i / outer) * inner
                      + (i % outer);
 
-        T sum = 0;                      
+        T sum = 0.0;
         for (size_t j = 0; j < shape[axis]; ++j) {
             sum += in[idx + j * outer];           
         }
@@ -38,12 +38,12 @@ __global__ void vecMaxKernel(const T* in,
     size_t i = blockDim.x * blockIdx.x + threadIdx.x;
 
     if (i < outSize) {
-        size_t outer = stride[axis];
-        size_t inner = stride[axis+1];            
+        size_t outer = stride[axis+1];
+        size_t inner = stride[axis];            
         size_t idx   = (i / outer) * inner
                      + (i % outer);
 
-        T max = 0.0f;                      
+        T max = 0.0;                      
         for (size_t j = 0; j < shape[axis]; ++j) {
             max = fmaxf(max, in[idx + j * outer]); 
         }
@@ -65,9 +65,9 @@ void vecSum(const T* in,
     size_t outSize = totalSize / shape[axis];
     size_t* h_stride = new size_t[ndims + 1];
 
-    h_stride[0] = 1;
-    for (size_t i = 1; i <= ndims; i++) {
-        h_stride[i] = h_stride[i - 1] * shape[i-1];
+    h_stride[ndims] = 1;
+    for (int i = ndims - 1; i >= 0; i--) {
+        h_stride[i] = h_stride[i+1] * shape[i];
     }
     
     T *d_in, *d_out;
@@ -109,9 +109,9 @@ void vecMax(const T* in,
     size_t outSize = totalSize / shape[axis];
     size_t* h_stride = new size_t[ndims + 1];
 
-    h_stride[0] = 1;
-    for (size_t i = 1; i <= ndims; i++) {
-        h_stride[i] = h_stride[i - 1] * shape[i-1];
+    h_stride[ndims] = 1;
+    for (int i = ndims - 1; i >= 0; i--) {
+        h_stride[i] = h_stride[i+1] * shape[i];
     }
     
     T *d_in, *d_out;

@@ -8,7 +8,7 @@ template <typename T>
 __global__ void vecExpKernel(size_t size, T* in, T* out) {
     size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
-        out[i] = expf(in[i]);
+        out[i] = exp(static_cast<double>(in[i]));
     }
 }
 
@@ -16,7 +16,7 @@ template <typename T>
 __global__ void vecLogKernel(size_t size, T* in, T* out) {
     size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
-        out[i] = logf(in[i]);
+        out[i] = log(static_cast<double>(in[i]));
     }
 }
 
@@ -24,7 +24,7 @@ template <typename T>
 __global__ void vecReluKernel(size_t size, T* in, T* out) {
     size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
     if (i < size) {
-        out[i] = fmaxf(0.0F, in[i]);
+        out[i] = in[i] > 0 ? in[i] : 0;
     }
 }
 

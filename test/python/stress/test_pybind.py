@@ -8,28 +8,46 @@ import cpp_custom_bind
 from operations_helper import Add, Sub, Mul, Div, Relu, Exp, Log, Matmul, Sum, Transpose
 
 ITERATIONS = 1000
+TORCH_DTYPE = torch.float64
+
+torch.set_default_dtype(TORCH_DTYPE)
+
+def set_seed(seed):
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+seed = 42
+set_seed(seed)
 
 
 def compute_grads(cpp_op, torch_op, mats):
-    def _to_col_major(mat):
+    def _to_row_major(mat):
         return torch.tensor(mat).T.flatten().tolist()
-
-    def _from_col_major(flat, like):
+    def _from_row_major(flat, like):
         def T(ten):
             return ten.permute(*torch.arange(ten.ndim - 1, -1, -1))
-
         t = T(torch.tensor(flat).reshape(T(torch.tensor(like)).shape))
         return t.tolist()
 
+    def _to_row_major(mat):
+        return torch.tensor(mat).flatten().tolist()
+    def _from_row_major(flat, like):
+        t = torch.tensor(flat).reshape(torch.tensor(like).shape)
+        return t.tolist()
+
     def _to_cpp_var(mat, requires_grad=True):
-        ten = cpp_custom_bind.cTensor(_to_col_major(mat), list(torch.tensor(mat).shape))
+        ten = cpp_custom_bind.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
         return cpp_custom_bind.cVariable(ten, requires_grad)
 
     torch_vars = [
-        torch.tensor(m, dtype=torch.float64, requires_grad=True) for m in mats
+        torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats
     ]
     torch_out = torch_op(*torch_vars)
-    torch_out.backward(torch.ones_like(torch_out, dtype=torch.float64))
+    torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
     torch_vals = {
         "grads": [v.grad.tolist() for v in torch_vars],
         "out": [torch_out.data.tolist()],
@@ -38,8 +56,8 @@ def compute_grads(cpp_op, torch_op, mats):
     cpp_vars = [_to_cpp_var(m) for m in mats]
     cpp_out = cpp_op(*cpp_vars)
     cpp_vals = {
-        "grads": [_from_col_major(v.grad.data, m) for v, m in zip(cpp_vars, mats)],
-        "out": [_from_col_major(cpp_out.data.data, torch_out.data.tolist())],
+        "grads": [_from_row_major(v.grad.data, m) for v, m in zip(cpp_vars, mats)],
+        "out": [_from_row_major(cpp_out.data.data, torch_out.data.tolist())],
     }
 
     return cpp_vals, torch_vals

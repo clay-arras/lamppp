@@ -6,10 +6,6 @@
 #include <string>
 #include <vector>
 
-// #include "autograd/engine/backend/cuda_backend.hpp"
-// #include "autograd/engine/tensor.hpp"
-// #include "autograd/engine/variable.hpp"
-// #include "autograd/engine/variable_ops.hpp"
 #include "autograd/autograd_umbrella.hpp"
 
 using autograd::Tensor;
@@ -239,12 +235,12 @@ void test_matmul() {
 
   Variable matmul_res = autograd::matmul(v1, v2);
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(matmul_res.data(), {9.0f, 12.0f, 15.0f}, {3, 1});
+  check_tensor(matmul_res.data(), {5.0f, 11.0f, 17.0f}, {3, 1});
   matmul_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
-  check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f}, {3, 2});
-  check_tensor(v2.grad(), {6.0f, 15.0f}, {2, 1});
+  check_tensor(v1.grad(), {1.0f, 2.0f, 1.0f, 2.0f, 1.0f, 2.0f}, {3, 2});
+  check_tensor(v2.grad(), {9.0f, 12.0f}, {2, 1});
 
   std::cout << "MatMul test passed." << std::endl << std::endl;
   ;
@@ -257,7 +253,7 @@ void test_transpose() {
 
   Variable transpose_res = autograd::transpose(v1);
   std::cout << "Forward Test..." << std::endl;
-  check_tensor(transpose_res.data(), {1.0f, 4.0f, 2.0f, 5.0f, 3.0f, 6.0f},
+  check_tensor(transpose_res.data(), {1.0f, 3.0f, 5.0f, 2.0f, 4.0f, 6.0f},
                {2, 3});
   transpose_res.backward();
 
@@ -275,7 +271,7 @@ void test_sum() {
 
   Variable sum_res_axis1 = autograd::sum(v1, 1);
   std::cout << "Sum Forward Test..." << std::endl;
-  check_tensor(sum_res_axis1.data(), {5.0f, 7.0f, 9.0f}, {3, 1});
+  check_tensor(sum_res_axis1.data(), {3.0f, 7.0f, 11.0f}, {3, 1});
   sum_res_axis1.backward();
 
   std::cout << "Sum Backward Test..." << std::endl;

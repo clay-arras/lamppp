@@ -77,12 +77,12 @@ Variable sum_cust(const Variable& a, int axis) {
 
 PYBIND11_MODULE(cpp_custom_bind, m) {
   py::class_<Tensor>(m, "cTensor")
-      .def(py::init<const std::vector<float>, const std::vector<size_t>>(), py::arg("data"),
+      .def(py::init<const std::vector<double>, const std::vector<size_t>>(), py::arg("data"),
            py::arg("shape"))
       .def_property(
           "data",
-          [](Tensor& t) -> std::vector<float> {
-            return vector<float>(t.data<float>().begin(), t.data<float>().end());
+          [](Tensor& t) -> std::vector<double> {
+            return vector<double>(t.data<double>().begin(), t.data<double>().end());
           },
           nullptr)
       .def_property(

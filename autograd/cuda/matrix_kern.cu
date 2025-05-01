@@ -13,10 +13,11 @@ __global__ void cudaMatmulKernel(const T* A, const T* B, T* C, size_t m, size_t 
     if (i < m && j < n) {
         T sum = 0;
         for (size_t t=0; t<k; t++) { // NOTE: A is MxK, B is KxN, C is MxN
-            // sum += A[(i*k) + t] * B[(n*t) + j]; // row major implementation
-            sum += A[i + m*t] * B[t + k*j]; // TODO(nlin): this can be made faster but whatever
+            sum += A[(i*k) + t] * B[(n*t) + j]; // row major implementation
+            // sum += A[i + m*t] * B[t + k*j]; // TODO(nlin): this can be made faster but whatever
         }
-        C[(j*m) + i] = sum;
+        // C[(j*m) + i] = sum;
+        C[(i*n) + j] = sum;
     }
 }
 
@@ -29,7 +30,7 @@ __global__ void cudaTransposeKernel(const T* in,
     size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
 
     if (i < m && j < n) {
-        out[(i*n) + j] = in[(j*m) + i];
+        out[(j*m) + i] = in[(i*n) + j];
     }
 }
 

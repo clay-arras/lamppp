@@ -8,5 +8,6 @@
 #include "autograd/engine/tensor_ops.hpp"
 #include "autograd/engine/variable.hpp"
 #include "autograd/engine/variable_ops.hpp"
+#include "autograd/engine/constructor.hpp"
 
 #endif

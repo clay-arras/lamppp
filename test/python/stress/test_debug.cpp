@@ -6,10 +6,11 @@
 #include <string>
 #include <vector>
 
-#include "autograd/engine/backend/cuda_backend.hpp"
-#include "autograd/engine/tensor.hpp"
-#include "autograd/engine/variable.hpp"
-#include "autograd/engine/variable_ops.hpp"
+// #include "autograd/engine/backend/cuda_backend.hpp"
+// #include "autograd/engine/tensor.hpp"
+// #include "autograd/engine/variable.hpp"
+// #include "autograd/engine/variable_ops.hpp"
+#include "autograd/autograd_umbrella.hpp"
 
 using autograd::Tensor;
 using autograd::Variable;

@@ -3,9 +3,12 @@
 #include <functional>
 #include <string>
 #include <vector>
-#include "autograd/engine/constructor.h"
-#include "autograd/engine/variable.h"
+#include "autograd/engine/backend/cuda_backend.hpp"
+#include "autograd/engine/constructor.hpp"
+#include "autograd/engine/variable.hpp"
+#include "autograd/engine/variable_ops.hpp"
 
+using autograd::CudaBackend;
 using autograd::rand;
 using autograd::Variable;
 
@@ -35,7 +38,7 @@ int main(int argc, char** argv) {
           {"Mul", mul_variables},
           {"Div", div_variables},
       };
-  std::vector<std::vector<int>> shapes = {
+  std::vector<std::vector<size_t>> shapes = {
       {128, 128},
       {256, 256},
       {1024, 1024},
@@ -49,8 +52,8 @@ int main(int argc, char** argv) {
       benchmark::RegisterBenchmark(name, [fn, &shape](benchmark::State& state) {
         for (auto _ : state) {
           state.PauseTiming();
-          Variable a = rand(shape);
-          Variable b = rand(shape);
+          Variable a = rand<float, CudaBackend<float>>(shape, false);
+          Variable b = rand<float, CudaBackend<float>>(shape, false);
           state.ResumeTiming();
 
           Variable c = fn(a, b);

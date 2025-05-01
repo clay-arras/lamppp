@@ -37,15 +37,6 @@ class Variable {
   explicit Variable(const Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
-  template <typename DataType, typename Backend>
-  static Variable create(const std::vector<DataType>& data,
-                         const std::vector<size_t>& shape,
-                         bool requires_grad = false) {
-    std::shared_ptr<TensorImpl> impl =
-        std::make_shared<TensorImplModel<DataType, Backend>>(data, shape);
-    return Variable(Tensor(impl), requires_grad);
-  }
-
   const Tensor& grad() const { return impl_->grad; }
   const Tensor& data() const { return impl_->data; }
   const std::shared_ptr<Function>& grad_fn() const { return impl_->_grad_fn; }

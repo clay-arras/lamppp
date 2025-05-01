@@ -22,4 +22,31 @@ Div            662826 ns       662507 ns         1116
 Div           2533815 ns      2533315 ns          252
 Div          43538822 ns     43529039 ns           16
 
+
+2025-04-30T23:10:41-04:00
+Running build/bench_ops
+Run on (32 X 1670.89 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x16)
+  L1 Instruction 32 KiB (x16)
+  L2 Unified 2048 KiB (x16)
+  L3 Unified 36864 KiB (x1)
+Load Average: 2.30, 2.02, 2.04
+-----------------------------------------------------
+Benchmark           Time             CPU   Iterations
+-----------------------------------------------------
+Add            190606 ns       190475 ns         5364
+Add            396637 ns       369944 ns         1939
+Add           5322868 ns      5212800 ns          128
+Sub            174984 ns       170490 ns         5347
+Sub            370925 ns       360765 ns         1921
+Sub           5207409 ns      5206411 ns          134
+Mul            178905 ns       165550 ns         4068
+Mul            359922 ns       359524 ns         1941
+Mul           5373859 ns      5371124 ns          131
+Div            190447 ns       190262 ns         3519
+Div            387814 ns       369318 ns         1951
+Div           5671162 ns      5575157 ns          136
+
+
 ```

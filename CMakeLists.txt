@@ -22,7 +22,6 @@ add_library(
   autograd_core # TODO: next step: split into different bench envs
   autograd/engine/variable.cpp
   autograd/engine/tensor.cpp
-  # autograd/engine/constructor.cpp
   # autograd/engine/backend/eigen_backend.cpp
   autograd/engine/backend/cuda_backend.cpp
   autograd/engine/functions/basic_ops.cpp
@@ -49,8 +48,8 @@ target_include_directories(
 # add_executable(mnist autograd/examples/mnist.cpp)
 # target_link_libraries(mnist autograd_core)
 
-# add_executable(bench_ops test/benchmarks/bench_ops.cpp)
-# target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+add_executable(bench_ops test/benchmarks/bench_ops.cpp)
+target_link_libraries(bench_ops autograd_core benchmark::benchmark)
 
 add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)

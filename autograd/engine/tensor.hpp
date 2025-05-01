@@ -35,17 +35,10 @@ class Tensor {
       : impl_(
             std::make_shared<TensorImplModel<DataType, CudaBackend<DataType>>>(
                 data, shape)) {}
-
-  template <typename DataType, typename Backend>
-  Tensor(const std::vector<DataType>& data, const std::vector<size_t>& shape)
-      : impl_(std::make_shared<TensorImplModel<DataType, Backend>>(data,
-                                                                   shape)) {}
-
   explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(std::move(impl)) {}
   Tensor(const Tensor& other) : impl_(other.impl_->clone()) {}
 
-  std::shared_ptr<TensorImpl>
-      impl_;  // TODO: this should probably be a unique ptr
+  std::shared_ptr<TensorImpl> impl_;  // TODO: this should probably be a unique ptr
 
   template <typename DataType, typename Backend>
   static Tensor create(const std::vector<DataType>& data,

@@ -54,10 +54,6 @@ class Tensor {
     return std::span<const T>(static_cast<const T*>(impl_->data_ptr()),
                               impl_->data_size());
   }
-  template <typename T>
-  T* data_ptr() const {
-    return static_cast<T*>(impl_->data_ptr());
-  }
   const std::vector<size_t>& shape() const { return impl_->shape(); }
 
   template <typename T>

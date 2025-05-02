@@ -18,9 +18,7 @@ struct TensorImpl : public virtual AbstractBackend {
   virtual std::shared_ptr<TensorImpl> clone() const = 0;
 
   virtual const void* data_ptr() const = 0;
-  virtual void* data_ptr() = 0;
-  virtual const size_t data_size()
-      const = 0;  // TODO: I really have to switch to size_t, this just bothers me
+  virtual const size_t data_size() const = 0; 
   virtual const std::vector<size_t>& shape() const = 0;
 
   virtual void fill(any_type item) = 0;
@@ -50,7 +48,6 @@ class TensorImplModel : public TensorImpl, public virtual Backend {
   const void* data_ptr() const override {
     return static_cast<const void*>(_data.data());
   }
-  void* data_ptr() override { return static_cast<void*>(_data.data()); }
   const size_t data_size() const override {
     return static_cast<size_t>(_data.size());
   }

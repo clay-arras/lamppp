@@ -17,11 +17,9 @@
 
 namespace autograd {
 
-// Forward declaration of implementation class
 class StorageImpl;
 
 struct Storage {
-  // Using std::unique_ptr for automatic memory management
   std::unique_ptr<StorageImpl> impl;
 
   explicit Storage(const std::vector<size_t>& shape, DataType type);
@@ -29,16 +27,13 @@ struct Storage {
   template<typename T>
   explicit Storage(const std::vector<T>& data, const std::vector<size_t>& shape, DataType type);
 
-  // Destructor (implementation will be in the cpp file)
   ~Storage();
 
-  // Copy and move constructors/assignments
   Storage(const Storage& other);
   Storage& operator=(const Storage& other);
   Storage(Storage&& other) noexcept;
   Storage& operator=(Storage&& other) noexcept;
 
-  // Accessor methods
   void* data() const;
   size_t size() const;
   DataType type() const;

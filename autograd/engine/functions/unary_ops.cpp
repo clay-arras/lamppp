@@ -38,7 +38,15 @@ variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
+  // std::cout << "Before Self Var: " << self << std::endl;
+  // std::cout << "Befoore Test Var: " << (self > 0.0) << std::endl;
+  // std::cout << "Afterj test Self Var: " << self << std::endl;
+
   Variable relu_var(self > 0.0F);
+  // std::cout << "Relu Var: " << relu_var << std::endl;
+  // std::cout << "Afterj Self Var: " << self << std::endl;
+  // std::cout << "Afterj Test Var: " << (self > 0.0) << std::endl;
+
   self.incr_grad(relu_var.data() * grad.grad());
 
   variable_list grad_inputs = {};

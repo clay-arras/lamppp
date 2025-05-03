@@ -27,7 +27,7 @@ variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
   Variable& other = (*saved_inputs)[1];
 
   self.incr_grad(grad.grad());
-  other.incr_grad((-1.0F) * grad.grad());
+  other.incr_grad((-1.0) * grad.grad());
 
   variable_list grad_inputs = {};
   return grad_inputs;

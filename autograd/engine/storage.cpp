@@ -1,7 +1,6 @@
 #include "autograd/engine/storage.hpp"
 #include <algorithm>
 #include <numeric>
-#include <iostream>
 
 namespace autograd {
 
@@ -59,11 +58,9 @@ Storage::Storage(const std::vector<T>& data, const std::vector<size_t>& shape, D
 
 Storage::~Storage() = default;
 
-// Copy constructor
 Storage::Storage(const Storage& other)
     : impl(std::make_unique<StorageImpl>(*other.impl)) {}
 
-// Copy assignment
 Storage& Storage::operator=(const Storage& other) {
     if (this != &other) {
         impl = std::make_unique<StorageImpl>(*other.impl);
@@ -71,13 +68,10 @@ Storage& Storage::operator=(const Storage& other) {
     return *this;
 }
 
-// Move constructor
 Storage::Storage(Storage&& other) noexcept = default;
 
-// Move assignment
 Storage& Storage::operator=(Storage&& other) noexcept = default;
 
-// Accessor methods
 void* Storage::data() const {
     return impl->data_ptr;
 }
@@ -94,7 +88,6 @@ const std::vector<size_t>& Storage::shape() const {
     return impl->shape;
 }
 
-// Explicit template instantiations
 template Storage::Storage(const std::vector<float>&, const std::vector<size_t>&, DataType);
 template Storage::Storage(const std::vector<double>&, const std::vector<size_t>&, DataType);
 template Storage::Storage(const std::vector<int>&, const std::vector<size_t>&, DataType);

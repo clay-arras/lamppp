@@ -18,15 +18,13 @@ inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
 
 template <auto OpTag>
 inline Tensor binary_tensor_op(const Tensor& tensor, float scalar) {
-  Tensor scalar_tensor(tensor);
-  scalar_tensor.fill(scalar);
+  Tensor scalar_tensor = Tensor::create(std::vector<float>(tensor.size(), static_cast<float>(scalar)), tensor.shape(), tensor.backend(), tensor.type());
   return binary_tensor_op<OpTag>(tensor, scalar_tensor);
 }
 
 template <auto OpTag>
 inline Tensor binary_tensor_op(float scalar, const Tensor& tensor) {
-  Tensor scalar_tensor(tensor);
-  scalar_tensor.fill(scalar);
+  Tensor scalar_tensor = Tensor::create(std::vector<float>(tensor.size(), static_cast<float>(scalar)), tensor.shape(), tensor.backend(), tensor.type());
   return binary_tensor_op<OpTag>(scalar_tensor, tensor);
 }
 

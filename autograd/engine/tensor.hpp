@@ -1,5 +1,6 @@
 #pragma once
 
+#include "autograd/engine/backend/cuda_backend.hpp"
 #ifndef _TENSOR_H_
 #define _TENSOR_H
 
@@ -19,7 +20,13 @@ namespace autograd {
 class Tensor {
 public:
   Tensor() = default;
-  explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(std::move(impl)) {}
+  explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(impl) {}
+
+  template <typename T>
+  Tensor(const std::vector<T>& data, const std::vector<size_t>& shape) {
+    std::shared_ptr<AbstractBackend> cuda_backend = std::make_shared<CudaBackend>();
+    impl_ = std::make_shared<TensorImpl>(Storage(data, shape, DataType::Float64), cuda_backend);
+  }
   std::shared_ptr<TensorImpl> impl_;
 
   void* data() const { return impl_->data(); }

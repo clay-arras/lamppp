@@ -22,19 +22,16 @@ struct VariableImpl {
   bool requires_grad;
 
   explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
-    // Tensor tmp(data);
-    // this->grad = std::move(tmp);
-    // this->grad.fill(0);
-    this->data = data;
-    this->grad = Tensor::create(std::vector<float>(data.size(), 1), data.shape(), data.backend(), data.type());
+    this->data = Tensor::create(std::vector<float>(data.data<float>().begin(), data.data<float>().end()), data.shape(), data.backend(), data.type());
+    this->grad = Tensor::create(std::vector<float>(data.size(), 0), data.shape(), data.backend(), data.type());
     this->requires_grad = requires_grad;
   }
 };
 
 class Variable {
  public:
-  explicit Variable(std::shared_ptr<VariableImpl>& impl)
-      : impl_(std::move(impl)) {}
+  // explicit Variable(std::shared_ptr<VariableImpl>& impl)
+  //     : impl_(std::move(impl)) {}
   explicit Variable(const Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 

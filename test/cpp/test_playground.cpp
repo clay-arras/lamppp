@@ -18,7 +18,17 @@ int main() {
 
   autograd::Variable variable_data1(tensor_data1, true);
   autograd::Variable variable_data2(tensor_data2, true);
-  std::cout << "Variable 1: " << variable_data1.data() << std::endl;
-  std::cout << "Variable 2: " << variable_data2.data() << std::endl;
-  std::cout << "Variable 1 + Variable 2: " << (variable_data1 + variable_data2) << std::endl;
+
+  autograd::Variable result = variable_data1 - variable_data2;
+
+  std::cout << "Variable 1: " << variable_data1 << std::endl;
+  std::cout << "Variable 2: " << variable_data2 << std::endl;
+  std::cout << "Result: " << result << std::endl;
+  std::cout << std::endl;
+
+  result.backward();
+
+  std::cout << "Variable 1: " << variable_data1 << std::endl;
+  std::cout << "Variable 2: " << variable_data2 << std::endl;
+  std::cout << "Result: " << result << std::endl;
 }

@@ -30,7 +30,6 @@ public:
         });
     }
 
-    // Copy constructor
     StorageImpl(const StorageImpl& other) 
         : shape(other.shape), type(other.type), size(other.size) {
         DISPATCH_ALL_TYPES(type, [&]{
@@ -45,8 +44,6 @@ public:
         });
     }
 };
-
-// Storage implementation
 
 Storage::Storage(const std::vector<size_t>& shape, DataType type)
     : impl(std::make_unique<StorageImpl>(shape, type)) {}

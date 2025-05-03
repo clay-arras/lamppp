@@ -1,12 +1,9 @@
 #pragma once
 
-#include <algorithm>
-#include <cstring>
-#include <iostream>
 #ifndef STORAGE_H
 #define STORAGE_H
 
-#include <numeric>
+#include <cstring>
 #include <ostream>
 #include <vector>
 #include <cstdlib>

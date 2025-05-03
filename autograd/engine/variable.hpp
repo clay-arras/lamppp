@@ -30,8 +30,6 @@ struct VariableImpl {
 
 class Variable {
  public:
-  // explicit Variable(std::shared_ptr<VariableImpl>& impl)
-  //     : impl_(std::move(impl)) {}
   explicit Variable(const Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
@@ -53,7 +51,6 @@ class Variable {
 
  private:
   std::shared_ptr<VariableImpl> impl_;
-
   std::vector<Variable> topological_sort();
   void dfs(const Variable& v, std::unordered_set<void*>& visited,
            std::vector<Variable>& topo) const;

@@ -1,12 +1,12 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
-#include <format>
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include "autograd/autograd_umbrella.hpp"
+#include "autograd/engine/backend/cuda_backend.hpp"
 
 using autograd::Tensor;
 using autograd::Variable;
@@ -34,7 +34,7 @@ std::string to_string(std::vector<T> item) {
 }
 Tensor make_tensor(const std::vector<float>& data,
                    const std::vector<size_t>& shape) {
-  return Tensor::create<float, autograd::CudaBackend<float>>(data, shape);
+  return Tensor::create(data, shape, std::make_shared<autograd::CudaBackend>(), DataType::Float32);
 }
 const float epsilon = 1e-4;
 template <typename T>

@@ -22,10 +22,11 @@ struct VariableImpl {
   bool requires_grad;
 
   explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
-    Tensor tmp(data);
-    this->grad = std::move(tmp);
-    this->grad.fill(0);
-    this->data = std::move(data);
+    // Tensor tmp(data);
+    // this->grad = std::move(tmp);
+    // this->grad.fill(0);
+    this->data = data;
+    this->grad = Tensor::create(std::vector<float>(data.size(), 1), data.shape(), data.backend(), data.type());
     this->requires_grad = requires_grad;
   }
 };

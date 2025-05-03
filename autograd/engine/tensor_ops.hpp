@@ -3,6 +3,8 @@
 #ifndef _TENSOR_OPS_H_
 #define _TENSOR_OPS_H_
 
+#include <memory>
+#include "autograd/engine/tensor_impl.hpp"
 #include "tensor.hpp"
 
 namespace autograd {
@@ -10,7 +12,8 @@ inline namespace ops {
 
 template <auto OpTag>
 inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
-  return Tensor((a.impl_.get()->*OpTag)(*a.impl_, *b.impl_));
+  auto result = ((*a.impl_).*OpTag)(*a.impl_, *b.impl_);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 
 template <auto OpTag>
@@ -56,25 +59,32 @@ FORALL_BINARY_OPS(DECL_BINARY_OP)
 #undef DECL_BINARY_OP
 
 inline Tensor log(const Tensor& tensor) {
-  return Tensor(tensor.impl_->log(*tensor.impl_));
+  auto result = tensor.impl_->log(*tensor.impl_);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 inline Tensor exp(const Tensor& tensor) {
-  return Tensor(tensor.impl_->exp(*tensor.impl_));
+  auto result = tensor.impl_->exp(*tensor.impl_);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 inline Tensor relu(const Tensor& tensor) {
-  return Tensor(tensor.impl_->relu(*tensor.impl_));
+  auto result = tensor.impl_->relu(*tensor.impl_);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 inline Tensor matmul(const Tensor& a, const Tensor& b) {
-  return Tensor(a.impl_->matmul(*a.impl_, *b.impl_));
+  auto result = a.impl_->matmul(*a.impl_, *b.impl_);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 inline Tensor transpose(const Tensor& tensor) {
-  return Tensor(tensor.impl_->transpose(*tensor.impl_));
+  auto result = tensor.impl_->transpose(*tensor.impl_);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 inline Tensor sum(const Tensor& tensor, size_t axis) {
-  return Tensor(tensor.impl_->sum(*tensor.impl_, axis));
+  auto result = tensor.impl_->sum(*tensor.impl_, axis);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 inline Tensor max(const Tensor& tensor, size_t axis) {
-  return Tensor(tensor.impl_->max(*tensor.impl_, axis));
+  auto result = tensor.impl_->max(*tensor.impl_, axis);
+  return Tensor(std::make_shared<TensorImpl>(std::move(result)));
 }
 
 }  // namespace ops

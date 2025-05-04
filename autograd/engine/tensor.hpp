@@ -22,44 +22,21 @@ class Tensor {
  public:
   Tensor() = default;
 
-  // template <typename T>
-  // Tensor(const std::vector<T>& data, const std::vector<size_t>& shape) {
-  //   std::shared_ptr<AbstractBackend> cuda_backend =
-  //       std::make_shared<CudaBackend>();
-  //   impl_ = std::make_shared<TensorImpl>(
-  //       Storage(data, shape, DataType::Float64), cuda_backend);
-  // }
-
-// template <typename T>
-// Tensor create(const std::vector<T>& data,
-//                     const std::vector<size_t>& shape,
-//                     std::shared_ptr<AbstractBackend> backend,
-//                     DataType dtype) {
-// std::shared_ptr<TensorImpl> impl =
-//     std::make_shared<TensorImpl>(Storage(data, shape, dtype), backend);
-// return Tensor(impl);
-// }
+  // TODO: GET RID OF THIS
+  template <typename T>
+  Tensor(const std::vector<T>& data, const std::vector<size_t>& shape) {
+    std::shared_ptr<AbstractBackend> cuda_backend =
+        std::make_shared<CudaBackend>();
+    impl_ = std::make_shared<TensorImpl>(
+        Storage(data, shape, DataType::Float64), cuda_backend);
+  }
 
   template <typename T>
   explicit Tensor (const std::vector<T>& data,
                       const std::vector<size_t>& shape,
                       std::shared_ptr<AbstractBackend> backend,
                       DataType dtype) : 
-      impl_(std::make_unique<TensorImpl>(Storage(data, shape, dtype), backend)) {}
-
-
-  ~Tensor() = default;
-  Tensor(const Tensor& other) 
-    : impl_(other.impl_ ? std::make_unique<TensorImpl>(*other.impl_) : nullptr) {}
-  Tensor& operator=(const Tensor& other) {
-    if (this != &other) {
-      Tensor tmp(other);
-      std::swap(impl_, tmp.impl_);
-    }
-    return *this;
-  }
-  Tensor(Tensor&& other) noexcept = default;
-  Tensor& operator=(Tensor&& other) noexcept = default;
+      impl_(std::make_shared<TensorImpl>(Storage(data, shape, dtype), backend)) {}
 
   void* data() const { return impl_->data(); }
   DataType type() const { return impl_->type(); }
@@ -70,7 +47,7 @@ class Tensor {
   void fill(Scalar item) { impl_->fill(item); }
 
   template <typename T>
-  std::span<T> data() const {
+  std::span<T> view() const {
     static thread_local std::vector<T> converted_data;
     DISPATCH_ALL_TYPES(impl_->type(), [&] {
       converted_data.resize(impl_->size());
@@ -86,37 +63,37 @@ class Tensor {
 
   inline friend Tensor log(const Tensor& tensor) {
     auto result = TensorImpl::log(*tensor.impl_);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
   inline friend Tensor exp(const Tensor& tensor) {
     auto result = TensorImpl::exp(*tensor.impl_);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
   inline friend Tensor relu(const Tensor& tensor) {
     auto result = TensorImpl::relu(*tensor.impl_);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
   inline friend Tensor matmul(const Tensor& a, const Tensor& b) {
     auto result = TensorImpl::matmul(*a.impl_, *b.impl_);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
   inline friend Tensor transpose(const Tensor& tensor) {
     auto result = TensorImpl::transpose(*tensor.impl_);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
   inline friend Tensor sum(const Tensor& tensor, size_t axis) {
     auto result = TensorImpl::sum(*tensor.impl_, axis);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
   inline friend Tensor max(const Tensor& tensor, size_t axis) {
     auto result = TensorImpl::max(*tensor.impl_, axis);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
 
   template <auto OpTag>
   static inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
     auto result = (*OpTag)(*a.impl_, *b.impl_);
-    return Tensor(std::make_unique<TensorImpl>(result));
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
 
   template <auto OpTag>
@@ -164,8 +141,8 @@ FORALL_BINARY_OPS(DECL_BINARY_OP)
 #undef DECL_BINARY_OP
 
 private: 
-  explicit Tensor(std::unique_ptr<TensorImpl> impl) : impl_(std::move(impl)) {}
-  std::unique_ptr<TensorImpl> impl_;
+  explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(impl) {}
+  std::shared_ptr<TensorImpl> impl_;
 };
 
 }  // namespace autograd

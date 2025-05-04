@@ -1,0 +1,35 @@
+#include "constructor.hpp"
+#include <random>
+#include <numeric>
+
+namespace autograd {
+
+Variable zeros(const std::vector<size_t>& shape, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad) {
+  size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
+  return Variable(
+      Tensor(std::vector<Scalar>(sz, 0.0), shape, backend, dtype),
+      requires_grad);
+}
+
+Variable ones(const std::vector<size_t>& shape, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad) {
+  size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
+  return Variable(
+      Tensor(std::vector<Scalar>(sz, 1.0), shape, backend, dtype),
+      requires_grad);
+}
+
+Variable rand(const std::vector<size_t>& shape, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad) {
+  size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
+  std::vector<Scalar> rand_vec(sz);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
+  std::uniform_real_distribution<> distrib(0.0, 1.0); 
+  std::generate(rand_vec.begin(), rand_vec.end(), [&]() { return distrib(gen); });
+
+  return Variable(
+      Tensor(rand_vec, shape, backend, dtype),
+      requires_grad);
+}
+
+}

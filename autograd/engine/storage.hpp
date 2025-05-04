@@ -21,15 +21,9 @@ public:
   template <typename T>
   Storage(const std::vector<T>& data, const std::vector<size_t>& shape,
                   DataType type)
-      : impl(std::make_unique<StorageImpl>(data, shape, type)) {}
+      : impl(std::make_shared<StorageImpl>(data, shape, type)) {}
   Storage(const std::vector<size_t>& shape, DataType type)
-      : impl(std::make_unique<StorageImpl>(shape, type)) {}
-
-  ~Storage();
-  Storage(const Storage& other);
-  Storage& operator=(const Storage& other);
-  Storage(Storage&& other) noexcept;
-  Storage& operator=(Storage&& other) noexcept;
+      : impl(std::make_shared<StorageImpl>(shape, type)) {}
 
   void* data() const;
   size_t size() const;
@@ -40,7 +34,7 @@ public:
 
 private:
   class StorageImpl;
-  std::unique_ptr<StorageImpl> impl;
+  std::shared_ptr<StorageImpl> impl;
 };
 
 class Storage::StorageImpl {

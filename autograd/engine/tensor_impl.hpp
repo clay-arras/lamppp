@@ -21,24 +21,6 @@ class TensorImpl {
   TensorImpl(const Storage& storage, std::shared_ptr<AbstractBackend> backend)
       : data_(storage), backend_(backend) {}
 
-  ~TensorImpl() = default;
-  TensorImpl(const TensorImpl& other) : data_(other.data_), backend_(other.backend_) {}
-  TensorImpl& operator=(const TensorImpl& other) {
-    if (this != &other) {
-      data_ = other.data_;
-      backend_ = other.backend_;
-    }
-    return *this;
-  }
-  TensorImpl(TensorImpl&& other) noexcept : data_(std::move(other.data_)), backend_(std::move(other.backend_)) {}
-  TensorImpl& operator=(TensorImpl&& other) noexcept {
-    if (this != &other) {
-      data_ = std::move(other.data_);
-      backend_ = std::move(other.backend_);
-    }
-    return *this;
-  }
-
   void* data() const { return data_.data(); }
   DataType type() const { return data_.type(); };
   const std::vector<size_t>& shape() const { return data_.shape(); }

@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "autograd/engine/data_type.hpp"
 #include "autograd/engine/function.hpp"
 #include "autograd/engine/tensor.hpp"
 #include "autograd/engine/variable_ops.hpp"
@@ -76,14 +77,19 @@ Variable sum_cust(const Variable& a, int axis) {
 }  // namespace
 
 PYBIND11_MODULE(cpp_custom_bind, m) {
+  py::enum_<DataType>(m, "cDataType")
+      .value("Float32", DataType::Float32)
+      .value("Float64", DataType::Float64) 
+      .value("Int32", DataType::Int32);
+
   py::class_<Tensor>(m, "cTensor")
       .def(py::init<const std::vector<double>, const std::vector<size_t>>(),
            py::arg("data"), py::arg("shape"))
       .def_property(
           "data",
-          [](Tensor& t) -> std::vector<double> {
-            return vector<double>(t.data<double>().begin(),
-                                  t.data<double>().end());
+          [](Tensor& t) -> vector<double> {
+            return vector<double>(t.view<double>().begin(),
+                                  t.view<double>().end());
           },
           nullptr)
       .def_property(

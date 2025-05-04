@@ -53,8 +53,8 @@ bool check_approx_equal(const std::vector<T> a, const std::vector<T> b) {
 void check_tensor(const Tensor t, std::vector<float> data,
                   std::vector<size_t> shape) {
 
-  std::vector<float> data_vector(t.data<float>().begin(),
-                                 t.data<float>().end());
+  std::vector<float> data_vector(t.view<float>().begin(),
+                                 t.view<float>().end());
   std::cout << "Data: ";
   if (check_approx_equal(data_vector, data)) {
     std::cout << "Ok" << std::endl;
@@ -62,8 +62,8 @@ void check_tensor(const Tensor t, std::vector<float> data,
     std::cout << "ERROR" << std::endl;
     std::cout << "Expected: " << to_string(data) << std::endl;
     std::cout << "Got: "
-              << to_string(std::vector<float>(t.data<float>().begin(),
-                                              t.data<float>().end()))
+              << to_string(std::vector<float>(t.view<float>().begin(),
+                                              t.view<float>().end()))
               << std::endl;
   }
 
@@ -91,8 +91,6 @@ void test_add() {
   add_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
-  std::cout << v1 << std::endl;
-  std::cout << v2 << std::endl;
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
   check_tensor(v2.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
 

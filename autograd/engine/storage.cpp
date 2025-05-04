@@ -2,22 +2,6 @@
 
 namespace autograd {
 
-Storage::~Storage() = default;
-
-Storage::Storage(const Storage& other)
-    : impl(std::make_unique<StorageImpl>(*other.impl)) {}
-
-Storage& Storage::operator=(const Storage& other) {
-  if (this != &other) {
-    *impl = *other.impl;
-  }
-  return *this;
-}
-
-Storage::Storage(Storage&& other) noexcept = default;
-
-Storage& Storage::operator=(Storage&& other) noexcept = default;
-
 void* Storage::data() const { return impl->data(); }
 
 size_t Storage::size() const { return impl->size(); }

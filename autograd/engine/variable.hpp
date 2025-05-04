@@ -27,30 +27,12 @@ struct VariableImpl {
     this->grad = zeros_like(data);
     this->requires_grad = requires_grad;
   }
-
-  ~VariableImpl() = default;
-  VariableImpl(const VariableImpl&) = default;
-  VariableImpl& operator=(const VariableImpl&) = default;
-  VariableImpl(VariableImpl&&) = default;
-  VariableImpl& operator=(VariableImpl&&) = default;
 };
 
 class Variable {
  public:
   explicit Variable(const Tensor& data, bool requires_grad = false)
-      : impl_(std::make_unique<VariableImpl>(data, requires_grad)) {}
-
-  ~Variable() = default;
-  Variable(const Variable& other)
-      : impl_(std::make_unique<VariableImpl>(*other.impl_)) {}
-  Variable& operator=(const Variable& other) {
-    if (this != &other) {
-      impl_ = std::make_unique<VariableImpl>(*other.impl_);
-    }
-    return *this;
-  }
-  Variable(Variable&& other) noexcept = default;
-  Variable& operator=(Variable&& other) noexcept = default;
+      : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
   const Tensor& grad() const { return impl_->grad; }
   const Tensor& data() const { return impl_->data; }
@@ -69,7 +51,7 @@ class Variable {
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);
 
  private:
-  std::unique_ptr<VariableImpl> impl_;
+  std::shared_ptr<VariableImpl> impl_;
   std::vector<Variable> topological_sort();
   void dfs(const Variable& v, std::unordered_set<void*>& visited,
            std::vector<Variable>& topo) const;

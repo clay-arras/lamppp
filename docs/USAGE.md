@@ -2,7 +2,6 @@
 #include "mnist.h"
 #include <cassert>
 #include <iostream>
-#include "autograd/engine/tensor_ops.h"
 #include "autograd/engine/constructor.h"
 #include "autograd/engine/variable.h"
 #include "autograd/engine/variable_ops.h"

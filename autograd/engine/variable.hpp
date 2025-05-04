@@ -8,7 +8,6 @@
 #include <utility>
 #include <vector>
 #include "tensor.hpp"
-#include "tensor_ops.hpp"
 
 namespace autograd {
 
@@ -22,8 +21,11 @@ struct VariableImpl {
   bool requires_grad;
 
   explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
-    this->data = Tensor::create(std::vector<float>(data.data<float>().begin(), data.data<float>().end()), data.shape(), data.backend(), data.type());
-    this->grad = Tensor::create(std::vector<float>(data.size(), 0), data.shape(), data.backend(), data.type());
+    this->data = Tensor::create(std::vector<float>(data.data<float>().begin(),
+                                                   data.data<float>().end()),
+                                data.shape(), data.backend(), data.type());
+    this->grad = Tensor::create(std::vector<float>(data.size(), 0),
+                                data.shape(), data.backend(), data.type());
     this->requires_grad = requires_grad;
   }
 };

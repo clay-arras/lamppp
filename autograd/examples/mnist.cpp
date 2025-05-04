@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #include "autograd/engine/constructor.hpp"
-#include "autograd/engine/tensor_ops.hpp"
 #include "autograd/engine/variable.hpp"
 #include "autograd/engine/variable_ops.hpp"
 #include "autograd/util/batch_sample.hpp"
@@ -59,7 +58,8 @@ int main() {
     }
 
     if (i % 10000 == 0) {
-      int test_batch_size = std::min(static_cast<size_t>(test_data.size()), 1000);
+      int test_batch_size =
+          std::min(static_cast<size_t>(test_data.size()), 1000);
       std::vector<std::vector<float>> test_batch_data;
       std::vector<std::vector<float>> test_batch_labels;
       sample_batch_sample(test_data, test_label, test_batch_size,

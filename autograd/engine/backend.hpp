@@ -3,7 +3,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
-#include <memory>
+#include <cstddef>
 
 namespace autograd {
 
@@ -26,8 +26,8 @@ struct AbstractBackend {
   virtual Storage not_equal(const Storage& a, const Storage& b) = 0;
   virtual Storage greater_equal(const Storage& a, const Storage& b) = 0;
   virtual Storage less_equal(const Storage& a, const Storage& b) = 0;
-  virtual Storage greater_than(const Storage& a, const Storage& b) = 0;
-  virtual Storage less_than(const Storage& a, const Storage& b) = 0;
+  virtual Storage greater(const Storage& a, const Storage& b) = 0;
+  virtual Storage less(const Storage& a, const Storage& b) = 0;
 
   virtual Storage sum(const Storage& a, size_t axis) = 0;
   virtual Storage max(const Storage& a, size_t axis) = 0;

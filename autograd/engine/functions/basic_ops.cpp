@@ -2,7 +2,6 @@
 #include <cassert>
 #include <memory>
 #include "autograd/engine/function.hpp"
-#include "autograd/engine/tensor_ops.hpp"
 #include "autograd/engine/variable.hpp"
 
 namespace autograd {

@@ -24,6 +24,7 @@ add_library(
   autograd/engine/tensor.cpp
   autograd/engine/storage.cpp
   autograd/engine/tensor_impl.cpp
+  autograd/engine/tensor_helper.cpp
   # autograd/engine/backend/eigen_backend.cpp
   autograd/engine/backend/cuda_backend.cpp
   autograd/engine/functions/basic_ops.cpp
@@ -59,8 +60,8 @@ target_link_libraries(test_playground autograd_core)
 add_executable(test_debug test/python/stress/test_debug.cpp)
 target_link_libraries(test_debug autograd_core)
 
-pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
-target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
+# pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
+# target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(NOT CLANG_FORMAT_EXE)

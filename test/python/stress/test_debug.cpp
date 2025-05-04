@@ -34,7 +34,7 @@ std::string to_string(std::vector<T> item) {
 }
 Tensor make_tensor(const std::vector<float>& data,
                    const std::vector<size_t>& shape) {
-  return Tensor::create(data, shape, std::make_shared<autograd::CudaBackend>(),
+  return Tensor(data, shape, std::make_shared<autograd::CudaBackend>(),
                         DataType::Float32);
 }
 const float epsilon = 1e-4;
@@ -91,6 +91,8 @@ void test_add() {
   add_res.backward();
 
   std::cout << "Backward Test..." << std::endl;
+  std::cout << v1 << std::endl;
+  std::cout << v2 << std::endl;
   check_tensor(v1.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
   check_tensor(v2.grad(), {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}, {3, 2});
 

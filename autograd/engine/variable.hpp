@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 #include "tensor.hpp"
+#include "tensor_helper.hpp"
 
 namespace autograd {
 
@@ -20,20 +21,36 @@ struct VariableImpl {
   std::shared_ptr<Function> _grad_fn;
   bool requires_grad;
 
+  VariableImpl() = default;
   explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
-    this->data = Tensor::create(std::vector<float>(data.data<float>().begin(),
-                                                   data.data<float>().end()),
-                                data.shape(), data.backend(), data.type());
-    this->grad = Tensor::create(std::vector<float>(data.size(), 0),
-                                data.shape(), data.backend(), data.type());
+    this->data = Tensor(data);
+    this->grad = zeros_like(data);
     this->requires_grad = requires_grad;
   }
+
+  ~VariableImpl() = default;
+  VariableImpl(const VariableImpl&) = default;
+  VariableImpl& operator=(const VariableImpl&) = default;
+  VariableImpl(VariableImpl&&) = default;
+  VariableImpl& operator=(VariableImpl&&) = default;
 };
 
 class Variable {
  public:
   explicit Variable(const Tensor& data, bool requires_grad = false)
-      : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
+      : impl_(std::make_unique<VariableImpl>(data, requires_grad)) {}
+
+  ~Variable() = default;
+  Variable(const Variable& other)
+      : impl_(std::make_unique<VariableImpl>(*other.impl_)) {}
+  Variable& operator=(const Variable& other) {
+    if (this != &other) {
+      impl_ = std::make_unique<VariableImpl>(*other.impl_);
+    }
+    return *this;
+  }
+  Variable(Variable&& other) noexcept = default;
+  Variable& operator=(Variable&& other) noexcept = default;
 
   const Tensor& grad() const { return impl_->grad; }
   const Tensor& data() const { return impl_->data; }
@@ -52,7 +69,7 @@ class Variable {
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);
 
  private:
-  std::shared_ptr<VariableImpl> impl_;
+  std::unique_ptr<VariableImpl> impl_;
   std::vector<Variable> topological_sort();
   void dfs(const Variable& v, std::unordered_set<void*>& visited,
            std::vector<Variable>& topo) const;

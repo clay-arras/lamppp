@@ -10,6 +10,7 @@
 #include "autograd/engine/functions/unary_ops.hpp"
 #include "autograd/engine/scalar.hpp"
 #include "variable.hpp"
+#include "tensor_helper.hpp"
 
 namespace autograd {
 inline namespace ops {
@@ -30,16 +31,12 @@ inline Variable binary_op(Variable const& a, Variable const& b) {
 }
 template <class OpTag>
 inline Variable binary_op(Variable const& v, Scalar s) {
-  Tensor tmp =
-      Tensor::create(std::vector<float>(v.data().size(), static_cast<float>(s)),
-                     v.data().shape(), v.data().backend(), v.data().type());
+  Tensor tmp = full_like(v.data(), s);
   return binary_op<OpTag>(v, Variable(tmp));
 }
 template <class OpTag>
 inline Variable binary_op(Scalar s, Variable const& v) {
-  Tensor tmp =
-      Tensor::create(std::vector<float>(v.data().size(), static_cast<float>(s)),
-                     v.data().shape(), v.data().backend(), v.data().type());
+  Tensor tmp = full_like(v.data(), s);
   return binary_op<OpTag>(Variable(tmp), v);
 }
 

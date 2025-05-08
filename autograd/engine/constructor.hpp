@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef _CONSTRUCTOR_H_
-#define _CONSTRUCTOR_H_
-
-#include "autograd/engine/backend.hpp"
 #include <cassert>
 #include "autograd/engine/scalar.hpp"
 #include "variable.hpp"
@@ -14,11 +10,14 @@ inline namespace functional {
 
 using std::multiplies;
 
-Variable zeros(const std::vector<size_t>& shape, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad);
+Variable zeros(const std::vector<size_t>& shape, DeviceType device,
+               DataType dtype, bool requires_grad);
 
-Variable ones(const std::vector<size_t>& shape, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad);
+Variable ones(const std::vector<size_t>& shape, DeviceType device,
+              DataType dtype, bool requires_grad);
 
-Variable rand(const std::vector<size_t>& shape, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad);
+Variable rand(const std::vector<size_t>& shape, DeviceType device,
+              DataType dtype, bool requires_grad);
 
 template <typename>
 struct IsVector : std::false_type {};
@@ -45,19 +44,18 @@ struct TensorHelper {
 };
 
 template <typename V>
-Variable tensor(const std::vector<V>& data, std::shared_ptr<AbstractBackend> backend, DataType dtype, bool requires_grad) {
+Variable tensor(const std::vector<V>& data, DeviceType device, DataType dtype,
+                bool requires_grad) {
   TensorHelper constr;
   constr.unroll(data);
   std::vector<DataType> body(constr.data.size());
   std::transform(__pstl::execution::par_unseq, constr.data.begin(),
                  constr.data.end(), body.begin(),
                  [](Scalar x) { return static_cast<DataType>(x); });
-  return Variable(
-      Tensor(constr.data, constr.shape, backend, dtype),
-      requires_grad);
+  return Variable(Tensor(constr.data, constr.shape, device, dtype),
+                  requires_grad);
 }
 
 }  // namespace functional
 
-#endif  // _CONSTRUCTOR_H_
-}
+}  // namespace autograd

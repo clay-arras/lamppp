@@ -1,5 +1,9 @@
 #include "tensor_impl.hpp"
 #include <cassert>
+#include "autograd/engine/abstract_backend.hpp"
+#include "autograd/engine/backend.hpp"
+#include "autograd/engine/data_type.hpp"
+#include "autograd/engine/dispatch_type.hpp"
 #include "native/copy.cuh"
 #include "native/fill.cuh"
 
@@ -21,100 +25,104 @@ void TensorImpl::to_(
 }
 
 TensorImpl TensorImpl::add(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->add(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).add(a, b);
 }
 
 TensorImpl TensorImpl::sub(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->sub(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).sub(a, b);
 }
 
 TensorImpl TensorImpl::mul(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->mul(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).mul(a, b);
 }
 
 TensorImpl TensorImpl::div(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->div(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).div(a, b);
 }
 
 TensorImpl TensorImpl::log(const TensorImpl& a) {
-  return TensorImpl(a.backend_->log(a.data_), a.backend_);
+  return backend_stub(a.device()).log(a);
 }
 
 TensorImpl TensorImpl::exp(const TensorImpl& a) {
-  return TensorImpl(a.backend_->exp(a.data_), a.backend_);
+  return backend_stub(a.device()).exp(a);
 }
 
 TensorImpl TensorImpl::relu(const TensorImpl& a) {
-  return TensorImpl(a.backend_->relu(a.data_), a.backend_);
+  return backend_stub(a.device()).relu(a);
 }
 
 TensorImpl TensorImpl::matmul(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->matmul(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).matmul(a, b);
 }
 
 TensorImpl TensorImpl::transpose(const TensorImpl& a) {
-  return TensorImpl(a.backend_->transpose(a.data_), a.backend_);
+  return backend_stub(a.device()).transpose(a);
 }
 
 TensorImpl TensorImpl::equal(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->equal(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).equal(a, b);
 }
 
 TensorImpl TensorImpl::not_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->not_equal(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).not_equal(a, b);
 }
 
 TensorImpl TensorImpl::greater_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->greater_equal(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).greater_equal(a, b);
 }
 
 TensorImpl TensorImpl::less_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->less_equal(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).less_equal(a, b);
 }
 
 TensorImpl TensorImpl::greater_than(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->greater(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).greater(a, b);
 }
 
 TensorImpl TensorImpl::less_than(const TensorImpl& a, const TensorImpl& b) {
-  assert((std::is_same_v<std::decay_t<decltype(*a.backend_)>,
-                         std::decay_t<decltype(*b.backend_)>>));
-  return TensorImpl(a.backend_->less(a.data_, b.data_), a.backend_);
+  assert(a.device() == b.device());
+  return backend_stub(a.device()).less(a, b);
 }
 
 TensorImpl TensorImpl::sum(const TensorImpl& a, size_t axis) {
-  return TensorImpl(a.backend_->sum(a.data_, axis), a.backend_);
+  return backend_stub(a.device()).sum(a, axis);
 }
 
 TensorImpl TensorImpl::max(const TensorImpl& a, size_t axis) {
-  return TensorImpl(a.backend_->max(a.data_, axis), a.backend_);
+  return backend_stub(a.device()).max(a, axis);
 }
 
-std::ostream& operator<<(std::ostream& os, const TensorImpl& obj) {
-  os << "TensorImpl(data_=" << obj.data_;
-  os << ", backend=" << obj.backend_;
-  os << ")";
-  return os;
+// TODO: this isn't going to work b/c it might be on CUDA
+void TensorImpl::print_(std::ostream& os) {
+  os << "Tensor(data=[";
+  DISPATCH_ALL_TYPES(this->type_, [&] {
+    scalar_t* data_ptr = static_cast<scalar_t*>(this->data());
+    for (size_t i = 0; i < this->size(); i++) {
+      os << data_ptr[i];
+      if (i < this->size() - 1) {
+        os << ", ";
+      }
+    }
+  });
+  os << "], shape=[";
+  for (size_t i = 0; i < shape_.size(); i++) {
+    os << shape_[i];
+    if (i < shape_.size() - 1) {
+      os << ", ";
+    }
+  }
+  os << "], dtype=" << this->type_ << "), device=" << this->device();
 }
 
 }  // namespace autograd

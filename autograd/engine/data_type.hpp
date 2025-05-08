@@ -1,10 +1,27 @@
 #pragma once
 
 #include <cstdint>
-#ifndef DATA_TYPE_H
-#define DATA_TYPE_H
+#include <ostream>
 
 enum class DataType : uint8_t { Int32 = 0, Float32 = 1, Float64 = 2 };
+
+inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
+  switch (dtype) {
+    case DataType::Int32:
+      os << "Int32";
+      break;
+    case DataType::Float32:
+      os << "Float32";
+      break;
+    case DataType::Float64:
+      os << "Float64";
+      break;
+    default:
+      os << "Unknown DataType";
+      break;
+  }
+  return os;
+}
 
 /*
 IMPORTANT NOTE: if expand to other data types in the future, do something like: 
@@ -20,5 +37,3 @@ enum DTypeRank {
 
 where dtype promotion just gets the larger of the types
 */
-
-#endif  // DATA_TYPE_H

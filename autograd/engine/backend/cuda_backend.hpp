@@ -1,42 +1,35 @@
 #pragma once
 
-#include "autograd/engine/allocator/cuda_allocator.cuh"
-#include "autograd/engine/device_type.hpp"
-#ifndef _CUDA_BACKEND_H_
-#define _CUDA_BACKEND_H_
-
 #include <cassert>
 #include "autograd/engine/abstract_backend.hpp"
-#include "autograd/engine/storage.hpp"
 
-namespace autograd {  // need to refactor asap
+namespace autograd {
 
 struct CudaBackend : public AbstractBackend, public Singleton<CudaBackend> {
   friend class Singleton<CudaBackend>;
+  DataType dtype_promotion_(DataType a_type, DataType b_type) override;
 
-  Storage add(const Storage& a, const Storage& b) override;
-  Storage sub(const Storage& a, const Storage& b) override;
-  Storage mul(const Storage& a, const Storage& b) override;
-  Storage div(const Storage& a, const Storage& b) override;
+  TensorImpl add(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl sub(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl mul(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl div(const TensorImpl& a, const TensorImpl& b) override;
 
-  Storage log(const Storage& a) override;
-  Storage exp(const Storage& a) override;
-  Storage relu(const Storage& a) override;
+  TensorImpl log(const TensorImpl& a) override;
+  TensorImpl exp(const TensorImpl& a) override;
+  TensorImpl relu(const TensorImpl& a) override;
 
-  Storage matmul(const Storage& a, const Storage& b) override;
-  Storage transpose(const Storage& a) override;
+  TensorImpl matmul(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl transpose(const TensorImpl& a) override;
 
-  Storage equal(const Storage& a, const Storage& b) override;
-  Storage not_equal(const Storage& a, const Storage& b) override;
-  Storage greater_equal(const Storage& a, const Storage& b) override;
-  Storage less_equal(const Storage& a, const Storage& b) override;
-  Storage greater(const Storage& a, const Storage& b) override;
-  Storage less(const Storage& a, const Storage& b) override;
+  TensorImpl equal(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl not_equal(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl greater_equal(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl less_equal(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl greater(const TensorImpl& a, const TensorImpl& b) override;
+  TensorImpl less(const TensorImpl& a, const TensorImpl& b) override;
 
-  Storage sum(const Storage& a, size_t axis) override;
-  Storage max(const Storage& a, size_t axis) override;
+  TensorImpl sum(const TensorImpl& a, size_t axis) override;
+  TensorImpl max(const TensorImpl& a, size_t axis) override;
 };
 
 }  // namespace autograd
-
-#endif  // _CUDA_BACKEND_H_

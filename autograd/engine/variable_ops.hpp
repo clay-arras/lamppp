@@ -1,16 +1,13 @@
 #pragma once
 
-#ifndef _VARIABLE_OPS_H_
-#define _VARIABLE_OPS_H_
-
 #include "autograd/engine/functions/basic_ops.hpp"
 #include "autograd/engine/functions/binary_ops.hpp"
 #include "autograd/engine/functions/matrix_ops.hpp"
 #include "autograd/engine/functions/reduct_ops.hpp"
 #include "autograd/engine/functions/unary_ops.hpp"
 #include "autograd/engine/scalar.hpp"
-#include "variable.hpp"
 #include "tensor_helper.hpp"
+#include "variable.hpp"
 
 namespace autograd {
 inline namespace ops {
@@ -98,5 +95,3 @@ inline Variable relu(const Variable& a) {
 
 }  // namespace ops
 }  // namespace autograd
-
-#endif  // _VARIABLE_OPS_H_

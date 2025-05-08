@@ -25,6 +25,8 @@ add_library(
   autograd/engine/storage.cpp
   autograd/engine/tensor_impl.cpp
   autograd/engine/tensor_helper.cpp
+  autograd/engine/backend.cpp
+  autograd/engine/constructor.cpp
   # autograd/engine/backend/eigen_backend.cpp
   autograd/engine/backend/cuda_backend.cpp
   autograd/engine/functions/basic_ops.cpp
@@ -32,6 +34,10 @@ add_library(
   autograd/engine/functions/matrix_ops.cpp
   autograd/engine/functions/reduct_ops.cpp
   autograd/engine/functions/binary_ops.cpp
+  autograd/engine/native/copy.cu
+  autograd/engine/native/empty.cu
+  autograd/engine/native/fill.cu
+  autograd/engine/native/resize.cu
   autograd/util/csv_reader.cpp
   autograd/cuda/basic_kern.cu
   autograd/cuda/unary_kern.cu
@@ -57,11 +63,11 @@ target_include_directories(
 add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)
 
-add_executable(test_debug test/python/stress/test_debug.cpp)
-target_link_libraries(test_debug autograd_core)
+# add_executable(test_debug test/python/stress/test_debug.cpp)
+# target_link_libraries(test_debug autograd_core)
 
-pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
-target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
+# pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
+# target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(NOT CLANG_FORMAT_EXE)

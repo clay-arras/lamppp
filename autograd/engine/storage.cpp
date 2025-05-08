@@ -1,4 +1,5 @@
 #include "autograd/engine/storage.hpp"
+#include "autograd/engine/native/resize.cuh"
 
 namespace autograd {
 
@@ -10,15 +11,27 @@ size_t Storage::size() const {
   return impl->size();
 }
 
+DeviceType Storage::device() const {
+  return impl->device();
+}
+
 void Storage::resize_(size_t nsize) {
   impl->resize_(nsize);
 }
 
-const static size_t kMaxPrintNumel = 20;
 std::ostream& operator<<(std::ostream& os, const Storage& obj) {
-  os << "Storage(dataPtr=" << obj.data() << ", size=" << obj.size()
-     << "device=" << obj.device() << ")";
+  obj.impl->print_(os);
   return os;
+}
+
+void Storage::StorageImpl::resize_(size_t nsize) {
+  resize_stub(device_, data_ptr_, size_, nsize);
+  size_ = nsize;
+}
+
+void Storage::StorageImpl::print_(std::ostream& os) {
+  os << "Storage(dataPtr=" << data() << ", size=" << size()
+     << "device=" << device() << ")";
 }
 
 }  // namespace autograd

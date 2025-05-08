@@ -8,6 +8,8 @@
 
 namespace autograd {
 
+DEFINE_DISPATCH(fill_stub);
+
 void fill_cpu(void* ptr, size_t size, Scalar t, DataType type) {
   DISPATCH_ALL_TYPES(type, [&]() {
     scalar_t* data = static_cast<scalar_t*>(ptr);

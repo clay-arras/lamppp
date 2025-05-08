@@ -1,16 +1,12 @@
 #pragma once
 
-#include "autograd/engine/native/copy.cuh"
-#include "autograd/engine/native/resize.cuh"
-#ifndef STORAGE_H
-#define STORAGE_H
-
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <ostream>
 #include "autograd/engine/device_type.hpp"
+#include "autograd/engine/native/copy.cuh"
 #include "autograd/engine/native/empty.cuh"
 #include "data_ptr.hpp"
 
@@ -18,7 +14,7 @@ namespace autograd {
 
 class Storage {
  public:
-  explicit Storage(void* data, size_t size, DeviceType from_device,
+  explicit Storage(const void* data, size_t size, DeviceType from_device,
                    DeviceType to_device)
       : impl(std::make_shared<StorageImpl>(data, size, from_device,
                                            to_device)) {}
@@ -39,7 +35,7 @@ class Storage {
 
 class Storage::StorageImpl {
  public:
-  explicit StorageImpl(void* src, size_t size, DeviceType from_device,
+  explicit StorageImpl(const void* src, size_t size, DeviceType from_device,
                        DeviceType to_device)
       : size_(size), device_(to_device) {
     data_ptr_ = empty_stub(to_device, size);
@@ -52,10 +48,8 @@ class Storage::StorageImpl {
   size_t size() const { return size_; }
   DeviceType device() const { return device_; }
 
-  void resize_(size_t nsize) {
-    resize_stub(device_, data_ptr_, size_, nsize);
-    size_ = nsize;
-  }
+  void resize_(size_t nsize);
+  void print_(std::ostream& os);
 
  private:
   DataPtr data_ptr_;
@@ -64,5 +58,3 @@ class Storage::StorageImpl {
 };
 
 }  // namespace autograd
-
-#endif  // STORAGE_H

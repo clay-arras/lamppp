@@ -1,6 +1,6 @@
 #pragma once
 
-#include "backend/cuda_backend.hpp"
+#include "abstract_backend.hpp"
 #include "dispatch_stub.hpp"
 
 namespace autograd {

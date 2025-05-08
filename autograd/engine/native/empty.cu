@@ -1,4 +1,3 @@
-#include "cuda_runtime.h"
 #include "empty.cuh"
 
 namespace autograd {

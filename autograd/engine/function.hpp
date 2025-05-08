@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _FUNCTION_H_
-#define _FUNCTION_H_
-
 #include <cassert>
 #include <memory>
 #include "variable.hpp"
@@ -25,5 +22,3 @@ struct Function : public std::enable_shared_from_this<Function> {
 };
 
 }  // namespace autograd
-
-#endif  // _FUNCTION_H_

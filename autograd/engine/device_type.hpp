@@ -1,14 +1,11 @@
 #pragma once
 
-#include <ostream>
-#ifndef DEVICE_TYPE_H
-#define DEVICE_TYPE_H
-
 #include <cstdint>
+#include <ostream>
 
 enum class DeviceType : uint8_t { CPU = 0, CUDA = 1 };
 
-std::ostream& operator<<(std::ostream& os, DeviceType device) {
+inline std::ostream& operator<<(std::ostream& os, DeviceType device) {
   switch (device) {
     case DeviceType::CPU:
       os << "CPU";
@@ -22,5 +19,3 @@ std::ostream& operator<<(std::ostream& os, DeviceType device) {
   }
   return os;
 }
-
-#endif  // DEVICE_TYPE_H

@@ -1,5 +1,4 @@
-#ifndef DATA_TYPE_DISPATCH_H
-#define DATA_TYPE_DISPATCH_H
+#pragma once
 
 #include <cassert>
 
@@ -22,5 +21,3 @@
         assert(false);                \
     }                                 \
   }()
-
-#endif  // DATA_TYPE_DISPATCH_H

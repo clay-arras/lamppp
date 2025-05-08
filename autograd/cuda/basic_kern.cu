@@ -1,3 +1,6 @@
+#include <linux/limits.h>
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/seq/for_each_product.hpp>
 #include "basic_kern.cuh"
 
 namespace autograd {
@@ -76,21 +79,44 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
   vecDivKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C);
 }
 
-// #define X(TYPE)                                                            \
-//   template void vecAdd<TYPE, TYPE, TYPE>(size_t, const TYPE*, const TYPE*, \
-//                                          TYPE*);                           \
-//   template void vecSub<TYPE, TYPE, TYPE>(size_t, const TYPE*, const TYPE*, \
-//                                          TYPE*);                           \
-//   template void vecMul<TYPE, TYPE, TYPE>(size_t, const TYPE*, const TYPE*, \
-//                                          TYPE*);                           \
-//   template void vecDiv<TYPE, TYPE, TYPE>(size_t, const TYPE*, const TYPE*, \
-//                                          TYPE*);
-// #include "autograd/engine/supported_types.def"
-// #undef X
-
 // clang-format off
 
-// NOTE: this is the most scuffed code I've ever wrote. 
+#define TYPES (int)(float)(double)
+
+#define INSTANTIATE(r, product)                                   \
+  template void vecAdd<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
+                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
+                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
+                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
+                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
+                                BOOST_PP_SEQ_ELEM(2, product)*); \
+  template void vecSub<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
+                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
+                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
+                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
+                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
+                                BOOST_PP_SEQ_ELEM(2, product)*);  \
+  template void vecMul<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
+                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
+                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
+                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
+                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
+                                BOOST_PP_SEQ_ELEM(2, product)*); \
+  template void vecDiv<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
+                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
+                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
+                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
+                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
+                                BOOST_PP_SEQ_ELEM(2, product)*); 
+
+
+BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES)(TYPES)(TYPES))
+
+#undef INSTANTIATE
+#undef TYPES
+
+/*
+// NOTE: this is the most scuffed code I've ever wrote. this is so so bad
 #define TYPES(X, ...) \
     X(__VA_ARGS__, int) \
     X(__VA_ARGS__, float) \
@@ -98,21 +124,14 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
 
 #define CAST(U, V) \
     template void vecAdd<U, V, U>(size_t, const U*, const V*, U*); \
-    template void vecSub<U, V, U>(size_t, const U*, const V*, U*); \
-    template void vecMul<U, V, U>(size_t, const U*, const V*, U*); \
-    template void vecDiv<U, V, U>(size_t, const U*, const V*, U*); \
-    template void vecAdd<V, U, V>(size_t, const V*, const U*, V*); \
-    template void vecSub<V, U, V>(size_t, const V*, const U*, V*); \
-    template void vecMul<V, U, V>(size_t, const V*, const U*, V*); \
-    template void vecDiv<V, U, V>(size_t, const V*, const U*, V*);
 
 #define EXPAND(X) X
 #define TYPES1() TYPES
 #define TYPES2(...) TYPES1 EXPAND(())(__VA_ARGS__)
 
 EXPAND(TYPES(TYPES2, CAST))
-// 
-
+*/
+// clang-format on
 
 }  // namespace cuda
 }  // namespace autograd

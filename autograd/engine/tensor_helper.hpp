@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _TENSOR_HELPER_H_
-#define _TENSOR_HELPER_H_
-
 #include "autograd/engine/tensor.hpp"
 #include "scalar.hpp"
 
@@ -15,5 +12,3 @@ Tensor ones_like(const Tensor& tensor);
 Tensor zeros_like(const Tensor& tensor);
 
 }  // namespace autograd
-
-#endif  // _TENSOR_HELPER_H_

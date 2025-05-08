@@ -1,27 +1,32 @@
 #pragma once
 
-#include "autograd/engine/scalar.hpp"
-#ifndef TENSOR_IMPL_H
-#define TENSOR_IMPL_H
-
 #include <cassert>
 #include <cstddef>
 #include <iostream>
-#include <memory>
 #include <vector>
-#include "autograd/engine/backend.hpp"
+#include "autograd/engine/abstract_backend.hpp"
 #include "autograd/engine/data_type.hpp"
+#include "autograd/engine/device_type.hpp"
+#include "autograd/engine/scalar.hpp"
 #include "autograd/engine/storage.hpp"
 
 namespace autograd {
 
 class TensorImpl {
- public:  // TODO: FIX THIS WITH DeviceType
-  TensorImpl(const Storage& storage, std::shared_ptr<AbstractBackend> backend)
-      : data_(storage), backend_(backend) {}
+ public:
+  template <typename T>
+  explicit TensorImpl(const std::vector<T>& data,
+                      const std::vector<size_t>& shape, DeviceType device,
+                      DataType dtype)
+      : data_(Storage(static_cast<const void*>(data.data()), data.size(),
+                      DeviceType::CPU, device)),
+        shape_(shape),
+        type_(dtype) {}
+  explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
+                      DataType dtype)
+      : data_(storage), shape_(shape), type_(dtype) {}
 
   void* data() const { return data_.data(); }
-  std::shared_ptr<AbstractBackend> backend() const { return backend_; }
   DataType type() const { return type_; };
   DeviceType device() const { return data_.device(); }
   const std::vector<size_t>& shape() const { return shape_; }
@@ -30,8 +35,7 @@ class TensorImpl {
   void copy_(TensorImpl other);
   void fill_(Scalar item);
   void to_(DeviceType device);
-
-  friend std::ostream& operator<<(std::ostream& os, const TensorImpl& obj);
+  void print_(std::ostream& os);
 
  private:
   friend class Tensor;
@@ -60,10 +64,7 @@ class TensorImpl {
 
   DataType type_;
   Storage data_;
-  std::shared_ptr<AbstractBackend> backend_;
   std::vector<size_t> shape_;
 };
 
 }  // namespace autograd
-
-#endif  // TENSOR_IMPL_H

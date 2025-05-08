@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _FORWARD_FUNCTION_H_
-#define _FORWARD_FUNCTION_H_
-
 #include <numeric>
 #include "function.hpp"
 #include "variable.hpp"
@@ -38,5 +35,3 @@ struct ForwardFunction : public Function {
 };
 
 }  // namespace autograd
-
-#endif  // _FORWARD_FUNCTION_H_

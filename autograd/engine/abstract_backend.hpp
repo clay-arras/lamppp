@@ -1,39 +1,37 @@
 #pragma once
 
-#include "autograd/engine/allocator.hpp"
-#include "autograd/engine/device_type.hpp"
-#ifndef BACKEND_H
-#define BACKEND_H
-
 #include <cstddef>
+#include "autograd/engine/data_type.hpp"
 
 namespace autograd {
 
-struct Storage;
+class TensorImpl;
 
-class AbstractBackend {
- public:
-  virtual Storage add(const Storage& a, const Storage& b) = 0;
-  virtual Storage sub(const Storage& a, const Storage& b) = 0;
-  virtual Storage mul(const Storage& a, const Storage& b) = 0;
-  virtual Storage div(const Storage& a, const Storage& b) = 0;
+struct AbstractBackend {
+  virtual DataType dtype_promotion_(DataType a_type, DataType b_type) = 0;
 
-  virtual Storage log(const Storage& a) = 0;
-  virtual Storage exp(const Storage& a) = 0;
-  virtual Storage relu(const Storage& a) = 0;
+  virtual TensorImpl add(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl sub(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl mul(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl div(const TensorImpl& a, const TensorImpl& b) = 0;
 
-  virtual Storage matmul(const Storage& a, const Storage& b) = 0;
-  virtual Storage transpose(const Storage& a) = 0;
+  virtual TensorImpl log(const TensorImpl& a) = 0;
+  virtual TensorImpl exp(const TensorImpl& a) = 0;
+  virtual TensorImpl relu(const TensorImpl& a) = 0;
 
-  virtual Storage equal(const Storage& a, const Storage& b) = 0;
-  virtual Storage not_equal(const Storage& a, const Storage& b) = 0;
-  virtual Storage greater_equal(const Storage& a, const Storage& b) = 0;
-  virtual Storage less_equal(const Storage& a, const Storage& b) = 0;
-  virtual Storage greater(const Storage& a, const Storage& b) = 0;
-  virtual Storage less(const Storage& a, const Storage& b) = 0;
+  virtual TensorImpl matmul(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl transpose(const TensorImpl& a) = 0;
 
-  virtual Storage sum(const Storage& a, size_t axis) = 0;
-  virtual Storage max(const Storage& a, size_t axis) = 0;
+  virtual TensorImpl equal(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl not_equal(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl greater_equal(const TensorImpl& a,
+                                   const TensorImpl& b) = 0;
+  virtual TensorImpl less_equal(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl greater(const TensorImpl& a, const TensorImpl& b) = 0;
+  virtual TensorImpl less(const TensorImpl& a, const TensorImpl& b) = 0;
+
+  virtual TensorImpl sum(const TensorImpl& a, size_t axis) = 0;
+  virtual TensorImpl max(const TensorImpl& a, size_t axis) = 0;
 };
 
 template <typename Derived>
@@ -55,5 +53,3 @@ class Singleton {
 };
 
 }  // namespace autograd
-
-#endif  // BACKEND_H

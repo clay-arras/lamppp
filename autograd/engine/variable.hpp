@@ -39,7 +39,7 @@ class Variable {
   const std::shared_ptr<Function>& grad_fn() const { return impl_->_grad_fn; }
   const bool requires_grad() const { return impl_->requires_grad; }
 
-  void zero_grad() { impl_->grad.fill(0.0); }
+  void zero_grad() { impl_->grad = zeros_like(impl_->grad); } // TODO this can be better
   void incr_grad(const Tensor& other_grad) {
     impl_->grad = impl_->grad + other_grad;
   }

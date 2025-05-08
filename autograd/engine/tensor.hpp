@@ -12,7 +12,7 @@
 #include "autograd/engine/backend/cuda_backend.hpp"
 #include "autograd/engine/data_type.hpp"
 #include "autograd/engine/storage.hpp"
-#include "dispatch.hpp"
+#include "dispatch_type.hpp"
 #include "tensor_impl.hpp"
 #include "tensor_helper.hpp"
 
@@ -22,29 +22,18 @@ class Tensor {
  public:
   Tensor() = default;
 
-  // TODO: GET RID OF THIS
-  template <typename T>
-  Tensor(const std::vector<T>& data, const std::vector<size_t>& shape) {
-    std::shared_ptr<AbstractBackend> cuda_backend =
-        std::make_shared<CudaBackend>();
-    impl_ = std::make_shared<TensorImpl>(
-        Storage(data, shape, DataType::Float64), cuda_backend);
-  }
-
   template <typename T>
   explicit Tensor (const std::vector<T>& data,
                       const std::vector<size_t>& shape,
-                      std::shared_ptr<AbstractBackend> backend,
-                      DataType dtype) : 
-      impl_(std::make_shared<TensorImpl>(Storage(data, shape, dtype), backend)) {}
+                      std::shared_ptr<AbstractBackend> backend = std::make_shared<CudaBackend>(),
+                      DataType dtype = DataType::Float64) : 
+      impl_(std::make_shared<TensorImpl>(Storage(data, shape, dtype, backend->default_allocator()), backend)) {}
 
   void* data() const { return impl_->data(); }
   DataType type() const { return impl_->type(); }
   const std::vector<size_t>& shape() const { return impl_->shape(); }
   size_t size() const { return impl_->size(); }
   std::shared_ptr<AbstractBackend> backend() const { return impl_->backend(); }
-
-  void fill(Scalar item) { impl_->fill(item); }
 
   template <typename T>
   std::span<T> view() const {

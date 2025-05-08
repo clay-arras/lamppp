@@ -4,6 +4,7 @@
 #define _TENSOR_HELPER_H_
 
 #include "autograd/engine/tensor.hpp"
+#include "scalar.hpp"
 
 namespace autograd {
 

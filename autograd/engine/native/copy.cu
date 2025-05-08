@@ -9,32 +9,28 @@ namespace autograd {
 
 DEFINE_DISPATCH(copy_stub);
 
-DataPtr copy_cpu(DataPtr src, size_t size, DeviceType to_device) {
-  DataPtr out = empty_stub(to_device, size);
-
+void copy_cpu(void* src, void* dest, size_t size, DeviceType to_device) {
   switch (to_device) {
     case DeviceType::CPU: {
-      memcpy(out.data, src.data, size);
-      return out;
+      memcpy(dest, src, size);
+      break;
     }
     case DeviceType::CUDA: {
-      cudaMemcpy(out.data, src.data, size, cudaMemcpyDeviceToHost);
-      return out;
+      cudaMemcpy(dest, src, size, cudaMemcpyDeviceToHost);
+      break;
     }
   }
 }
 
-DataPtr copy_cuda(DataPtr src, size_t size, DeviceType to_device) {
-  DataPtr out = empty_stub(to_device, size);
-
+void copy_cuda(void* src, void* dest, size_t size, DeviceType to_device) {
   switch (to_device) {
     case DeviceType::CPU: {
-      cudaMemcpy(out.data, src.data, size, cudaMemcpyDeviceToHost);
-      return out;
+      cudaMemcpy(dest, src, size, cudaMemcpyDeviceToHost);
+      break;
     }
     case DeviceType::CUDA: {
-      cudaMemcpy(out.data, src.data, size, cudaMemcpyDeviceToDevice);
-      return out;
+      cudaMemcpy(dest, src, size, cudaMemcpyDeviceToDevice);
+      break;
     }
   }
 }

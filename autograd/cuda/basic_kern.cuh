@@ -11,55 +11,30 @@ namespace autograd {
 
 inline namespace cuda {
 
-template <typename T>
-__global__ void vecAddKernel(size_t size,
-                             const T* A,
-                             const T* B,
-                             T* C);
-template <typename T>
-void vecAdd(size_t size,
-            const T* A,
-            const T* B,
-            T* C);
+template <typename U, typename V, typename OutType>
+__global__ void vecAddKernel(size_t size, const U* A, const V* B, OutType* C);
+template <typename U, typename V, typename OutType>
+void vecAdd(size_t size, const U* A, const V* B, OutType* C);
 
-template <typename T>
-__global__ void vecSubKernel(size_t size,
-                             const T* A,
-                             const T* B,
-                             T* C);
-template <typename T>
-void vecSub(size_t size,
-            const T* A,
-            const T* B,
-            T* C);
+template <typename U, typename V, typename OutType>
+__global__ void vecSubKernel(size_t size, const U* A, const V* B, OutType* C);
+template <typename U, typename V, typename OutType>
+void vecSub(size_t size, const U* A, const V* B, OutType* C);
 
-template <typename T>
-__global__ void vecMulKernel(size_t size,
-                             const T* A,
-                             const T* B,
-                             T* C);
-template <typename T>
-void vecMul(size_t size,
-            const T* A,
-            const T* B,
-            T* C);
+template <typename U, typename V, typename OutType>
+__global__ void vecMulKernel(size_t size, const U* A, const V* B, OutType* C);
+template <typename U, typename V, typename OutType>
+void vecMul(size_t size, const U* A, const V* B, OutType* C);
 
-template <typename T>
-__global__ void vecDivKernel(size_t size,
-                             const T* A,
-                             const T* B,
-                             T* C);
-template <typename T>
-void vecDiv(size_t size,
-            const T* A,
-            const T* B,
-            T* C);
+template <typename U, typename V, typename OutType>
+__global__ void vecDivKernel(size_t size, const U* A, const V* B, OutType* C);
+template <typename U, typename V, typename OutType>
+void vecDiv(size_t size, const U* A, const V* B, OutType* C);
 
+}  // namespace cuda
 
-} // namespace cuda
-
-} // namespace autograd
+}  // namespace autograd
 
 #endif
 
-#endif // _BASIC_KERN_CUH_
+#endif  // _BASIC_KERN_CUH_

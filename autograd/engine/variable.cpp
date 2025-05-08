@@ -10,7 +10,7 @@ namespace autograd {
 
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
-  impl_->grad.fill(1);
+  impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {
     if (node.grad_fn() != nullptr) {
       node.grad_fn()->apply({node});

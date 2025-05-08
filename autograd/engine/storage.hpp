@@ -1,5 +1,7 @@
 #pragma once
 
+#include "autograd/engine/native/copy.cuh"
+#include "autograd/engine/native/resize.cuh"
 #ifndef STORAGE_H
 #define STORAGE_H
 
@@ -8,91 +10,57 @@
 #include <cstring>
 #include <memory>
 #include <ostream>
-#include <vector>
-#include "autograd/engine/data_type.hpp"
-#include <algorithm>
-#include <numeric>
-#include "dispatch.hpp"
+#include "autograd/engine/device_type.hpp"
+#include "autograd/engine/native/empty.cuh"
+#include "data_ptr.hpp"
 
 namespace autograd {
 
 class Storage {
-public:
-  template <typename T>
-  Storage(const std::vector<T>& data, const std::vector<size_t>& shape,
-                  DataType type)
-      : impl(std::make_shared<StorageImpl>(data, shape, type)) {}
-  Storage(const std::vector<size_t>& shape, DataType type)
-      : impl(std::make_shared<StorageImpl>(shape, type)) {}
+ public:
+  explicit Storage(void* data, size_t size, DeviceType from_device,
+                   DeviceType to_device)
+      : impl(std::make_shared<StorageImpl>(data, size, from_device,
+                                           to_device)) {}
+  explicit Storage(size_t size, DeviceType device)
+      : impl(std::make_shared<StorageImpl>(size, device)) {}
 
   void* data() const;
   size_t size() const;
-  DataType type() const;
-  const std::vector<size_t>& shape() const;
+  DeviceType device() const;
 
+  void resize_(size_t nsize);
   friend std::ostream& operator<<(std::ostream& os, const Storage& obj);
 
-private:
+ private:
   class StorageImpl;
   std::shared_ptr<StorageImpl> impl;
 };
 
 class Storage::StorageImpl {
-public:
-  template <typename T>
-  explicit StorageImpl(const std::vector<T>& data,
-                       const std::vector<size_t>& shape, DataType type)
-      : shape_(shape), type_(type) {
-    size_ = data.size();
-    DISPATCH_ALL_TYPES(type, [&] {
-      data_ptr_ = static_cast<void*>(new scalar_t[size_]);
-      std::transform(data.begin(), data.end(), static_cast<scalar_t*>(data_ptr_),
-                     [](const T& val) { return static_cast<scalar_t>(val); });
-    });
+ public:
+  explicit StorageImpl(void* src, size_t size, DeviceType from_device,
+                       DeviceType to_device)
+      : size_(size), device_(to_device) {
+    data_ptr_ = empty_stub(to_device, size);
+    copy_stub(from_device, src, data_ptr_.data, size, to_device);
   }
-  explicit StorageImpl(const std::vector<size_t>& shape, DataType type)
-      : shape_(shape), type_(type) {
-    size_ = std::accumulate(shape.begin(), shape.end(), 1,
-                           std::multiplies<size_t>());
-    DISPATCH_ALL_TYPES(
-        type, [&] { data_ptr_ = static_cast<void*>(new scalar_t[size_]); });
-  }
+  explicit StorageImpl(size_t size, DeviceType device)
+      : data_ptr_(empty_stub(device, size)), size_(size), device_(device) {}
 
-  ~StorageImpl() {
-    DISPATCH_ALL_TYPES(type_,
-                       [&] { delete[] static_cast<scalar_t*>(data_ptr_); });
-  }
-  StorageImpl(const StorageImpl& other)
-      : shape_(other.shape_), type_(other.type_), size_(other.size_) {
-    DISPATCH_ALL_TYPES(type_, [&] {
-      data_ptr_ = static_cast<void*>(new scalar_t[size_]);
-      std::memcpy(data_ptr_, other.data_ptr_, size_ * sizeof(scalar_t));
-    });
-  }
-  StorageImpl& operator=(const StorageImpl& other) {
-    if (this != &other) {
-      DISPATCH_ALL_TYPES(type_, [&] {
-        delete[] static_cast<scalar_t*>(data_ptr_); 
-        data_ptr_ = static_cast<void*>(new scalar_t[other.size_]);
-        std::memcpy(data_ptr_, other.data_ptr_, size_ * sizeof(scalar_t));
-        size_ = other.size_;
-        type_ = other.type_;
-        shape_ = other.shape_;
-      });
-    }
-    return *this;
-  }
-
-  void* data() const { return data_ptr_; }
+  void* data() const { return data_ptr_.data; }
   size_t size() const { return size_; }
-  DataType type() const { return type_; }
-  const std::vector<size_t>& shape() const { return shape_; }
+  DeviceType device() const { return device_; }
 
-private:
-  void* data_ptr_;
+  void resize_(size_t nsize) {
+    resize_stub(device_, data_ptr_, size_, nsize);
+    size_ = nsize;
+  }
+
+ private:
+  DataPtr data_ptr_;
   size_t size_;
-  DataType type_;
-  std::vector<size_t> shape_;
+  DeviceType device_;
 };
 
 }  // namespace autograd

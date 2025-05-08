@@ -8,16 +8,16 @@
 
 namespace autograd {
 
-void fill_cpu(DataPtr ptr, size_t size, Scalar t, DataType type) {
+void fill_cpu(void* ptr, size_t size, Scalar t, DataType type) {
   DISPATCH_ALL_TYPES(type, [&]() {
-    scalar_t* data = static_cast<scalar_t*>(ptr.data);
+    scalar_t* data = static_cast<scalar_t*>(ptr);
     std::fill(data, data + size, static_cast<scalar_t>(t));
   });
 }
 
-void fill_cuda(DataPtr ptr, size_t size, Scalar t, DataType type) {
+void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
   DISPATCH_ALL_TYPES(type, [&]() {
-    scalar_t* data = static_cast<scalar_t*>(ptr.data);
+    scalar_t* data = static_cast<scalar_t*>(ptr);
     thrust::fill(data, data + size, static_cast<scalar_t>(t));
   });
 }

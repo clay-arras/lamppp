@@ -1,17 +1,18 @@
 #pragma once
 
+#include "autograd/engine/allocator/cuda_allocator.cuh"
+#include "autograd/engine/device_type.hpp"
 #ifndef _CUDA_BACKEND_H_
 #define _CUDA_BACKEND_H_
 
 #include <cassert>
-#include "autograd/engine/backend.hpp"
+#include "autograd/engine/abstract_backend.hpp"
 #include "autograd/engine/storage.hpp"
 
 namespace autograd {  // need to refactor asap
 
-struct CudaBackend : public AbstractBackend {
-  ~CudaBackend() = default;
-  CudaBackend() = default;
+struct CudaBackend : public AbstractBackend, public Singleton<CudaBackend> {
+  friend class Singleton<CudaBackend>;
 
   Storage add(const Storage& a, const Storage& b) override;
   Storage sub(const Storage& a, const Storage& b) override;

@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstddef>
 #include <iostream>
+#include <numeric>
 #include <vector>
 #include "autograd/engine/abstract_backend.hpp"
 #include "autograd/engine/data_type.hpp"
@@ -21,16 +22,22 @@ class TensorImpl {
       : data_(Storage(static_cast<const void*>(data.data()), data.size(),
                       DeviceType::CPU, device)),
         shape_(shape),
-        type_(dtype) {}
+        type_(dtype),
+        size_(std::accumulate(shape.begin(), shape.end(), 1,
+                              std::multiplies<>())) {}
   explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                       DataType dtype)
-      : data_(storage), shape_(shape), type_(dtype) {}
+      : data_(storage),
+        shape_(shape),
+        type_(dtype),
+        size_(std::accumulate(shape.begin(), shape.end(), 1,
+                              std::multiplies<>())) {}
 
   void* data() const { return data_.data(); }
   DataType type() const { return type_; };
   DeviceType device() const { return data_.device(); }
   const std::vector<size_t>& shape() const { return shape_; }
-  size_t size() const { return data_.size(); }
+  size_t size() const { return size_; }
 
   void copy_(TensorImpl other);
   void fill_(Scalar item);
@@ -64,6 +71,7 @@ class TensorImpl {
 
   DataType type_;
   Storage data_;
+  size_t size_;
   std::vector<size_t> shape_;
 };
 

@@ -5,6 +5,22 @@
 
 enum class DataType : uint8_t { Int32 = 0, Float32 = 1, Float64 = 2 };
 
+template <class T>
+struct TypeMeta;
+
+template <>
+struct TypeMeta<int> {
+  static constexpr DataType value = DataType::Int32;
+};
+template <>
+struct TypeMeta<float> {
+  static constexpr DataType value = DataType::Float32;
+};
+template <>
+struct TypeMeta<double> {
+  static constexpr DataType value = DataType::Float64;
+};
+
 inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
   switch (dtype) {
     case DataType::Int32:

@@ -7,8 +7,8 @@ void* Storage::data() const {
   return impl->data();
 }
 
-size_t Storage::size() const {
-  return impl->size();
+size_t Storage::byte_size() const {
+  return impl->byte_size();
 }
 
 DeviceType Storage::device() const {
@@ -25,12 +25,12 @@ std::ostream& operator<<(std::ostream& os, const Storage& obj) {
 }
 
 void Storage::StorageImpl::resize_(size_t nsize) {
-  resize_stub(device_, data_ptr_, size_, nsize);
-  size_ = nsize;
+  resize_stub(device_, data_ptr_, byte_size_, nsize);
+  byte_size_ = nsize;
 }
 
 void Storage::StorageImpl::print_(std::ostream& os) {
-  os << "Storage(dataPtr=" << data() << ", size=" << size()
+  os << "Storage(dataPtr=" << data() << ", byteSize=" << byte_size()
      << "device=" << device() << ")";
 }
 

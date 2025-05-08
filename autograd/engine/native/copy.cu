@@ -7,20 +7,22 @@ namespace autograd {
 
 DEFINE_DISPATCH(copy_stub);
 
-void copy_cpu(const void* src, void* dest, size_t size, DeviceType to_device) {
+void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
+              DataType src_dtype, DataType dest_dtype) {
   switch (to_device) {
     case DeviceType::CPU: {
       memcpy(dest, src, size);
       break;
     }
     case DeviceType::CUDA: {
-      cudaMemcpy(dest, src, size, cudaMemcpyDeviceToHost);
+      cudaMemcpy(dest, src, size, cudaMemcpyHostToDevice);
       break;
     }
   }
 }
 
-void copy_cuda(const void* src, void* dest, size_t size, DeviceType to_device) {
+void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
+               DataType src_dtype, DataType dest_dtype) {
   switch (to_device) {
     case DeviceType::CPU: {
       cudaMemcpy(dest, src, size, cudaMemcpyDeviceToHost);

@@ -3,23 +3,29 @@
 #include "autograd/engine/abstract_backend.hpp"
 #include "autograd/engine/backend.hpp"
 #include "autograd/engine/data_type.hpp"
+#include "autograd/engine/device_type.hpp"
 #include "autograd/engine/dispatch_type.hpp"
 #include "native/copy.cuh"
 #include "native/fill.cuh"
 
 namespace autograd {
 
+// TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
+// maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(TensorImpl other) {
-  copy_stub(other.device(), other.data(), data(), other.size(), device());
+  assert(this->type() == other.type());
+  DISPATCH_ALL_TYPES(other.type(), [&] {
+    copy_stub(other.device(), other.data(), data(),
+              other.size() * sizeof(other.type()), device());
+  });
 }
 
 void TensorImpl::fill_(Scalar item) {
   fill_stub(device(), data(), size(), item, type());
 }
 
-void TensorImpl::to_(
-    DeviceType
-        device) {  // NOTE: everything should be destroyed by default destructors
+// NOTE: everything should be destroyed by default destructors
+void TensorImpl::to_(DeviceType device) {
   assert(device != data_.device());
   data_ = Storage(data_.data(), size(), data_.device(), device);
 }
@@ -104,10 +110,14 @@ TensorImpl TensorImpl::max(const TensorImpl& a, size_t axis) {
 }
 
 // TODO: this isn't going to work b/c it might be on CUDA
+const size_t kMaxPrintElem = 20;
 void TensorImpl::print_(std::ostream& os) {
   os << "Tensor(data=[";
   DISPATCH_ALL_TYPES(this->type_, [&] {
-    scalar_t* data_ptr = static_cast<scalar_t*>(this->data());
+    size_t printSize = std::min(kMaxPrintElem, this->size());
+    scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
+    copy_stub(this->device(), this->data(), static_cast<void*>(data_ptr),
+              printSize * sizeof(scalar_t), DeviceType::CPU);
     for (size_t i = 0; i < this->size(); i++) {
       os << data_ptr[i];
       if (i < this->size() - 1) {
@@ -122,7 +132,7 @@ void TensorImpl::print_(std::ostream& os) {
       os << ", ";
     }
   }
-  os << "], dtype=" << this->type_ << "), device=" << this->device();
+  os << "], dtype=" << this->type_ << "), device=" << this->device() << ")";
 }
 
 }  // namespace autograd

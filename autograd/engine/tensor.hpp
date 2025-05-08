@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Eigen/Core>
 #include <iostream>
 #include <memory>
 #include <span>
@@ -31,6 +30,7 @@ class Tensor {
 
   template <typename T>
   std::span<T> view() const {
+    assert(false && "Double check this bozo");
     static thread_local std::vector<T> converted_data;
     DISPATCH_ALL_TYPES(impl_->type(), [&] {
       converted_data.resize(impl_->size());

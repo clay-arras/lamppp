@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
 #include "autograd/engine/scalar.hpp"
 #include "variable.hpp"

@@ -1,4 +1,5 @@
 #include "constructor.hpp"
+#include <algorithm>
 #include <numeric>
 #include <random>
 

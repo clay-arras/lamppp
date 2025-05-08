@@ -22,7 +22,7 @@ class Storage {
       : impl(std::make_shared<StorageImpl>(size, device)) {}
 
   void* data() const;
-  size_t size() const;
+  size_t byte_size() const;
   DeviceType device() const;
 
   void resize_(size_t nsize);
@@ -37,15 +37,17 @@ class Storage::StorageImpl {
  public:
   explicit StorageImpl(const void* src, size_t size, DeviceType from_device,
                        DeviceType to_device)
-      : size_(size), device_(to_device) {
+      : byte_size_(size), device_(to_device) {
     data_ptr_ = empty_stub(to_device, size);
-    copy_stub(from_device, src, data_ptr_.data, size, to_device);
+    copy_stub(from_device, to_device, src, data_ptr_.data, size, );
   }
   explicit StorageImpl(size_t size, DeviceType device)
-      : data_ptr_(empty_stub(device, size)), size_(size), device_(device) {}
+      : data_ptr_(empty_stub(device, size)),
+        byte_size_(size),
+        device_(device) {}
 
   void* data() const { return data_ptr_.data; }
-  size_t size() const { return size_; }
+  size_t byte_size() const { return byte_size_; }
   DeviceType device() const { return device_; }
 
   void resize_(size_t nsize);
@@ -53,7 +55,7 @@ class Storage::StorageImpl {
 
  private:
   DataPtr data_ptr_;
-  size_t size_;
+  size_t byte_size_;
   DeviceType device_;
 };
 

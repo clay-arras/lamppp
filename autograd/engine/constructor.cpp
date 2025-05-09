@@ -5,6 +5,8 @@
 
 namespace autograd {
 
+inline namespace functional {
+
 Variable zeros(const std::vector<size_t>& shape, DeviceType device,
                DataType dtype, bool requires_grad) {
   size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
@@ -32,5 +34,7 @@ Variable rand(const std::vector<size_t>& shape, DeviceType device,
 
   return Variable(Tensor(rand_vec, shape, device, dtype), requires_grad);
 }
+
+}  // namespace functional
 
 }  // namespace autograd

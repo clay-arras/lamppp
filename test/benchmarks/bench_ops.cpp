@@ -1,14 +1,13 @@
 #include <benchmark/benchmark.h>
-#include <Eigen/Dense>
 #include <functional>
 #include <string>
 #include <vector>
-#include "autograd/engine/backend/cuda_backend.hpp"
 #include "autograd/engine/constructor.hpp"
+#include "autograd/engine/data_type.hpp"
+#include "autograd/engine/device_type.hpp"
 #include "autograd/engine/variable.hpp"
 #include "autograd/engine/variable_ops.hpp"
 
-using autograd::CudaBackend;
 using autograd::rand;
 using autograd::Variable;
 
@@ -48,12 +47,12 @@ int main(int argc, char** argv) {
     const std::string& name = pair.first;
     const auto& fn = pair.second;
 
-    for (auto& shape : shapes) {
+    for (std::vector<size_t> shape : shapes) {
       benchmark::RegisterBenchmark(name, [fn, &shape](benchmark::State& state) {
         for (auto _ : state) {
           state.PauseTiming();
-          Variable a = rand<float, CudaBackend<float>>(shape, false);
-          Variable b = rand<float, CudaBackend<float>>(shape, false);
+          Variable a = rand(shape, DeviceType::CUDA, DataType::Float32, false);
+          Variable b = rand(shape, DeviceType::CUDA, DataType::Float32, false);
           state.ResumeTiming();
 
           Variable c = fn(a, b);

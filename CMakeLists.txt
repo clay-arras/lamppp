@@ -57,8 +57,8 @@ target_include_directories(
 # add_executable(mnist autograd/examples/mnist.cpp)
 # target_link_libraries(mnist autograd_core)
 
-# add_executable(bench_ops test/benchmarks/bench_ops.cpp)
-# target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+add_executable(bench_ops test/benchmarks/bench_ops.cpp)
+target_link_libraries(bench_ops autograd_core benchmark::benchmark)
 
 add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)

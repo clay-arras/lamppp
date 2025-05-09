@@ -14,7 +14,7 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
       memcpy(dest, src, size);
       break;
     }
-    case DeviceType::CUDA: {  // memcpy it over ->
+    case DeviceType::CUDA: {
       DISPATCH_ALL_TYPES(src_dtype, [&] {
         using src_type = scalar_t;
         DISPATCH_ALL_TYPES(dest_dtype, [&] {
@@ -81,8 +81,6 @@ __global__ void vecCopyKernel(size_t size, const U* in, V* out) {
 // TODO: need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
 template <typename U, typename V>
 void vecCopy(size_t size, const U* in, V* out) {
-  size_t bytes = size * sizeof(V);
-
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vecCopyKernel<U, V><<<blocks, threads>>>(size, in, out);

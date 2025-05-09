@@ -32,7 +32,6 @@ void TensorImpl::to_(DeviceType device) {
 
 TensorImpl TensorImpl::add(const TensorImpl& a, const TensorImpl& b) {
   assert(a.device() == b.device());
-  std::cout << "TensorImpl Add is Called" << std::endl;
   return backend_stub(a.device()).add(a, b);
 }
 

@@ -5,146 +5,136 @@ namespace autograd {
 inline namespace cuda {
 
 template <typename T>
-__global__ void vecSumKernel(const T* in,
-                             T* out,
-                             const size_t* shape,
-                             size_t* stride,
-                             size_t axis, 
-                             size_t outSize) {
-    size_t i = blockDim.x * blockIdx.x + threadIdx.x;
+__global__ void vecSumKernel(const T* in, T* out, const size_t* shape,
+                             size_t* stride, size_t axis, size_t outSize) {
+  size_t i = blockDim.x * blockIdx.x + threadIdx.x;
 
-    if (i < outSize) {
-        size_t outer = stride[axis+1];
-        size_t inner = stride[axis];            
-        size_t idx   = (i / outer) * inner
-                     + (i % outer);
+  if (i < outSize) {
+    size_t outer = stride[axis + 1];
+    size_t inner = stride[axis];
+    size_t idx = (i / outer) * inner + (i % outer);
 
-        T sum = 0.0;
-        for (size_t j = 0; j < shape[axis]; ++j) {
-            sum += in[idx + j * outer];           
-        }
-
-        out[i] = sum;
+    T sum = 0.0;
+    for (size_t j = 0; j < shape[axis]; ++j) {
+      sum += in[idx + j * outer];
     }
+
+    out[i] = sum;
+  }
 }
 
 template <typename T>
-__global__ void vecMaxKernel(const T* in,
-                             T* out,
-                             const size_t* shape,
-                             size_t* stride,
-                             size_t axis, 
-                             size_t outSize) {
-    size_t i = blockDim.x * blockIdx.x + threadIdx.x;
+__global__ void vecMaxKernel(const T* in, T* out, const size_t* shape,
+                             size_t* stride, size_t axis, size_t outSize) {
+  size_t i = blockDim.x * blockIdx.x + threadIdx.x;
 
-    if (i < outSize) {
-        size_t outer = stride[axis+1];
-        size_t inner = stride[axis];            
-        size_t idx   = (i / outer) * inner
-                     + (i % outer);
+  if (i < outSize) {
+    size_t outer = stride[axis + 1];
+    size_t inner = stride[axis];
+    size_t idx = (i / outer) * inner + (i % outer);
 
-        T max = 0.0;                      
-        for (size_t j = 0; j < shape[axis]; ++j) {
-            max = fmaxf(max, in[idx + j * outer]); 
-        }
-
-        out[i] = max;
+    T max = 0.0;
+    for (size_t j = 0; j < shape[axis]; ++j) {
+      max = fmaxf(max, in[idx + j * outer]);
     }
+
+    out[i] = max;
+  }
 }
 
 template <typename T>
-void vecSum(const T* in,
-                       T* out,
-                       const size_t* shape,
-                       size_t axis,
-                       size_t ndims) {
-    size_t totalSize = 1;
-    for (size_t i = 0; i < ndims; ++i) {
-        totalSize *= shape[i];
-    }
-    size_t outSize = totalSize / shape[axis];
-    size_t* h_stride = new size_t[ndims + 1];
+void vecSum(const T* in, T* out, const size_t* shape, size_t axis,
+            size_t ndims) {
+  size_t totalSize = 1;
+  for (size_t i = 0; i < ndims; ++i) {
+    totalSize *= shape[i];
+  }
+  size_t outSize = totalSize / shape[axis];
+  size_t* h_stride = new size_t[ndims + 1];
 
-    h_stride[ndims] = 1;
-    for (int i = ndims - 1; i >= 0; i--) {
-        h_stride[i] = h_stride[i+1] * shape[i];
-    }
-    
-    T *d_in, *d_out;
-    size_t *d_shape, *d_stride;
-    
-    cudaMalloc(&d_in, totalSize * sizeof(T));
-    cudaMalloc(&d_out, outSize * sizeof(T));
-    cudaMalloc(&d_shape, ndims * sizeof(size_t));
-    cudaMalloc(&d_stride, (ndims + 1) * sizeof(size_t));
-    
-    cudaMemcpy(d_in, in, totalSize * sizeof(T), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_shape, shape, ndims * sizeof(size_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_stride, h_stride, (ndims + 1) * sizeof(size_t), cudaMemcpyHostToDevice);
-    
-    size_t threads = 256;
-    size_t blocks = (outSize + threads - 1) / threads;
-    vecSumKernel<<<blocks, threads>>>(d_in, d_out, d_shape, d_stride, axis, outSize);
-    
-    cudaMemcpy(out, d_out, outSize * sizeof(T), cudaMemcpyDeviceToHost);
-    
-    cudaFree(d_in);
-    cudaFree(d_out);
-    cudaFree(d_shape);
-    cudaFree(d_stride);
-    
-    delete[] h_stride;
+  h_stride[ndims] = 1;
+  for (int i = ndims - 1; i >= 0; i--) {
+    h_stride[i] = h_stride[i + 1] * shape[i];
+  }
+
+  T *d_in, *d_out;
+  size_t *d_shape, *d_stride;
+
+  cudaMalloc(&d_in, totalSize * sizeof(T));
+  cudaMalloc(&d_out, outSize * sizeof(T));
+  cudaMalloc(&d_shape, ndims * sizeof(size_t));
+  cudaMalloc(&d_stride, (ndims + 1) * sizeof(size_t));
+
+  cudaMemcpy(d_in, in, totalSize * sizeof(T), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_shape, shape, ndims * sizeof(size_t), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_stride, h_stride, (ndims + 1) * sizeof(size_t),
+             cudaMemcpyHostToDevice);
+
+  size_t threads = 256;
+  size_t blocks = (outSize + threads - 1) / threads;
+  vecSumKernel<<<blocks, threads>>>(d_in, d_out, d_shape, d_stride, axis,
+                                    outSize);
+
+  cudaMemcpy(out, d_out, outSize * sizeof(T), cudaMemcpyDeviceToHost);
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+  cudaFree(d_shape);
+  cudaFree(d_stride);
+
+  delete[] h_stride;
 }
 
 template <typename T>
-void vecMax(const T* in,
-                       T* out,
-                       const size_t* shape,
-                       size_t axis, 
-                       size_t ndims) {
-    size_t totalSize = 1;
-    for (size_t i = 0; i < ndims; ++i) {
-        totalSize *= shape[i];
-    }
-    size_t outSize = totalSize / shape[axis];
-    size_t* h_stride = new size_t[ndims + 1];
+void vecMax(const T* in, T* out, const size_t* shape, size_t axis,
+            size_t ndims) {
+  size_t totalSize = 1;
+  for (size_t i = 0; i < ndims; ++i) {
+    totalSize *= shape[i];
+  }
+  size_t outSize = totalSize / shape[axis];
+  size_t* h_stride = new size_t[ndims + 1];
 
-    h_stride[ndims] = 1;
-    for (int i = ndims - 1; i >= 0; i--) {
-        h_stride[i] = h_stride[i+1] * shape[i];
-    }
-    
-    T *d_in, *d_out;
-    size_t *d_shape, *d_stride;
-    
-    cudaMalloc(&d_in, totalSize * sizeof(T));
-    cudaMalloc(&d_out, outSize * sizeof(T));
-    cudaMalloc(&d_shape, ndims * sizeof(size_t));
-    cudaMalloc(&d_stride, (ndims + 1) * sizeof(size_t));
-    
-    cudaMemcpy(d_in, in, totalSize * sizeof(T), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_shape, shape, ndims * sizeof(size_t), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_stride, h_stride, (ndims + 1) * sizeof(size_t), cudaMemcpyHostToDevice);
-    
-    size_t threads = 256;
-    size_t blocks = (outSize + threads - 1) / threads;
-    vecSumKernel<<<blocks, threads>>>(d_in, d_out, d_shape, d_stride, axis, outSize);
-    
-    cudaMemcpy(out, d_out, outSize * sizeof(T), cudaMemcpyDeviceToHost);
-    
-    cudaFree(d_in);
-    cudaFree(d_out);
-    cudaFree(d_shape);
-    cudaFree(d_stride);
-    
-    delete[] h_stride;
+  h_stride[ndims] = 1;
+  for (int i = ndims - 1; i >= 0; i--) {
+    h_stride[i] = h_stride[i + 1] * shape[i];
+  }
+
+  T *d_in, *d_out;
+  size_t *d_shape, *d_stride;
+
+  cudaMalloc(&d_in, totalSize * sizeof(T));
+  cudaMalloc(&d_out, outSize * sizeof(T));
+  cudaMalloc(&d_shape, ndims * sizeof(size_t));
+  cudaMalloc(&d_stride, (ndims + 1) * sizeof(size_t));
+
+  cudaMemcpy(d_in, in, totalSize * sizeof(T), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_shape, shape, ndims * sizeof(size_t), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_stride, h_stride, (ndims + 1) * sizeof(size_t),
+             cudaMemcpyHostToDevice);
+
+  size_t threads = 256;
+  size_t blocks = (outSize + threads - 1) / threads;
+  vecSumKernel<<<blocks, threads>>>(d_in, d_out, d_shape, d_stride, axis,
+                                    outSize);
+
+  cudaMemcpy(out, d_out, outSize * sizeof(T), cudaMemcpyDeviceToHost);
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+  cudaFree(d_shape);
+  cudaFree(d_stride);
+
+  delete[] h_stride;
 }
 
-#define X(TYPE) template void vecSum<TYPE>(const TYPE*, TYPE*, const size_t*, size_t, size_t); \
-                 template void vecMax<TYPE>(const TYPE*, TYPE*, const size_t*, size_t, size_t);
+#define X(TYPE)                                                         \
+  template void vecSum<TYPE>(const TYPE*, TYPE*, const size_t*, size_t, \
+                             size_t);                                   \
+  template void vecMax<TYPE>(const TYPE*, TYPE*, const size_t*, size_t, size_t);
 #include "autograd/engine/supported_types.def"
-#undef  X
+#undef X
 
-} // namespace cuda
+}  // namespace cuda
 
-} // namespace autograd
+}  // namespace autograd

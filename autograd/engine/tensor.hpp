@@ -30,14 +30,21 @@ class Tensor {
 
   template <typename T>
   std::span<T> view() const {
-    assert(false && "Double check this bozo");
     static thread_local std::vector<T> converted_data;
     DISPATCH_ALL_TYPES(impl_->type(), [&] {
+      // TODO: there's gotta be a better way to do this
+      // just make converted data the destination where it copies
       converted_data.resize(impl_->size());
-      scalar_t* original_data = static_cast<scalar_t*>(impl_->data());
+
+      scalar_t* original_data =
+          static_cast<scalar_t*>(malloc(size() * sizeof(scalar_t)));
+      copy_stub(device(), DeviceType::CPU, data(), original_data, size(),
+                type(), type());
+
       for (size_t i = 0; i < impl_->size(); ++i) {
         converted_data[i] = static_cast<T>(original_data[i]);
       }
+      free(original_data);
     });
     return std::span<T>(converted_data);
   }

@@ -3,11 +3,15 @@
 #include <cstdint>
 #include <ostream>
 
-enum class DataType : uint8_t { Int32 = 0, Float32 = 1, Float64 = 2 };
+enum class DataType : uint8_t { Bool = 0, Int32 = 1, Float32 = 2, Float64 = 3 };
 
 template <class T>
 struct TypeMeta;
 
+template <>
+struct TypeMeta<bool> {
+  static constexpr DataType value = DataType::Bool;
+};
 template <>
 struct TypeMeta<int> {
   static constexpr DataType value = DataType::Int32;
@@ -23,6 +27,9 @@ struct TypeMeta<double> {
 
 inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
   switch (dtype) {
+    case DataType::Bool:
+      os << "Bool";
+      break;
     case DataType::Int32:
       os << "Int32";
       break;

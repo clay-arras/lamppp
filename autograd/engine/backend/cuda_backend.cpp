@@ -135,48 +135,167 @@ TensorImpl CudaBackend::relu(const TensorImpl& a) {
 }
 
 TensorImpl CudaBackend::matmul(const TensorImpl& a, const TensorImpl& b) {
-  // assert(a.shape().size() == 2 && b.shape().size() == 2);
-  // assert(a.shape()[1] == b.shape()[0]);
+  assert(a.shape().size() == 2 && b.shape().size() == 2);
+  assert(a.shape()[1] == b.shape()[0]);
 
-  // size_t m = a.shape()[0];
-  // size_t n = b.shape()[1];
-  // size_t k = a.shape()[1];
+  size_t m = a.shape()[0];
+  size_t n = b.shape()[1];
+  size_t k = a.shape()[1];
 
-  // DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  // Storage c(m * n, DeviceType::CUDA);
+  DataType out_dtype = dtype_promotion_(a.type(), b.type());
+  Storage c_storage(m * n, DeviceType::CUDA);
 
-  // DISPATCH_ALL_TYPES(a.type(), [&] {
-  //   using a_type_t = scalar_t;
-  //   DISPATCH_ALL_TYPES(b.type(), [&] {
-  //     using b_type_t = scalar_t;
-  //     DISPATCH_ALL_TYPES(out_dtype, [&] {
-  //       using out_type_t = scalar_t;
-  //       cudaMatMul<out_type_t>(static_cast<const a_type_t*>(a.data()),
-  //                              static_cast<const b_type_t*>(b.data()),
-  //                              static_cast<out_type_t*>(c.data()), m, n, k);
-  //     });
-  //   });
-  // });
-  // return c;
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type_t = scalar_t;
+        cudaMatMul<a_type_t, b_type_t, out_type_t>(
+            static_cast<const a_type_t*>(a.data()),
+            static_cast<const b_type_t*>(b.data()),
+            static_cast<out_type_t*>(c_storage.data()), m, n, k);
+      });
+    });
+  });
+  return TensorImpl(c_storage, {m, n}, out_dtype);
 }
 
-TensorImpl CudaBackend::transpose(const TensorImpl& a) {}
+TensorImpl CudaBackend::transpose(const TensorImpl& a) {
+  assert(a.shape().size() == 2);
+  size_t m = a.shape()[0];
+  size_t n = a.shape()[1];
 
-TensorImpl CudaBackend::equal(const TensorImpl& a, const TensorImpl& b) {}
+  DataType out_dtype = a.type();
+  Storage c_storage(m * n, DeviceType::CUDA);
 
-TensorImpl CudaBackend::not_equal(const TensorImpl& a, const TensorImpl& b) {}
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using scalar_t_ = scalar_t;
+    cudaTranspose<scalar_t_>(static_cast<const scalar_t_*>(a.data()),
+                             static_cast<scalar_t_*>(c_storage.data()), m, n);
+  });
+
+  return TensorImpl(c_storage, {n, m}, out_dtype);  // Shape is transposed
+}
+
+TensorImpl CudaBackend::equal(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size());
+  assert(a.shape() == b.shape());
+
+  DataType out_dtype = DataType::Bool;
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      vecEqual<a_type_t, b_type_t>(
+          a.size(), static_cast<const a_type_t*>(a.data()),
+          static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
+    });
+  });
+  return TensorImpl(c, a.shape(), out_dtype);
+}
+
+TensorImpl CudaBackend::not_equal(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size());
+  assert(a.shape() == b.shape());
+
+  DataType out_dtype = DataType::Bool;
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      vecNotEqual<a_type_t, b_type_t>(
+          a.size(), static_cast<const a_type_t*>(a.data()),
+          static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
+    });
+  });
+  return TensorImpl(c, a.shape(), out_dtype);
+}
 
 TensorImpl CudaBackend::greater_equal(const TensorImpl& a,
-                                      const TensorImpl& b) {}
+                                      const TensorImpl& b) {
+  assert(a.size() == b.size());
+  assert(a.shape() == b.shape());
 
-TensorImpl CudaBackend::less_equal(const TensorImpl& a, const TensorImpl& b) {}
+  DataType out_dtype = DataType::Bool;
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      vecGreaterEqual<a_type_t, b_type_t>(
+          a.size(), static_cast<const a_type_t*>(a.data()),
+          static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
+    });
+  });
+  return TensorImpl(c, a.shape(), out_dtype);
+}
 
-TensorImpl CudaBackend::greater(const TensorImpl& a, const TensorImpl& b) {}
+TensorImpl CudaBackend::less_equal(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size());
+  assert(a.shape() == b.shape());
 
-TensorImpl CudaBackend::less(const TensorImpl& a, const TensorImpl& b) {}
+  DataType out_dtype = DataType::Bool;
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      vecLessEqual<a_type_t, b_type_t>(
+          a.size(), static_cast<const a_type_t*>(a.data()),
+          static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
+    });
+  });
+  return TensorImpl(c, a.shape(), out_dtype);
+}
 
-TensorImpl CudaBackend::sum(const TensorImpl& a, size_t axis) {}
+TensorImpl CudaBackend::greater(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size());
+  assert(a.shape() == b.shape());
 
-TensorImpl CudaBackend::max(const TensorImpl& a, size_t axis) {}
+  DataType out_dtype = DataType::Bool;
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      vecGreaterThan<a_type_t, b_type_t>(
+          a.size(), static_cast<const a_type_t*>(a.data()),
+          static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
+    });
+  });
+  return TensorImpl(c, a.shape(), out_dtype);
+}
+
+TensorImpl CudaBackend::less(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size());
+  assert(a.shape() == b.shape());
+
+  DataType out_dtype = DataType::Bool;
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      vecLessThan<a_type_t, b_type_t>(
+          a.size(), static_cast<const a_type_t*>(a.data()),
+          static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
+    });
+  });
+  return TensorImpl(c, a.shape(), out_dtype);
+}
+
+TensorImpl CudaBackend::sum(const TensorImpl& a,
+                            size_t axis) {  // NOTE: returning stub
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  return TensorImpl(c, a.shape(), a.type());
+}
+
+TensorImpl CudaBackend::max(const TensorImpl& a, size_t axis) {
+  Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
+  return TensorImpl(c, a.shape(), a.type());
+}
 
 }  // namespace autograd

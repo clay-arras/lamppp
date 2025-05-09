@@ -7,6 +7,7 @@
 
 #include "autograd/autograd_umbrella.hpp"
 #include "autograd/engine/backend/cuda_backend.hpp"
+#include "autograd/engine/device_type.hpp"
 
 using autograd::Tensor;
 using autograd::Variable;
@@ -34,8 +35,7 @@ std::string to_string(std::vector<T> item) {
 }
 Tensor make_tensor(const std::vector<float>& data,
                    const std::vector<size_t>& shape) {
-  return Tensor(data, shape, std::make_shared<autograd::CudaBackend>(),
-                        DataType::Float32);
+  return Tensor(data, shape, DeviceType::CUDA, DataType::Float32);
 }
 const float epsilon = 1e-4;
 template <typename T>

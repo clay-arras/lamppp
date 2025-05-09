@@ -1,94 +1,74 @@
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/seq/for_each_product.hpp>
 #include "matrix_kern.cuh"
 
 namespace autograd {
 
 inline namespace cuda {
 
-// Kernels moved outside anonymous namespace
-template <typename T>
-__global__ void cudaMatmulKernel(const T* A, const T* B, T* C, size_t m, size_t n, size_t k) {
-    size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
-    size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
+template <typename U, typename V, typename OutType>
+__global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
+                                 size_t n, size_t k) {
+  size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
+  size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
 
-    if (i < m && j < n) {
-        T sum = 0;
-        for (size_t t=0; t<k; t++) { // NOTE: A is MxK, B is KxN, C is MxN
-            sum += A[(i*k) + t] * B[(n*t) + j]; // row major implementation
-            // sum += A[i + m*t] * B[t + k*j]; // TODO(nlin): this can be made faster but whatever
-        }
-        // C[(j*m) + i] = sum;
-        C[(i*n) + j] = sum;
+  if (i < m && j < n) {
+    OutType sum = 0;
+    for (size_t t = 0; t < k; t++) {
+      sum += static_cast<OutType>(A[(i * k) + t]) *
+             static_cast<OutType>(B[(n * t) + j]);
     }
+    C[(i * n) + j] = sum;
+  }
 }
 
 template <typename T>
-__global__ void cudaTransposeKernel(const T* in,
-                                    T* out,
-                                    size_t m,
-                                    size_t n) {
-    size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
-    size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
+__global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n) {
+  size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
+  size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
 
-    if (i < m && j < n) {
-        out[(j*m) + i] = in[(i*n) + j];
-    }
+  if (i < m && j < n) {
+    out[(j * m) + i] = in[(i * n) + j];
+  }
 }
 
-template <typename T>
-void cudaMatMul(const T* A, const T* B, T* C, size_t m, size_t n, size_t k) {
-  T *d_a;
-  T *d_b;
-  T *d_c;
-  size_t bytes_a = m * k * sizeof(T);
-  size_t bytes_b = k * n * sizeof(T);
-  size_t bytes_c = m * n * sizeof(T);
-
-  cudaMalloc(&d_a, bytes_a);
-  cudaMalloc(&d_b, bytes_b);
-  cudaMalloc(&d_c, bytes_c);
-  cudaMemcpy(d_a, A, bytes_a, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_b, B, bytes_b, cudaMemcpyHostToDevice);
-
+template <typename U, typename V, typename OutType>
+void cudaMatMul(const U* A, const V* B, OutType* C, size_t m, size_t n,
+                size_t k) {
   dim3 threads(16, 16);
   dim3 blocks((m + threads.x - 1) / threads.x, (n + threads.y - 1) / threads.y);
-  cudaMatmulKernel<<<blocks, threads>>>(d_a, d_b, d_c, m, n, k);
-
-  cudaMemcpy(C, d_c, bytes_c, cudaMemcpyDeviceToHost);
-
-  cudaFree(d_a);
-  cudaFree(d_b);
-  cudaFree(d_c);
+  cudaMatmulKernel<U, V, OutType><<<blocks, threads>>>(A, B, C, m, n, k);
 }
 
 template <typename T>
-void cudaTranspose(const T* in,
-                              T* out,
-                              size_t m,
-                              size_t n) {
-  T *d_in;
-  T *d_out;
-  size_t bytes_in = m * n * sizeof(T);
-  size_t bytes_out = m * n * sizeof(T);
-
-  cudaMalloc(&d_in, bytes_in);
-  cudaMalloc(&d_out, bytes_out);
-  cudaMemcpy(d_in, in, bytes_in, cudaMemcpyHostToDevice);
-
+void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
   dim3 threads(16, 16);
   dim3 blocks((m + threads.x - 1) / threads.x, (n + threads.y - 1) / threads.y);
-  cudaTransposeKernel<<<blocks, threads>>>(d_in, d_out, m, n);
-
-  cudaMemcpy(out, d_out, bytes_out, cudaMemcpyDeviceToHost);
-
-  cudaFree(d_in);
-  cudaFree(d_out);
+  cudaTransposeKernel<T><<<blocks, threads>>>(in, out, m, n);
 }
 
-#define X(TYPE) template void cudaMatMul<TYPE>(const TYPE*, const TYPE*, TYPE*, size_t, size_t, size_t); \
-                 template void cudaTranspose<TYPE>(const TYPE*, TYPE*, size_t, size_t);
+// clang-format off
+#define TYPES (bool)(int)(float)(double)
+
+#define INSTANTIATE_MATMUL(r, product)                                   \
+  template void cudaMatMul<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
+                           BOOST_PP_SEQ_ELEM(1, product), /* V */    \
+                           BOOST_PP_SEQ_ELEM(2, product)  /* OutType */    \
+                           >(const BOOST_PP_SEQ_ELEM(0, product)*,  \
+                             const BOOST_PP_SEQ_ELEM(1, product)*,  \
+                             BOOST_PP_SEQ_ELEM(2, product)*, size_t, size_t, size_t);
+
+BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_MATMUL, (TYPES)(TYPES)(TYPES))
+
+#undef INSTANTIATE_MATMUL
+
+#define X(TYPE) template void cudaTranspose<TYPE>(const TYPE*, TYPE*, size_t, size_t);
 #include "autograd/engine/supported_types.def"
-#undef  X
+#undef X
 
-} // namespace cuda
+#undef TYPES
+// clang-format on
 
-} // namespace autograd
+}  // namespace cuda
+
+}  // namespace autograd

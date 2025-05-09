@@ -11,7 +11,7 @@ template <typename U, typename V, typename OutType>
 __global__ void vecAddKernel(size_t size, const U* A, const V* B, OutType* C) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
-    C[i] = A[i] + B[i];
+    C[i] = static_cast<OutType>(A[i]) + static_cast<OutType>(B[i]);
   }
 }
 
@@ -19,7 +19,7 @@ template <typename U, typename V, typename OutType>
 __global__ void vecSubKernel(size_t size, const U* A, const V* B, OutType* C) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
-    C[i] = A[i] - B[i];
+    C[i] = static_cast<OutType>(A[i]) - static_cast<OutType>(B[i]);
   }
 }
 
@@ -27,7 +27,7 @@ template <typename U, typename V, typename OutType>
 __global__ void vecMulKernel(size_t size, const U* A, const V* B, OutType* C) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
-    C[i] = A[i] * B[i];
+    C[i] = static_cast<OutType>(A[i]) * static_cast<OutType>(B[i]);
   }
 }
 
@@ -35,14 +35,12 @@ template <typename U, typename V, typename OutType>
 __global__ void vecDivKernel(size_t size, const U* A, const V* B, OutType* C) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
-    C[i] = A[i] / B[i];
+    C[i] = static_cast<OutType>(A[i]) / static_cast<OutType>(B[i]);
   }
 }
 
 template <typename U, typename V, typename OutType>
 void vecAdd(size_t size, const U* A, const V* B, OutType* C) {
-  size_t bytes = size * sizeof(OutType);
-
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vecAddKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C);
@@ -50,9 +48,6 @@ void vecAdd(size_t size, const U* A, const V* B, OutType* C) {
 
 template <typename U, typename V, typename OutType>
 void vecSub(size_t size, const U* A, const V* B, OutType* C) {
-  size_t bytes = size * sizeof(OutType);
-  cudaMalloc(&C, bytes);
-
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vecSubKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C);
@@ -60,9 +55,6 @@ void vecSub(size_t size, const U* A, const V* B, OutType* C) {
 
 template <typename U, typename V, typename OutType>
 void vecMul(size_t size, const U* A, const V* B, OutType* C) {
-  size_t bytes = size * sizeof(OutType);
-  cudaMalloc(&C, bytes);
-
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vecMulKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C);
@@ -70,9 +62,6 @@ void vecMul(size_t size, const U* A, const V* B, OutType* C) {
 
 template <typename U, typename V, typename OutType>
 void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
-  size_t bytes = size * sizeof(OutType);
-  cudaMalloc(&C, bytes);
-
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vecDivKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C);
@@ -80,7 +69,7 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
 
 // clang-format off
 // TODO: make this fill from supported_types.def
-#define TYPES (int)(float)(double)
+#define TYPES (bool)(int)(float)(double)
 
 #define INSTANTIATE(r, product)                                   \
   template void vecAdd<BOOST_PP_SEQ_ELEM(0, product), /* U */    \

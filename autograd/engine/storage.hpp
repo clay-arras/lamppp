@@ -13,8 +13,8 @@ namespace autograd {
 
 class Storage {
  public:
-  explicit Storage(size_t size, DeviceType device)
-      : impl(std::make_shared<StorageImpl>(size, device)) {}
+  explicit Storage(size_t byte_size, DeviceType device)
+      : impl(std::make_shared<StorageImpl>(byte_size, device)) {}
 
   void* data() const;
   size_t byte_size() const;

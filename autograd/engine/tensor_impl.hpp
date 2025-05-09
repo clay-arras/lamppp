@@ -10,6 +10,7 @@
 #include "autograd/engine/device_type.hpp"
 #include "autograd/engine/scalar.hpp"
 #include "autograd/engine/storage.hpp"
+#include "native/copy.cuh"
 
 namespace autograd {
 
@@ -19,12 +20,15 @@ class TensorImpl {
   explicit TensorImpl(const std::vector<T>& data,
                       const std::vector<size_t>& shape, DeviceType device,
                       DataType dtype)
-      : data_(Storage(static_cast<const void*>(data.data()), data.size(),
-                      DeviceType::CPU, device)),
+      : data_(Storage(data.size(), device)),
         shape_(shape),
         type_(dtype),
         size_(std::accumulate(shape.begin(), shape.end(), 1,
-                              std::multiplies<>())) {}
+                              std::multiplies<>())) {
+    DataType src_dtype = TypeMeta<T>::value;
+    copy_stub(DeviceType::CPU, device, data.data(), data_.data(), size_,
+              src_dtype, type_);
+  }
   explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                       DataType dtype)
       : data_(storage),

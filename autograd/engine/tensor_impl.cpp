@@ -13,10 +13,9 @@ namespace autograd {
 // TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(TensorImpl other) {
-  assert(this->type() == other.type());
   DISPATCH_ALL_TYPES(other.type(), [&] {
-    copy_stub(other.device(), other.data(), data(),
-              other.size() * sizeof(other.type()), device());
+    copy_stub(other.device(), device(), other.data(), data(),
+              other.size() * sizeof(other.type()), other.type(), type());
   });
 }
 
@@ -26,12 +25,14 @@ void TensorImpl::fill_(Scalar item) {
 
 // NOTE: everything should be destroyed by default destructors
 void TensorImpl::to_(DeviceType device) {
-  assert(device != data_.device());
-  data_ = Storage(data_.data(), size(), data_.device(), device);
+  assert(false && "Implement later");
+  // assert(device != data_.device());
+  // data_ = Storage(data_.data(), size(), data_.device(), device);
 }
 
 TensorImpl TensorImpl::add(const TensorImpl& a, const TensorImpl& b) {
   assert(a.device() == b.device());
+  std::cout << "TensorImpl Add is Called" << std::endl;
   return backend_stub(a.device()).add(a, b);
 }
 
@@ -116,8 +117,9 @@ void TensorImpl::print_(std::ostream& os) {
   DISPATCH_ALL_TYPES(this->type_, [&] {
     size_t printSize = std::min(kMaxPrintElem, this->size());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
-    copy_stub(this->device(), this->data(), static_cast<void*>(data_ptr),
-              printSize * sizeof(scalar_t), DeviceType::CPU);
+    copy_stub(this->device(), DeviceType::CPU, this->data(),
+              static_cast<void*>(data_ptr), printSize * sizeof(scalar_t),
+              type(), type());
     for (size_t i = 0; i < this->size(); i++) {
       os << data_ptr[i];
       if (i < this->size() - 1) {

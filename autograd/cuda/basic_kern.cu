@@ -42,7 +42,6 @@ __global__ void vecDivKernel(size_t size, const U* A, const V* B, OutType* C) {
 template <typename U, typename V, typename OutType>
 void vecAdd(size_t size, const U* A, const V* B, OutType* C) {
   size_t bytes = size * sizeof(OutType);
-  cudaMalloc(&C, bytes);
 
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
@@ -80,7 +79,7 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
 }
 
 // clang-format off
-
+// TODO: make this fill from supported_types.def
 #define TYPES (int)(float)(double)
 
 #define INSTANTIATE(r, product)                                   \
@@ -114,23 +113,6 @@ BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES)(TYPES)(TYPES))
 
 #undef INSTANTIATE
 #undef TYPES
-
-/*
-// NOTE: this is the most scuffed code I've ever wrote. this is so so bad
-#define TYPES(X, ...) \
-    X(__VA_ARGS__, int) \
-    X(__VA_ARGS__, float) \
-    X(__VA_ARGS__, double)
-
-#define CAST(U, V) \
-    template void vecAdd<U, V, U>(size_t, const U*, const V*, U*); \
-
-#define EXPAND(X) X
-#define TYPES1() TYPES
-#define TYPES2(...) TYPES1 EXPAND(())(__VA_ARGS__)
-
-EXPAND(TYPES(TYPES2, CAST))
-*/
 // clang-format on
 
 }  // namespace cuda

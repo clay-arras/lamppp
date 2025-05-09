@@ -2,6 +2,6 @@
 
 namespace autograd {
 
-using Scalar = long double;
+using Scalar = double;
 
 }  // namespace autograd

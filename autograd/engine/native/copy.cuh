@@ -3,6 +3,7 @@
 #include "autograd/engine/data_type.hpp"
 #include "autograd/engine/device_type.hpp"
 #include "autograd/engine/dispatch_stub.hpp"
+#include "device_types.h"
 
 namespace autograd {
 
@@ -17,5 +18,11 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
 
 REGISTER_DISPATCH(copy_stub, DeviceType::CPU, copy_cpu);
 REGISTER_DISPATCH(copy_stub, DeviceType::CUDA, copy_cuda);
+
+template <typename U, typename V>
+__global__ void vecCopyKernel(size_t size, const U* in, V* out);
+
+template <typename U, typename V>
+void vecCopy(size_t size, const U* in, V* out);
 
 }  // namespace autograd

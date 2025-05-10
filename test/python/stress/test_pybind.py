@@ -84,7 +84,6 @@ def run_test(case, its):
 
     for _ in range(its):
         mats = case.sampler()
-        print(mats)
         cpp_results, torch_results = compute_grads(case.cpp_fn, case.torch_fn, mats)
 
         for cpp_out, torch_out in zip(cpp_results["out"], torch_results["out"]):

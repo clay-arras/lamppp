@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstddef>
-#include "autograd/engine/data_type.hpp"
+#include "data_type.hpp"
 
 namespace autograd {
 

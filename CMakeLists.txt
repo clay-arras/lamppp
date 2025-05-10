@@ -38,7 +38,6 @@ add_library(
   autograd/engine/tensor_helper.cpp
   autograd/engine/backend.cpp
   autograd/engine/constructor.cpp
-  # autograd/engine/backend/eigen_backend.cpp
   autograd/engine/backend/cuda_backend.cpp
   autograd/engine/functions/basic_ops.cpp
   autograd/engine/functions/unary_ops.cpp
@@ -70,20 +69,20 @@ enable_testing()
 # add_executable(mnist autograd/examples/mnist.cpp)
 # target_link_libraries(mnist autograd_core)
 
-add_executable(bench_ops test/benchmarks/bench_ops.cpp)
-target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+# add_executable(bench_ops test/benchmarks/bench_ops.cpp)
+# target_link_libraries(bench_ops autograd_core benchmark::benchmark)
 
 add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)
 
-add_executable(test_debug test/python/stress/test_debug.cpp)
-target_link_libraries(test_debug autograd_core GTest::gtest_main)
+# add_executable(test_debug test/python/stress/test_debug.cpp)
+# target_link_libraries(test_debug autograd_core GTest::gtest_main)
 
 add_executable(gtest_debug test/python/stress/gtest_debug.cpp)
 target_link_libraries(gtest_debug autograd_core GTest::gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(test_debug)
+gtest_discover_tests(gtest_debug)
 
 pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
 target_link_libraries(cpp_custom_bind PRIVATE autograd_core)

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "autograd/engine/tensor.hpp"
 #include "scalar.hpp"
+#include "tensor.hpp"
 
 namespace autograd {
 

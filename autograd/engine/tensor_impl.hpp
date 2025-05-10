@@ -5,13 +5,13 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
-#include "autograd/engine/abstract_backend.hpp"
-#include "autograd/engine/data_type.hpp"
-#include "autograd/engine/device_type.hpp"
-#include "autograd/engine/dispatch_type.hpp"
-#include "autograd/engine/scalar.hpp"
-#include "autograd/engine/storage.hpp"
+#include "abstract_backend.hpp"
+#include "data_type.hpp"
+#include "device_type.hpp"
+#include "dispatch_type.hpp"
 #include "native/copy.cuh"
+#include "scalar.hpp"
+#include "storage.hpp"
 
 namespace autograd {
 
@@ -46,7 +46,7 @@ class TensorImpl {
   const std::vector<size_t>& shape() const { return shape_; }
   size_t size() const { return size_; }
 
-  void copy_(TensorImpl other);
+  void copy_(const TensorImpl& other);
   void fill_(Scalar item);
   void to_(DeviceType device);
   void print_(std::ostream& os);

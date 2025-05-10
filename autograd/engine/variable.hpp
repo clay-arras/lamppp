@@ -21,6 +21,7 @@ struct VariableImpl {
   VariableImpl() = default;
   explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
     this->data = Tensor(data);
+    // this->data.copy(data);
     this->grad = zeros_like(data);
     this->requires_grad = requires_grad;
   }

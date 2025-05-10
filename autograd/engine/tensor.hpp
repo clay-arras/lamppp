@@ -4,8 +4,8 @@
 #include <memory>
 #include <span>
 #include <vector>
-#include "autograd/engine/data_type.hpp"
-#include "autograd/engine/device_type.hpp"
+#include "data_type.hpp"
+#include "device_type.hpp"
 #include "dispatch_type.hpp"
 #include "tensor_helper.hpp"
 #include "tensor_impl.hpp"
@@ -47,6 +47,10 @@ class Tensor {
     });
     return std::span<T>(converted_data);
   }
+
+  void copy(const Tensor& other);
+  void fill(Scalar item);
+  void to(DeviceType device);
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
 

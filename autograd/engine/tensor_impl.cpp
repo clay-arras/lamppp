@@ -12,7 +12,7 @@ namespace autograd {
 
 // TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
-void TensorImpl::copy_(TensorImpl other) {
+void TensorImpl::copy_(const TensorImpl& other) {
   DISPATCH_ALL_TYPES(other.type(), [&] {
     copy_stub(other.device(), device(), other.data(), data(),
               other.size() * sizeof(other.type()), other.type(), type());

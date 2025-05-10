@@ -28,6 +28,8 @@ struct VariableImpl {
 
 class Variable {
  public:
+  Variable() = default;  // TODO: not sure if this is good practice
+
   explicit Variable(const Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
@@ -38,7 +40,7 @@ class Variable {
 
   void zero_grad() {
     impl_->grad = zeros_like(impl_->grad);
-  }  // TODO this can be better
+  }  // TODO: this can be better, implement fill in tensor
   void incr_grad(const Tensor& other_grad) {
     impl_->grad = impl_->grad + other_grad;
   }

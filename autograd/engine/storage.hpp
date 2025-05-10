@@ -30,9 +30,9 @@ class Storage {
 
 class Storage::StorageImpl {
  public:
-  explicit StorageImpl(size_t size, DeviceType device)
-      : data_ptr_(empty_stub(device, size)),
-        byte_size_(size),
+  explicit StorageImpl(size_t byte_size, DeviceType device)
+      : data_ptr_(empty_stub(device, byte_size)),
+        byte_size_(byte_size),
         device_(device) {}
 
   void* data() const { return data_ptr_.data; }

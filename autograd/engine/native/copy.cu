@@ -25,6 +25,7 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
           cudaMemcpy(tmp, src, size * sizeof(src_type), cudaMemcpyHostToDevice);
           vecCopy<src_type, dest_type>(size, static_cast<const src_type*>(tmp),
                                        static_cast<dest_type*>(dest));
+          cudaFree(tmp);
         });
       });
       break;
@@ -42,11 +43,12 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          cudaMalloc(&tmp, size * sizeof(dest));
+          cudaMalloc(&tmp, size * sizeof(dest_type));
           vecCopy<src_type, dest_type>(size, static_cast<const src_type*>(src),
                                        static_cast<dest_type*>(tmp));
           cudaMemcpy(dest, tmp, size * sizeof(dest_type),
                      cudaMemcpyDeviceToHost);
+          cudaFree(tmp);
         });
       });
       break;
@@ -58,11 +60,12 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          cudaMalloc(&tmp, size * sizeof(dest));
+          cudaMalloc(&tmp, size * sizeof(dest_type));
           vecCopy<src_type, dest_type>(size, static_cast<const src_type*>(src),
                                        static_cast<dest_type*>(tmp));
           cudaMemcpy(dest, tmp, size * sizeof(dest_type),
                      cudaMemcpyDeviceToDevice);
+          cudaFree(tmp);
         });
       });
       break;

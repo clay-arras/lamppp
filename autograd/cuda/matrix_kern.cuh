@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _MATRIX_KERN_CUH_
-#define _MATRIX_KERN_CUH_
-
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
@@ -28,5 +25,3 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n);
 }  // namespace autograd
 
 #endif
-
-#endif  // _MATRIX_KERN_CUH_

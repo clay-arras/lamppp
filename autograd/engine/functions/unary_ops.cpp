@@ -26,7 +26,7 @@ variable_list LogarithmBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable recip_var(1 / self);
+  Variable recip_var(1.0 / self);
   self.incr_grad(recip_var.data() * grad.grad());
 
   variable_list grad_inputs = {};
@@ -38,7 +38,7 @@ variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable relu_var(self > 0.0F);
+  Variable relu_var(self > 0.0);
   self.incr_grad(relu_var.data() * grad.grad());
 
   variable_list grad_inputs = {};

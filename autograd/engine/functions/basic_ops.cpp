@@ -52,7 +52,7 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   Variable& other = (*saved_inputs)[1];
 
   self.incr_grad(grad.grad() / other.data());
-  other.incr_grad((-1.0F) *
+  other.incr_grad((-1.0) *
                   (self.data() * grad.grad() / (other.data() * other.data())));
 
   variable_list grad_inputs = {};

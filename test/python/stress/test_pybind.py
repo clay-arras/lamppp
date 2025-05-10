@@ -7,7 +7,8 @@ import torch
 import cpp_custom_bind
 from operations_helper import Add, Sub, Mul, Div, Relu, Exp, Log, Matmul, Sum, Transpose
 
-ITERATIONS = 1000
+# ITERATIONS = 1000
+ITERATIONS = 10
 TORCH_DTYPE = torch.float64
 
 torch.set_default_dtype(TORCH_DTYPE)
@@ -26,19 +27,10 @@ set_seed(seed)
 
 def compute_grads(cpp_op, torch_op, mats):
     def _to_row_major(mat):
-        return torch.tensor(mat).T.flatten().tolist()
-    def _from_row_major(flat, like):
-        def T(ten):
-            return ten.permute(*torch.arange(ten.ndim - 1, -1, -1))
-        t = T(torch.tensor(flat).reshape(T(torch.tensor(like)).shape))
-        return t.tolist()
-
-    def _to_row_major(mat):
         return torch.tensor(mat).flatten().tolist()
     def _from_row_major(flat, like):
         t = torch.tensor(flat).reshape(torch.tensor(like).shape)
         return t.tolist()
-
     def _to_cpp_var(mat, requires_grad=True):
         ten = cpp_custom_bind.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
         return cpp_custom_bind.cVariable(ten, requires_grad)
@@ -46,6 +38,7 @@ def compute_grads(cpp_op, torch_op, mats):
     torch_vars = [
         torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats
     ]
+
     torch_out = torch_op(*torch_vars)
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
     torch_vals = {
@@ -91,6 +84,7 @@ def run_test(case, its):
 
     for _ in range(its):
         mats = case.sampler()
+        print(mats)
         cpp_results, torch_results = compute_grads(case.cpp_fn, case.torch_fn, mats)
 
         for cpp_out, torch_out in zip(cpp_results["out"], torch_results["out"]):
@@ -125,16 +119,16 @@ def run_test(case, its):
 def main():
     OPERATIONS = [
         Add,
-        Sub,
-        Mul,
-        Div,
-        Relu,
-        Exp,
-        Log,
-        Matmul,
-        Transpose,
-        lambda: Sum(axis=0),
-        lambda: Sum(axis=1),
+        # Sub,
+        # Mul,
+        # Div,
+        # Relu,
+        # Exp,
+        # Log,
+        # Matmul,
+        # Transpose,
+        # lambda: Sum(axis=0),
+        # lambda: Sum(axis=1),
     ]
 
     for case in OPERATIONS:

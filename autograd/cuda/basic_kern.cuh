@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _BASIC_KERN_CUH_
-#define _BASIC_KERN_CUH_
-
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
@@ -36,5 +33,3 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C);
 }  // namespace autograd
 
 #endif
-
-#endif  // _BASIC_KERN_CUH_

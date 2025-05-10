@@ -1,3 +1,4 @@
+// #include <gtest/gtest.h>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -12,20 +13,6 @@
 using autograd::Tensor;
 using autograd::Variable;
 
-[[noreturn]]
-inline void assert_fail(const char* expr, const char* file, int line,
-                        const std::string& msg) {
-  std::cerr << file << ":" << line << ": Assertion `" << expr
-            << "` failed: " << msg << "\n";
-  std::abort();
-}
-
-#define DASSERT(cond, ...)                                              \
-  do {                                                                  \
-    if (!(cond))                                                        \
-      assert_fail(#cond, __FILE__, __LINE__, std::format(__VA_ARGS__)); \
-  } while (0)
-
 template <typename T>
 std::string to_string(std::vector<T> item) {
   std::string str = "{";
@@ -39,7 +26,7 @@ Tensor make_tensor(const std::vector<float>& data,
 }
 const float epsilon = 1e-4;
 template <typename T>
-bool check_approx_equal(const std::vector<T> a, const std::vector<T> b) {
+bool check_approx_equal(const std::vector<T>& a, const std::vector<T>& b) {
   if (a.size() != b.size()) {
     return false;
   }

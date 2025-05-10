@@ -18,8 +18,19 @@ find_package(CUDA REQUIRED)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF)
+set(INSTALL_GTEST OFF)
+set(BUILD_GMOCK ON)
+FetchContent_MakeAvailable(googletest)
+
 add_library(
-  autograd_core # TODO: next step: split into different bench envs
+  autograd_core
   autograd/engine/variable.cpp
   autograd/engine/tensor.cpp
   autograd/engine/storage.cpp
@@ -54,6 +65,8 @@ target_include_directories(
                        ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
 )
 
+enable_testing()
+
 # add_executable(mnist autograd/examples/mnist.cpp)
 # target_link_libraries(mnist autograd_core)
 
@@ -64,7 +77,13 @@ add_executable(test_playground test/cpp/test_playground.cpp)
 target_link_libraries(test_playground autograd_core)
 
 add_executable(test_debug test/python/stress/test_debug.cpp)
-target_link_libraries(test_debug autograd_core)
+target_link_libraries(test_debug autograd_core GTest::gtest_main)
+
+add_executable(gtest_debug test/python/stress/gtest_debug.cpp)
+target_link_libraries(gtest_debug autograd_core GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(test_debug)
 
 pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
 target_link_libraries(cpp_custom_bind PRIVATE autograd_core)

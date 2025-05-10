@@ -9,18 +9,18 @@ namespace autograd {
 
 DEFINE_DISPATCH(resize_stub);
 
-void resize_cpu(DataPtr dptr, size_t old_size, size_t new_size) {
-  void* ptr = ::operator new(new_size);
-  std::memcpy(ptr, dptr.data, std::min(old_size, new_size));
+void resize_cpu(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
+  void* ptr = ::operator new(new_byte_size);
+  std::memcpy(ptr, dptr.data, std::min(old_byte_size, new_byte_size));
 
   (*(dptr.deallocator))(dptr.data);
   dptr.data = ptr;
 }
 
-void resize_cuda(DataPtr dptr, size_t old_size, size_t new_size) {
+void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = nullptr;
-  cudaMalloc(&ptr, new_size);
-  cudaMemcpy(ptr, dptr.data, std::min(old_size, new_size),
+  cudaMalloc(&ptr, new_byte_size);
+  cudaMemcpy(ptr, dptr.data, std::min(old_byte_size, new_byte_size),
              cudaMemcpyDeviceToDevice);
   (*(dptr.deallocator))(dptr.data);
   dptr.data = ptr;

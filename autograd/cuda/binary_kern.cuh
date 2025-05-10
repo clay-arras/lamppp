@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _BINARY_KERN_CUH_
-#define _BINARY_KERN_CUH_
-
 #include <cuda_runtime.h>
 
 #ifdef __cplusplus
@@ -47,5 +44,3 @@ void vecLessThan(size_t size, const U* A, const V* B, bool* C);
 }  // namespace autograd
 
 #endif
-
-#endif  // _BINARY_KERN_CUH_

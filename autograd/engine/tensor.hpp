@@ -14,9 +14,9 @@ namespace autograd {
 
 class Tensor {
  public:
-  Tensor() = default;
+  Tensor() = default;  // TODO: is this really necessary, remove if can
 
-  template <typename T>
+  template <typename T>  // TODO: maybe make this implicit?
   explicit Tensor(const std::vector<T>& data, const std::vector<size_t>& shape,
                   DeviceType device = DeviceType::CUDA,
                   DataType dtype = DataType::Float64)
@@ -32,8 +32,7 @@ class Tensor {
   std::span<T> view() const {
     static thread_local std::vector<T> converted_data;
     DISPATCH_ALL_TYPES(impl_->type(), [&] {
-      // TODO: there's gotta be a better way to do this
-      // just make converted data the destination where it copies
+      // TODO: there's gotta be a better way to do this that's faster
       converted_data.resize(impl_->size());
 
       scalar_t* original_data =
@@ -94,21 +93,21 @@ class Tensor {
   }
 
   template <auto OpTag>
-  static inline Tensor binary_tensor_op(float scalar, const Tensor& tensor) {
+  static inline Tensor binary_tensor_op(Scalar scalar, const Tensor& tensor) {
     Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
                          tensor.shape(), tensor.device(), tensor.type());
     return binary_tensor_op<OpTag>(scalar_tensor, tensor);
   }
 
-#define DECL_BINARY_OP(op, tag)                                          \
-  inline friend Tensor operator op(const Tensor& a, const Tensor& b) {   \
-    return binary_tensor_op<&TensorImpl::tag>(a, b);                     \
-  }                                                                      \
-  inline friend Tensor operator op(const Tensor& tensor, float scalar) { \
-    return binary_tensor_op<&TensorImpl::tag>(tensor, scalar);           \
-  }                                                                      \
-  inline friend Tensor operator op(float scalar, const Tensor& tensor) { \
-    return binary_tensor_op<&TensorImpl::tag>(scalar, tensor);           \
+#define DECL_BINARY_OP(op, tag)                                           \
+  inline friend Tensor operator op(const Tensor& a, const Tensor& b) {    \
+    return binary_tensor_op<&TensorImpl::tag>(a, b);                      \
+  }                                                                       \
+  inline friend Tensor operator op(const Tensor& tensor, Scalar scalar) { \
+    return binary_tensor_op<&TensorImpl::tag>(tensor, scalar);            \
+  }                                                                       \
+  inline friend Tensor operator op(Scalar scalar, const Tensor& tensor) { \
+    return binary_tensor_op<&TensorImpl::tag>(scalar, tensor);            \
   }
 
 #define FORALL_BINARY_OPS(_) \

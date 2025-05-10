@@ -8,6 +8,7 @@
 #include "autograd/engine/abstract_backend.hpp"
 #include "autograd/engine/data_type.hpp"
 #include "autograd/engine/device_type.hpp"
+#include "autograd/engine/dispatch_type.hpp"
 #include "autograd/engine/scalar.hpp"
 #include "autograd/engine/storage.hpp"
 #include "native/copy.cuh"
@@ -20,7 +21,9 @@ class TensorImpl {
   explicit TensorImpl(const std::vector<T>& data,
                       const std::vector<size_t>& shape, DeviceType device,
                       DataType dtype)
-      : data_(Storage(data.size(), device)),
+      : data_(DISPATCH_ALL_TYPES(
+            dtype,
+            [&] { return Storage(data.size() * sizeof(scalar_t), device); })),
         shape_(shape),
         type_(dtype),
         size_(std::accumulate(shape.begin(), shape.end(), 1,

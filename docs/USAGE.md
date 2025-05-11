@@ -2,9 +2,9 @@
 #include "mnist.h"
 #include <cassert>
 #include <iostream>
-#include "autograd/engine/constructor.h"
-#include "autograd/engine/variable.h"
-#include "autograd/engine/variable_ops.h"
+#include "include/lamppp/tensor/constructor.h"
+#include "include/lamppp/tensor/variable.h"
+#include "include/lamppp/tensor/variable_ops.h"
 #include "autograd/util/csv_reader.h"
 #include "autograd/util/batch_sample.h"
 #include <algorithm>

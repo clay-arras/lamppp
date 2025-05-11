@@ -31,29 +31,29 @@ FetchContent_MakeAvailable(googletest)
 
 add_library(
   autograd_core
-  autograd/engine/variable.cpp
-  autograd/engine/tensor.cpp
-  autograd/engine/storage.cpp
-  autograd/engine/tensor_impl.cpp
-  autograd/engine/tensor_helper.cpp
-  autograd/engine/backend.cpp
-  autograd/engine/constructor.cpp
-  autograd/engine/backend/cuda_backend.cpp
-  autograd/engine/functions/basic_ops.cpp
-  autograd/engine/functions/unary_ops.cpp
-  autograd/engine/functions/matrix_ops.cpp
-  autograd/engine/functions/reduct_ops.cpp
-  autograd/engine/functions/binary_ops.cpp
-  autograd/engine/native/copy.cu
-  autograd/engine/native/empty.cu
-  autograd/engine/native/fill.cu
-  autograd/engine/native/resize.cu
-  autograd/util/csv_reader.cpp
-  autograd/engine/cuda/basic_kern.cu
-  autograd/engine/cuda/unary_kern.cu
-  autograd/engine/cuda/binary_kern.cu
-  autograd/engine/cuda/matrix_kern.cu
-  autograd/engine/cuda/reduct_kern.cu
+  src/autograd/constructor.cpp
+  src/autograd/variable.cpp
+  src/autograd/functions/binary_ops.cpp
+  src/autograd/functions/matrix_ops.cpp
+  src/autograd/functions/unary_ops.cpp
+  src/autograd/functions/reduct_ops.cpp
+  src/autograd/functions/basic_ops.cpp
+  src/tensor/tensor_helper.cpp
+  src/tensor/backend.cpp
+  src/tensor/native/resize.cu
+  src/tensor/native/empty.cu
+  src/tensor/native/fill.cu
+  src/tensor/native/copy.cu
+  src/tensor/cuda/reduct_kern.cu
+  src/tensor/cuda/binary_kern.cu
+  src/tensor/cuda/matrix_kern.cu
+  src/tensor/cuda/basic_kern.cu
+  src/tensor/cuda/unary_kern.cu
+  src/tensor/backend/eigen_backend.cpp
+  src/tensor/backend/cuda_backend.cpp
+  src/tensor/tensor.cpp
+  src/tensor/tensor_impl.cpp
+  src/tensor/storage.cpp
 )
 
 target_compile_definitions(autograd_core PUBLIC)
@@ -66,26 +66,17 @@ target_include_directories(
 
 enable_testing()
 
-# add_executable(mnist autograd/examples/mnist.cpp)
-# target_link_libraries(mnist autograd_core)
+add_executable(playground tests/playground.cpp)
+target_link_libraries(playground autograd_core)
 
-# add_executable(bench_ops test/benchmarks/bench_ops.cpp)
-# target_link_libraries(bench_ops autograd_core benchmark::benchmark)
-
-add_executable(test_playground test/cpp/test_playground.cpp)
-target_link_libraries(test_playground autograd_core)
-
-# add_executable(test_debug test/python/stress/test_debug.cpp)
-# target_link_libraries(test_debug autograd_core GTest::gtest_main)
-
-add_executable(gtest_debug test/python/stress/gtest_debug.cpp)
-target_link_libraries(gtest_debug autograd_core GTest::gtest_main)
+add_executable(autograd_tests tests/autograd_tests.cpp)
+target_link_libraries(autograd_tests autograd_core GTest::gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(gtest_debug)
+gtest_discover_tests(autograd_tests)
 
-pybind11_add_module(cpp_custom_bind test/python/stress/test_stress.cpp)
-target_link_libraries(cpp_custom_bind PRIVATE autograd_core)
+pybind11_add_module(lamppp tests/autograd_pybind.cpp)
+target_link_libraries(lamppp PRIVATE autograd_core)
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(NOT CLANG_FORMAT_EXE)

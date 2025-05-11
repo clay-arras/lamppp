@@ -7,7 +7,7 @@ namespace autograd {
 DEFINE_DISPATCH(backend_stub)
 
 AbstractBackend& backend_cpu() {
-  assert(false);
+  assert(false && "Not implemented");
 }
 
 AbstractBackend& backend_cuda() {

@@ -1,9 +1,9 @@
 #include "cuda_backend.hpp"
-#include "autograd/cuda/basic_kern.cuh"
-#include "autograd/cuda/binary_kern.cuh"
-#include "autograd/cuda/matrix_kern.cuh"
-#include "autograd/cuda/reduct_kern.cuh"
-#include "autograd/cuda/unary_kern.cuh"
+#include "autograd/engine/cuda/basic_kern.cuh"
+#include "autograd/engine/cuda/binary_kern.cuh"
+#include "autograd/engine/cuda/matrix_kern.cuh"
+#include "autograd/engine/cuda/reduct_kern.cuh"
+#include "autograd/engine/cuda/unary_kern.cuh"
 #include "autograd/engine/data_type.hpp"
 #include "autograd/engine/device_type.hpp"
 #include "autograd/engine/dispatch_type.hpp"
@@ -17,8 +17,8 @@ DataType CudaBackend::dtype_promotion_(DataType a_type, DataType b_type) {
 }
 
 TensorImpl CudaBackend::add(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   // NOTE: this is absolutely horrible
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
@@ -37,12 +37,11 @@ TensorImpl CudaBackend::add(const TensorImpl& a, const TensorImpl& b) {
       });
     });
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::sub(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
   return DISPATCH_ALL_TYPES(a.type(), [&] {
@@ -60,12 +59,11 @@ TensorImpl CudaBackend::sub(const TensorImpl& a, const TensorImpl& b) {
       });
     });
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::mul(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
   return DISPATCH_ALL_TYPES(a.type(), [&] {
@@ -83,12 +81,11 @@ TensorImpl CudaBackend::mul(const TensorImpl& a, const TensorImpl& b) {
       });
     });
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::div(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
   return DISPATCH_ALL_TYPES(a.type(), [&] {
@@ -106,7 +103,6 @@ TensorImpl CudaBackend::div(const TensorImpl& a, const TensorImpl& b) {
       });
     });
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::log(const TensorImpl& a) {
@@ -117,7 +113,6 @@ TensorImpl CudaBackend::log(const TensorImpl& a) {
                       static_cast<scalar_t_*>(c.data()));
     return TensorImpl(c, a.shape(), a.type());
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::exp(const TensorImpl& a) {
@@ -128,7 +123,6 @@ TensorImpl CudaBackend::exp(const TensorImpl& a) {
                       static_cast<scalar_t_*>(c.data()));
     return TensorImpl(c, a.shape(), a.type());
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::relu(const TensorImpl& a) {
@@ -139,12 +133,15 @@ TensorImpl CudaBackend::relu(const TensorImpl& a) {
                        static_cast<scalar_t_*>(c.data()));
     return TensorImpl(c, a.shape(), a.type());
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::matmul(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.shape().size() == 2 && b.shape().size() == 2);
-  assert(a.shape()[1] == b.shape()[0]);
+  assert(a.shape().size() == 2 && b.shape().size() == 2 &&
+         "Invalid argument, matrix multiplication can only be performed on "
+         "matrices of dim 2");
+  assert(a.shape()[1] == b.shape()[0] &&
+         "Invalid argument, the second dim of the first matrix must equal the "
+         "first dim of the second matrix");
 
   size_t m = a.shape()[0];
   size_t n = b.shape()[1];
@@ -167,11 +164,12 @@ TensorImpl CudaBackend::matmul(const TensorImpl& a, const TensorImpl& b) {
       });
     });
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::transpose(const TensorImpl& a) {
-  assert(a.shape().size() == 2);
+  assert(
+      a.shape().size() == 2 &&
+      "Invalid argument, transpose can only be performed on matrices of dim 2");
   size_t m = a.shape()[0];
   size_t n = a.shape()[1];
 
@@ -184,12 +182,11 @@ TensorImpl CudaBackend::transpose(const TensorImpl& a) {
                              static_cast<scalar_t_*>(c_storage.data()), m, n);
     return TensorImpl(c_storage, {n, m}, out_dtype);
   });
-  assert(false);
 }
 
 TensorImpl CudaBackend::equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
@@ -206,8 +203,8 @@ TensorImpl CudaBackend::equal(const TensorImpl& a, const TensorImpl& b) {
 }
 
 TensorImpl CudaBackend::not_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
@@ -225,8 +222,8 @@ TensorImpl CudaBackend::not_equal(const TensorImpl& a, const TensorImpl& b) {
 
 TensorImpl CudaBackend::greater_equal(const TensorImpl& a,
                                       const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
@@ -243,8 +240,8 @@ TensorImpl CudaBackend::greater_equal(const TensorImpl& a,
 }
 
 TensorImpl CudaBackend::less_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
@@ -261,8 +258,8 @@ TensorImpl CudaBackend::less_equal(const TensorImpl& a, const TensorImpl& b) {
 }
 
 TensorImpl CudaBackend::greater(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
@@ -279,8 +276,8 @@ TensorImpl CudaBackend::greater(const TensorImpl& a, const TensorImpl& b) {
 }
 
 TensorImpl CudaBackend::less(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size());
-  assert(a.shape() == b.shape());
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);

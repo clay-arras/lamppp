@@ -61,7 +61,7 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
 
 // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
 Tensor Add::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -69,7 +69,7 @@ Tensor Add::execute(const variable_list& inputs) {
 }
 
 Tensor Subtract::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -77,7 +77,7 @@ Tensor Subtract::execute(const variable_list& inputs) {
 }
 
 Tensor Multiply::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -85,7 +85,7 @@ Tensor Multiply::execute(const variable_list& inputs) {
 }
 
 Tensor Divide::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 

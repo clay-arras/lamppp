@@ -46,21 +46,21 @@ variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
 }
 
 Tensor Exponential::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1);
+  assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
   return exp(self.data());
 }
 
 Tensor Logarithm::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1);
+  assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
   return log(self.data());
 }
 
 Tensor ReLU::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1);
+  assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
   return relu(self.data());

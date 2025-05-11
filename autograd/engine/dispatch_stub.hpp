@@ -17,7 +17,7 @@ struct DispatchStub {
   template <typename... Args>
   decltype(auto) operator()(DeviceType dev, Args&&... args) const {
     fn_type f = table_[static_cast<size_t>(dev)];
-    assert(f && "kernel for this backend not registered!");
+    assert(f && "Kernel for this backend not registered");
     return f(std::forward<Args>(args)...);
   }
 };

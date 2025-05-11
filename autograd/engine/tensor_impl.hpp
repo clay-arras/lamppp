@@ -29,7 +29,8 @@ class TensorImpl {
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
-    assert(data.size() == size_);
+    assert(data.size() == size_ &&
+           "Size mismatch, product of shape must equal num elements");
     DataType src_dtype = TypeMeta<T>::value;
     copy_stub(DeviceType::CPU, device, data.data(), data_.data(), size_,
               src_dtype, type_);
@@ -42,8 +43,10 @@ class TensorImpl {
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
-    DISPATCH_ALL_TYPES(
-        dtype, [&] { assert(data_.byte_size() / sizeof(scalar_t) == size_); });
+    DISPATCH_ALL_TYPES(dtype, [&] {
+      assert(data_.byte_size() / sizeof(scalar_t) == size_ &&
+             "Size mismatch, product of shape must equal num elements");
+    });
   }
 
   void* data() const { return data_.data(); }

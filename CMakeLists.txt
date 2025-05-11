@@ -49,11 +49,11 @@ add_library(
   autograd/engine/native/fill.cu
   autograd/engine/native/resize.cu
   autograd/util/csv_reader.cpp
-  autograd/cuda/basic_kern.cu
-  autograd/cuda/unary_kern.cu
-  autograd/cuda/binary_kern.cu
-  autograd/cuda/matrix_kern.cu
-  autograd/cuda/reduct_kern.cu
+  autograd/engine/cuda/basic_kern.cu
+  autograd/engine/cuda/unary_kern.cu
+  autograd/engine/cuda/binary_kern.cu
+  autograd/engine/cuda/matrix_kern.cu
+  autograd/engine/cuda/reduct_kern.cu
 )
 
 target_compile_definitions(autograd_core PUBLIC)

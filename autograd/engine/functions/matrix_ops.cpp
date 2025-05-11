@@ -32,7 +32,7 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
 }
 
 Tensor MatrixMultiplication::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -40,7 +40,7 @@ Tensor MatrixMultiplication::execute(const variable_list& inputs) {
 }
 
 Tensor Transpose::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1);
+  assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
   return transpose(self.data());

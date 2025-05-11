@@ -18,7 +18,6 @@ struct VariableImpl {
   std::shared_ptr<Function> _grad_fn;
   bool requires_grad;
 
-  // VariableImpl() = default;  // TODO: necessity
   explicit VariableImpl(const Tensor& data, bool requires_grad = false)
       : data(Tensor(data)),
         grad(zeros_like(data)),
@@ -28,8 +27,7 @@ struct VariableImpl {
 
 class Variable {
  public:
-  Variable() = default;  // TODO: not sure if this is good practice
-
+  Variable() = default;
   explicit Variable(const Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 

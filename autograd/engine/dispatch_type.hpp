@@ -22,6 +22,6 @@
         return __VA_ARGS__();              \
       }                                    \
       default:                             \
-        assert(false && "Type Not Found"); \
+        assert(false && "Type not found"); \
     }                                      \
   }()

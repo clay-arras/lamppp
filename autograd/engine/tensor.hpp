@@ -14,19 +14,9 @@ namespace autograd {
 
 class Tensor {
  public:
-  Tensor() = default;  // TODO: is this really necessary, remove if can
-  Tensor(const Tensor& other) : impl_(other.impl_) {}
+  Tensor() = default;
 
-  Tensor(Tensor&& other) noexcept : impl_(std::move(other.impl_)) {}
-
-  Tensor& operator=(const Tensor& other) {
-    if (this != &other) {
-      impl_ = other.impl_;
-    }
-    return *this;
-  }
-
-  template <typename T>  // TODO: maybe make this implicit?
+  template <typename T>
   explicit Tensor(const std::vector<T>& data, const std::vector<size_t>& shape,
                   DeviceType device = DeviceType::CUDA,
                   DataType dtype = DataType::Float64)

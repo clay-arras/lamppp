@@ -66,7 +66,7 @@ variable_list GreaterEqualBackward::apply(const variable_list& gradOutputs) {
 }
 
 Tensor Equal::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -74,7 +74,7 @@ Tensor Equal::execute(const variable_list& inputs) {
 }
 
 Tensor Less::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -82,7 +82,7 @@ Tensor Less::execute(const variable_list& inputs) {
 }
 
 Tensor LessEqual::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -90,7 +90,7 @@ Tensor LessEqual::execute(const variable_list& inputs) {
 }
 
 Tensor NotEqual::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -98,7 +98,7 @@ Tensor NotEqual::execute(const variable_list& inputs) {
 }
 
 Tensor Greater::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -106,7 +106,7 @@ Tensor Greater::execute(const variable_list& inputs) {
 }
 
 Tensor GreaterEqual::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2);
+  assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 

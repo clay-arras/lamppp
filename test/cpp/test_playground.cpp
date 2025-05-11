@@ -8,23 +8,6 @@
 #include "autograd/engine/variable_ops.hpp"
 
 int main() {
-  // std::vector<autograd::Scalar> data1 = {1.0, 2.0, -1.0};
-  // std::vector<size_t> shape1 = {1, 3};
-  // autograd::Tensor tensor_data1 =
-  //     autograd::Tensor(data1, shape1, DeviceType::CUDA, DataType::Float32);
-
-  // std::vector<autograd::Scalar> data2 = {1.0f, 2.0f, 3.0f};
-  // std::vector<size_t> shape2 = {1, 3};
-  // autograd::Tensor tensor_data2 =
-  //     autograd::Tensor(data2, shape2, DeviceType::CUDA, DataType::Float32);
-
-  // autograd::Variable variable_data1(tensor_data1, true);
-  // autograd::Variable variable_data2(tensor_data2, true);
-
-  // autograd::Tensor result = tensor_data1 + 10;
-  // std::cout << "Result: " << result << std::endl;
-  // std::cout << "Tensor Data 1: " << tensor_data1 << std::endl;
-
   std::vector<float> vec1(10000);
   std::vector<float> vec2(10000);
   std::generate(vec1.begin(), vec1.end(),

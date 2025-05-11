@@ -98,14 +98,14 @@ variable_list MaximumBackward::apply(
 }
 
 Tensor Summation::execute(const variable_list& inputs) const {
-  assert(inputs.size() == 1);
+  assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
   return sum(self.data(), axis);
 }
 
 Tensor Maximum::execute(const variable_list& inputs) const {
-  assert(inputs.size() == 1);
+  assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
   return max(self.data(), axis);

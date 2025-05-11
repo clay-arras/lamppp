@@ -109,9 +109,7 @@ TensorImpl TensorImpl::max(const TensorImpl& a, size_t axis) {
   return backend_stub(a.device()).max(a, axis);
 }
 
-// TODO: this isn't going to work b/c it might be on CUDA
-// const size_t kMaxPrintElem = 1e10;
-const size_t kMaxPrintElem = 1e3;
+const size_t kMaxPrintElem = 1e2;
 void TensorImpl::print_(std::ostream& os) {
   os << "Tensor(data=[";
   DISPATCH_ALL_TYPES(this->type_, [&] {

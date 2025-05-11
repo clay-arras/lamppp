@@ -14,25 +14,14 @@ namespace autograd {
 
 class Tensor {
  public:
-  // Tensor() = default;  // TODO: is this really necessary, remove if can
-  Tensor() {
-    impl_ = std::make_shared<TensorImpl>();
-  };  // TODO: is this really necessary, remove if can
-  Tensor(const Tensor& other) : impl_(other.impl_) {
-    // std::cout << "COPY CONSTRUCTOR: " << other << std::endl;
-  }
+  Tensor() = default;  // TODO: is this really necessary, remove if can
+  Tensor(const Tensor& other) : impl_(other.impl_) {}
 
-  Tensor(Tensor&& other) noexcept : impl_(std::move(other.impl_)) {
-    // std::cout << "MOVE CONSTRUCTOR: " << other << std::endl;
-  }
+  Tensor(Tensor&& other) noexcept : impl_(std::move(other.impl_)) {}
 
   Tensor& operator=(const Tensor& other) {
-    // std::cout << "BEFORE COPY ASSIGNMENT: " << other << std::endl;
-    // std::cout << "BEFORE COPY ASSIGNMENT THIS: " << *this << std::endl;
     if (this != &other) {
       impl_ = other.impl_;
-      // std::cout << "AFTER COPY ASSIGNMENT: " << other << std::endl;
-      // std::cout << "AFTER COPY ASSIGNMENT THIS: " << *this << std::endl;
     }
     return *this;
   }
@@ -107,9 +96,7 @@ class Tensor {
   template <auto OpTag>
   static inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
     auto result = (*OpTag)(*a.impl_, *b.impl_);
-    Tensor tmp(std::make_shared<TensorImpl>(result));
-    // std::cout << "INTERM TMP result " << tmp << std::endl;
-    return tmp;
+    return Tensor(std::make_shared<TensorImpl>(result));
   }
 
   template <auto OpTag>

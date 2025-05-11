@@ -23,15 +23,6 @@ class Add(Operation):
         self.torch_fn = torch.add
         self.cpp_fn = cpp_custom_bind.add
 
-# class Add(Operation):
-#     def __init__(self):
-#         super().__init__()
-#         self.atol = 1e-6
-#         self.ranges = [[-10, 10]]
-#         self.sampler = lambda: sample_matrices(2, self.ranges)
-#         self.torch_fn = torch.add
-#         self.cpp_fn = cpp_custom_bind.add
-
 class Sub(Operation):
     def __init__(self):
         super().__init__()

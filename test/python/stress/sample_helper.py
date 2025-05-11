@@ -1,9 +1,6 @@
 import numpy as np
 
-# MATRIX_DIMS = (6, 6)
-# MATRIX_DIMS = (12, 12)
-# MATRIX_DIMS = (16, 16)
-MATRIX_DIMS = (18, 18)
+MATRIX_DIMS = (16, 16)
 
 
 def sample_from_intervals(intervals, shape):

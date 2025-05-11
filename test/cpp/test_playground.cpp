@@ -50,12 +50,6 @@ int main() {
   autograd::Variable result_var = variable1 + variable2;
   std::span<float> ok = result_var.data().view<float>();
 
-  std::cout << "Ok Tensor: ";
-  for (const auto& value : ok) {
-    std::cout << value << " ";
-  }
-  std::cout << std::endl;
-
   bool are_equal = std::equal(ok.begin(), ok.end(), result.begin());
   if (are_equal) {
     std::cout << "The tensors are equal." << std::endl;

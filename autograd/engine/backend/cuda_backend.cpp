@@ -22,9 +22,6 @@ TensorImpl CudaBackend::add(const TensorImpl& a, const TensorImpl& b) {
 
   // NOTE: this is absolutely horrible
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  // std::cout << "TYPES: " << a.type() << std::endl;
-  // std::cout << b.type() << std::endl;
-  // std::cout << out_dtype << std::endl;
   return DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
     return DISPATCH_ALL_TYPES(b.type(), [&] {

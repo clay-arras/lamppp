@@ -18,20 +18,12 @@ struct VariableImpl {
   std::shared_ptr<Function> _grad_fn;
   bool requires_grad;
 
-  VariableImpl() = default;  // TODO: necessity
-  explicit VariableImpl(const Tensor& data, bool requires_grad = false) {
-    // : data(Tensor(data)),
-    //   grad(zeros_like(data)),
-    //   requires_grad(requires_grad),
-    //   _grad_fn(nullptr) {
-    // // std::cout << "VARIABLE IMPL " << data << std::endl;
-    this->data = Tensor(data);
-    // // std::cout << "VARIABLE IMPL DATA " << this->data << std::endl;
-    this->grad = zeros_like(data);
-    // this->grad = Tensor();
-    this->requires_grad = requires_grad;
-    // // std::cout << "VARIABLE IMPL DATA " << this->data << std::endl;
-  }
+  // VariableImpl() = default;  // TODO: necessity
+  explicit VariableImpl(const Tensor& data, bool requires_grad = false)
+      : data(Tensor(data)),
+        grad(zeros_like(data)),
+        requires_grad(requires_grad),
+        _grad_fn(nullptr) {}
 };
 
 class Variable {
@@ -39,10 +31,7 @@ class Variable {
   Variable() = default;  // TODO: not sure if this is good practice
 
   explicit Variable(const Tensor& data, bool requires_grad = false)
-      : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {
-
-    // // std::cout << "IN VAR CONST " << this->data() << std::endl;
-  }
+      : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
   const Tensor& grad() const { return impl_->grad; }
   const Tensor& data() const { return impl_->data; }

@@ -18,7 +18,6 @@ struct VariableOpFact {
     Op op_fn(std::forward<Args>(args)...);
     variable_list result =
         op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
-    // std::cout << "RESULT IN OPT FACT | " << result[0] << std::endl;
     return result;
   }
 };

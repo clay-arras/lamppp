@@ -17,13 +17,6 @@ namespace autograd {
 
 class TensorImpl {
  public:
-  TensorImpl()                     // TODO: REMOVE
-      : type_(DataType::Float64),  // Default type
-        data_(Storage(0,
-                      DeviceType::CUDA)),  // Default storage with size 0 on CPU
-        size_(0),                          // Default size
-        shape_() {}                        // Default empty shape
-
   template <typename T>
   explicit TensorImpl(const std::vector<T>& data,
                       const std::vector<size_t>& shape, DeviceType device,
@@ -36,17 +29,6 @@ class TensorImpl {
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
-    // Print data, shape, and size for debugging
-    // std::cout << "Creating TensorImpl with:" << std::endl;
-    // std::cout << "  Data size: " << data.size() << std::endl;
-    // std::cout << "  Shape: [";
-    // for (size_t i = 0; i < shape.size(); ++i) {
-    //   std::cout << shape[i];
-    //   if (i < shape.size() - 1)
-    //     std::cout << ", ";
-    // }
-    // std::cout << "]" << std::endl;
-    // std::cout << "  Total size: " << size_ << std::endl;
     assert(data.size() == size_);
     DataType src_dtype = TypeMeta<T>::value;
     copy_stub(DeviceType::CPU, device, data.data(), data_.data(), size_,

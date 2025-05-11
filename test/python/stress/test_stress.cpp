@@ -106,9 +106,9 @@ PYBIND11_MODULE(cpp_custom_bind, m) {
            py::arg("data"), py::arg("shape"))
       .def_property(
           "data",
-          [](Tensor& t) -> vector<float> {
-            std::span<float> sp = t.view<float>();
-            return vector<float>(sp.begin(), sp.end());
+          [](Tensor& t) -> vector<double> {
+            std::span<double> sp = t.view<double>();
+            return vector<double>(sp.begin(), sp.end());
           },
           nullptr)
       .def_property(

@@ -9,21 +9,27 @@ inline namespace functional {
 
 Variable zeros(const std::vector<size_t>& shape, DeviceType device,
                DataType dtype, bool requires_grad) {
-  size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
+  size_t sz = shape.empty() ? 0
+                            : std::accumulate(shape.begin(), shape.end(), 1,
+                                              std::multiplies<>());
   return Variable(Tensor(std::vector<Scalar>(sz, 0.0), shape, device, dtype),
                   requires_grad);
 }
 
 Variable ones(const std::vector<size_t>& shape, DeviceType device,
               DataType dtype, bool requires_grad) {
-  size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
+  size_t sz = shape.empty() ? 0
+                            : std::accumulate(shape.begin(), shape.end(), 1,
+                                              std::multiplies<>());
   return Variable(Tensor(std::vector<Scalar>(sz, 1.0), shape, device, dtype),
                   requires_grad);
 }
 
 Variable rand(const std::vector<size_t>& shape, DeviceType device,
               DataType dtype, bool requires_grad) {
-  size_t sz = std::accumulate(shape.begin(), shape.end(), 1, multiplies<>());
+  size_t sz = shape.empty() ? 0
+                            : std::accumulate(shape.begin(), shape.end(), 1,
+                                              std::multiplies<>());
   std::vector<Scalar> rand_vec(sz);
   std::random_device rd;
   std::mt19937 gen(rd());

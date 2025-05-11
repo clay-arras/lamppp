@@ -52,9 +52,8 @@ int main() {
       Variable true_scores = (out_layer * labels).sum(1);  // 128 x 1
       Variable max_scores = out_layer.max(1);
       Variable correct = (true_scores == max_scores).sum(0).sum(1) / batch_size;
-      std::cout << "Iteration " << i
-                << " - Training accuracy: " << correct.data().data()[0]
-                << std::endl;
+      // std::cout << "Iteration " << i
+      << " - Training accuracy: " << correct.data().data()[0] << std::endl;
     }
 
     if (i % 10000 == 0) {
@@ -75,8 +74,8 @@ int main() {
                          static_cast<float>(test_batch_size);
       float test_accuracy = correct.data().data()[0];
 
-      std::cout << "Iteration " << i
-                << " - Validation accuracy: " << test_accuracy << std::endl;
+      // std::cout << "Iteration " << i
+      << " - Validation accuracy: " << test_accuracy << std::endl;
     }
 
     float learning_rate = 0.01;

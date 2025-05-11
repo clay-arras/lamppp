@@ -23,8 +23,10 @@ struct ForwardFunction : public Function {
 
   template <typename... Args>
   variable_list apply(const variable_list& inputs, Args&&... args) {
-    Variable result = Variable(static_cast<Derived*>(this)->execute(inputs),
-                               requires_grad(inputs));
+    Tensor tmp = static_cast<Derived*>(this)->execute(inputs);
+    // std::cout << "TEN RESULT IN FF: " << tmp << std::endl;
+    Variable result = Variable(tmp, requires_grad(inputs));
+    // std::cout << "RESULT IN FF: " << result << std::endl;
     auto backward_fn = std::make_shared<typename Derived::DefaultBackward>(
         std::forward<Args>(args)...);
     backward_fn->saved_inputs = std::make_unique<variable_list>(inputs);

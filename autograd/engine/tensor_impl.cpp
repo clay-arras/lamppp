@@ -15,7 +15,7 @@ namespace autograd {
 void TensorImpl::copy_(const TensorImpl& other) {
   DISPATCH_ALL_TYPES(other.type(), [&] {
     copy_stub(other.device(), device(), other.data(), data(),
-              other.size() * sizeof(other.type()), other.type(), type());
+              other.size() * sizeof(scalar_t), other.type(), type());
   });
 }
 
@@ -110,7 +110,8 @@ TensorImpl TensorImpl::max(const TensorImpl& a, size_t axis) {
 }
 
 // TODO: this isn't going to work b/c it might be on CUDA
-const size_t kMaxPrintElem = 20;
+// const size_t kMaxPrintElem = 1e10;
+const size_t kMaxPrintElem = 1e3;
 void TensorImpl::print_(std::ostream& os) {
   os << "Tensor(data=[";
   DISPATCH_ALL_TYPES(this->type_, [&] {
@@ -119,10 +120,12 @@ void TensorImpl::print_(std::ostream& os) {
     copy_stub(this->device(), DeviceType::CPU, this->data(),
               static_cast<void*>(data_ptr), printSize * sizeof(scalar_t),
               type(), type());
-    for (size_t i = 0; i < this->size(); i++) {
+    for (size_t i = 0; i < printSize; i++) {
       os << data_ptr[i];
-      if (i < this->size() - 1) {
+      if (i < printSize - 1) {
         os << ", ";
+      } else {
+        os << ",...";
       }
     }
   });

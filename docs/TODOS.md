@@ -50,3 +50,5 @@ add nn module
 next step: refactor max
 next: add templates and different data types
 also: look into lazy eval AND how I CAN INCORPORATE THAT INTO EIGEN TYPES FOR SPEED
+
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1

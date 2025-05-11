@@ -25,49 +25,60 @@ set_seed(seed)
 
 
 def compute_grads(cpp_op, torch_op, mats):
+    # print("Starting compute_grads")
     def _to_row_major(mat):
-        return torch.tensor(mat).T.flatten().tolist()
-    def _from_row_major(flat, like):
-        def T(ten):
-            return ten.permute(*torch.arange(ten.ndim - 1, -1, -1))
-        t = T(torch.tensor(flat).reshape(T(torch.tensor(like)).shape))
-        return t.tolist()
-
-    def _to_row_major(mat):
+        # print("In _to_row_major")
         return torch.tensor(mat).flatten().tolist()
     def _from_row_major(flat, like):
+        # print("In _from_row_major")
         t = torch.tensor(flat).reshape(torch.tensor(like).shape)
         return t.tolist()
 
     def _to_cpp_var(mat, requires_grad=True):
+        # print("In _to_cpp_var")
+        # print(len(_to_row_major(mat)))
+        # print(list(torch.tensor(mat).shape))
         ten = cpp_custom_bind.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
         return cpp_custom_bind.cVariable(ten, requires_grad)
 
+    # print("Creating torch_vars")
     torch_vars = [
         torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats
     ]
+    # print("Computing torch_out")
     torch_out = torch_op(*torch_vars)
+    # print("Running torch backward")
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
+    # print("Collecting torch values")
     torch_vals = {
         "grads": [v.grad.tolist() for v in torch_vars],
         "out": [torch_out.data.tolist()],
     }
 
+    # print("Creating cpp_vars")
     cpp_vars = [_to_cpp_var(m) for m in mats]
+    # print("Computing cpp_out")
     cpp_out = cpp_op(*cpp_vars)
+    # print("Collecting cpp values")
+    # # print(cpp_vars)
+    # # print(cpp_out)
     cpp_vals = {
         "grads": [_from_row_major(v.grad.data, m) for v, m in zip(cpp_vars, mats)],
         "out": [_from_row_major(cpp_out.data.data, torch_out.data.tolist())],
     }
 
+    # print("Returning from compute_grads")
     return cpp_vals, torch_vals
 
 
 def run_test(case, its):
+    # print(f"Starting run_test for {case.__class__.__name__}")
     def _atol(pred, true):
+        # print("Computing absolute tolerance")
         return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true))))
 
     def _rtol(pred, true):
+        # print("Computing relative tolerance")
         return float(
             torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true)))
         ) / float(torch.max(torch.tensor(true)))
@@ -76,6 +87,7 @@ def run_test(case, its):
     max_atol_backward, max_rtol_backward = 0, 0
 
     def check_tolerances(cg, tg, pass_type):
+        # print(f"Checking tolerances for {pass_type}")
         nonlocal max_atol_forward, max_rtol_forward, max_atol_backward, max_rtol_backward
         atol_ = _atol(cg, tg)
         rtol_ = _rtol(cg, tg)
@@ -89,20 +101,26 @@ def run_test(case, its):
         else:
             raise ValueError(f"Unknown pass_type: {pass_type}")
 
-    for _ in range(its):
+    for i in range(its):
+        # print(f"Iteration {i+1}/{its}")
         mats = case.sampler()
+        # print("Calling compute_grads")
         cpp_results, torch_results = compute_grads(case.cpp_fn, case.torch_fn, mats)
 
+        # print("Checking forward pass results")
         for cpp_out, torch_out in zip(cpp_results["out"], torch_results["out"]):
             check_tolerances(cpp_out, torch_out, "forward")
+        # print("Checking backward pass results")
         for cpp_grad, torch_grad in zip(cpp_results["grads"], torch_results["grads"]):
             check_tolerances(cpp_grad, torch_grad, "backward")
 
+    # print("Computing thresholds")
     forward_atol_threshold = case.atol
     forward_rtol_threshold = case.rtol
     backward_atol_threshold = case.atol * case.backward_atol_mult
     backward_rtol_threshold = case.rtol * case.backward_atol_mult
 
+    # print("Determining pass/fail status")
     atol_forward_pass = max_atol_forward <= forward_atol_threshold
     rtol_forward_pass = max_rtol_forward <= forward_rtol_threshold
     atol_backward_pass = max_atol_backward <= backward_atol_threshold
@@ -113,6 +131,7 @@ def run_test(case, its):
     atol_backward_result = "✅ pass" if atol_backward_pass else "❌ fail"
     rtol_backward_result = "✅ pass" if rtol_backward_pass else "❌ fail"
 
+    # print("# printing final results")
     print(
         f"{case.__class__.__name__}:\n"
         f"  Forward : atol {atol_forward_result} (max={max_atol_forward:.3e}, thr={forward_atol_threshold:.1e}), "

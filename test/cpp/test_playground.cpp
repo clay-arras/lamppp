@@ -25,18 +25,18 @@ int main() {
   // std::cout << "Result: " << result << std::endl;
   // std::cout << "Tensor Data 1: " << tensor_data1 << std::endl;
 
-  std::vector<float> vec1(100000);
-  std::vector<float> vec2(100000);
+  std::vector<float> vec1(10000);
+  std::vector<float> vec2(10000);
   std::generate(vec1.begin(), vec1.end(),
                 []() { return static_cast<float>(rand()) / RAND_MAX; });
   std::generate(vec2.begin(), vec2.end(),
                 []() { return static_cast<float>(rand()) / RAND_MAX; });
 
-  std::vector<float> result(100000);
+  std::vector<float> result(10000);
   std::transform(vec1.begin(), vec1.end(), vec2.begin(), result.begin(),
                  std::plus<float>());
 
-  std::vector<size_t> shape = {10, 50, 2};
+  std::vector<size_t> shape = {10, 500, 2};
   autograd::Tensor tensor_data1 =
       autograd::Tensor(vec1, shape, DeviceType::CUDA, DataType::Float64);
   autograd::Tensor tensor_data2 =
@@ -45,10 +45,16 @@ int main() {
   autograd::Variable variable1 = autograd::Variable(tensor_data1);
   autograd::Variable variable2 = autograd::Variable(tensor_data1);
 
-  autograd::Tensor result_ten = tensor_data1 + tensor_data2;
-  std::span<float> ok = result_ten.view<float>();
-  // autograd::Variable result_var = variable1 + variable2;
-  // std::span<float> ok = result_var.data().view<float>();
+  // autograd::Tensor result_ten = tensor_data1 + tensor_data2;
+  // std::span<float> ok = result_ten.view<float>();
+  autograd::Variable result_var = variable1 + variable2;
+  std::span<float> ok = result_var.data().view<float>();
+
+  std::cout << "Ok Tensor: ";
+  for (const auto& value : ok) {
+    std::cout << value << " ";
+  }
+  std::cout << std::endl;
 
   bool are_equal = std::equal(ok.begin(), ok.end(), result.begin());
   if (are_equal) {

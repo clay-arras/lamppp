@@ -22,21 +22,25 @@ TensorImpl CudaBackend::add(const TensorImpl& a, const TensorImpl& b) {
 
   // NOTE: this is absolutely horrible
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  // std::cout << "TYPES: " << a.type() << std::endl;
+  // std::cout << b.type() << std::endl;
+  // std::cout << out_dtype << std::endl;
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         vecAdd<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
       });
     });
   });
-  return TensorImpl(c, a.shape(), out_dtype);
+  assert(false);
 }
 
 TensorImpl CudaBackend::sub(const TensorImpl& a, const TensorImpl& b) {
@@ -44,21 +48,22 @@ TensorImpl CudaBackend::sub(const TensorImpl& a, const TensorImpl& b) {
   assert(a.shape() == b.shape());
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         vecSub<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
       });
     });
   });
-  return TensorImpl(c, a.shape(), out_dtype);
+  assert(false);
 }
 
 TensorImpl CudaBackend::mul(const TensorImpl& a, const TensorImpl& b) {
@@ -66,21 +71,22 @@ TensorImpl CudaBackend::mul(const TensorImpl& a, const TensorImpl& b) {
   assert(a.shape() == b.shape());
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         vecMul<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
       });
     });
   });
-  return TensorImpl(c, a.shape(), out_dtype);
+  assert(false);
 }
 
 TensorImpl CudaBackend::div(const TensorImpl& a, const TensorImpl& b) {
@@ -88,50 +94,55 @@ TensorImpl CudaBackend::div(const TensorImpl& a, const TensorImpl& b) {
   assert(a.shape() == b.shape());
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         vecDiv<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
       });
     });
   });
-  return TensorImpl(c, a.shape(), out_dtype);
+  assert(false);
 }
 
 TensorImpl CudaBackend::log(const TensorImpl& a) {
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
-    vecLog<scalar_t>(a.size(), static_cast<const scalar_t*>(a.data()),
-                     static_cast<scalar_t*>(c.data()));
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
+    using scalar_t_ = scalar_t;
+    Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
+    vecLog<scalar_t_>(a.size(), static_cast<const scalar_t_*>(a.data()),
+                      static_cast<scalar_t_*>(c.data()));
+    return TensorImpl(c, a.shape(), a.type());
   });
-  return TensorImpl(c, a.shape(), a.type());
+  assert(false);
 }
 
 TensorImpl CudaBackend::exp(const TensorImpl& a) {
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
+    Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
     vecExp<scalar_t_>(a.size(), static_cast<const scalar_t_*>(a.data()),
                       static_cast<scalar_t_*>(c.data()));
+    return TensorImpl(c, a.shape(), a.type());
   });
-  return TensorImpl(c, a.shape(), a.type());
+  assert(false);
 }
 
 TensorImpl CudaBackend::relu(const TensorImpl& a) {
-  Storage c(a.size(), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
+    Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
     vecRelu<scalar_t_>(a.size(), static_cast<const scalar_t_*>(a.data()),
                        static_cast<scalar_t_*>(c.data()));
+    return TensorImpl(c, a.shape(), a.type());
   });
-  return TensorImpl(c, a.shape(), a.type());
+  assert(false);
 }
 
 TensorImpl CudaBackend::matmul(const TensorImpl& a, const TensorImpl& b) {
@@ -143,22 +154,23 @@ TensorImpl CudaBackend::matmul(const TensorImpl& a, const TensorImpl& b) {
   size_t k = a.shape()[1];
 
   DataType out_dtype = dtype_promotion_(a.type(), b.type());
-  Storage c_storage(m * n, DeviceType::CUDA);
 
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type_t = scalar_t;
+        Storage c_storage(m * n * sizeof(out_type_t), DeviceType::CUDA);
         cudaMatMul<a_type_t, b_type_t, out_type_t>(
             static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type_t*>(c_storage.data()), m, n, k);
+        return TensorImpl(c_storage, {m, n}, out_dtype);
       });
     });
   });
-  return TensorImpl(c_storage, {m, n}, out_dtype);
+  assert(false);
 }
 
 TensorImpl CudaBackend::transpose(const TensorImpl& a) {
@@ -167,15 +179,15 @@ TensorImpl CudaBackend::transpose(const TensorImpl& a) {
   size_t n = a.shape()[1];
 
   DataType out_dtype = a.type();
-  Storage c_storage(m * n, DeviceType::CUDA);
 
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
+    Storage c_storage(m * n * sizeof(scalar_t_), DeviceType::CUDA);
     cudaTranspose<scalar_t_>(static_cast<const scalar_t_*>(a.data()),
                              static_cast<scalar_t_*>(c_storage.data()), m, n);
+    return TensorImpl(c_storage, {n, m}, out_dtype);
   });
-
-  return TensorImpl(c_storage, {n, m}, out_dtype);  // Shape is transposed
+  assert(false);
 }
 
 TensorImpl CudaBackend::equal(const TensorImpl& a, const TensorImpl& b) {

@@ -65,6 +65,8 @@ Tensor Add::execute(const variable_list& inputs) {
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
+  // std::cout << "DEBUG, basic_ops.cpp:68 | " << self << " " << other << std::endl;
+  // std::cout << "RESULT TEN | " << self.data() + other.data() << std::endl;
   return self.data() + other.data();
 }
 

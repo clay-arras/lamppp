@@ -1,0 +1,146 @@
+#include "include/lamppp/tensor/functions/basic_ops.hpp"
+#include "include/lamppp/tensor/cuda/basic_kern.cuh"
+#include "include/lamppp/tensor/data_type.hpp"
+#include "include/lamppp/tensor/tensor.hpp"
+
+namespace autograd {
+
+DEFINE_DISPATCH(add_stub);
+DEFINE_DISPATCH(sub_stub);
+DEFINE_DISPATCH(mul_stub);
+DEFINE_DISPATCH(div_stub);
+
+TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b) {
+  assert(false && "Not Implemented");
+}
+
+TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
+
+  // NOTE: this is absolutely horrible
+  DataType out_dtype = type_upcast(a.type(), b.type());
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
+        vecAdd<a_type_t, b_type_t, out_type>(
+            a.size(), static_cast<const a_type_t*>(a.data()),
+            static_cast<const b_type_t*>(b.data()),
+            static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
+      });
+    });
+  });
+}
+
+TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b) {
+  assert(false && "Not Implemented");
+}
+
+TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
+
+  DataType out_dtype = type_upcast(a.type(), b.type());
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
+        vecSub<a_type_t, b_type_t, out_type>(
+            a.size(), static_cast<const a_type_t*>(a.data()),
+            static_cast<const b_type_t*>(b.data()),
+            static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
+      });
+    });
+  });
+}
+
+TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b) {
+  assert(false && "Not Implemented");
+}
+
+TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
+
+  DataType out_dtype = type_upcast(a.type(), b.type());
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
+        vecMul<a_type_t, b_type_t, out_type>(
+            a.size(), static_cast<const a_type_t*>(a.data()),
+            static_cast<const b_type_t*>(b.data()),
+            static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
+      });
+    });
+  });
+}
+
+TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b) {
+  assert(false && "Not Implemented");
+}
+
+TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
+  assert(a.size() == b.size() && "Size mismatch");
+  assert(a.shape() == b.shape() && "Shape mismatch");
+
+  DataType out_dtype = type_upcast(a.type(), b.type());
+  return DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    return DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type = scalar_t;
+        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
+        vecDiv<a_type_t, b_type_t, out_type>(
+            a.size(), static_cast<const a_type_t*>(a.data()),
+            static_cast<const b_type_t*>(b.data()),
+            static_cast<out_type*>(c.data()));
+        return TensorImpl(c, a.shape(), out_dtype);
+      });
+    });
+  });
+}
+
+Tensor add(const Tensor& a, const Tensor& b) {
+  assert(a.device() == b.device() && "Tensors are on different devices");
+  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
+      add_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
+               *detail::UnsafeTensorAccessor::getImpl(b))));
+}
+
+Tensor sub(const Tensor& a, const Tensor& b) {
+  assert(a.device() == b.device() && "Tensors are on different devices");
+  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
+      sub_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
+               *detail::UnsafeTensorAccessor::getImpl(b))));
+}
+
+Tensor mul(const Tensor& a, const Tensor& b) {
+  assert(a.device() == b.device() && "Tensors are on different devices");
+  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
+      mul_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
+               *detail::UnsafeTensorAccessor::getImpl(b))));
+}
+
+Tensor div(const Tensor& a, const Tensor& b) {
+  assert(a.device() == b.device() && "Tensors are on different devices");
+  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
+      div_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
+               *detail::UnsafeTensorAccessor::getImpl(b))));
+}
+
+}  // namespace autograd

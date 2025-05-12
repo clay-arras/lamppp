@@ -1,11 +1,6 @@
-.cache/
-__pycache__/
-build/
-cmake-build-debug/
-checkpoint/
-data/
 poetry.lock
+**/__pycache__/
+**/build/
+data/
 .venv/
-.idea/
-
-FlameGraph/
+.cache/

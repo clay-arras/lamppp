@@ -25,6 +25,11 @@ struct TypeMeta<double> {
   static constexpr DataType value = DataType::Float64;
 };
 
+inline DataType type_upcast(DataType a_type, DataType b_type) {
+  return static_cast<DataType>(
+      std::max(static_cast<uint8_t>(a_type), static_cast<uint8_t>(b_type)));
+}
+
 inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
   switch (dtype) {
     case DataType::Bool:

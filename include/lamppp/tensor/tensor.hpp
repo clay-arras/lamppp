@@ -12,6 +12,12 @@
 
 namespace autograd {
 
+namespace detail {
+
+class UnsafeTensorAccessor;
+
+}
+
 class Tensor {
  public:
   Tensor() = default;
@@ -53,87 +59,25 @@ class Tensor {
   void to(DeviceType device);
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
-
-  inline friend Tensor log(const Tensor& tensor) {
-    auto result = TensorImpl::log(*tensor.impl_);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-  inline friend Tensor exp(const Tensor& tensor) {
-    auto result = TensorImpl::exp(*tensor.impl_);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-  inline friend Tensor relu(const Tensor& tensor) {
-    auto result = TensorImpl::relu(*tensor.impl_);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-  inline friend Tensor matmul(const Tensor& a, const Tensor& b) {
-    auto result = TensorImpl::matmul(*a.impl_, *b.impl_);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-  inline friend Tensor transpose(const Tensor& tensor) {
-    auto result = TensorImpl::transpose(*tensor.impl_);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-  inline friend Tensor sum(const Tensor& tensor, size_t axis) {
-    auto result = TensorImpl::sum(*tensor.impl_, axis);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-  inline friend Tensor max(const Tensor& tensor, size_t axis) {
-    auto result = TensorImpl::max(*tensor.impl_, axis);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-
-  template <auto OpTag>
-  static inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
-    auto result = (*OpTag)(*a.impl_, *b.impl_);
-    return Tensor(std::make_shared<TensorImpl>(result));
-  }
-
-  template <auto OpTag>
-  static inline Tensor binary_tensor_op(const Tensor& tensor, Scalar scalar) {
-    Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
-                         tensor.shape(), tensor.device(), tensor.type());
-    return binary_tensor_op<OpTag>(tensor, scalar_tensor);
-  }
-
-  template <auto OpTag>
-  static inline Tensor binary_tensor_op(Scalar scalar, const Tensor& tensor) {
-    Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
-                         tensor.shape(), tensor.device(), tensor.type());
-    return binary_tensor_op<OpTag>(scalar_tensor, tensor);
-  }
-
-#define DECL_BINARY_OP(op, tag)                                           \
-  inline friend Tensor operator op(const Tensor& a, const Tensor& b) {    \
-    return binary_tensor_op<&TensorImpl::tag>(a, b);                      \
-  }                                                                       \
-  inline friend Tensor operator op(const Tensor& tensor, Scalar scalar) { \
-    return binary_tensor_op<&TensorImpl::tag>(tensor, scalar);            \
-  }                                                                       \
-  inline friend Tensor operator op(Scalar scalar, const Tensor& tensor) { \
-    return binary_tensor_op<&TensorImpl::tag>(scalar, tensor);            \
-  }
-
-#define FORALL_BINARY_OPS(_) \
-  _(+, add)                  \
-  _(-, sub)                  \
-  _(*, mul)                  \
-  _(/, div)                  \
-  _(==, equal)               \
-  _(!=, not_equal)           \
-  _(>=, greater_equal)       \
-  _(<=, less_equal)          \
-  _(>, greater_than)         \
-  _(<, less_than)
-
-  FORALL_BINARY_OPS(DECL_BINARY_OP)
-
-#undef FORALL_BINARY_OPS
-#undef DECL_BINARY_OP
+  friend class TensorOpFact;
+  friend class detail::UnsafeTensorAccessor;
 
  private:
-  explicit Tensor(std::shared_ptr<TensorImpl> impl) : impl_(impl) {}
+  explicit Tensor(std::shared_ptr<TensorImpl> ptr) : impl_(ptr) {}
   std::shared_ptr<TensorImpl> impl_;
 };
+
+namespace detail {
+
+struct UnsafeTensorAccessor {
+  static std::shared_ptr<TensorImpl> getImpl(const Tensor& ten) {
+    return ten.impl_;
+  }
+  static Tensor fromImpl(std::shared_ptr<TensorImpl> ptr) {
+    return Tensor(ptr);
+  }
+};
+
+}  // namespace detail
 
 }  // namespace autograd

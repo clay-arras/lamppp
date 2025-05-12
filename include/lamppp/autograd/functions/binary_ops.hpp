@@ -59,4 +59,28 @@ struct GreaterEqual : public ForwardFunction<GreaterEqual> {
   static Tensor execute(const variable_list& inputs);
 };
 
+inline Variable equal(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Equal>({a, b})[0];
+}
+
+inline Variable not_equal(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<NotEqual>({a, b})[0];
+}
+
+inline Variable greater_equal(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<GreaterEqual>({a, b})[0];
+}
+
+inline Variable less_equal(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<LessEqual>({a, b})[0];
+}
+
+inline Variable greater(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Greater>({a, b})[0];
+}
+
+inline Variable less(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Less>({a, b})[0];
+}
+
 }  // namespace autograd

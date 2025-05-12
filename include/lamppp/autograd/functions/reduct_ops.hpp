@@ -2,6 +2,7 @@
 
 #include "include/lamppp/autograd/forward_function.hpp"
 #include "include/lamppp/autograd/function.hpp"
+#include "include/lamppp/autograd/functions/overloads.hpp"
 
 namespace autograd {
 
@@ -30,5 +31,13 @@ struct Maximum : public ForwardFunction<Maximum> {
   explicit Maximum(size_t axis) : axis(axis) {}
   Tensor execute(const variable_list& inputs) const;
 };
+
+inline Variable sum(const Variable& a, size_t axis) {
+  return VariableOpFact::apply<Summation>({a}, axis)[0];
+}
+
+inline Variable max(const Variable& a, size_t axis) {
+  return VariableOpFact::apply<Maximum>({a}, axis)[0];
+}
 
 }  // namespace autograd

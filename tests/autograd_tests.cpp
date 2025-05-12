@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <vector>
 
-#include "include/lamppp/autograd/variable.hpp"
-#include "include/lamppp/autograd/variable_ops.hpp"
+#include "include/lamppp/autograd/core.hpp"
+#include "include/lamppp/tensor/core.hpp"
 
 using autograd::Scalar;
 using autograd::Tensor;

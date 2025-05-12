@@ -41,4 +41,20 @@ struct Divide : public ForwardFunction<Divide> {
   static Tensor execute(const variable_list& inputs);
 };
 
+inline Variable add(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Add>({a, b})[0];
+}
+
+inline Variable sub(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Subtract>({a, b})[0];
+}
+
+inline Variable mul(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Multiply>({a, b})[0];
+}
+
+inline Variable div(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Divide>({a, b})[0];
+}
+
 }  // namespace autograd

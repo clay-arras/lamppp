@@ -7,19 +7,19 @@
 namespace autograd {
 
 struct TensorOpFact {
-  template <auto OpTag>
+  template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
   static inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
     return (*OpTag)(a, b);
   }
 
-  template <auto OpTag>
+  template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
   static inline Tensor binary_tensor_op(const Tensor& tensor, Scalar scalar) {
     Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
                          tensor.shape(), tensor.device(), tensor.type());
     return binary_tensor_op<OpTag>(tensor, scalar_tensor);
   }
 
-  template <auto OpTag>
+  template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
   static inline Tensor binary_tensor_op(Scalar scalar, const Tensor& tensor) {
     Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
                          tensor.shape(), tensor.device(), tensor.type());

@@ -5,7 +5,6 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
-#include "abstract_backend.hpp"
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"

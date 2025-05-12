@@ -1,7 +1,5 @@
 #include "include/lamppp/tensor/tensor_impl.hpp"
 #include <cassert>
-#include "include/lamppp/tensor/abstract_backend.hpp"
-#include "include/lamppp/tensor/backend.hpp"
 #include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/device_type.hpp"
 #include "include/lamppp/tensor/dispatch_type.hpp"
@@ -28,85 +26,6 @@ void TensorImpl::to_(DeviceType device) {
   assert(false && "Implement later");
   // assert(device != data_.device());
   // data_ = Storage(data_.data(), size(), data_.device(), device);
-}
-
-TensorImpl TensorImpl::add(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).add(a, b);
-}
-
-TensorImpl TensorImpl::sub(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).sub(a, b);
-}
-
-TensorImpl TensorImpl::mul(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).mul(a, b);
-}
-
-TensorImpl TensorImpl::div(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).div(a, b);
-}
-
-TensorImpl TensorImpl::log(const TensorImpl& a) {
-  return backend_stub(a.device()).log(a);
-}
-
-TensorImpl TensorImpl::exp(const TensorImpl& a) {
-  return backend_stub(a.device()).exp(a);
-}
-
-TensorImpl TensorImpl::relu(const TensorImpl& a) {
-  return backend_stub(a.device()).relu(a);
-}
-
-TensorImpl TensorImpl::matmul(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).matmul(a, b);
-}
-
-TensorImpl TensorImpl::transpose(const TensorImpl& a) {
-  return backend_stub(a.device()).transpose(a);
-}
-
-TensorImpl TensorImpl::equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).equal(a, b);
-}
-
-TensorImpl TensorImpl::not_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).not_equal(a, b);
-}
-
-TensorImpl TensorImpl::greater_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).greater_equal(a, b);
-}
-
-TensorImpl TensorImpl::less_equal(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).less_equal(a, b);
-}
-
-TensorImpl TensorImpl::greater_than(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).greater(a, b);
-}
-
-TensorImpl TensorImpl::less_than(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
-  return backend_stub(a.device()).less(a, b);
-}
-
-TensorImpl TensorImpl::sum(const TensorImpl& a, size_t axis) {
-  return backend_stub(a.device()).sum(a, axis);
-}
-
-TensorImpl TensorImpl::max(const TensorImpl& a, size_t axis) {
-  return backend_stub(a.device()).max(a, axis);
 }
 
 const size_t kMaxPrintElem = 1e2;

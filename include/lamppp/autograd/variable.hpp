@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include "include/lamppp/tensor/core.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_helper.hpp"
 
@@ -57,5 +58,15 @@ class Variable {
 };
 
 using variable_list = std::vector<Variable>;
+
+struct VariableOpFact {
+  template <typename Op, typename... Args>
+  static variable_list apply(variable_list variables, Args&&... args) {
+    Op op_fn(std::forward<Args>(args)...);
+    variable_list result =
+        op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);
+    return result;
+  }
+};
 
 }  // namespace autograd

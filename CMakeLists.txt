@@ -5,7 +5,7 @@ set(Python_EXECUTABLE ".venv/bin/python")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ffast-math -DNDEBUG") # bench
 add_definitions(-DEIGEN_NO_DEBUG)
@@ -38,8 +38,12 @@ add_library(
   src/autograd/functions/unary_ops.cpp
   src/autograd/functions/reduct_ops.cpp
   src/autograd/functions/basic_ops.cpp
+  src/tensor/functions/binary_ops.cpp
+  src/tensor/functions/matrix_ops.cpp
+  src/tensor/functions/unary_ops.cpp
+  src/tensor/functions/reduct_ops.cpp
+  src/tensor/functions/basic_ops.cpp
   src/tensor/tensor_helper.cpp
-  src/tensor/backend.cpp
   src/tensor/native/resize.cu
   src/tensor/native/empty.cu
   src/tensor/native/fill.cu
@@ -49,8 +53,6 @@ add_library(
   src/tensor/cuda/matrix_kern.cu
   src/tensor/cuda/basic_kern.cu
   src/tensor/cuda/unary_kern.cu
-  src/tensor/backend/eigen_backend.cpp
-  src/tensor/backend/cuda_backend.cpp
   src/tensor/tensor.cpp
   src/tensor/tensor_impl.cpp
   src/tensor/storage.cpp

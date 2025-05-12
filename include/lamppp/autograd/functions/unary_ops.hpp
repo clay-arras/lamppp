@@ -2,6 +2,7 @@
 
 #include "include/lamppp/autograd/forward_function.hpp"
 #include "include/lamppp/autograd/function.hpp"
+#include "include/lamppp/autograd/functions/overloads.hpp"
 
 namespace autograd {
 
@@ -31,5 +32,17 @@ struct ReLU : public ForwardFunction<ReLU> {
   using DefaultBackward = ReLUBackward;
   static Tensor execute(const variable_list& inputs);
 };
+
+inline Variable exp(const Variable& a) {
+  return VariableOpFact::apply<Exponential>({a})[0];
+}
+
+inline Variable log(const Variable& a) {
+  return VariableOpFact::apply<Logarithm>({a})[0];
+}
+
+inline Variable relu(const Variable& a) {
+  return VariableOpFact::apply<ReLU>({a})[0];
+}
 
 }  // namespace autograd

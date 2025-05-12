@@ -1,8 +1,8 @@
 #include "include/lamppp/autograd/functions/unary_ops.hpp"
 #include <cassert>
 #include <cmath>
+#include "include/lamppp/autograd/functions/overloads.hpp"
 #include "include/lamppp/autograd/variable.hpp"
-#include "include/lamppp/autograd/variable_ops.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 
 namespace autograd {

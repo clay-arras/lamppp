@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#define DISPATCH_ALL_TYPES(TYPE, ...)      \
+#define LMP_DISPATCH_ALL_TYPES(TYPE, ...)  \
   [&] {                                    \
     switch (TYPE) {                        \
       case DataType::Bool: {               \

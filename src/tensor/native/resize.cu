@@ -7,7 +7,7 @@
 
 namespace lmp::tensor::detail::native {
 
-DEFINE_DISPATCH(resize_stub);
+LMP_DEFINE_DISPATCH(resize_stub);
 
 void resize_cpu(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = ::operator new(new_byte_size);

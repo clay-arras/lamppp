@@ -58,11 +58,10 @@ void vecRelu(size_t size, const T* in, T* out) {
   template void vecRelu<elem>(size_t, const elem*, elem*);
 
 #include "include/lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST TYPES()
+#define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_UNARY, , TYPES_LIST)
 
 #undef INSTANTIATE_UNARY
-#undef TYPES
 // clang-format on
 
 }  // namespace lmp::tensor::detail::cuda

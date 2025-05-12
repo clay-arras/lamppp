@@ -15,9 +15,9 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
       break;
     }
     case DeviceType::CUDA: {
-      DISPATCH_ALL_TYPES(src_dtype, [&] {
+      LMP_DISPATCH_ALL_TYPES(src_dtype, [&] {
         using src_type = scalar_t;
-        DISPATCH_ALL_TYPES(dest_dtype, [&] {
+        LMP_DISPATCH_ALL_TYPES(dest_dtype, [&] {
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
@@ -37,9 +37,9 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
                DataType src_dtype, DataType dest_dtype) {
   switch (to_device) {
     case DeviceType::CPU: {
-      DISPATCH_ALL_TYPES(src_dtype, [&] {
+      LMP_DISPATCH_ALL_TYPES(src_dtype, [&] {
         using src_type = scalar_t;
-        DISPATCH_ALL_TYPES(dest_dtype, [&] {
+        LMP_DISPATCH_ALL_TYPES(dest_dtype, [&] {
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
@@ -54,9 +54,9 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
       break;
     }
     case DeviceType::CUDA: {
-      DISPATCH_ALL_TYPES(src_dtype, [&] {
+      LMP_DISPATCH_ALL_TYPES(src_dtype, [&] {
         using src_type = scalar_t;
-        DISPATCH_ALL_TYPES(dest_dtype, [&] {
+        LMP_DISPATCH_ALL_TYPES(dest_dtype, [&] {
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
@@ -106,6 +106,6 @@ void vecCopy(size_t size, const U* in, V* out) {
 EXPAND(TYPES(TYPES2, CAST))
 // clang-format on
 
-DEFINE_DISPATCH(copy_stub);
+LMP_DEFINE_DISPATCH(copy_stub);
 
 }  // namespace lmp::tensor::detail::native

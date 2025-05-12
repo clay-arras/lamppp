@@ -11,27 +11,27 @@ using relu_fn = TensorImpl (*)(const TensorImpl&);
 using exp_fn = TensorImpl (*)(const TensorImpl&);
 using log_fn = TensorImpl (*)(const TensorImpl&);
 
-DECLARE_DISPATCH(relu_fn, relu_stub);
-DECLARE_DISPATCH(exp_fn, exp_stub);
-DECLARE_DISPATCH(log_fn, log_stub);
+LMP_DECLARE_DISPATCH(relu_fn, relu_stub);
+LMP_DECLARE_DISPATCH(exp_fn, exp_stub);
+LMP_DECLARE_DISPATCH(log_fn, log_stub);
 
 TensorImpl relu_cpu(const TensorImpl& a);
 TensorImpl relu_cuda(const TensorImpl& a);
 
-REGISTER_DISPATCH(relu_stub, DeviceType::CPU, relu_cpu);
-REGISTER_DISPATCH(relu_stub, DeviceType::CUDA, relu_cuda);
+LMP_REGISTER_DISPATCH(relu_stub, DeviceType::CPU, relu_cpu);
+LMP_REGISTER_DISPATCH(relu_stub, DeviceType::CUDA, relu_cuda);
 
 TensorImpl exp_cpu(const TensorImpl& a);
 TensorImpl exp_cuda(const TensorImpl& a);
 
-REGISTER_DISPATCH(exp_stub, DeviceType::CPU, exp_cpu);
-REGISTER_DISPATCH(exp_stub, DeviceType::CUDA, exp_cuda);
+LMP_REGISTER_DISPATCH(exp_stub, DeviceType::CPU, exp_cpu);
+LMP_REGISTER_DISPATCH(exp_stub, DeviceType::CUDA, exp_cuda);
 
 TensorImpl log_cpu(const TensorImpl& a);
 TensorImpl log_cuda(const TensorImpl& a);
 
-REGISTER_DISPATCH(log_stub, DeviceType::CPU, log_cpu);
-REGISTER_DISPATCH(log_stub, DeviceType::CUDA, log_cuda);
+LMP_REGISTER_DISPATCH(log_stub, DeviceType::CPU, log_cpu);
+LMP_REGISTER_DISPATCH(log_stub, DeviceType::CUDA, log_cuda);
 
 Tensor relu(const Tensor& a);
 Tensor exp(const Tensor& a);

@@ -9,12 +9,12 @@
 namespace lmp::tensor::detail::native {
 
 using fill_fn = void (*)(void*, size_t, Scalar, DataType type);
-DECLARE_DISPATCH(fill_fn, fill_stub);
+LMP_DECLARE_DISPATCH(fill_fn, fill_stub);
 
 void fill_cpu(void* ptr, size_t size, Scalar t, DataType type);
 void fill_cuda(void* ptr, size_t size, Scalar t, DataType type);
 
-REGISTER_DISPATCH(fill_stub, DeviceType::CPU, fill_cpu);
-REGISTER_DISPATCH(fill_stub, DeviceType::CUDA, fill_cuda);
+LMP_REGISTER_DISPATCH(fill_stub, DeviceType::CPU, fill_cpu);
+LMP_REGISTER_DISPATCH(fill_stub, DeviceType::CUDA, fill_cuda);
 
 }  // namespace lmp::tensor::detail::native

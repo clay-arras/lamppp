@@ -130,9 +130,8 @@ void vecLessThan(size_t size, const U* A, const V* B, bool* C) {
                               const BOOST_PP_SEQ_ELEM(1, product)*, bool*);
 
 #include "include/lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST TYPES()
+#define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COMPARISON, (TYPES_LIST)(TYPES_LIST))
-#undef TYPES
 
 #undef INSTANTIATE_COMPARISON
 // clang-format on

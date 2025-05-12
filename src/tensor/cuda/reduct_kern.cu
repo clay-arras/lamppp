@@ -135,11 +135,10 @@ void vecMax(const T* in, T* out, const size_t* shape, size_t axis,
   template void vecMax<elem>(const elem*, elem*, const size_t*, size_t, size_t);
 
 #include "include/lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST TYPES()
+#define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_REDUCT, , TYPES_LIST)
 
 #undef INSTANTIATE_REDUCT
-#undef TYPES
 // clang-format on
 
 }  // namespace lmp::tensor::detail::cuda

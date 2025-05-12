@@ -2,7 +2,7 @@
 
 namespace lmp::tensor::detail::native {
 
-DEFINE_DISPATCH(empty_stub);
+LMP_DEFINE_DISPATCH(empty_stub);
 
 DataPtr empty_cpu(size_t byte_size) {
   void* ptr_ = ::operator new(byte_size);

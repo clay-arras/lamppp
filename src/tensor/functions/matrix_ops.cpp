@@ -5,8 +5,8 @@
 
 namespace lmp::tensor::ops {
 
-DEFINE_DISPATCH(matmul_stub);
-DEFINE_DISPATCH(transpose_stub);
+LMP_DEFINE_DISPATCH(matmul_stub);
+LMP_DEFINE_DISPATCH(transpose_stub);
 
 TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
@@ -26,11 +26,11 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = type_upcast(a.type(), b.type());
 
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    return DISPATCH_ALL_TYPES(b.type(), [&] {
+    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type_t = scalar_t;
         Storage c_storage(m * n * sizeof(out_type_t), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::cudaMatMul<a_type_t, b_type_t, out_type_t>(
@@ -57,7 +57,7 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
 
   DataType out_dtype = a.type();
 
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c_storage(m * n * sizeof(scalar_t_), DeviceType::CUDA);
     ::lmp::tensor::detail::cuda::cudaTranspose<scalar_t_>(

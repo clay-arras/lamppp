@@ -5,16 +5,16 @@
 
 namespace lmp::tensor::ops {
 
-DEFINE_DISPATCH(log_stub);
-DEFINE_DISPATCH(exp_stub);
-DEFINE_DISPATCH(relu_stub);
+LMP_DEFINE_DISPATCH(log_stub);
+LMP_DEFINE_DISPATCH(exp_stub);
+LMP_DEFINE_DISPATCH(relu_stub);
 
 TensorImpl log_cpu(const TensorImpl& a) {
   assert(false && "Not Implemented");
 }
 
 TensorImpl log_cuda(const TensorImpl& a) {
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
     ::lmp::tensor::detail::cuda::vecLog<scalar_t_>(
@@ -29,7 +29,7 @@ TensorImpl exp_cpu(const TensorImpl& a) {
 }
 
 TensorImpl exp_cuda(const TensorImpl& a) {
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
     ::lmp::tensor::detail::cuda::vecExp<scalar_t_>(
@@ -44,7 +44,7 @@ TensorImpl relu_cpu(const TensorImpl& a) {
 }
 
 TensorImpl relu_cuda(const TensorImpl& a) {
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
     ::lmp::tensor::detail::cuda::vecRelu<scalar_t_>(

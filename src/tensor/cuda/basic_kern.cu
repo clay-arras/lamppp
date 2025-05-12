@@ -94,9 +94,8 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
                          BOOST_PP_SEQ_ELEM(2, product)*);
 
 #include "include/lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST TYPES()
+#define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
-#undef TYPES
 
 #undef INSTANTIATE
 // clang-format on

@@ -5,10 +5,10 @@
 
 namespace lmp::tensor::ops {
 
-DEFINE_DISPATCH(add_stub);
-DEFINE_DISPATCH(sub_stub);
-DEFINE_DISPATCH(mul_stub);
-DEFINE_DISPATCH(div_stub);
+LMP_DEFINE_DISPATCH(add_stub);
+LMP_DEFINE_DISPATCH(sub_stub);
+LMP_DEFINE_DISPATCH(mul_stub);
+LMP_DEFINE_DISPATCH(div_stub);
 
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
@@ -20,11 +20,11 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   // NOTE: this is absolutely horrible
   DataType out_dtype = type_upcast(a.type(), b.type());
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    return DISPATCH_ALL_TYPES(b.type(), [&] {
+    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::vecAdd<a_type_t, b_type_t, out_type>(
@@ -46,11 +46,11 @@ TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
   assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = type_upcast(a.type(), b.type());
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    return DISPATCH_ALL_TYPES(b.type(), [&] {
+    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::vecSub<a_type_t, b_type_t, out_type>(
@@ -72,11 +72,11 @@ TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
   assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = type_upcast(a.type(), b.type());
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    return DISPATCH_ALL_TYPES(b.type(), [&] {
+    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::vecMul<a_type_t, b_type_t, out_type>(
@@ -98,11 +98,11 @@ TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
   assert(a.shape() == b.shape() && "Shape mismatch");
 
   DataType out_dtype = type_upcast(a.type(), b.type());
-  return DISPATCH_ALL_TYPES(a.type(), [&] {
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    return DISPATCH_ALL_TYPES(b.type(), [&] {
+    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      return DISPATCH_ALL_TYPES(out_dtype, [&] {
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::vecDiv<a_type_t, b_type_t, out_type>(

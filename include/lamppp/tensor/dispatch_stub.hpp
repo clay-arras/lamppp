@@ -26,18 +26,18 @@ struct DispatchStub {
 
 }  // namespace lmp::tensor::detail
 
-#define DECLARE_DISPATCH(fn_type, stub_name) \
+#define LMP_DECLARE_DISPATCH(fn_type, stub_name) \
   extern lmp::tensor::detail::DispatchStub<fn_type> stub_name;
 
-#define DEFINE_DISPATCH(stub_name)                                         \
+#define LMP_DEFINE_DISPATCH(stub_name)                                     \
   lmp::tensor::detail::DispatchStub<typename decltype(stub_name)::fn_type> \
       stub_name;
 
-#define REGISTER_DISPATCH(stub_name, dev, kernel_fn) \
-  namespace {                                        \
-  struct _Reg##kernel_fn {                           \
-    _Reg##kernel_fn() {                              \
-      stub_name.register_kernel(dev, kernel_fn);     \
-    }                                                \
-  } _auto_reg_##kernel_fn;                           \
+#define LMP_REGISTER_DISPATCH(stub_name, dev, kernel_fn) \
+  namespace {                                            \
+  struct _Reg##kernel_fn {                               \
+    _Reg##kernel_fn() {                                  \
+      stub_name.register_kernel(dev, kernel_fn);         \
+    }                                                    \
+  } _auto_reg_##kernel_fn;                               \
   }

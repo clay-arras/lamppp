@@ -11,7 +11,7 @@ namespace lmp::tensor {
 // TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(const TensorImpl& other) {
-  DISPATCH_ALL_TYPES(other.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
     detail::native::copy_stub(other.device(), device(), other.data(), data(),
                               other.size() * sizeof(scalar_t), other.type(),
                               type());
@@ -32,7 +32,7 @@ void TensorImpl::to_(DeviceType device) {
 const size_t kMaxPrintElem = 1e2;
 void TensorImpl::print_(std::ostream& os) {
   os << "Tensor(data=[";
-  DISPATCH_ALL_TYPES(this->type_, [&] {
+  LMP_DISPATCH_ALL_TYPES(this->type_, [&] {
     size_t printSize = std::min(kMaxPrintElem, this->size());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
     detail::native::copy_stub(this->device(), DeviceType::CPU, this->data(),

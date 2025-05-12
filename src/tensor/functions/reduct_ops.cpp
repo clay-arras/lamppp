@@ -3,10 +3,10 @@
 
 namespace lmp::tensor::ops {
 
-DEFINE_DISPATCH(sum_stub);
-DEFINE_DISPATCH(mean_stub);
-DEFINE_DISPATCH(max_stub);
-DEFINE_DISPATCH(min_stub);
+LMP_DEFINE_DISPATCH(sum_stub);
+LMP_DEFINE_DISPATCH(mean_stub);
+LMP_DEFINE_DISPATCH(max_stub);
+LMP_DEFINE_DISPATCH(min_stub);
 
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis) {
   assert(false && "Not Implemented");

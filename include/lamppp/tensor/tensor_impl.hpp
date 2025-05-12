@@ -20,7 +20,7 @@ class TensorImpl {
   explicit TensorImpl(const std::vector<T>& data,
                       const std::vector<size_t>& shape, DeviceType device,
                       DataType dtype)
-      : data_(DISPATCH_ALL_TYPES(
+      : data_(LMP_DISPATCH_ALL_TYPES(
             dtype,
             [&] { return Storage(data.size() * sizeof(scalar_t), device); })),
         shape_(shape),
@@ -42,7 +42,7 @@ class TensorImpl {
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
-    DISPATCH_ALL_TYPES(dtype, [&] {
+    LMP_DISPATCH_ALL_TYPES(dtype, [&] {
       assert(data_.byte_size() / sizeof(scalar_t) == size_ &&
              "Size mismatch, product of shape must equal num elements");
     });

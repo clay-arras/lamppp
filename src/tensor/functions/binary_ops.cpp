@@ -6,12 +6,12 @@
 
 namespace lmp::tensor::ops {
 
-DEFINE_DISPATCH(equal_stub);
-DEFINE_DISPATCH(not_equal_stub);
-DEFINE_DISPATCH(greater_equal_stub);
-DEFINE_DISPATCH(less_equal_stub);
-DEFINE_DISPATCH(greater_stub);
-DEFINE_DISPATCH(less_stub);
+LMP_DEFINE_DISPATCH(equal_stub);
+LMP_DEFINE_DISPATCH(not_equal_stub);
+LMP_DEFINE_DISPATCH(greater_equal_stub);
+LMP_DEFINE_DISPATCH(less_equal_stub);
+LMP_DEFINE_DISPATCH(greater_stub);
+LMP_DEFINE_DISPATCH(less_stub);
 
 TensorImpl equal_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
@@ -23,9 +23,9 @@ TensorImpl equal_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
       ::lmp::tensor::detail::cuda::vecEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
@@ -45,9 +45,9 @@ TensorImpl not_equal_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
       ::lmp::tensor::detail::cuda::vecNotEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
@@ -67,9 +67,9 @@ TensorImpl greater_equal_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
       ::lmp::tensor::detail::cuda::vecGreaterEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
@@ -89,9 +89,9 @@ TensorImpl less_equal_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
       ::lmp::tensor::detail::cuda::vecLessEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
@@ -111,9 +111,9 @@ TensorImpl greater_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
       ::lmp::tensor::detail::cuda::vecGreaterThan<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
@@ -133,9 +133,9 @@ TensorImpl less_cuda(const TensorImpl& a, const TensorImpl& b) {
 
   DataType out_dtype = DataType::Bool;
   Storage c(a.size() * sizeof(bool), DeviceType::CUDA);
-  DISPATCH_ALL_TYPES(a.type(), [&] {
+  LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
-    DISPATCH_ALL_TYPES(b.type(), [&] {
+    LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
       ::lmp::tensor::detail::cuda::vecLessThan<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),

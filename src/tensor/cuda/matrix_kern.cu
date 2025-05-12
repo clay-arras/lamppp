@@ -59,14 +59,13 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
   template void cudaTranspose<elem>(const elem*, elem*, size_t, size_t);
 
 #include "include/lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST TYPES()
+#define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_MATMUL,
                               (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
 BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_TRANSPOSE, , TYPES_LIST)
 
 #undef INSTANTIATE_MATMUL
 #undef INSTANTIATE_TRANSPOSE
-#undef TYPES
 // clang-format on
 
 }  // namespace lmp::tensor::detail::cuda

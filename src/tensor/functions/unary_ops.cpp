@@ -3,7 +3,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 DEFINE_DISPATCH(log_stub);
 DEFINE_DISPATCH(exp_stub);
@@ -17,8 +17,9 @@ TensorImpl log_cuda(const TensorImpl& a) {
   return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
-    vecLog<scalar_t_>(a.size(), static_cast<const scalar_t_*>(a.data()),
-                      static_cast<scalar_t_*>(c.data()));
+    ::lmp::tensor::detail::cuda::vecLog<scalar_t_>(
+        a.size(), static_cast<const scalar_t_*>(a.data()),
+        static_cast<scalar_t_*>(c.data()));
     return TensorImpl(c, a.shape(), a.type());
   });
 }
@@ -31,8 +32,9 @@ TensorImpl exp_cuda(const TensorImpl& a) {
   return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
-    vecExp<scalar_t_>(a.size(), static_cast<const scalar_t_*>(a.data()),
-                      static_cast<scalar_t_*>(c.data()));
+    ::lmp::tensor::detail::cuda::vecExp<scalar_t_>(
+        a.size(), static_cast<const scalar_t_*>(a.data()),
+        static_cast<scalar_t_*>(c.data()));
     return TensorImpl(c, a.shape(), a.type());
   });
 }
@@ -45,8 +47,9 @@ TensorImpl relu_cuda(const TensorImpl& a) {
   return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c(a.size() * sizeof(scalar_t_), DeviceType::CUDA);
-    vecRelu<scalar_t_>(a.size(), static_cast<const scalar_t_*>(a.data()),
-                       static_cast<scalar_t_*>(c.data()));
+    ::lmp::tensor::detail::cuda::vecRelu<scalar_t_>(
+        a.size(), static_cast<const scalar_t_*>(a.data()),
+        static_cast<scalar_t_*>(c.data()));
     return TensorImpl(c, a.shape(), a.type());
   });
 }
@@ -66,4 +69,4 @@ Tensor log(const Tensor& a) {
       log_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

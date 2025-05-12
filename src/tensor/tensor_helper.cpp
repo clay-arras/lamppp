@@ -1,7 +1,7 @@
 #include "include/lamppp/tensor/tensor_helper.hpp"
 #include "include/lamppp/tensor/scalar.hpp"
 
-namespace autograd {
+namespace lmp::tensor {
 
 Tensor full_like(const Tensor& tensor, Scalar scalar) {
   std::vector<Scalar> data(tensor.size(), scalar);
@@ -16,4 +16,4 @@ Tensor zeros_like(const Tensor& tensor) {
   return full_like(tensor, 0);
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor

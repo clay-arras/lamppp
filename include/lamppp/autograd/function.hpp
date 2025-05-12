@@ -4,7 +4,7 @@
 #include <memory>
 #include "variable.hpp"
 
-namespace autograd {
+namespace lmp::autograd {
 
 class Variable;
 struct Function;
@@ -21,4 +21,4 @@ struct Function : public std::enable_shared_from_this<Function> {
   }
 };
 
-}  // namespace autograd
+}  // namespace lmp::autograd

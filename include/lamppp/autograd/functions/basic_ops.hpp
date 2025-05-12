@@ -3,7 +3,7 @@
 #include <include/lamppp/autograd/forward_function.hpp>
 #include <include/lamppp/autograd/function.hpp>
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 struct AddBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
@@ -23,22 +23,22 @@ struct DivideBackward : public Function {
 
 struct Add : public ForwardFunction<Add> {
   using DefaultBackward = AddBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 struct Subtract : public ForwardFunction<Subtract> {
   using DefaultBackward = SubtractBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 struct Multiply : public ForwardFunction<Multiply> {
   using DefaultBackward = MultiplyBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 struct Divide : public ForwardFunction<Divide> {
   using DefaultBackward = DivideBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 inline Variable add(const Variable& a, const Variable& b) {
@@ -57,4 +57,4 @@ inline Variable div(const Variable& a, const Variable& b) {
   return VariableOpFact::apply<Divide>({a, b})[0];
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

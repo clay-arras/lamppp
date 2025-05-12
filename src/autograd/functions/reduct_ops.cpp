@@ -2,7 +2,7 @@
 #include <cassert>
 #include "include/lamppp/autograd/variable.hpp"
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 variable_list SummationBackward::apply(
     const variable_list&
@@ -97,18 +97,18 @@ variable_list MaximumBackward::apply(
   return grad_inputs;
 }
 
-Tensor Summation::execute(const variable_list& inputs) const {
+tensor::Tensor Summation::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
-  return sum(self.data(), axis);
+  return tensor::ops::sum(self.data(), axis);
 }
 
-Tensor Maximum::execute(const variable_list& inputs) const {
+tensor::Tensor Maximum::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
-  return max(self.data(), axis);
+  return tensor::ops::max(self.data(), axis);
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

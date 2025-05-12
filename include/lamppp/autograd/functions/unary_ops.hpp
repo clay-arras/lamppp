@@ -4,7 +4,7 @@
 #include "include/lamppp/autograd/function.hpp"
 #include "include/lamppp/autograd/functions/overloads.hpp"
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 struct ExponentialBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
@@ -20,17 +20,17 @@ struct ReLUBackward : public Function {
 
 struct Exponential : public ForwardFunction<Exponential> {
   using DefaultBackward = ExponentialBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 struct Logarithm : public ForwardFunction<Logarithm> {
   using DefaultBackward = LogarithmBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 struct ReLU : public ForwardFunction<ReLU> {
   using DefaultBackward = ReLUBackward;
-  static Tensor execute(const variable_list& inputs);
+  static tensor::Tensor execute(const variable_list& inputs);
 };
 
 inline Variable exp(const Variable& a) {
@@ -45,4 +45,4 @@ inline Variable relu(const Variable& a) {
   return VariableOpFact::apply<ReLU>({a})[0];
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

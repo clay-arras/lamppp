@@ -1,7 +1,7 @@
 #include "include/lamppp/tensor/functions/reduct_ops.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 DEFINE_DISPATCH(sum_stub);
 DEFINE_DISPATCH(mean_stub);
@@ -60,4 +60,4 @@ Tensor min(const Tensor& a, size_t axis) {
       min_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a), axis)));
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

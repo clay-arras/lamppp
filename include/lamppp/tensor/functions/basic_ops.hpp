@@ -5,7 +5,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 using add_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
 using sub_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
@@ -46,4 +46,4 @@ Tensor sub(const Tensor& a, const Tensor& b);
 Tensor mul(const Tensor& a, const Tensor& b);
 Tensor div(const Tensor& a, const Tensor& b);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

@@ -1,6 +1,6 @@
 #include "include/lamppp/tensor/native/empty.cuh"
 
-namespace autograd {
+namespace lmp::tensor::detail::native {
 
 DEFINE_DISPATCH(empty_stub);
 
@@ -16,4 +16,4 @@ DataPtr empty_cuda(size_t byte_size) {
                            [](void* ptr) { cudaFree(ptr); }));
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::native

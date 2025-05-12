@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <ostream>
 
+namespace lmp::tensor {
+
 enum class DeviceType : uint8_t { CPU = 0, CUDA = 1 };
 
 inline std::ostream& operator<<(std::ostream& os, DeviceType device) {
@@ -19,3 +21,5 @@ inline std::ostream& operator<<(std::ostream& os, DeviceType device) {
   }
   return os;
 }
+
+}  // namespace lmp::tensor

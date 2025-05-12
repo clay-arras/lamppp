@@ -4,7 +4,7 @@
 #include "function.hpp"
 #include "variable.hpp"
 
-namespace autograd {
+namespace lmp::autograd {
 
 template <typename Derived>
 struct ForwardFunction : public Function {
@@ -34,4 +34,4 @@ struct ForwardFunction : public Function {
   }
 };
 
-}  // namespace autograd
+}  // namespace lmp::autograd

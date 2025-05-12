@@ -4,8 +4,7 @@
 
 #ifdef __cplusplus
 
-namespace autograd {
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename T>
 __global__ void vecSumKernel(const T* in, T* out, const size_t* shape,
@@ -21,7 +20,6 @@ template <typename T>
 void vecMax(const T* in, T* out, const size_t* shape, size_t axis,
             size_t ndims);
 
-}  // namespace cuda
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda
 
 #endif

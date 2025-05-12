@@ -4,6 +4,8 @@
 #include <ostream>
 #include <stdfloat>
 
+namespace lmp::tensor {
+
 enum class DataType : uint8_t {
   Bool = 0,
   Int16 = 1,
@@ -72,3 +74,5 @@ inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
   }
   return os;
 }
+
+}  // namespace lmp::tensor

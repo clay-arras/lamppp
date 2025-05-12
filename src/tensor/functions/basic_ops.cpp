@@ -3,7 +3,7 @@
 #include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 DEFINE_DISPATCH(add_stub);
 DEFINE_DISPATCH(sub_stub);
@@ -27,7 +27,7 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
       return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
-        vecAdd<a_type_t, b_type_t, out_type>(
+        ::lmp::tensor::detail::cuda::vecAdd<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
@@ -53,7 +53,7 @@ TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
       return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
-        vecSub<a_type_t, b_type_t, out_type>(
+        ::lmp::tensor::detail::cuda::vecSub<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
@@ -79,7 +79,7 @@ TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
       return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
-        vecMul<a_type_t, b_type_t, out_type>(
+        ::lmp::tensor::detail::cuda::vecMul<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
@@ -105,7 +105,7 @@ TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
       return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
         Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
-        vecDiv<a_type_t, b_type_t, out_type>(
+        ::lmp::tensor::detail::cuda::vecDiv<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type*>(c.data()));
@@ -143,4 +143,4 @@ Tensor div(const Tensor& a, const Tensor& b) {
                *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

@@ -5,14 +5,15 @@
 #include "include/lamppp/autograd/variable.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable exp_var(exp(self.data()));  // TODO(nlin): these can all be cached!!!
+  Variable exp_var(
+      tensor::ops::exp(self.data()));  // TODO(nlin): these can all be cached!!!
   self.incr_grad(
       exp_var.data() *
       grad.grad());  // TODO(nlin): maybe will this result in recursion? higher order derivatives
@@ -45,25 +46,25 @@ variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
-Tensor Exponential::execute(const variable_list& inputs) {
+tensor::Tensor Exponential::execute(const variable_list& inputs) {
   assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
-  return exp(self.data());
+  return tensor::ops::exp(self.data());
 }
 
-Tensor Logarithm::execute(const variable_list& inputs) {
+tensor::Tensor Logarithm::execute(const variable_list& inputs) {
   assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
-  return log(self.data());
+  return tensor::ops::log(self.data());
 }
 
-Tensor ReLU::execute(const variable_list& inputs) {
+tensor::Tensor ReLU::execute(const variable_list& inputs) {
   assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
-  return relu(self.data());
+  return tensor::ops::relu(self.data());
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

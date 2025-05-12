@@ -5,7 +5,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 using sum_fn = TensorImpl (*)(const TensorImpl&, size_t axis);
 using mean_fn = TensorImpl (*)(const TensorImpl&, size_t axis);
@@ -46,4 +46,4 @@ Tensor mean(const Tensor& a, size_t axis);
 Tensor max(const Tensor& a, size_t axis);
 Tensor min(const Tensor& a, size_t axis);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

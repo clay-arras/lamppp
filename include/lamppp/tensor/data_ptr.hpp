@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 
-namespace autograd {
+namespace lmp::tensor::detail {
 
 struct DataPtr {
   void* data;
@@ -27,4 +27,4 @@ struct DataPtr {
   }
 };
 
-}  // namespace autograd
+}  // namespace lmp::tensor::detail

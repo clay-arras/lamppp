@@ -4,9 +4,7 @@
 
 #ifdef __cplusplus
 
-namespace autograd {
-
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename U, typename V, typename OutType>
 __global__ void vecAddKernel(size_t size, const U* A, const V* B, OutType* C);
@@ -28,8 +26,6 @@ __global__ void vecDivKernel(size_t size, const U* A, const V* B, OutType* C);
 template <typename U, typename V, typename OutType>
 void vecDiv(size_t size, const U* A, const V* B, OutType* C);
 
-}  // namespace cuda
-
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda
 
 #endif

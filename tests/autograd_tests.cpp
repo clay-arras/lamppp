@@ -8,9 +8,11 @@
 #include "include/lamppp/autograd/core.hpp"
 #include "include/lamppp/tensor/core.hpp"
 
-using autograd::Scalar;
-using autograd::Tensor;
-using autograd::Variable;
+using lmp::autograd::Variable;
+using lmp::tensor::DataType;
+using lmp::tensor::DeviceType;
+using lmp::tensor::Scalar;
+using lmp::tensor::Tensor;
 
 const Scalar kEps = 1e-5;
 
@@ -121,7 +123,7 @@ TEST_F(VariableOpTest, DivTest) {
 }
 
 TEST_F(VariableOpTest, ReluTest) {
-  Variable res = autograd::relu(b);
+  Variable res = lmp::autograd::ops::relu(b);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
                                    {0.0, 4.0, 0.0, 0.0, 3.0, 0.5}))
@@ -136,7 +138,7 @@ TEST_F(VariableOpTest, ReluTest) {
 }
 
 TEST_F(VariableOpTest, ExpTest) {
-  Variable res = autograd::exp(b);
+  Variable res = lmp::autograd::ops::exp(b);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
                                    {exp(-1.0), exp(4.0), exp(-2.0), exp(0.0),
@@ -153,7 +155,7 @@ TEST_F(VariableOpTest, ExpTest) {
 }
 
 TEST_F(VariableOpTest, LogTest) {
-  Variable res = autograd::log(a);
+  Variable res = lmp::autograd::ops::log(a);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(
                   ::testing::FloatNear(kEps),
@@ -173,7 +175,7 @@ TEST_F(VariableOpTest, MatMulTest) {
   Tensor b_mat =
       Tensor(std::vector<Scalar>{-1.0, 4.0}, std::vector<size_t>{2u, 1u});
   Variable b_mat_var(b_mat, true);
-  Variable res = autograd::matmul(a, b_mat_var);
+  Variable res = lmp::autograd::ops::matmul(a, b_mat_var);
   EXPECT_THAT(
       getTenData(res.data()),
       ::testing::Pointwise(::testing::FloatNear(kEps), {7.0, 13.0, 3.0}))
@@ -191,7 +193,7 @@ TEST_F(VariableOpTest, MatMulTest) {
 }
 
 TEST_F(VariableOpTest, TransposeTest) {
-  Variable res = autograd::transpose(a);
+  Variable res = lmp::autograd::ops::transpose(a);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
                                    {1.0, 3.0, 5.0, 2.0, 4.0, 2.0}))
@@ -206,7 +208,7 @@ TEST_F(VariableOpTest, TransposeTest) {
 }
 
 TEST_F(VariableOpTest, SumTest) {
-  Variable res = autograd::sum(a, 1);
+  Variable res = lmp::autograd::ops::sum(a, 1);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps), {3.0, 7.0, 5.0}))
       << "Forward data mismatch";

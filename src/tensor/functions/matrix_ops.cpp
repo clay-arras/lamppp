@@ -3,7 +3,7 @@
 #include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 DEFINE_DISPATCH(matmul_stub);
 DEFINE_DISPATCH(transpose_stub);
@@ -33,7 +33,7 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
       return DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type_t = scalar_t;
         Storage c_storage(m * n * sizeof(out_type_t), DeviceType::CUDA);
-        cudaMatMul<a_type_t, b_type_t, out_type_t>(
+        ::lmp::tensor::detail::cuda::cudaMatMul<a_type_t, b_type_t, out_type_t>(
             static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
             static_cast<out_type_t*>(c_storage.data()), m, n, k);
@@ -60,8 +60,9 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
   return DISPATCH_ALL_TYPES(a.type(), [&] {
     using scalar_t_ = scalar_t;
     Storage c_storage(m * n * sizeof(scalar_t_), DeviceType::CUDA);
-    cudaTranspose<scalar_t_>(static_cast<const scalar_t_*>(a.data()),
-                             static_cast<scalar_t_*>(c_storage.data()), m, n);
+    ::lmp::tensor::detail::cuda::cudaTranspose<scalar_t_>(
+        static_cast<const scalar_t_*>(a.data()),
+        static_cast<scalar_t_*>(c_storage.data()), m, n);
     return TensorImpl(c_storage, {n, m}, out_dtype);
   });
 }
@@ -78,4 +79,4 @@ Tensor transpose(const Tensor& a) {
       transpose_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

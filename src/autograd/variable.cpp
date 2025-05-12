@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_set>
 
-namespace autograd {
+namespace lmp::autograd {
 
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
@@ -50,4 +50,4 @@ std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   return os;
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd

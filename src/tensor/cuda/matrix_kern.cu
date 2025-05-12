@@ -3,9 +3,7 @@
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/matrix_kern.cuh"
 
-namespace autograd {
-
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename U, typename V, typename OutType>
 __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
@@ -71,6 +69,4 @@ BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_TRANSPOSE, , TYPES_LIST)
 #undef TYPES
 // clang-format on
 
-}  // namespace cuda
-
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda

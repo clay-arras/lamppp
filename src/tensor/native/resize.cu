@@ -5,7 +5,7 @@
 #include <cstring>
 #include <new>
 
-namespace autograd {
+namespace lmp::tensor::detail::native {
 
 DEFINE_DISPATCH(resize_stub);
 
@@ -26,4 +26,4 @@ void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   dptr.data = ptr;
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::native

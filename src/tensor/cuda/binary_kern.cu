@@ -4,9 +4,7 @@
 #include "include/lamppp/tensor/cuda/binary_kern.cuh"
 #include "include/lamppp/tensor/data_type.hpp"
 
-namespace autograd {
-
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename U, typename V>
 __global__ void vecEqualKernel(size_t size, const U* A, const V* B, bool* C) {
@@ -139,6 +137,4 @@ BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COMPARISON, (TYPES_LIST)(TYPES_LIST))
 #undef INSTANTIATE_COMPARISON
 // clang-format on
 
-}  // namespace cuda
-
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda

@@ -1,7 +1,7 @@
 #include "include/lamppp/tensor/storage.hpp"
 #include "include/lamppp/tensor/native/resize.cuh"
 
-namespace autograd {
+namespace lmp::tensor {
 
 void* Storage::data() const {
   return impl->data();
@@ -25,7 +25,7 @@ std::ostream& operator<<(std::ostream& os, const Storage& obj) {
 }
 
 void Storage::StorageImpl::resize_(size_t nsize) {
-  resize_stub(device_, data_ptr_, byte_size_, nsize);
+  detail::native::resize_stub(device_, data_ptr_, byte_size_, nsize);
   byte_size_ = nsize;
 }
 
@@ -34,4 +34,4 @@ void Storage::StorageImpl::print_(std::ostream& os) {
      << "device=" << device() << ")";
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor

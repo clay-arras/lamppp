@@ -1,7 +1,7 @@
 #pragma once
 
-namespace autograd {
+namespace lmp::tensor {
 
 using Scalar = double;
 
-}  // namespace autograd
+}  // namespace lmp::tensor

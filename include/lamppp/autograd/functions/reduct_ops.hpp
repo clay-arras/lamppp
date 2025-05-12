@@ -4,7 +4,7 @@
 #include "include/lamppp/autograd/function.hpp"
 #include "include/lamppp/autograd/functions/overloads.hpp"
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 struct SummationBackward : public Function {
   size_t axis;
@@ -22,14 +22,14 @@ struct Summation : public ForwardFunction<Summation> {
   using DefaultBackward = SummationBackward;
   size_t axis;
   explicit Summation(size_t axis) : axis(axis) {}
-  Tensor execute(const variable_list& inputs) const;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Maximum : public ForwardFunction<Maximum> {
   using DefaultBackward = MaximumBackward;
   size_t axis;
   explicit Maximum(size_t axis) : axis(axis) {}
-  Tensor execute(const variable_list& inputs) const;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 inline Variable sum(const Variable& a, size_t axis) {
@@ -40,4 +40,4 @@ inline Variable max(const Variable& a, size_t axis) {
   return VariableOpFact::apply<Maximum>({a}, axis)[0];
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

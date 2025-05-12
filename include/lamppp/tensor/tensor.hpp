@@ -10,7 +10,7 @@
 #include "tensor_helper.hpp"
 #include "tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor {
 
 namespace detail {
 
@@ -43,8 +43,8 @@ class Tensor {
 
       scalar_t* original_data =
           static_cast<scalar_t*>(malloc(size() * sizeof(scalar_t)));
-      copy_stub(device(), DeviceType::CPU, data(), original_data, size(),
-                type(), type());
+      detail::native::copy_stub(device(), DeviceType::CPU, data(),
+                                original_data, size(), type(), type());
 
       for (size_t i = 0; i < impl_->size(); ++i) {
         converted_data[i] = static_cast<T>(original_data[i]);
@@ -80,4 +80,4 @@ struct UnsafeTensorAccessor {
 
 }  // namespace detail
 
-}  // namespace autograd
+}  // namespace lmp::tensor

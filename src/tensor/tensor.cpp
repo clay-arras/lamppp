@@ -2,7 +2,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace autograd {
+namespace lmp::tensor {
 
 void Tensor::copy(const Tensor& other) {
   impl_->copy_(*other.impl_);
@@ -21,4 +21,4 @@ std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
   return os;
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor

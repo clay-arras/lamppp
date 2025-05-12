@@ -3,9 +3,7 @@
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/unary_kern.cuh"
 
-namespace autograd {
-
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 // TODO: gotta figure out a way to do this without having static cast to double in the kernel
 template <typename T>
@@ -67,6 +65,4 @@ BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_UNARY, , TYPES_LIST)
 #undef TYPES
 // clang-format on
 
-}  // namespace cuda
-
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda

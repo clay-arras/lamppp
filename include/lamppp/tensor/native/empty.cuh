@@ -4,7 +4,7 @@
 #include "include/lamppp/tensor/device_type.hpp"
 #include "include/lamppp/tensor/dispatch_stub.hpp"
 
-namespace autograd {
+namespace lmp::tensor::detail::native {
 
 using empty_fn = DataPtr (*)(size_t);
 DECLARE_DISPATCH(empty_fn, empty_stub);
@@ -15,4 +15,4 @@ DataPtr empty_cuda(size_t byte_size);
 REGISTER_DISPATCH(empty_stub, DeviceType::CPU, empty_cpu);
 REGISTER_DISPATCH(empty_stub, DeviceType::CUDA, empty_cuda);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::native

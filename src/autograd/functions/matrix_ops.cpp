@@ -3,7 +3,7 @@
 #include "include/lamppp/autograd/function.hpp"
 #include "include/lamppp/autograd/variable.hpp"
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 variable_list MatrixMultiplicationBackward::apply(
     const variable_list& gradOutputs) {
@@ -12,8 +12,10 @@ variable_list MatrixMultiplicationBackward::apply(
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  self.incr_grad(matmul(grad.grad(), transpose(other.data())));
-  other.incr_grad(matmul(transpose(self.data()), grad.grad()));
+  self.incr_grad(
+      tensor::ops::matmul(grad.grad(), tensor::ops::transpose(other.data())));
+  other.incr_grad(
+      tensor::ops::matmul(tensor::ops::transpose(self.data()), grad.grad()));
 
   variable_list grad_inputs =
       {};  // TODO(nlin): remove these maybe, this isn't right
@@ -25,25 +27,25 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  self.incr_grad(transpose(grad.grad()));
+  self.incr_grad(tensor::ops::transpose(grad.grad()));
 
   variable_list grad_inputs = {};
   return grad_inputs;
 }
 
-Tensor MatrixMultiplication::execute(const variable_list& inputs) {
+tensor::Tensor MatrixMultiplication::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
-  return matmul(self.data(), other.data());
+  return tensor::ops::matmul(self.data(), other.data());
 }
 
-Tensor Transpose::execute(const variable_list& inputs) {
+tensor::Tensor Transpose::execute(const variable_list& inputs) {
   assert(inputs.size() == 1 && "Function must take one input");
   const Variable& self = inputs[0];
 
-  return transpose(self.data());
+  return tensor::ops::transpose(self.data());
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

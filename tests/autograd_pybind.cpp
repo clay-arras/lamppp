@@ -7,8 +7,9 @@
 
 namespace py = pybind11;
 
-using autograd::Tensor;
-using autograd::Variable;
+using lmp::autograd::Variable;
+using lmp::tensor::DataType;
+using lmp::tensor::Tensor;
 using std::ostringstream;
 using std::vector;
 
@@ -39,56 +40,39 @@ Variable div_cust(const Variable& a, const Variable& b) {
 }
 
 Variable relu_cust(const Variable& a) {
-  Variable c = autograd::relu(a);
+  Variable c = lmp::autograd::ops::relu(a);
   c.backward();
   return c;
 }
 
 Variable exp_cust(const Variable& a) {
-  Variable c = autograd::exp(a);
+  Variable c = lmp::autograd::ops::exp(a);
   c.backward();
   return c;
 }
 
 Variable log_cust(const Variable& a) {
-  Variable c = autograd::log(a);
+  Variable c = lmp::autograd::ops::log(a);
   c.backward();
   return c;
 }
 
 Variable matmul_cust(const Variable& a, const Variable& b) {
-  Variable c = autograd::matmul(a, b);
+  Variable c = lmp::autograd::ops::matmul(a, b);
   c.backward();
   return c;
 }
 
 Variable transpose_cust(const Variable& a) {
-  Variable c = autograd::transpose(a);
+  Variable c = lmp::autograd::ops::transpose(a);
   c.backward();
   return c;
 }
 
 Variable sum_cust(const Variable& a, int axis) {
-  Variable c = autograd::sum(a, axis);
+  Variable c = lmp::autograd::ops::sum(a, axis);
   c.backward();
   return c;
-}
-
-// Tensor equivalents
-Tensor add_tensor(const Tensor& a, const Tensor& b) {
-  return a + b;
-}
-
-Tensor sub_tensor(const Tensor& a, const Tensor& b) {
-  return a - b;
-}
-
-Tensor mul_tensor(const Tensor& a, const Tensor& b) {
-  return a * b;
-}
-
-Tensor div_tensor(const Tensor& a, const Tensor& b) {
-  return a / b;
 }
 
 }  // namespace
@@ -137,7 +121,6 @@ PYBIND11_MODULE(lamppp, m) {
         return oss.str();
       });
 
-  // Variable operations
   m.def("add", &add_cust);
   m.def("sub", &sub_cust);
   m.def("mul", &mul_cust);
@@ -148,10 +131,4 @@ PYBIND11_MODULE(lamppp, m) {
   m.def("matmul", &matmul_cust);
   m.def("transpose", &transpose_cust);
   m.def("sum", &sum_cust);
-
-  // Tensor operations
-  m.def("add_tensor", &add_tensor);
-  m.def("sub_tensor", &sub_tensor);
-  m.def("mul_tensor", &mul_tensor);
-  m.def("div_tensor", &div_tensor);
 }

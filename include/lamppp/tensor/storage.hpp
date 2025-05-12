@@ -9,7 +9,7 @@
 #include "include/lamppp/tensor/device_type.hpp"
 #include "include/lamppp/tensor/native/empty.cuh"
 
-namespace autograd {
+namespace lmp::tensor {
 
 class Storage {
  public:
@@ -31,7 +31,7 @@ class Storage {
 class Storage::StorageImpl {
  public:
   explicit StorageImpl(size_t byte_size, DeviceType device)
-      : data_ptr_(empty_stub(device, byte_size)),
+      : data_ptr_(detail::native::empty_stub(device, byte_size)),
         byte_size_(byte_size),
         device_(device) {}
 
@@ -43,9 +43,9 @@ class Storage::StorageImpl {
   void print_(std::ostream& os);
 
  private:
-  DataPtr data_ptr_;
+  detail::DataPtr data_ptr_;
   size_t byte_size_;
   DeviceType device_;
 };
 
-}  // namespace autograd
+}  // namespace lmp::tensor

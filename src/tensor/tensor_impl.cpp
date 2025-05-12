@@ -6,19 +6,20 @@
 #include "include/lamppp/tensor/native/copy.cuh"
 #include "include/lamppp/tensor/native/fill.cuh"
 
-namespace autograd {
+namespace lmp::tensor {
 
 // TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(const TensorImpl& other) {
   DISPATCH_ALL_TYPES(other.type(), [&] {
-    copy_stub(other.device(), device(), other.data(), data(),
-              other.size() * sizeof(scalar_t), other.type(), type());
+    detail::native::copy_stub(other.device(), device(), other.data(), data(),
+                              other.size() * sizeof(scalar_t), other.type(),
+                              type());
   });
 }
 
 void TensorImpl::fill_(Scalar item) {
-  fill_stub(device(), data(), size(), item, type());
+  detail::native::fill_stub(device(), data(), size(), item, type());
 }
 
 // NOTE: everything should be destroyed by default destructors
@@ -34,9 +35,9 @@ void TensorImpl::print_(std::ostream& os) {
   DISPATCH_ALL_TYPES(this->type_, [&] {
     size_t printSize = std::min(kMaxPrintElem, this->size());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
-    copy_stub(this->device(), DeviceType::CPU, this->data(),
-              static_cast<void*>(data_ptr), printSize * sizeof(scalar_t),
-              type(), type());
+    detail::native::copy_stub(this->device(), DeviceType::CPU, this->data(),
+                              static_cast<void*>(data_ptr),
+                              printSize * sizeof(scalar_t), type(), type());
     for (size_t i = 0; i < printSize; i++) {
       os << data_ptr[i];
       if (i < printSize - 1) {
@@ -56,4 +57,4 @@ void TensorImpl::print_(std::ostream& os) {
   os << "], dtype=" << this->type_ << "), device=" << this->device() << ")";
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor

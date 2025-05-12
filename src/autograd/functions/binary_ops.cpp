@@ -3,7 +3,7 @@
 #include "include/lamppp/autograd/variable.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 
-namespace autograd {
+namespace lmp::autograd::ops {
 
 variable_list EqualBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
@@ -65,7 +65,7 @@ variable_list GreaterEqualBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
-Tensor Equal::execute(const variable_list& inputs) {
+tensor::Tensor Equal::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
@@ -73,7 +73,7 @@ Tensor Equal::execute(const variable_list& inputs) {
   return lhs.data() == rhs.data();
 }
 
-Tensor Less::execute(const variable_list& inputs) {
+tensor::Tensor Less::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
@@ -81,7 +81,7 @@ Tensor Less::execute(const variable_list& inputs) {
   return lhs.data() < rhs.data();
 }
 
-Tensor LessEqual::execute(const variable_list& inputs) {
+tensor::Tensor LessEqual::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
@@ -89,7 +89,7 @@ Tensor LessEqual::execute(const variable_list& inputs) {
   return lhs.data() <= rhs.data();
 }
 
-Tensor NotEqual::execute(const variable_list& inputs) {
+tensor::Tensor NotEqual::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
@@ -97,7 +97,7 @@ Tensor NotEqual::execute(const variable_list& inputs) {
   return lhs.data() != rhs.data();
 }
 
-Tensor Greater::execute(const variable_list& inputs) {
+tensor::Tensor Greater::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
@@ -105,7 +105,7 @@ Tensor Greater::execute(const variable_list& inputs) {
   return lhs.data() > rhs.data();
 }
 
-Tensor GreaterEqual::execute(const variable_list& inputs) {
+tensor::Tensor GreaterEqual::execute(const variable_list& inputs) {
   assert(inputs.size() == 2 && "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
@@ -113,4 +113,4 @@ Tensor GreaterEqual::execute(const variable_list& inputs) {
   return lhs.data() >= rhs.data();
 }
 
-}  // namespace autograd
+}  // namespace lmp::autograd::ops

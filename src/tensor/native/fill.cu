@@ -6,7 +6,7 @@
 
 #include "include/lamppp/tensor/native/fill.cuh"
 
-namespace autograd {
+namespace lmp::tensor::detail::native {
 
 DEFINE_DISPATCH(fill_stub);
 
@@ -24,4 +24,4 @@ void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
   });
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::native

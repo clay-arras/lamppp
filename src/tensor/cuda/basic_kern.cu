@@ -4,9 +4,7 @@
 #include "include/lamppp/tensor/cuda/basic_kern.cuh"
 #include "include/lamppp/tensor/data_type.hpp"
 
-namespace autograd {
-
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename U, typename V, typename OutType>
 __global__ void vecAddKernel(size_t size, const U* A, const V* B, OutType* C) {
@@ -103,5 +101,4 @@ BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
 #undef INSTANTIATE
 // clang-format on
 
-}  // namespace cuda
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda

@@ -5,7 +5,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 using relu_fn = TensorImpl (*)(const TensorImpl&);
 using exp_fn = TensorImpl (*)(const TensorImpl&);
@@ -37,4 +37,4 @@ Tensor relu(const Tensor& a);
 Tensor exp(const Tensor& a);
 Tensor log(const Tensor& a);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

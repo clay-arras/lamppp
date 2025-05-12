@@ -3,34 +3,34 @@
 #include <numeric>
 #include <random>
 
-namespace autograd {
+namespace lmp::autograd {
 
-inline namespace functional {
-
-Variable zeros(const std::vector<size_t>& shape, DeviceType device,
-               DataType dtype, bool requires_grad) {
+Variable zeros(const std::vector<size_t>& shape, tensor::DeviceType device,
+               tensor::DataType dtype, bool requires_grad) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());
-  return Variable(Tensor(std::vector<Scalar>(sz, 0.0), shape, device, dtype),
+  return Variable(tensor::Tensor(std::vector<tensor::Scalar>(sz, 0.0), shape,
+                                 device, dtype),
                   requires_grad);
 }
 
-Variable ones(const std::vector<size_t>& shape, DeviceType device,
-              DataType dtype, bool requires_grad) {
+Variable ones(const std::vector<size_t>& shape, tensor::DeviceType device,
+              tensor::DataType dtype, bool requires_grad) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());
-  return Variable(Tensor(std::vector<Scalar>(sz, 1.0), shape, device, dtype),
+  return Variable(tensor::Tensor(std::vector<tensor::Scalar>(sz, 1.0), shape,
+                                 device, dtype),
                   requires_grad);
 }
 
-Variable rand(const std::vector<size_t>& shape, DeviceType device,
-              DataType dtype, bool requires_grad) {
+Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
+              tensor::DataType dtype, bool requires_grad) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());
-  std::vector<Scalar> rand_vec(sz);
+  std::vector<tensor::Scalar> rand_vec(sz);
   std::random_device rd;
   std::mt19937 gen(rd());
 
@@ -38,9 +38,8 @@ Variable rand(const std::vector<size_t>& shape, DeviceType device,
   std::generate(rand_vec.begin(), rand_vec.end(),
                 [&]() { return distrib(gen); });
 
-  return Variable(Tensor(rand_vec, shape, device, dtype), requires_grad);
+  return Variable(tensor::Tensor(rand_vec, shape, device, dtype),
+                  requires_grad);
 }
 
-}  // namespace functional
-
-}  // namespace autograd
+}  // namespace lmp::autograd

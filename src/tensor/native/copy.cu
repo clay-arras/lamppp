@@ -4,7 +4,7 @@
 #include "include/lamppp/tensor/dispatch_type.hpp"
 #include "include/lamppp/tensor/native/copy.cuh"
 
-namespace autograd {
+namespace lmp::tensor::detail::native {
 
 void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
               DataType src_dtype, DataType dest_dtype) {
@@ -108,4 +108,4 @@ EXPAND(TYPES(TYPES2, CAST))
 
 DEFINE_DISPATCH(copy_stub);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::native

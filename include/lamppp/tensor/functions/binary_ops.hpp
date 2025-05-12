@@ -5,7 +5,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 using equal_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
 using not_equal_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
@@ -64,4 +64,4 @@ Tensor less_equal(const Tensor& a, const Tensor& b);
 Tensor greater(const Tensor& a, const Tensor& b);
 Tensor less(const Tensor& a, const Tensor& b);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

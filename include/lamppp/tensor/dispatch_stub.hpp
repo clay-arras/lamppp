@@ -5,6 +5,8 @@
 #include <cstddef>
 #include "device_type.hpp"
 
+namespace lmp::tensor::detail {
+
 template <typename Fn>
 struct DispatchStub {
   using fn_type = Fn;
@@ -22,11 +24,14 @@ struct DispatchStub {
   }
 };
 
-#define DECLARE_DISPATCH(fn_type, stub_name) \
-  extern DispatchStub<fn_type> stub_name;
+}  // namespace lmp::tensor::detail
 
-#define DEFINE_DISPATCH(stub_name) \
-  DispatchStub<typename decltype(stub_name)::fn_type> stub_name;
+#define DECLARE_DISPATCH(fn_type, stub_name) \
+  extern lmp::tensor::detail::DispatchStub<fn_type> stub_name;
+
+#define DEFINE_DISPATCH(stub_name)                                         \
+  lmp::tensor::detail::DispatchStub<typename decltype(stub_name)::fn_type> \
+      stub_name;
 
 #define REGISTER_DISPATCH(stub_name, dev, kernel_fn) \
   namespace {                                        \

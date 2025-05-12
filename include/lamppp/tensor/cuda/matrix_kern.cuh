@@ -4,8 +4,7 @@
 
 #ifdef __cplusplus
 
-namespace autograd {
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename U, typename V, typename OutType>
 __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
@@ -21,7 +20,6 @@ __global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n);
 template <typename T>
 void cudaTranspose(const T* in, T* out, size_t m, size_t n);
 
-}  // namespace cuda
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda
 
 #endif

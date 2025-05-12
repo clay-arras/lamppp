@@ -5,7 +5,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 using matmul_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
 using transpose_fn = TensorImpl (*)(const TensorImpl&);
@@ -28,4 +28,4 @@ REGISTER_DISPATCH(transpose_stub, DeviceType::CUDA, transpose_cuda);
 Tensor matmul(const Tensor& a, const Tensor& b);
 Tensor transpose(const Tensor& a);
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

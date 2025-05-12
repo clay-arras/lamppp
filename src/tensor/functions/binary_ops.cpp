@@ -4,7 +4,7 @@
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
-namespace autograd {
+namespace lmp::tensor::ops {
 
 DEFINE_DISPATCH(equal_stub);
 DEFINE_DISPATCH(not_equal_stub);
@@ -27,7 +27,7 @@ TensorImpl equal_cuda(const TensorImpl& a, const TensorImpl& b) {
     using a_type_t = scalar_t;
     DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      vecEqual<a_type_t, b_type_t>(
+      ::lmp::tensor::detail::cuda::vecEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
           static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
     });
@@ -49,7 +49,7 @@ TensorImpl not_equal_cuda(const TensorImpl& a, const TensorImpl& b) {
     using a_type_t = scalar_t;
     DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      vecNotEqual<a_type_t, b_type_t>(
+      ::lmp::tensor::detail::cuda::vecNotEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
           static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
     });
@@ -71,7 +71,7 @@ TensorImpl greater_equal_cuda(const TensorImpl& a, const TensorImpl& b) {
     using a_type_t = scalar_t;
     DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      vecGreaterEqual<a_type_t, b_type_t>(
+      ::lmp::tensor::detail::cuda::vecGreaterEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
           static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
     });
@@ -93,7 +93,7 @@ TensorImpl less_equal_cuda(const TensorImpl& a, const TensorImpl& b) {
     using a_type_t = scalar_t;
     DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      vecLessEqual<a_type_t, b_type_t>(
+      ::lmp::tensor::detail::cuda::vecLessEqual<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
           static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
     });
@@ -115,7 +115,7 @@ TensorImpl greater_cuda(const TensorImpl& a, const TensorImpl& b) {
     using a_type_t = scalar_t;
     DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      vecGreaterThan<a_type_t, b_type_t>(
+      ::lmp::tensor::detail::cuda::vecGreaterThan<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
           static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
     });
@@ -137,7 +137,7 @@ TensorImpl less_cuda(const TensorImpl& a, const TensorImpl& b) {
     using a_type_t = scalar_t;
     DISPATCH_ALL_TYPES(b.type(), [&] {
       using b_type_t = scalar_t;
-      vecLessThan<a_type_t, b_type_t>(
+      ::lmp::tensor::detail::cuda::vecLessThan<a_type_t, b_type_t>(
           a.size(), static_cast<const a_type_t*>(a.data()),
           static_cast<const b_type_t*>(b.data()), static_cast<bool*>(c.data()));
     });
@@ -187,4 +187,4 @@ Tensor less(const Tensor& a, const Tensor& b) {
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 
-}  // namespace autograd
+}  // namespace lmp::tensor::ops

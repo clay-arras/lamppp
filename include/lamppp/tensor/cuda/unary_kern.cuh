@@ -4,8 +4,7 @@
 
 #ifdef __cplusplus
 
-namespace autograd {
-inline namespace cuda {
+namespace lmp::tensor::detail::cuda {
 
 template <typename T>
 __global__ void vecExpKernel(size_t size, T* in, T* out);
@@ -22,8 +21,6 @@ __global__ void vecReluKernel(size_t size, T* in, T* out);
 template <typename T>
 void vecRelu(size_t size, const T* in, T* out);
 
-}  // namespace cuda
-
-}  // namespace autograd
+}  // namespace lmp::tensor::detail::cuda
 
 #endif

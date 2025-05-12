@@ -12,7 +12,7 @@
 #include "include/lamppp/tensor/storage.hpp"
 #include "scalar.hpp"
 
-namespace autograd {
+namespace lmp::tensor {
 
 class TensorImpl {
  public:
@@ -31,8 +31,8 @@ class TensorImpl {
     assert(data.size() == size_ &&
            "Size mismatch, product of shape must equal num elements");
     DataType src_dtype = TypeMeta<T>::value;
-    copy_stub(DeviceType::CPU, device, data.data(), data_.data(), size_,
-              src_dtype, type_);
+    detail::native::copy_stub(DeviceType::CPU, device, data.data(),
+                              data_.data(), size_, src_dtype, type_);
   }
   explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                       DataType dtype)
@@ -90,4 +90,4 @@ class TensorImpl {
   std::vector<size_t> shape_;
 };
 
-}  // namespace autograd
+}  // namespace lmp::tensor

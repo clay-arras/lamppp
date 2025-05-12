@@ -21,9 +21,11 @@ class VariableOpTest : public testing::Test {
 
   void SetUp() override {
     a_data = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 2.0},
-                    std::vector<size_t>{3u, 2u});
+                    std::vector<size_t>{3u, 2u}, DeviceType::CUDA,
+                    DataType::Float32);
     b_data = Tensor(std::vector<Scalar>{-1.0, 4.0, -2.0, 0.0, 3.0, 0.5},
-                    std::vector<size_t>{3u, 2u});
+                    std::vector<size_t>{3u, 2u}, DeviceType::CUDA,
+                    DataType::Float32);
     a = Variable(a_data, true);
     b = Variable(b_data, true);
   }

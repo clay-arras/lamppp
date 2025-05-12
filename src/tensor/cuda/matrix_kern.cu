@@ -1,4 +1,5 @@
 #include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/matrix_kern.cuh"
 
@@ -48,24 +49,25 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
 }
 
 // clang-format off
-#define TYPES (bool)(int)(float)(double)
+#define INSTANTIATE_MATMUL(r, product)                                      \
+  template void                                                             \
+  cudaMatMul<BOOST_PP_SEQ_ELEM(0, product), BOOST_PP_SEQ_ELEM(1, product),  \
+             BOOST_PP_SEQ_ELEM(2, product)>(                                \
+      const BOOST_PP_SEQ_ELEM(0, product)*,                                 \
+      const BOOST_PP_SEQ_ELEM(1, product)*, BOOST_PP_SEQ_ELEM(2, product)*, \
+      size_t, size_t, size_t);
 
-#define INSTANTIATE_MATMUL(r, product)                                   \
-  template void cudaMatMul<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                           BOOST_PP_SEQ_ELEM(1, product), /* V */    \
-                           BOOST_PP_SEQ_ELEM(2, product)  /* OutType */    \
-                           >(const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                             const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                             BOOST_PP_SEQ_ELEM(2, product)*, size_t, size_t, size_t);
+#define INSTANTIATE_TRANSPOSE(r, data, elem) \
+  template void cudaTranspose<elem>(const elem*, elem*, size_t, size_t);
 
-BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_MATMUL, (TYPES)(TYPES)(TYPES))
+#include "include/lamppp/tensor/supported_types.hpp"
+#define TYPES_LIST TYPES()
+BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_MATMUL,
+                              (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
+BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_TRANSPOSE, , TYPES_LIST)
 
 #undef INSTANTIATE_MATMUL
-
-#define X(TYPE) template void cudaTranspose<TYPE>(const TYPE*, TYPE*, size_t, size_t);
-#include "include/lamppp/tensor/supported_types.def"
-#undef X
-
+#undef INSTANTIATE_TRANSPOSE
 #undef TYPES
 // clang-format on
 

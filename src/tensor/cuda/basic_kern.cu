@@ -2,6 +2,7 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/basic_kern.cuh"
+#include "include/lamppp/tensor/data_type.hpp"
 
 namespace autograd {
 
@@ -68,40 +69,38 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C) {
 }
 
 // clang-format off
-// TODO: make this fill from supported_types.def
-#define TYPES (bool)(int)(float)(double)
+#define INSTANTIATE(r, product)                                        \
+  template void vecAdd<BOOST_PP_SEQ_ELEM(0, product), /* U */          \
+                       BOOST_PP_SEQ_ELEM(1, product), /* V */          \
+                       BOOST_PP_SEQ_ELEM(2, product)  /* T */          \
+                       >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*, \
+                         const BOOST_PP_SEQ_ELEM(1, product)*,         \
+                         BOOST_PP_SEQ_ELEM(2, product)*);              \
+  template void vecSub<BOOST_PP_SEQ_ELEM(0, product), /* U */          \
+                       BOOST_PP_SEQ_ELEM(1, product), /* V */          \
+                       BOOST_PP_SEQ_ELEM(2, product)  /* T */          \
+                       >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*, \
+                         const BOOST_PP_SEQ_ELEM(1, product)*,         \
+                         BOOST_PP_SEQ_ELEM(2, product)*);              \
+  template void vecMul<BOOST_PP_SEQ_ELEM(0, product), /* U */          \
+                       BOOST_PP_SEQ_ELEM(1, product), /* V */          \
+                       BOOST_PP_SEQ_ELEM(2, product)  /* T */          \
+                       >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*, \
+                         const BOOST_PP_SEQ_ELEM(1, product)*,         \
+                         BOOST_PP_SEQ_ELEM(2, product)*);              \
+  template void vecDiv<BOOST_PP_SEQ_ELEM(0, product), /* U */          \
+                       BOOST_PP_SEQ_ELEM(1, product), /* V */          \
+                       BOOST_PP_SEQ_ELEM(2, product)  /* T */          \
+                       >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*, \
+                         const BOOST_PP_SEQ_ELEM(1, product)*,         \
+                         BOOST_PP_SEQ_ELEM(2, product)*);
 
-#define INSTANTIATE(r, product)                                   \
-  template void vecAdd<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
-                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
-                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                BOOST_PP_SEQ_ELEM(2, product)*); \
-  template void vecSub<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
-                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
-                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                BOOST_PP_SEQ_ELEM(2, product)*);  \
-  template void vecMul<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
-                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
-                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                BOOST_PP_SEQ_ELEM(2, product)*); \
-  template void vecDiv<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                      BOOST_PP_SEQ_ELEM(1, product), /* V */    \
-                      BOOST_PP_SEQ_ELEM(2, product)  /* T */    \
-                      >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                BOOST_PP_SEQ_ELEM(2, product)*); 
-
-
-BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES)(TYPES)(TYPES))
+#include "include/lamppp/tensor/supported_types.hpp"
+#define TYPES_LIST TYPES()
+BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
+#undef TYPES
 
 #undef INSTANTIATE
-#undef TYPES
 // clang-format on
 
 }  // namespace cuda

@@ -1,6 +1,8 @@
+#include <boost/preprocessor/control/iif.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/binary_kern.cuh"
+#include "include/lamppp/tensor/data_type.hpp"
 
 namespace autograd {
 
@@ -102,44 +104,39 @@ void vecLessThan(size_t size, const U* A, const V* B, bool* C) {
 }
 
 // clang-format off
-#define TYPES (bool)(int)(float)(double)
+#define INSTANTIATE_COMPARISON(r, product)                                     \
+  template void vecEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */                \
+                         BOOST_PP_SEQ_ELEM(1, product)  /* V */                \
+                         >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,       \
+                           const BOOST_PP_SEQ_ELEM(1, product)*, bool*);       \
+  template void vecNotEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */             \
+                            BOOST_PP_SEQ_ELEM(1, product)  /* V */             \
+                            >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,    \
+                              const BOOST_PP_SEQ_ELEM(1, product)*, bool*);    \
+  template void vecGreaterEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */         \
+                                BOOST_PP_SEQ_ELEM(1, product)  /* V */         \
+                                >(                                             \
+      size_t, const BOOST_PP_SEQ_ELEM(0, product)*,                            \
+      const BOOST_PP_SEQ_ELEM(1, product)*, bool*);                            \
+  template void vecLessEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */            \
+                             BOOST_PP_SEQ_ELEM(1, product)  /* V */            \
+                             >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,   \
+                               const BOOST_PP_SEQ_ELEM(1, product)*, bool*);   \
+  template void vecGreaterThan<BOOST_PP_SEQ_ELEM(0, product), /* U */          \
+                               BOOST_PP_SEQ_ELEM(1, product)  /* V */          \
+                               >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*, \
+                                 const BOOST_PP_SEQ_ELEM(1, product)*, bool*); \
+  template void vecLessThan<BOOST_PP_SEQ_ELEM(0, product), /* U */             \
+                            BOOST_PP_SEQ_ELEM(1, product)  /* V */             \
+                            >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,    \
+                              const BOOST_PP_SEQ_ELEM(1, product)*, bool*);
 
-#define INSTANTIATE_COMPARISON(r, product)                                   \
-  template void vecEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                         BOOST_PP_SEQ_ELEM(1, product)  /* V */    \
-                         >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                   const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                   bool*); \
-  template void vecNotEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                           BOOST_PP_SEQ_ELEM(1, product)  /* V */    \
-                           >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                     const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                     bool*); \
-  template void vecGreaterEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                               BOOST_PP_SEQ_ELEM(1, product)  /* V */    \
-                               >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                         const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                         bool*); \
-  template void vecLessEqual<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                            BOOST_PP_SEQ_ELEM(1, product)  /* V */    \
-                            >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                      const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                      bool*); \
-  template void vecGreaterThan<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                              BOOST_PP_SEQ_ELEM(1, product)  /* V */    \
-                              >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                        const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                        bool*); \
-  template void vecLessThan<BOOST_PP_SEQ_ELEM(0, product), /* U */    \
-                           BOOST_PP_SEQ_ELEM(1, product)  /* V */    \
-                           >(size_t, const BOOST_PP_SEQ_ELEM(0, product)*,  \
-                                     const BOOST_PP_SEQ_ELEM(1, product)*,  \
-                                     bool*);
-
-BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COMPARISON, (TYPES)(TYPES))
+#include "include/lamppp/tensor/supported_types.hpp"
+#define TYPES_LIST TYPES()
+BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COMPARISON, (TYPES_LIST)(TYPES_LIST))
+#undef TYPES
 
 #undef INSTANTIATE_COMPARISON
-#undef TYPES
 // clang-format on
 
 }  // namespace cuda

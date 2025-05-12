@@ -9,9 +9,8 @@ enum class DataType : uint8_t {
   Int16 = 1,
   Int32 = 2,
   Int64 = 3,
-  Float16 = 4,
-  Float32 = 5,
-  Float64 = 6
+  Float32 = 4,
+  Float64 = 5
 };
 
 template <class T>
@@ -32,10 +31,6 @@ struct TypeMeta<int> {
 template <>
 struct TypeMeta<int64_t> {
   static constexpr DataType value = DataType::Int64;
-};
-template <>
-struct TypeMeta<std::float16_t> {
-  static constexpr DataType value = DataType::Float16;
 };
 template <>
 struct TypeMeta<float> {
@@ -64,9 +59,6 @@ inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
       break;
     case DataType::Int64:
       os << "Int64";
-      break;
-    case DataType::Float16:
-      os << "Float16";
       break;
     case DataType::Float32:
       os << "Float32";

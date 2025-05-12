@@ -1,3 +1,6 @@
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/unary_kern.cuh"
 
 namespace autograd {
@@ -50,12 +53,19 @@ void vecRelu(size_t size, const T* in, T* out) {
   vecReluKernel<<<blocks, threads>>>(size, in, out);
 }
 
-#define X(TYPE)                                           \
-  template void vecExp<TYPE>(size_t, const TYPE*, TYPE*); \
-  template void vecLog<TYPE>(size_t, const TYPE*, TYPE*); \
-  template void vecRelu<TYPE>(size_t, const TYPE*, TYPE*);
-#include "include/lamppp/tensor/supported_types.def"
-#undef X
+// clang-format off
+#define INSTANTIATE_UNARY(r, data, elem)                  \
+  template void vecExp<elem>(size_t, const elem*, elem*); \
+  template void vecLog<elem>(size_t, const elem*, elem*); \
+  template void vecRelu<elem>(size_t, const elem*, elem*);
+
+#include "include/lamppp/tensor/supported_types.hpp"
+#define TYPES_LIST TYPES()
+BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_UNARY, , TYPES_LIST)
+
+#undef INSTANTIATE_UNARY
+#undef TYPES
+// clang-format on
 
 }  // namespace cuda
 

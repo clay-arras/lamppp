@@ -1,3 +1,6 @@
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/seq/for_each_product.hpp>
 #include "include/lamppp/tensor/cuda/reduct_kern.cuh"
 
 namespace autograd {
@@ -128,12 +131,18 @@ void vecMax(const T* in, T* out, const size_t* shape, size_t axis,
   delete[] h_stride;
 }
 
-#define X(TYPE)                                                         \
-  template void vecSum<TYPE>(const TYPE*, TYPE*, const size_t*, size_t, \
-                             size_t);                                   \
-  template void vecMax<TYPE>(const TYPE*, TYPE*, const size_t*, size_t, size_t);
-#include "include/lamppp/tensor/supported_types.def"
-#undef X
+// clang-format off
+#define INSTANTIATE_REDUCT(r, data, elem) \
+  template void vecSum<elem>(const elem*, elem*, const size_t*, size_t, size_t); \
+  template void vecMax<elem>(const elem*, elem*, const size_t*, size_t, size_t);
+
+#include "include/lamppp/tensor/supported_types.hpp"
+#define TYPES_LIST TYPES()
+BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_REDUCT, , TYPES_LIST)
+
+#undef INSTANTIATE_REDUCT
+#undef TYPES
+// clang-format on
 
 }  // namespace cuda
 

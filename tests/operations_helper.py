@@ -54,16 +54,6 @@ class Div(Operation):
         self.cpp_fn = lamppp.div
 
 
-class Relu(Operation):
-    def __init__(self):
-        super().__init__()
-        self.atol = 1e-6
-        self.sampler = lambda: sample_matrices(1, self.ranges)
-        self.ranges = [[-1000, 1000]]
-        self.torch_fn = torch.relu
-        self.cpp_fn = lamppp.relu
-
-
 class Exp(Operation):
     def __init__(self):
         super().__init__()

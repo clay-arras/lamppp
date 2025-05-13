@@ -49,25 +49,6 @@ tensor::Tensor Logarithm::execute(const variable_list& inputs) {
   return tensor::ops::log(self.data());
 }
 
-variable_list ReLUBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
-  const Variable& grad = gradOutputs[0];
-  Variable& self = (*saved_inputs)[0];
-
-  Variable relu_var(self > 0.0);
-  self.incr_grad(relu_var.data() * grad.grad());
-
-  variable_list grad_inputs = {};
-  return grad_inputs;
-}
-
-tensor::Tensor ReLU::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1 && "Function must take one input");
-  const Variable& self = inputs[0];
-
-  return tensor::ops::relu(self.data());
-}
-
 variable_list SqrtBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];

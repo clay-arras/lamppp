@@ -37,21 +37,6 @@ void vecLog(const T* in, T* out, size_t size) {
 }
 
 template <typename T>
-__global__ void vecReluKernel(T* in, T* out, size_t size) {
-  size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
-  if (i < size) {
-    out[i] = in[i] > 0 ? in[i] : 0;
-  }
-}
-
-template <typename T>
-void vecRelu(const T* in, T* out, size_t size) {
-  size_t threads = 256;
-  size_t blocks = (size + threads - 1) / threads;
-  vecReluKernel<<<blocks, threads>>>(const_cast<T*>(in), out, size);
-}
-
-template <typename T>
 __global__ void vecSqrtKernel(T* in, T* out, size_t size) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
@@ -147,7 +132,6 @@ void vecClamp(const T* in, T min_val, T max_val, T* out, size_t size) {
 #define INSTANTIATE_UNARY(r, data, elem)                  \
   template void vecExp<elem>(const elem*, elem*, size_t); \
   template void vecLog<elem>(const elem*, elem*, size_t); \
-  template void vecRelu<elem>(const elem*, elem*, size_t); \
   template void vecSqrt<elem>(const elem*, elem*, size_t); \
   template void vecAbs<elem>(const elem*, elem*, size_t); \
   template void vecSin<elem>(const elem*, elem*, size_t); \

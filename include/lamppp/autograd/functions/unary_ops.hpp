@@ -22,14 +22,6 @@ struct Logarithm : public ForwardFunction<Logarithm> {
   static tensor::Tensor execute(const variable_list& inputs);
 };
 
-struct ReLUBackward : public Function {
-  variable_list apply(const variable_list& gradOutputs) override;
-};
-struct ReLU : public ForwardFunction<ReLU> {
-  using DefaultBackward = ReLUBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
-};
-
 struct SqrtBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
@@ -91,10 +83,6 @@ inline Variable exp(const Variable& a) {
 
 inline Variable log(const Variable& a) {
   return VariableOpFact::apply<Logarithm>({a})[0];
-}
-
-inline Variable relu(const Variable& a) {
-  return VariableOpFact::apply<ReLU>({a})[0];
 }
 
 inline Variable sqrt(const Variable& a) {

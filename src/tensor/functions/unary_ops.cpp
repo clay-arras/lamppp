@@ -7,7 +7,6 @@ namespace lmp::tensor::ops {
 
 LMP_DEFINE_DISPATCH(log_stub);
 LMP_DEFINE_DISPATCH(exp_stub);
-LMP_DEFINE_DISPATCH(relu_stub);
 LMP_DEFINE_DISPATCH(sqrt_stub);
 LMP_DEFINE_DISPATCH(abs_stub);
 LMP_DEFINE_DISPATCH(sin_stub);
@@ -37,20 +36,6 @@ TensorImpl exp_cuda(const TensorImpl& a) {
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     Storage c(a.size() * sizeof(scalar_t), DeviceType::CUDA);
     ::lmp::tensor::detail::cuda::vecExp<scalar_t>(
-        static_cast<const scalar_t*>(a.data()),
-        static_cast<scalar_t*>(c.data()), a.size());
-    return TensorImpl(c, a.shape(), a.type());
-  });
-}
-
-TensorImpl relu_cpu(const TensorImpl& a) {
-  assert(false && "Not Implemented");
-}
-
-TensorImpl relu_cuda(const TensorImpl& a) {
-  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-    Storage c(a.size() * sizeof(scalar_t), DeviceType::CUDA);
-    ::lmp::tensor::detail::cuda::vecRelu<scalar_t>(
         static_cast<const scalar_t*>(a.data()),
         static_cast<scalar_t*>(c.data()), a.size());
     return TensorImpl(c, a.shape(), a.type());
@@ -140,11 +125,6 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_s, Scalar max_s) {
         a.size());
     return TensorImpl(c, a.shape(), a.type());
   });
-}
-
-Tensor relu(const Tensor& a) {
-  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
-      relu_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));
 }
 
 Tensor exp(const Tensor& a) {

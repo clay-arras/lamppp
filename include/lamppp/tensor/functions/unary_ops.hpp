@@ -7,7 +7,6 @@
 
 namespace lmp::tensor::ops {
 
-using relu_fn = TensorImpl (*)(const TensorImpl&);
 using exp_fn = TensorImpl (*)(const TensorImpl&);
 using log_fn = TensorImpl (*)(const TensorImpl&);
 using sqrt_fn = TensorImpl (*)(const TensorImpl&);
@@ -17,7 +16,6 @@ using cos_fn = TensorImpl (*)(const TensorImpl&);
 using tan_fn = TensorImpl (*)(const TensorImpl&);
 using clamp_fn = TensorImpl (*)(const TensorImpl&, Scalar, Scalar);
 
-LMP_DECLARE_DISPATCH(relu_fn, relu_stub);
 LMP_DECLARE_DISPATCH(exp_fn, exp_stub);
 LMP_DECLARE_DISPATCH(log_fn, log_stub);
 LMP_DECLARE_DISPATCH(sqrt_fn, sqrt_stub);
@@ -26,12 +24,6 @@ LMP_DECLARE_DISPATCH(sin_fn, sin_stub);
 LMP_DECLARE_DISPATCH(cos_fn, cos_stub);
 LMP_DECLARE_DISPATCH(tan_fn, tan_stub);
 LMP_DECLARE_DISPATCH(clamp_fn, clamp_stub);
-
-TensorImpl relu_cpu(const TensorImpl& a);
-TensorImpl relu_cuda(const TensorImpl& a);
-
-LMP_REGISTER_DISPATCH(relu_stub, DeviceType::CPU, relu_cpu);
-LMP_REGISTER_DISPATCH(relu_stub, DeviceType::CUDA, relu_cuda);
 
 TensorImpl exp_cpu(const TensorImpl& a);
 TensorImpl exp_cuda(const TensorImpl& a);
@@ -81,7 +73,6 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
 LMP_REGISTER_DISPATCH(clamp_stub, DeviceType::CPU, clamp_cpu);
 LMP_REGISTER_DISPATCH(clamp_stub, DeviceType::CUDA, clamp_cuda);
 
-Tensor relu(const Tensor& a);
 Tensor exp(const Tensor& a);
 Tensor log(const Tensor& a);
 Tensor sqrt(const Tensor& self);

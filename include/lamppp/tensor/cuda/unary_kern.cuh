@@ -17,11 +17,6 @@ template <typename T>
 void vecLog(const T* in, T* out, size_t size);
 
 template <typename T>
-__global__ void vecReluKernel(T* in, T* out, size_t size);
-template <typename T>
-void vecRelu(const T* in, T* out, size_t size);
-
-template <typename T>
 __global__ void vecSqrtKernel(const T* in, T* out, size_t size);
 template <typename T>
 void vecSqrt(const T* in, T* out, size_t size);

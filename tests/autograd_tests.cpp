@@ -122,21 +122,6 @@ TEST_F(VariableOpTest, DivTest) {
       << "Gradient mismatch for variable 2";
 }
 
-TEST_F(VariableOpTest, ReluTest) {
-  Variable res = lmp::autograd::ops::relu(b);
-  EXPECT_THAT(getTenData(res.data()),
-              ::testing::Pointwise(::testing::FloatNear(kEps),
-                                   {0.0, 4.0, 0.0, 0.0, 3.0, 0.5}))
-      << "Forward data mismatch";
-  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
-      << "Forward shape mismatch";
-  res.backward();
-  EXPECT_THAT(getTenData(b.grad()),
-              ::testing::Pointwise(::testing::FloatNear(kEps),
-                                   {0.0, 1.0, 0.0, 0.0, 1.0, 1.0}))
-      << "Gradient mismatch";
-}
-
 TEST_F(VariableOpTest, ExpTest) {
   Variable res = lmp::autograd::ops::exp(b);
   EXPECT_THAT(getTenData(res.data()),

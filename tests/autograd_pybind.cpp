@@ -39,12 +39,6 @@ Variable div_cust(const Variable& a, const Variable& b) {
   return c;
 }
 
-Variable relu_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::relu(a);
-  c.backward();
-  return c;
-}
-
 Variable exp_cust(const Variable& a) {
   Variable c = lmp::autograd::ops::exp(a);
   c.backward();
@@ -161,7 +155,6 @@ PYBIND11_MODULE(lamppp, m) {
   m.def("sub", &sub_cust);
   m.def("mul", &mul_cust);
   m.def("div", &div_cust);
-  m.def("relu", &relu_cust);
   m.def("exp", &exp_cust);
   m.def("log", &log_cust);
   m.def("sqrt", &sqrt_cust);

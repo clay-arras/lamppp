@@ -62,28 +62,6 @@ class TensorImpl {
  private:
   friend class Tensor;
 
-  static TensorImpl add(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl sub(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl mul(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl div(const TensorImpl& a, const TensorImpl& b);
-
-  static TensorImpl equal(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl not_equal(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl greater_equal(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl less_equal(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl greater_than(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl less_than(const TensorImpl& a, const TensorImpl& b);
-
-  static TensorImpl log(const TensorImpl& a);
-  static TensorImpl exp(const TensorImpl& a);
-  static TensorImpl relu(const TensorImpl& a);
-
-  static TensorImpl matmul(const TensorImpl& a, const TensorImpl& b);
-  static TensorImpl transpose(const TensorImpl& a);
-
-  static TensorImpl sum(const TensorImpl& a, size_t axis);
-  static TensorImpl max(const TensorImpl& a, size_t axis);
-
   DataType type_;
   Storage data_;
   size_t size_;

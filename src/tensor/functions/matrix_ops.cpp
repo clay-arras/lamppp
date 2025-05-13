@@ -58,11 +58,10 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
   DataType out_dtype = a.type();
 
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-    using scalar_t_ = scalar_t;
-    Storage c_storage(m * n * sizeof(scalar_t_), DeviceType::CUDA);
-    ::lmp::tensor::detail::cuda::cudaTranspose<scalar_t_>(
-        static_cast<const scalar_t_*>(a.data()),
-        static_cast<scalar_t_*>(c_storage.data()), m, n);
+    Storage c_storage(m * n * sizeof(scalar_t), DeviceType::CUDA);
+    ::lmp::tensor::detail::cuda::cudaTranspose<scalar_t>(
+        static_cast<const scalar_t*>(a.data()),
+        static_cast<scalar_t*>(c_storage.data()), m, n);
     return TensorImpl(c_storage, {n, m}, out_dtype);
   });
 }

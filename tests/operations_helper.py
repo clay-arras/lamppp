@@ -23,6 +23,7 @@ class Add(Operation):
         self.torch_fn = torch.add
         self.cpp_fn = lamppp.add
 
+
 class Sub(Operation):
     def __init__(self):
         super().__init__()
@@ -81,6 +82,68 @@ class Log(Operation):
         self.ranges = [[1e-3, 1000]]
         self.torch_fn = torch.log
         self.cpp_fn = lamppp.log
+
+
+class Sqrt(Operation):
+    def __init__(self):
+        super().__init__()
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[1e-3, 1000]]
+        self.torch_fn = torch.sqrt
+        self.cpp_fn = lamppp.sqrt
+
+
+class Abs(Operation):
+    def __init__(self):
+        super().__init__()
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-1000, 1000]]
+        self.torch_fn = torch.abs
+        self.cpp_fn = lamppp.abs
+
+
+class Sin(Operation):
+    def __init__(self):
+        super().__init__()
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-10, 10]]
+        self.torch_fn = torch.sin
+        self.cpp_fn = lamppp.sin
+
+
+class Cos(Operation):
+    def __init__(self):
+        super().__init__()
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-10, 10]]
+        self.torch_fn = torch.cos
+        self.cpp_fn = lamppp.cos
+
+
+class Tan(Operation):
+    def __init__(self):
+        super().__init__()
+        self.atol = 1e-5
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-1.5, 1.5]]
+        self.torch_fn = torch.tan
+        self.cpp_fn = lamppp.tan
+
+
+class Clamp(Operation):
+    def __init__(self, min_val, max_val):
+        super().__init__()
+        self.min_val = min_val
+        self.max_val = max_val
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-1000, 1000]]
+        self.torch_fn = lambda t: torch.clamp(t, min=self.min_val, max=self.max_val)
+        self.cpp_fn = lambda t: lamppp.clamp(t, self.min_val, self.max_val)
 
 
 class Matmul(Operation):

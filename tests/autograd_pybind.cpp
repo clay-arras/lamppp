@@ -57,6 +57,42 @@ Variable log_cust(const Variable& a) {
   return c;
 }
 
+Variable sqrt_cust(const Variable& a) {
+  Variable c = lmp::autograd::ops::sqrt(a);
+  c.backward();
+  return c;
+}
+
+Variable abs_cust(const Variable& a) {
+  Variable c = lmp::autograd::ops::abs(a);
+  c.backward();
+  return c;
+}
+
+Variable sin_cust(const Variable& a) {
+  Variable c = lmp::autograd::ops::sin(a);
+  c.backward();
+  return c;
+}
+
+Variable cos_cust(const Variable& a) {
+  Variable c = lmp::autograd::ops::cos(a);
+  c.backward();
+  return c;
+}
+
+Variable tan_cust(const Variable& a) {
+  Variable c = lmp::autograd::ops::tan(a);
+  c.backward();
+  return c;
+}
+
+Variable clamp_cust(const Variable& a, double min_val, double max_val) {
+  Variable c = lmp::autograd::ops::clamp(a, min_val, max_val);
+  c.backward();
+  return c;
+}
+
 Variable matmul_cust(const Variable& a, const Variable& b) {
   Variable c = lmp::autograd::ops::matmul(a, b);
   c.backward();
@@ -128,6 +164,12 @@ PYBIND11_MODULE(lamppp, m) {
   m.def("relu", &relu_cust);
   m.def("exp", &exp_cust);
   m.def("log", &log_cust);
+  m.def("sqrt", &sqrt_cust);
+  m.def("abs", &abs_cust);
+  m.def("sin", &sin_cust);
+  m.def("cos", &cos_cust);
+  m.def("tan", &tan_cust);
+  m.def("clamp", &clamp_cust);
   m.def("matmul", &matmul_cust);
   m.def("transpose", &transpose_cust);
   m.def("sum", &sum_cust);

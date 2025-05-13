@@ -5,20 +5,40 @@ sys.path.append(os.path.join(PROJECT_ROOT, "build"))
 
 import torch
 import lamppp
-from operations_helper import Add, Sub, Mul, Div, Relu, Exp, Log, Matmul, Sum, Transpose
+from operations_helper import (
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Relu,
+    Exp,
+    Log,
+    Sqrt,
+    Abs,
+    Sin,
+    Cos,
+    Tan,
+    Clamp,
+    Matmul,
+    Sum,
+    Transpose,
+)
 
 ITERATIONS = 1000
+EPSILON = 1e-10
 TORCH_DTYPE = torch.float64
 
 torch.set_default_dtype(TORCH_DTYPE)
+
 
 def set_seed(seed):
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+
 
 seed = 42
 set_seed(seed)
@@ -27,6 +47,7 @@ set_seed(seed)
 def compute_grads(cpp_op, torch_op, mats):
     def _to_row_major(mat):
         return torch.tensor(mat).flatten().tolist()
+
     def _from_row_major(flat, like):
         t = torch.tensor(flat).reshape(torch.tensor(like).shape)
         return t.tolist()
@@ -35,9 +56,7 @@ def compute_grads(cpp_op, torch_op, mats):
         ten = lamppp.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
         return lamppp.cVariable(ten, requires_grad)
 
-    torch_vars = [
-        torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats
-    ]
+    torch_vars = [torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats]
     torch_out = torch_op(*torch_vars)
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
     torch_vals = {
@@ -62,7 +81,7 @@ def run_test(case, its):
     def _rtol(pred, true):
         return float(
             torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true)))
-        ) / float(torch.max(torch.tensor(true)))
+        ) / (float(torch.max(torch.tensor(true))) + EPSILON)
 
     max_atol_forward, max_rtol_forward = 0, 0
     max_atol_backward, max_rtol_backward = 0, 0
@@ -123,6 +142,12 @@ def main():
         Relu,
         Exp,
         Log,
+        Sqrt,
+        Abs,
+        Sin,
+        Cos,
+        Tan,
+        lambda: Clamp(-20, 20), # todo: randomize this
         Matmul,
         Transpose,
         lambda: Sum(axis=0),

@@ -34,6 +34,7 @@ class Tensor {
   const std::vector<size_t>& shape() const { return impl_->shape(); }
   size_t size() const { return impl_->size(); }
 
+  // these functions only return an view
   template <typename T>
   std::span<T> view() const {
     static thread_local std::vector<T> converted_data;
@@ -53,7 +54,11 @@ class Tensor {
     });
     return std::span<T>(converted_data);
   }
+  Tensor reshape(std::vector<size_t> new_shape);
+  Tensor squeeze(size_t dim);
+  Tensor expand_dims(size_t dim);
 
+  // these functions modify the actual data
   void copy(const Tensor& other);
   void fill(Scalar item);
   void to(DeviceType device);

@@ -4,6 +4,19 @@
 
 namespace lmp::tensor {
 
+Tensor Tensor::reshape(std::vector<size_t> new_shape) {
+  return Tensor(
+      std::make_shared<TensorImpl>(impl_->reshape_(std::move(new_shape))));
+}
+
+Tensor Tensor::squeeze(size_t dim) {
+  return Tensor(std::make_shared<TensorImpl>(impl_->squeeze_(dim)));
+}
+
+Tensor Tensor::expand_dims(size_t dim) {
+  return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims_(dim)));
+}
+
 void Tensor::copy(const Tensor& other) {
   impl_->copy_(*other.impl_);
 }

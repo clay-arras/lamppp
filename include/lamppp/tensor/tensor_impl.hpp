@@ -54,6 +54,10 @@ class TensorImpl {
   const std::vector<size_t>& shape() const { return shape_; }
   size_t size() const { return size_; }
 
+  TensorImpl reshape_(std::vector<size_t> new_shape);
+  TensorImpl squeeze_(size_t dim);
+  TensorImpl expand_dims_(size_t dim);
+
   void copy_(const TensorImpl& other);
   void fill_(Scalar item);
   void to_(DeviceType device);

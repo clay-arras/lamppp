@@ -8,6 +8,34 @@
 
 namespace lmp::tensor {
 
+TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
+  size_t new_size = new_shape.empty()
+                        ? 0
+                        : std::accumulate(new_shape.begin(), new_shape.end(), 1,
+                                          std::multiplies<>());
+  assert(
+      new_size == size_ &&
+      "Cannot reshape tensor: total number of elements must remain the same.");
+  TensorImpl other(*this);
+  other.shape_ = std::move(new_shape);
+  return other;
+}
+
+TensorImpl TensorImpl::squeeze_(size_t dim) {
+  assert(dim < shape_.size() && "Dimension out of range for squeeze");
+  assert(shape_[dim] == 1 && "Cannot squeeze dimension that is not size 1");
+  TensorImpl other(*this);
+  other.shape_.erase(other.shape_.begin() + dim);
+  return other;
+}
+
+TensorImpl TensorImpl::expand_dims_(size_t dim) {
+  assert(dim <= shape_.size() && "Dimension out of range for expand_dims");
+  TensorImpl other(*this);
+  other.shape_.insert(other.shape_.begin() + dim, 1);
+  return other;
+}
+
 // TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(const TensorImpl& other) {

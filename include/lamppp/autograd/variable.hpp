@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include "include/lamppp/tensor/core.hpp"
+#include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 #include "include/lamppp/tensor/tensor_helper.hpp"
 

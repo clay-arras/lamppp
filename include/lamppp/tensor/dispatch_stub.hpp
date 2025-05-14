@@ -2,8 +2,8 @@
 
 #include <array>
 #include <cassert>
-#include <cstddef>
 #include "device_type.hpp"
+#include "include/lamppp/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail {
 

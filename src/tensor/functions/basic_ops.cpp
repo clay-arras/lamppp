@@ -1,5 +1,7 @@
 #include "include/lamppp/tensor/functions/basic_ops.hpp"
+#include "include/lamppp/tensor/align_utils.hpp"
 #include "include/lamppp/tensor/cuda/basic_kern.cuh"
+#include "include/lamppp/tensor/cuda/offset_util.cuh"
 #include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/tensor.hpp"
 
@@ -15,10 +17,10 @@ TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b) {
 }
 
 TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.size() == b.size() && "Size mismatch");
-  assert(a.shape() == b.shape() && "Shape mismatch");
-
   // NOTE: this is absolutely horrible
+  detail::AlignUtil meta(a.shape(), b.shape());
+  detail::cuda::OffsetUtil offset(a.shape(), b.shape(), a.strides(),
+                                  b.strides(), meta.aligned_shape_);
   DataType out_dtype = type_upcast(a.type(), b.type());
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
@@ -26,12 +28,12 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
       using b_type_t = scalar_t;
       return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
         using out_type = scalar_t;
-        Storage c(a.size() * sizeof(out_type), DeviceType::CUDA);
+        Storage c(meta.aligned_size_ * sizeof(out_type), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::vecAdd<a_type_t, b_type_t, out_type>(
             a.size(), static_cast<const a_type_t*>(a.data()),
             static_cast<const b_type_t*>(b.data()),
-            static_cast<out_type*>(c.data()));
-        return TensorImpl(c, a.shape(), out_dtype);
+            static_cast<out_type*>(c.data()), &offset);
+        return TensorImpl(c, meta.aligned_shape_, out_dtype);
       });
     });
   });

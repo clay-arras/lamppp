@@ -99,7 +99,7 @@ Variable transpose_cust(const Variable& a) {
   return c;
 }
 
-Variable sum_cust(const Variable& a, int axis) {
+Variable sum_cust(const Variable& a, size_t axis) {
   Variable c = lmp::autograd::ops::sum(a, axis);
   c.backward();
   return c;

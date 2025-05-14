@@ -53,10 +53,14 @@ add_library(
   src/tensor/cuda/matrix_kern.cu
   src/tensor/cuda/basic_kern.cu
   src/tensor/cuda/unary_kern.cu
+  # src/tensor/cuda/offset_util.cu
   src/tensor/tensor.cpp
   src/tensor/tensor_impl.cpp
   src/tensor/storage.cpp
+  # src/tensor/align_utils.cpp
 )
+
+set_target_properties(autograd_core PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 target_compile_definitions(autograd_core PUBLIC)
 target_link_libraries(autograd_core PUBLIC Eigen3::Eigen)

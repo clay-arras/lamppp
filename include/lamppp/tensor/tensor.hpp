@@ -32,6 +32,9 @@ class Tensor {
   DataType type() const { return impl_->type(); }
   DeviceType device() const { return impl_->device(); }
   const std::vector<size_t>& shape() const { return impl_->shape(); }
+  const std::vector<detail::stride_t>& strides() const {
+    return impl_->strides();
+  }
   size_t size() const { return impl_->size(); }
 
   // these functions only return an view

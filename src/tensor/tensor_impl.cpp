@@ -1,5 +1,6 @@
 #include "include/lamppp/tensor/tensor_impl.hpp"
 #include <cassert>
+#include "include/lamppp/tensor/align_utils.hpp"
 #include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/device_type.hpp"
 #include "include/lamppp/tensor/dispatch_type.hpp"
@@ -7,6 +8,14 @@
 #include "include/lamppp/tensor/native/fill.cuh"
 
 namespace lmp::tensor {
+
+void TensorImpl::update_strides_() {
+  detail::stride_t stride = 1;
+  for (int i = shape_.size() - 1; i >= 0; --i) {
+    strides_[i] = stride;
+    stride *= shape_[i];
+  }
+}
 
 TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
   size_t new_size = new_shape.empty()
@@ -18,6 +27,7 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
       "Cannot reshape tensor: total number of elements must remain the same.");
   TensorImpl other(*this);
   other.shape_ = std::move(new_shape);
+  other.update_strides_();
   return other;
 }
 
@@ -26,6 +36,7 @@ TensorImpl TensorImpl::squeeze_(size_t dim) {
   assert(shape_[dim] == 1 && "Cannot squeeze dimension that is not size 1");
   TensorImpl other(*this);
   other.shape_.erase(other.shape_.begin() + dim);
+  other.update_strides_();
   return other;
 }
 
@@ -33,6 +44,7 @@ TensorImpl TensorImpl::expand_dims_(size_t dim) {
   assert(dim <= shape_.size() && "Dimension out of range for expand_dims");
   TensorImpl other(*this);
   other.shape_.insert(other.shape_.begin() + dim, 1);
+  other.update_strides_();
   return other;
 }
 
@@ -70,7 +82,7 @@ void TensorImpl::print_(std::ostream& os) {
       os << data_ptr[i];
       if (i < printSize - 1) {
         os << ", ";
-      } else {
+      } else if (printSize < this->size()) {
         os << ",...";
       }
     }

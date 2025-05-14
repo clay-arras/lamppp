@@ -1,13 +1,13 @@
 #pragma once
 
 #include <cassert>
-#include <cstddef>
 #include <iostream>
 #include <numeric>
 #include <vector>
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
+#include "include/lamppp/tensor/align_utils.hpp"
 #include "include/lamppp/tensor/native/copy.cuh"
 #include "include/lamppp/tensor/storage.hpp"
 #include "scalar.hpp"
@@ -25,6 +25,7 @@ class TensorImpl {
             [&] { return Storage(data.size() * sizeof(scalar_t), device); })),
         shape_(shape),
         type_(dtype),
+        strides_(std::vector<detail::stride_t>(shape.size())),
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
@@ -33,12 +34,16 @@ class TensorImpl {
     DataType src_dtype = TypeMeta<T>::value;
     detail::native::copy_stub(DeviceType::CPU, device, data.data(),
                               data_.data(), size_, src_dtype, type_);
+    update_strides_();
   }
-  explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
-                      DataType dtype)
+  explicit TensorImpl(
+      const Storage& storage, const std::vector<size_t>& shape,
+      DataType
+          dtype)  // TODO: can potentially lazy initialize strides, if you never use it for aligneding
       : data_(storage),
         shape_(shape),
         type_(dtype),
+        strides_(std::vector<detail::stride_t>(shape.size())),
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
@@ -46,12 +51,14 @@ class TensorImpl {
       assert(data_.byte_size() / sizeof(scalar_t) == size_ &&
              "Size mismatch, product of shape must equal num elements");
     });
+    update_strides_();
   }
 
   void* data() const { return data_.data(); }
   DataType type() const { return type_; };
   DeviceType device() const { return data_.device(); }
   const std::vector<size_t>& shape() const { return shape_; }
+  const std::vector<detail::stride_t>& strides() const { return strides_; }
   size_t size() const { return size_; }
 
   TensorImpl reshape_(std::vector<size_t> new_shape);
@@ -65,11 +72,13 @@ class TensorImpl {
 
  private:
   friend class Tensor;
+  void update_strides_();
 
   DataType type_;
   Storage data_;
   size_t size_;
   std::vector<size_t> shape_;
+  std::vector<detail::stride_t> strides_;
 };
 
 }  // namespace lmp::tensor

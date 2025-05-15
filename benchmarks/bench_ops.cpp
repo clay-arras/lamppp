@@ -2,14 +2,12 @@
 #include <functional>
 #include <string>
 #include <vector>
-#include "include/lamppp/tensor/constructor.hpp"
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/variable.hpp"
-#include "include/lamppp/tensor/variable_ops.hpp"
+#include "include/lamppp/lamppp.hpp"
 
-using autograd::rand;
-using autograd::Variable;
+using lmp::autograd::rand;
+using lmp::autograd::Variable;
+using lmp::tensor::DataType;
+using lmp::tensor::DeviceType;
 
 namespace {
 Variable add_variables(const Variable& a, const Variable& b) {

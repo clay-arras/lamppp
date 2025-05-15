@@ -7,8 +7,6 @@
 
 namespace lmp::autograd {
 
-inline namespace functional {
-
 using std::multiplies;
 
 Variable zeros(const std::vector<size_t>& shape, tensor::DeviceType device,
@@ -57,7 +55,5 @@ Variable tensor(const std::vector<V>& data, tensor::DeviceType device,
   return Variable(tensor::Tensor(constr.data, constr.shape, device, dtype),
                   requires_grad);
 }
-
-}  // namespace functional
 
 }  // namespace lmp::autograd

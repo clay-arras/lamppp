@@ -78,6 +78,9 @@ target_link_libraries(playground autograd_core)
 add_executable(autograd_tests tests/autograd_tests.cpp)
 target_link_libraries(autograd_tests autograd_core GTest::gtest_main)
 
+add_executable(bench_ops benchmarks/bench_ops.cpp)
+target_link_libraries(bench_ops autograd_core benchmark::benchmark)
+
 include(GoogleTest)
 gtest_discover_tests(autograd_tests)
 

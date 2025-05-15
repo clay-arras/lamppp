@@ -1,7 +1,6 @@
 #include <cassert>
 #include "include/lamppp/tensor/align_utils.hpp"
 #include "include/lamppp/tensor/cuda/offset_util.cuh"
-#include "include/lamppp/tensor/data_ptr.hpp"
 #include "include/lamppp/tensor/data_type.hpp"
 #include "include/lamppp/tensor/device_type.hpp"
 #include "include/lamppp/tensor/native/copy.cuh"

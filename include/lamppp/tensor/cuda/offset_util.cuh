@@ -2,6 +2,7 @@
 
 #include <cuda_runtime.h>
 #include <cassert>
+#include <cuda/std/array>
 #include <vector>
 #include "include/lamppp/tensor/align_utils.hpp"
 #include "include/lamppp/tensor/data_ptr.hpp"
@@ -10,31 +11,18 @@
 
 namespace lmp::tensor::detail::cuda {
 
-constexpr size_t nArgs = 2;
-
-namespace internal {
-
-struct ArgStrides {
-  DataPtr stride1;
-  DataPtr stride2;
-};
-struct OffsetPair {
-  size_t offset1;
-  size_t offset2;
-};
-
-}  // namespace internal
+constexpr size_t NVARS = 3;
 
 // TODO: in the future maybe do template <size_t nArgs>
 class OffsetUtil {
  public:
   explicit OffsetUtil(const shape_list& a_shape, const shape_list& b_shape,
                       const stride_list& a_stride, const stride_list& b_stride,
-                      const shape_list& out_shape);
-  __device__ internal::OffsetPair get(size_t idx) const;
+                      const stride_list& out_stride, size_t ndims);
+  __device__ ::cuda::std::array<stride_t, NVARS> get(size_t idx) const;
 
-  internal::ArgStrides arg_strides_;
-  DataPtr out_shape_;
+  ::cuda::std::array<DataPtr, NVARS> arg_strides_;
+  ::cuda::std::array<void*, NVARS> arg_pointers_;
   size_t ndim;
 
  private:

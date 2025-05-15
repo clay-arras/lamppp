@@ -11,10 +11,9 @@ __global__ void vecAddKernel(size_t size, const U* A, const V* B, OutType* C,
                              const OffsetUtil* meta) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
-    internal::OffsetPair offsets = meta->get(i);
-    size_t idxA = offsets.offset1;
-    size_t idxB = offsets.offset1;
-    C[i] = static_cast<OutType>(A[idxA]) + static_cast<OutType>(B[idxB]);
+    ::cuda::std::array<stride_t, NVARS> offsets = meta->get(i);
+    C[offsets[2]] = static_cast<OutType>(A[offsets[0]]) +
+                    static_cast<OutType>(B[offsets[1]]);
   }
 }
 
@@ -47,7 +46,18 @@ void vecAdd(size_t size, const U* A, const V* B, OutType* C,
             const OffsetUtil* meta) {
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
-  vecAddKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C, meta);
+
+  OffsetUtil* d_meta;
+  cudaError_t err = cudaMalloc(&d_meta, sizeof(OffsetUtil));
+  assert(err == cudaSuccess &&
+         "vecAdd: Failed to allocate device memory for meta");
+
+  err = cudaMemcpy(d_meta, meta, sizeof(OffsetUtil), cudaMemcpyHostToDevice);
+  assert(err == cudaSuccess && "vecAdd: Failed to copy meta to device");
+
+  vecAddKernel<U, V, OutType><<<blocks, threads>>>(size, A, B, C, d_meta);
+
+  cudaFree(d_meta);
 }
 
 template <typename U, typename V, typename OutType>

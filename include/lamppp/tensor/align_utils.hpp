@@ -18,11 +18,13 @@ class AlignUtil {
                      const std::vector<size_t>& b_shape);
 
   std::vector<size_t> aligned_shape_;
+  std::vector<stride_t> aligned_stride_;
   size_t aligned_size_;
 
  private:
   std::vector<size_t> calc_aligned_shape(const std::vector<size_t>& a_shape,
                                          const std::vector<size_t>& b_shape);
+  std::vector<stride_t> calc_aligned_stride();
 };
 
 }  // namespace lmp::tensor::detail

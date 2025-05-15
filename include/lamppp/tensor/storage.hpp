@@ -34,7 +34,7 @@ class Storage::StorageImpl {
         byte_size_(byte_size),
         device_(device) {}
 
-  void* data() const { return data_ptr_.data; }
+  void* data() const { return data_ptr_.data(); }
   size_t byte_size() const { return byte_size_; }
   DeviceType device() const { return device_; }
 

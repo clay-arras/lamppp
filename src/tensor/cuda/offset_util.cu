@@ -1,10 +1,6 @@
 #include <cassert>
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/cuda/offset_util.cuh"
-#include "lamppp/tensor/data_type.hpp"
-#include "lamppp/tensor/device_type.hpp"
-#include "lamppp/tensor/native/copy.cuh"
-#include "lamppp/tensor/native/empty.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -16,27 +12,16 @@ OffsetUtil::OffsetUtil(const shape_list& a_shape, const shape_list& b_shape,
   std::vector<stride_t> a_stride_tmp = init_padded_strides_(a_shape, a_stride);
   std::vector<stride_t> b_stride_tmp = init_padded_strides_(b_shape, b_stride);
 
-  arg_strides_[0] = native::empty_stub(DeviceType::CUDA,
-                                       a_stride_tmp.size() * sizeof(stride_t));
-  arg_strides_[1] = native::empty_stub(DeviceType::CUDA,
-                                       b_stride_tmp.size() * sizeof(stride_t));
+  arg_strides_[0] =
+      ListDevicePtr<stride_t>(a_stride_tmp.data(), a_stride_tmp.size());
+  arg_strides_[1] =
+      ListDevicePtr<stride_t>(b_stride_tmp.data(), b_stride_tmp.size());
+  arg_strides_[2] =
+      ListDevicePtr<stride_t>(out_stride.data(), out_stride.size());
 
-  native::copy_stub(DeviceType::CPU, DeviceType::CUDA, a_stride_tmp.data(),
-                    arg_strides_[0].data(), a_stride_tmp.size(),
-                    TypeMeta<stride_t>::value, TypeMeta<stride_t>::value);
-  native::copy_stub(DeviceType::CPU, DeviceType::CUDA, b_stride_tmp.data(),
-                    arg_strides_[1].data(), b_stride_tmp.size(),
-                    TypeMeta<stride_t>::value, TypeMeta<stride_t>::value);
-
-  arg_strides_[2] = native::empty_stub(DeviceType::CUDA,
-                                       out_stride.size() * sizeof(stride_t));
-  native::copy_stub(DeviceType::CPU, DeviceType::CUDA, out_stride.data(),
-                    arg_strides_[2].data(), out_stride.size(),
-                    TypeMeta<stride_t>::value, TypeMeta<stride_t>::value);
-
-  arg_pointers_[0] = arg_strides_[0].data();
-  arg_pointers_[1] = arg_strides_[1].data();
-  arg_pointers_[2] = arg_strides_[2].data();
+  arg_pointers_[0] = arg_strides_[0].get();
+  arg_pointers_[1] = arg_strides_[1].get();
+  arg_pointers_[2] = arg_strides_[2].get();
 }
 
 __device__ ::cuda::std::array<stride_t, NVARS> OffsetUtil::get(

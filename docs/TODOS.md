@@ -10,7 +10,8 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
  <!-- - remove relu -->
  <!-- - move all implementations to .cpp file -->
 
-add extra stuff (these aren't strictly necessary)
+- make all accessors noexcept and const???
+  add extra stuff (these aren't strictly necessary)
 
 - power
 - negation

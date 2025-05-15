@@ -26,7 +26,7 @@ struct IsVector<std::vector<U, Alloc>> : std::true_type {};
 struct TensorHelper {
   std::vector<tensor::Scalar> data;
   std::vector<size_t> shape;
-  template <class T>
+  template <typename T>
   void unroll(const std::vector<T>& tensor, size_t depth = 0) {
     if (depth >= shape.size()) {
       shape.push_back(tensor.size());

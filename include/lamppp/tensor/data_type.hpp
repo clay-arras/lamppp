@@ -15,7 +15,7 @@ enum class DataType : uint8_t {
   Float64 = 5
 };
 
-template <class T>
+template <typename T>
 struct TypeMeta;
 
 template <>

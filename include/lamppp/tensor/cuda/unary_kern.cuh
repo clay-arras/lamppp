@@ -7,12 +7,12 @@
 namespace lmp::tensor::detail::cuda {
 
 template <typename T>
-__global__ void vecExpKernel(T* in, T* out, size_t size);
+__global__ void vecExpKernel(const T* in, T* out, size_t size);
 template <typename T>
 void vecExp(const T* in, T* out, size_t size);
 
 template <typename T>
-__global__ void vecLogKernel(T* in, T* out, size_t size);
+__global__ void vecLogKernel(const T* in, T* out, size_t size);
 template <typename T>
 void vecLog(const T* in, T* out, size_t size);
 

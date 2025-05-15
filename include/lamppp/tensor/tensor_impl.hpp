@@ -36,30 +36,15 @@ class TensorImpl {
                               data_.data(), size_, src_dtype, type_);
     update_strides_();
   }
-  explicit TensorImpl(
-      const Storage& storage, const std::vector<size_t>& shape,
-      DataType
-          dtype)  // TODO: can potentially lazy initialize strides, if you never use it for aligneding
-      : data_(storage),
-        shape_(shape),
-        type_(dtype),
-        strides_(std::vector<detail::stride_t>(shape.size())),
-        size_(shape.empty() ? 0
-                            : std::accumulate(shape.begin(), shape.end(), 1,
-                                              std::multiplies<>())) {
-    LMP_DISPATCH_ALL_TYPES(dtype, [&] {
-      assert(data_.byte_size() / sizeof(scalar_t) == size_ &&
-             "Size mismatch, product of shape must equal num elements");
-    });
-    update_strides_();
-  }
+  explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
+                      DataType dtype);
 
-  void* data() const { return data_.data(); }
-  DataType type() const { return type_; };
-  DeviceType device() const { return data_.device(); }
-  const std::vector<size_t>& shape() const { return shape_; }
-  const std::vector<detail::stride_t>& strides() const { return strides_; }
-  size_t size() const { return size_; }
+  void* data() const;
+  DataType type() const;
+  DeviceType device() const;
+  const std::vector<size_t>& shape() const;
+  const std::vector<detail::stride_t>& strides() const;
+  size_t size() const;
 
   TensorImpl reshape_(std::vector<size_t> new_shape);
   TensorImpl squeeze_(size_t dim);

@@ -14,15 +14,15 @@ struct TensorOpFact {
 
   template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
   static inline Tensor binary_tensor_op(const Tensor& tensor, Scalar scalar) {
-    Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
-                         tensor.shape(), tensor.device(), tensor.type());
+    Tensor scalar_tensor(std::vector<Scalar>(1, scalar), {1}, tensor.device(),
+                         tensor.type());  // rely on broadcasting
     return binary_tensor_op<OpTag>(tensor, scalar_tensor);
   }
 
   template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
   static inline Tensor binary_tensor_op(Scalar scalar, const Tensor& tensor) {
-    Tensor scalar_tensor(std::vector<Scalar>(tensor.size(), scalar),
-                         tensor.shape(), tensor.device(), tensor.type());
+    Tensor scalar_tensor(std::vector<Scalar>(1, scalar), {1}, tensor.device(),
+                         tensor.type());
     return binary_tensor_op<OpTag>(scalar_tensor, tensor);
   }
 };

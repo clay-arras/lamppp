@@ -9,6 +9,42 @@
 
 namespace lmp::tensor {
 
+// TODO: can potentially lazy initialize strides, if you never use it for aligneding
+TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
+                       DataType dtype)
+    : data_(storage),
+      shape_(shape),
+      type_(dtype),
+      strides_(std::vector<detail::stride_t>(shape.size())),
+      size_(shape.empty() ? 0
+                          : std::accumulate(shape.begin(), shape.end(), 1,
+                                            std::multiplies<>())) {
+  LMP_DISPATCH_ALL_TYPES(dtype, [&] {
+    assert(data_.byte_size() / sizeof(scalar_t) == size_ &&
+           "Size mismatch, product of shape must equal num elements");
+  });
+  update_strides_();
+}
+
+void* TensorImpl::data() const {
+  return data_.data();
+}
+DataType TensorImpl::type() const {
+  return type_;
+};
+DeviceType TensorImpl::device() const {
+  return data_.device();
+}
+const std::vector<size_t>& TensorImpl::shape() const {
+  return shape_;
+}
+const std::vector<detail::stride_t>& TensorImpl::strides() const {
+  return strides_;
+}
+size_t TensorImpl::size() const {
+  return size_;
+}
+
 void TensorImpl::update_strides_() {
   detail::stride_t stride = 1;
   for (int i = shape_.size() - 1; i >= 0; --i) {

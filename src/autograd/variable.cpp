@@ -8,6 +8,51 @@
 
 namespace lmp::autograd {
 
+const tensor::Tensor& Variable::grad() const {
+  return impl_->grad;
+}
+const tensor::Tensor& Variable::data() const {
+  return impl_->data;
+}
+const std::shared_ptr<Function>& Variable::grad_fn() const {
+  return impl_->_grad_fn;
+}
+const bool Variable::requires_grad() const {
+  return impl_->requires_grad;
+}
+
+void Variable::zero_grad() {
+  impl_->grad = zeros_like(impl_->grad);
+}  // TODO: this can be better, implement fill in tensor
+void Variable::incr_grad(const tensor::Tensor& other_grad) {
+  impl_->grad = impl_->grad + other_grad;
+}
+void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {
+  impl_->_grad_fn = std::move(grad_fn);
+}
+
+Variable Variable::reshape(std::vector<size_t> new_shape) {
+  auto new_data = impl_->data.reshape(new_shape);
+  auto new_grad = impl_->grad.reshape(new_shape);
+  auto new_impl = std::make_shared<VariableImpl>(
+      new_data, new_grad, impl_->requires_grad, impl_->_grad_fn);
+  return Variable(new_impl);
+}
+Variable Variable::squeeze(size_t dim) {
+  auto new_data = impl_->data.squeeze(dim);
+  auto new_grad = impl_->grad.squeeze(dim);
+  auto new_impl = std::make_shared<VariableImpl>(
+      new_data, new_grad, impl_->requires_grad, impl_->_grad_fn);
+  return Variable(new_impl);
+}
+Variable Variable::expand_dims(size_t dim) {
+  auto new_data = impl_->data.expand_dims(dim);
+  auto new_grad = impl_->grad.expand_dims(dim);
+  auto new_impl = std::make_shared<VariableImpl>(
+      new_data, new_grad, impl_->requires_grad, impl_->_grad_fn);
+  return Variable(new_impl);
+}
+
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad = ones_like(impl_->grad);

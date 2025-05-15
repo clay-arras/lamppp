@@ -39,42 +39,18 @@ class Variable {
   explicit Variable(const tensor::Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
-  const tensor::Tensor& grad() const { return impl_->grad; }
-  const tensor::Tensor& data() const { return impl_->data; }
-  const std::shared_ptr<Function>& grad_fn() const { return impl_->_grad_fn; }
-  const bool requires_grad() const { return impl_->requires_grad; }
+  const tensor::Tensor& grad() const;
+  const tensor::Tensor& data() const;
+  const std::shared_ptr<Function>& grad_fn() const;
+  const bool requires_grad() const;
 
-  void zero_grad() {  // TODO: move these all to .cpp file
-    impl_->grad = zeros_like(impl_->grad);
-  }  // TODO: this can be better, implement fill in tensor
-  void incr_grad(const tensor::Tensor& other_grad) {
-    impl_->grad = impl_->grad + other_grad;
-  }
-  void set_grad_fn(std::shared_ptr<Function> grad_fn) {
-    impl_->_grad_fn = std::move(grad_fn);
-  }
+  void zero_grad();  // TODO: this can be better, implement fill in tensor
+  void incr_grad(const tensor::Tensor& other_grad);
+  void set_grad_fn(std::shared_ptr<Function> grad_fn);
 
-  Variable reshape(std::vector<size_t> new_shape) {
-    auto new_data = impl_->data.reshape(new_shape);
-    auto new_grad = impl_->grad.reshape(new_shape);
-    auto new_impl = std::make_shared<VariableImpl>(
-        new_data, new_grad, impl_->requires_grad, impl_->_grad_fn);
-    return Variable(new_impl);
-  }
-  Variable squeeze(size_t dim) {
-    auto new_data = impl_->data.squeeze(dim);
-    auto new_grad = impl_->grad.squeeze(dim);
-    auto new_impl = std::make_shared<VariableImpl>(
-        new_data, new_grad, impl_->requires_grad, impl_->_grad_fn);
-    return Variable(new_impl);
-  }
-  Variable expand_dims(size_t dim) {
-    auto new_data = impl_->data.expand_dims(dim);
-    auto new_grad = impl_->grad.expand_dims(dim);
-    auto new_impl = std::make_shared<VariableImpl>(
-        new_data, new_grad, impl_->requires_grad, impl_->_grad_fn);
-    return Variable(new_impl);
-  }
+  Variable reshape(std::vector<size_t> new_shape);
+  Variable squeeze(size_t dim);
+  Variable expand_dims(size_t dim);
 
   void backward();
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);

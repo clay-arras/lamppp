@@ -4,6 +4,25 @@
 
 namespace lmp::tensor {
 
+void* Tensor::data() const {
+  return impl_->data();
+}
+DataType Tensor::type() const {
+  return impl_->type();
+}
+DeviceType Tensor::device() const {
+  return impl_->device();
+}
+const std::vector<size_t>& Tensor::shape() const {
+  return impl_->shape();
+}
+const std::vector<detail::stride_t>& Tensor::strides() const {
+  return impl_->strides();
+}
+size_t Tensor::size() const {
+  return impl_->size();
+}
+
 Tensor Tensor::reshape(std::vector<size_t> new_shape) {
   return Tensor(
       std::make_shared<TensorImpl>(impl_->reshape_(std::move(new_shape))));

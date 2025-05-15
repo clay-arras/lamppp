@@ -1,4 +1,5 @@
 #include "include/lamppp/tensor/functions/reduct_ops.hpp"
+#include "include/lamppp/tensor/cuda/reduct_kern.cuh"
 #include "include/lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
@@ -25,7 +26,17 @@ TensorImpl min_cpu(const TensorImpl& a, size_t axis) {
 }
 
 TensorImpl sum_cuda(const TensorImpl& a, size_t axis) {
-  assert(false && "Not Implemented");
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
+    size_t out_size = a.size() / a.shape()[axis];
+    Storage c(out_size * sizeof(scalar_t), DeviceType::CUDA);
+    ::lmp::tensor::detail::cuda::vecSum<scalar_t>(
+        static_cast<const scalar_t*>(a.data()),
+        static_cast<scalar_t*>(c.data()), a.shape().data(), a.strides().data(),
+        axis, a.shape().size(), a.size());
+    std::vector<size_t> nshape = a.shape();
+    nshape[axis] = 1;
+    return TensorImpl(c, nshape, a.type());
+  });
 }
 
 TensorImpl mean_cuda(const TensorImpl& a, size_t axis) {

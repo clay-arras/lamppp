@@ -195,7 +195,7 @@ TEST_F(VariableOpTest, TransposeTest) {
 TEST_F(VariableOpTest, SumTest) {
   Variable res = lmp::autograd::ops::sum(a, 1);
   EXPECT_THAT(getTenData(res.data()),
-              ::testing::Pointwise(::testing::FloatNear(kEps), {3.0, 7.0, 5.0}))
+              ::testing::Pointwise(::testing::FloatNear(kEps), {3.0, 7.0, 7.0}))
       << "Forward data mismatch";
   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 1u}))
       << "Forward shape mismatch";

@@ -76,8 +76,8 @@ void TensorImpl::print_(std::ostream& os) {
     size_t printSize = std::min(kMaxPrintElem, this->size());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
     detail::native::copy_stub(this->device(), DeviceType::CPU, this->data(),
-                              static_cast<void*>(data_ptr),
-                              printSize * sizeof(scalar_t), type(), type());
+                              static_cast<void*>(data_ptr), printSize,
+                              this->type_, this->type_);
     for (size_t i = 0; i < printSize; i++) {
       os << data_ptr[i];
       if (i < printSize - 1) {

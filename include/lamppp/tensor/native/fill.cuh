@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cstddef>
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/dispatch_stub.hpp"
-#include "include/lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/scalar.hpp"
 
 namespace lmp::tensor::detail::native {
 

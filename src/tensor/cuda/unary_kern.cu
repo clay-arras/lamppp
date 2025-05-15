@@ -1,7 +1,7 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
-#include "include/lamppp/tensor/cuda/unary_kern.cuh"
+#include "lamppp/tensor/cuda/unary_kern.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -139,7 +139,7 @@ void vecClamp(const T* in, T min_val, T max_val, T* out, size_t size) {
   template void vecTan<elem>(const elem*, elem*, size_t); \
   template void vecClamp<elem>(const elem*, elem, elem, elem*, size_t);
 
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/supported_types.hpp"
 #define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_UNARY, , TYPES_LIST)
 

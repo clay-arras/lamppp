@@ -1,4 +1,4 @@
-#include "include/lamppp/tensor/native/resize.cuh"
+#include "lamppp/tensor/native/resize.cuh"
 
 #include <cuda_runtime.h>
 #include <algorithm>

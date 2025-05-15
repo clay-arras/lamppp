@@ -1,4 +1,4 @@
-#include "include/lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor.hpp"
 #include <cassert>
 #include <iostream>
 

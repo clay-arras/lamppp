@@ -1,7 +1,7 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
-#include "include/lamppp/tensor/cuda/matrix_kern.cuh"
+#include "lamppp/tensor/cuda/matrix_kern.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -58,7 +58,7 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
 #define INSTANTIATE_TRANSPOSE(r, data, elem) \
   template void cudaTranspose<elem>(const elem*, elem*, size_t, size_t);
 
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/supported_types.hpp"
 #define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_MATMUL,
                               (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))

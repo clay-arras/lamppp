@@ -1,5 +1,5 @@
 #include <vector>
-#include "include/lamppp/lamppp.hpp"
+#include "lamppp/lamppp.hpp"
 
 int main() {
   auto a = lmp::tensor::Tensor(std::vector<int>{1, 2, 3, 4, 5, 2},

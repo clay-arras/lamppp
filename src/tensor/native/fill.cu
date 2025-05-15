@@ -1,10 +1,10 @@
 #include <thrust/device_vector.h>
 #include <thrust/fill.h>
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/dispatch_type.hpp"
-#include "include/lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/dispatch_type.hpp"
+#include "lamppp/tensor/scalar.hpp"
 
-#include "include/lamppp/tensor/native/fill.cuh"
+#include "lamppp/tensor/native/fill.cuh"
 
 namespace lmp::tensor::detail::native {
 

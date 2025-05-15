@@ -48,7 +48,7 @@ A minimal example demonstrating autograd:
 
 ```cpp
 #include <iostream>
-#include "include/lamppp/lamppp.hpp"
+#include "lamppp/lamppp.hpp"
 
 using lmp::autograd::Variable;
 using lmp::tensor::Tensor;

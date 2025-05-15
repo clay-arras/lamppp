@@ -4,10 +4,10 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include "include/lamppp/tensor/core.hpp"
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/tensor.hpp"
-#include "include/lamppp/tensor/tensor_helper.hpp"
+#include "lamppp/tensor/core.hpp"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor_helper.hpp"
 
 namespace lmp::autograd {
 
@@ -44,7 +44,7 @@ class Variable {
   const std::shared_ptr<Function>& grad_fn() const;
   const bool requires_grad() const;
 
-  void zero_grad();  // TODO: this can be better, implement fill in tensor
+  void zero_grad();
   void incr_grad(const tensor::Tensor& other_grad);
   void set_grad_fn(std::shared_ptr<Function> grad_fn);
 

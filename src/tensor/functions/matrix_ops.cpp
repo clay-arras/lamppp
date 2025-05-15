@@ -1,7 +1,7 @@
-#include "include/lamppp/tensor/functions/matrix_ops.hpp"
-#include "include/lamppp/tensor/cuda/matrix_kern.cuh"
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/tensor/functions/matrix_ops.hpp"
+#include "lamppp/tensor/cuda/matrix_kern.cuh"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 

@@ -1,11 +1,11 @@
-#include "include/lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 #include <cassert>
-#include "include/lamppp/tensor/align_utils.hpp"
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/dispatch_type.hpp"
-#include "include/lamppp/tensor/native/copy.cuh"
-#include "include/lamppp/tensor/native/fill.cuh"
+#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/dispatch_type.hpp"
+#include "lamppp/tensor/native/copy.cuh"
+#include "lamppp/tensor/native/fill.cuh"
 
 namespace lmp::tensor {
 

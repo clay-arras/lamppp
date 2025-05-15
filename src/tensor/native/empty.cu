@@ -1,4 +1,4 @@
-#include "include/lamppp/tensor/native/empty.cuh"
+#include "lamppp/tensor/native/empty.cuh"
 
 namespace lmp::tensor::detail::native {
 

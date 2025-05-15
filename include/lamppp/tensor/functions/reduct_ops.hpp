@@ -1,9 +1,9 @@
 #pragma once
 
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/dispatch_stub.hpp"
-#include "include/lamppp/tensor/tensor.hpp"
-#include "include/lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 
@@ -28,7 +28,6 @@ LMP_REGISTER_DISPATCH(sum_stub, DeviceType::CPU, sum_cpu);
 LMP_REGISTER_DISPATCH(sum_stub, DeviceType::CUDA, sum_cuda);
 LMP_REGISTER_DISPATCH(max_stub, DeviceType::CPU, max_cpu);
 LMP_REGISTER_DISPATCH(max_stub, DeviceType::CUDA, max_cuda);
-
 LMP_REGISTER_DISPATCH(min_stub, DeviceType::CPU, min_cpu);
 LMP_REGISTER_DISPATCH(min_stub, DeviceType::CUDA, min_cuda);
 

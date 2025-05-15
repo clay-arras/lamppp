@@ -1,5 +1,5 @@
-#include "include/lamppp/tensor/tensor_helper.hpp"
-#include "include/lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/tensor_helper.hpp"
+#include "lamppp/tensor/scalar.hpp"
 
 namespace lmp::tensor {
 

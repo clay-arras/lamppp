@@ -1,9 +1,9 @@
 #pragma once
 
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/dispatch_stub.hpp"
-#include "include/lamppp/tensor/tensor.hpp"
-#include "include/lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 

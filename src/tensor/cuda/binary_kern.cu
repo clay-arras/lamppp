@@ -1,8 +1,8 @@
 #include <boost/preprocessor/control/iif.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
-#include "include/lamppp/tensor/cuda/binary_kern.cuh"
-#include "include/lamppp/tensor/cuda/offset_util.cuh"
+#include "lamppp/tensor/cuda/binary_kern.cuh"
+#include "lamppp/tensor/cuda/offset_util.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -185,7 +185,7 @@ void vecLessThan(size_t size, const U* A, const V* B, bool* C,
                               const BOOST_PP_SEQ_ELEM(1, product)*, bool*,     \
                               const OffsetUtil*);
 
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/supported_types.hpp"
 #define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COMPARISON, (TYPES_LIST)(TYPES_LIST))
 

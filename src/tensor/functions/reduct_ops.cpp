@@ -1,6 +1,6 @@
-#include "include/lamppp/tensor/functions/reduct_ops.hpp"
-#include "include/lamppp/tensor/cuda/reduct_kern.cuh"
-#include "include/lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/tensor/functions/reduct_ops.hpp"
+#include "lamppp/tensor/cuda/reduct_kern.cuh"
+#include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 

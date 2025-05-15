@@ -1,7 +1,7 @@
-#include "include/lamppp/autograd/functions/matrix_ops.hpp"
+#include "lamppp/autograd/functions/matrix_ops.hpp"
 #include <cassert>
-#include "include/lamppp/autograd/function.hpp"
-#include "include/lamppp/autograd/variable.hpp"
+#include "lamppp/autograd/function.hpp"
+#include "lamppp/autograd/variable.hpp"
 
 namespace lmp::autograd::ops {
 

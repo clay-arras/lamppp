@@ -1,5 +1,5 @@
-#include "include/lamppp/tensor/storage.hpp"
-#include "include/lamppp/tensor/native/resize.cuh"
+#include "lamppp/tensor/storage.hpp"
+#include "lamppp/tensor/native/resize.cuh"
 
 namespace lmp::tensor {
 

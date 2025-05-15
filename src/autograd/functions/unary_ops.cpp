@@ -1,10 +1,10 @@
-#include "include/lamppp/autograd/functions/unary_ops.hpp"
+#include "lamppp/autograd/functions/unary_ops.hpp"
 #include <cassert>
 #include <cmath>
-#include "include/lamppp/autograd/functions/overloads.hpp"
-#include "include/lamppp/autograd/variable.hpp"
-#include "include/lamppp/tensor/tensor.hpp"
-#include "include/lamppp/tensor/tensor_helper.hpp"
+#include "lamppp/autograd/functions/overloads.hpp"
+#include "lamppp/autograd/variable.hpp"
+#include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor_helper.hpp"
 
 namespace lmp::autograd::ops {
 

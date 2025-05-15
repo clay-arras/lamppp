@@ -1,11 +1,11 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include <cstring>
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/dispatch_stub.hpp"
-#include "include/lamppp/tensor/dispatch_type.hpp"
-#include "include/lamppp/tensor/native/copy.cuh"
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/dispatch_type.hpp"
+#include "lamppp/tensor/native/copy.cuh"
+#include "lamppp/tensor/supported_types.hpp"
 
 namespace lmp::tensor::detail::native {
 
@@ -142,7 +142,7 @@ void vecCopy(size_t size, const U* in, V* out) {
                                   BOOST_PP_SEQ_ELEM(1, product)*);
 
 
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/supported_types.hpp"
 #define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COPY, (TYPES_LIST)(TYPES_LIST))
 

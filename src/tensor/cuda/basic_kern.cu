@@ -1,7 +1,7 @@
 #include <linux/limits.h>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
-#include "include/lamppp/tensor/cuda/basic_kern.cuh"
+#include "lamppp/tensor/cuda/basic_kern.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -152,7 +152,7 @@ void vecDiv(size_t size, const U* A, const V* B, OutType* C,
                          const BOOST_PP_SEQ_ELEM(1, product)*,              \
                          BOOST_PP_SEQ_ELEM(2, product)*, const OffsetUtil*);
 
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/supported_types.hpp"
 #define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE, (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "include/lamppp/tensor/data_ptr.hpp"
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/data_ptr.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/dispatch_stub.hpp"
 
 namespace lmp::tensor::detail::native {
 

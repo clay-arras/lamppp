@@ -1,7 +1,7 @@
-#include "include/lamppp/tensor/functions/unary_ops.hpp"
-#include "include/lamppp/tensor/cuda/unary_kern.cuh"
-#include "include/lamppp/tensor/tensor.hpp"
-#include "include/lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/tensor/functions/unary_ops.hpp"
+#include "lamppp/tensor/cuda/unary_kern.cuh"
+#include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 

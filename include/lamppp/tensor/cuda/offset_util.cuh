@@ -4,8 +4,8 @@
 #include <cassert>
 #include <cuda/std/array>
 #include <vector>
-#include "include/lamppp/tensor/align_utils.hpp"
-#include "include/lamppp/tensor/data_ptr.hpp"
+#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/data_ptr.hpp"
 
 #ifdef __cplusplus
 

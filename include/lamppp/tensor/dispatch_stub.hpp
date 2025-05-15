@@ -3,7 +3,7 @@
 #include <array>
 #include <cassert>
 #include "device_type.hpp"
-#include "include/lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail {
 

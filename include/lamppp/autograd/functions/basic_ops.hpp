@@ -1,7 +1,7 @@
 #pragma once
 
-#include <include/lamppp/autograd/forward_function.hpp>
-#include <include/lamppp/autograd/function.hpp>
+#include "lamppp/autograd/forward_function.hpp"
+#include "lamppp/autograd/function.hpp"
 
 namespace lmp::autograd::ops {
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "include/lamppp/tensor/functions/basic_ops.hpp"
-#include "include/lamppp/tensor/functions/binary_ops.hpp"
-#include "include/lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/functions/basic_ops.hpp"
+#include "lamppp/tensor/functions/binary_ops.hpp"
+#include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::tensor {
 

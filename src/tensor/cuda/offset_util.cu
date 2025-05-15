@@ -1,10 +1,10 @@
 #include <cassert>
-#include "include/lamppp/tensor/align_utils.hpp"
-#include "include/lamppp/tensor/cuda/offset_util.cuh"
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/native/copy.cuh"
-#include "include/lamppp/tensor/native/empty.cuh"
+#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/cuda/offset_util.cuh"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/native/copy.cuh"
+#include "lamppp/tensor/native/empty.cuh"
 
 namespace lmp::tensor::detail::cuda {
 

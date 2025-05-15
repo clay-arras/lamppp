@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include "include/lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/align_utils.hpp"
 
 #ifdef __cplusplus
 

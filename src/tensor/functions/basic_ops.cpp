@@ -1,9 +1,9 @@
-#include "include/lamppp/tensor/functions/basic_ops.hpp"
-#include "include/lamppp/tensor/align_utils.hpp"
-#include "include/lamppp/tensor/cuda/basic_kern.cuh"
-#include "include/lamppp/tensor/cuda/offset_util.cuh"
-#include "include/lamppp/tensor/data_type.hpp"
-#include "include/lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/functions/basic_ops.hpp"
+#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/cuda/basic_kern.cuh"
+#include "lamppp/tensor/cuda/offset_util.cuh"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::tensor::ops {
 

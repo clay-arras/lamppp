@@ -7,9 +7,9 @@
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
-#include "include/lamppp/tensor/align_utils.hpp"
-#include "include/lamppp/tensor/native/copy.cuh"
-#include "include/lamppp/tensor/storage.hpp"
+#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/native/copy.cuh"
+#include "lamppp/tensor/storage.hpp"
 #include "scalar.hpp"
 
 namespace lmp::tensor {

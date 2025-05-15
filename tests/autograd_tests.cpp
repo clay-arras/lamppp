@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <vector>
 
-#include "include/lamppp/autograd/core.hpp"
-#include "include/lamppp/tensor/core.hpp"
+#include "lamppp/autograd/core.hpp"
+#include "lamppp/tensor/core.hpp"
 
 using lmp::autograd::Variable;
 using lmp::tensor::DataType;

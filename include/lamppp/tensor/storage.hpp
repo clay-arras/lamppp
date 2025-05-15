@@ -5,8 +5,8 @@
 #include <memory>
 #include <ostream>
 #include "data_ptr.hpp"
-#include "include/lamppp/tensor/device_type.hpp"
-#include "include/lamppp/tensor/native/empty.cuh"
+#include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/native/empty.cuh"
 
 namespace lmp::tensor {
 

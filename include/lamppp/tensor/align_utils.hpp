@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include <vector>
-#include "include/lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/data_type.hpp"
 
 #define LMP_MAX_DIMS 16  // TODO: can be increased
 

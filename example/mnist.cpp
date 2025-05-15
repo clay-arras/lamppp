@@ -2,16 +2,14 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
-#include "autograd/util/batch_sample.hpp"
-#include "autograd/util/csv_reader.hpp"
-#include "include/lamppp/tensor/constructor.hpp"
-#include "include/lamppp/tensor/variable.hpp"
-#include "include/lamppp/tensor/variable_ops.hpp"
+#include "lamppp/lamppp.hpp"
+#include "utils/batch_sample.hpp"
+#include "utils/csv_reader.hpp"
 
-using autograd::ones;
-using autograd::rand;
-using autograd::tensor;
-using autograd::Variable;
+using lmp::autograd::ones;
+using lmp::autograd::rand;
+using lmp::autograd::tensor;
+using lmp::autograd::Variable;
 
 int main() {
   auto [train_data, train_label] = readCSV("data/mnist_train.csv");

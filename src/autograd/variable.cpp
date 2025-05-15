@@ -1,10 +1,9 @@
-#include "include/lamppp/autograd/variable.hpp"
+#include "lamppp/autograd/variable.hpp"
 #include <algorithm>
-#include <include/lamppp/autograd/forward_function.hpp>
-#include <include/lamppp/autograd/function.hpp>
 #include <iostream>
 #include <memory>
 #include <unordered_set>
+#include "lamppp/autograd/function.hpp"
 
 namespace lmp::autograd {
 

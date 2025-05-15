@@ -2,8 +2,8 @@
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include <cassert>
-#include "include/lamppp/tensor/align_utils.hpp"
-#include "include/lamppp/tensor/cuda/reduct_kern.cuh"
+#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/cuda/reduct_kern.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -153,7 +153,7 @@ void vecMin(const T* in, T* out, const size_t* shape, const stride_t* stride,
   template void vecMax<elem>(const elem*, elem*, const size_t*, const stride_t*, size_t, size_t, size_t); \
   template void vecMin<elem>(const elem*, elem*, const size_t*, const stride_t*, size_t, size_t, size_t); 
 
-#include "include/lamppp/tensor/supported_types.hpp"
+#include "lamppp/tensor/supported_types.hpp"
 #define TYPES_LIST LMP_TYPES()
 BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_REDUCT, , TYPES_LIST)
 

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include "include/lamppp/tensor/scalar.hpp"  // TODO : maybe move scalar somewhere ?
+#include "lamppp/tensor/scalar.hpp"  // TODO : maybe move scalar somewhere ?
 #include "variable.hpp"
 
 namespace lmp::autograd {

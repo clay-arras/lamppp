@@ -2,8 +2,8 @@
 #include <pybind11/stl.h>
 #include <sstream>
 
-#include "include/lamppp/autograd/core.hpp"
-#include "include/lamppp/tensor/core.hpp"
+#include "lamppp/autograd/core.hpp"
+#include "lamppp/tensor/core.hpp"
 
 namespace py = pybind11;
 

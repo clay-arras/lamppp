@@ -2,7 +2,7 @@
 #include <functional>
 #include <string>
 #include <vector>
-#include "include/lamppp/lamppp.hpp"
+#include "lamppp/lamppp.hpp"
 
 using lmp::autograd::rand;
 using lmp::autograd::Variable;

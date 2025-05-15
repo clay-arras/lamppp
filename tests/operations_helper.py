@@ -164,3 +164,23 @@ class Sum(Operation):
         self.ranges = [[-1000, 1000]]
         self.torch_fn = lambda t: torch.sum(t, dim=axis)
         self.cpp_fn = lambda t: lamppp.sum(t, axis)
+
+
+class Max(Operation):
+    def __init__(self, axis):
+        super().__init__()
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-1000, 1000]]
+        self.torch_fn = lambda t: torch.max(t, dim=axis).values
+        self.cpp_fn = lambda t: lamppp.max(t, axis)
+
+
+class Min(Operation):
+    def __init__(self, axis):
+        super().__init__()
+        self.atol = 1e-6
+        self.sampler = lambda: sample_matrices(1, self.ranges)
+        self.ranges = [[-1000, 1000]]
+        self.torch_fn = lambda t: torch.min(t, dim=axis).values
+        self.cpp_fn = lambda t: lamppp.min(t, axis)

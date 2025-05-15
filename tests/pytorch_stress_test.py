@@ -19,8 +19,10 @@ from operations_helper import (
     Tan,
     Clamp,
     Matmul,
-    Sum,
     Transpose,
+    Sum,
+    Max, 
+    Min,
 )
 
 ITERATIONS = 1000
@@ -150,6 +152,10 @@ def main():
         Transpose,
         lambda: Sum(axis=0),
         lambda: Sum(axis=1),
+        lambda: Max(axis=0),
+        lambda: Max(axis=1),
+        lambda: Min(axis=0),
+        lambda: Min(axis=1),
     ]
 
     for case in OPERATIONS:

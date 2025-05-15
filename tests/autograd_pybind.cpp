@@ -105,6 +105,18 @@ Variable sum_cust(const Variable& a, size_t axis) {
   return c;
 }
 
+Variable max_cust(const Variable& a, size_t axis) {
+  Variable c = lmp::autograd::ops::max(a, axis);
+  c.backward();
+  return c;
+}
+
+Variable min_cust(const Variable& a, size_t axis) {
+  Variable c = lmp::autograd::ops::min(a, axis);
+  c.backward();
+  return c;
+}
+
 }  // namespace
 
 PYBIND11_MODULE(lamppp, m) {
@@ -166,4 +178,6 @@ PYBIND11_MODULE(lamppp, m) {
   m.def("matmul", &matmul_cust);
   m.def("transpose", &transpose_cust);
   m.def("sum", &sum_cust);
+  m.def("min", &min_cust);
+  m.def("max", &max_cust);
 }

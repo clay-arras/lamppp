@@ -16,9 +16,27 @@ variable_list SummationBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
-variable_list MaximumBackward::apply(
-    const variable_list&
-        gradOutputs) {  // TODO(nlin): this is disgusting + slow, values can be cached
+variable_list MaximumBackward::apply(const variable_list& gradOutputs) {
+  assert(gradOutputs.size() == 1);
+  const Variable& grad = gradOutputs[0];
+  Variable& self = (*saved_inputs)[0];
+
+  tensor::Tensor mask =
+      tensor::ops::equal(self.data(), tensor::ops::max(self.data(), axis));
+  self.incr_grad(grad.grad() * mask);
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list MinimumBackward::apply(const variable_list& gradOutputs) {
+  assert(gradOutputs.size() == 1);
+  const Variable& grad = gradOutputs[0];
+  Variable& self = (*saved_inputs)[0];
+
+  tensor::Tensor mask =
+      tensor::ops::equal(self.data(), tensor::ops::min(self.data(), axis));
+  self.incr_grad(grad.grad() * mask);
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -26,16 +44,20 @@ variable_list MaximumBackward::apply(
 
 tensor::Tensor Summation::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1 && "Function must take one input");
-  const Variable& self = inputs[0];
-
-  return tensor::ops::sum(self.data(), axis);
+  const Variable& self_var = inputs[0];
+  return tensor::ops::sum(self_var.data(), axis);
 }
 
 tensor::Tensor Maximum::execute(const variable_list& inputs) const {
   assert(inputs.size() == 1 && "Function must take one input");
-  const Variable& self = inputs[0];
+  const Variable& self_var = inputs[0];
+  return tensor::ops::max(self_var.data(), axis);
+}
 
-  return tensor::ops::max(self.data(), axis);
+tensor::Tensor Minimum::execute(const variable_list& inputs) const {
+  assert(inputs.size() == 1 && "Function must take one input");
+  const Variable& self_var = inputs[0];
+  return tensor::ops::min(self_var.data(), axis);
 }
 
 }  // namespace lmp::autograd::ops

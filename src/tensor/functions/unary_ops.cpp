@@ -19,16 +19,16 @@ TensorImpl log_cpu(const TensorImpl& a) {
   assert(false && "Not Implemented");
 }
 
-TensorImpl log_cuda(const TensorImpl& a) {
-  //   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-  //     Storage c(a.size() * sizeof(scalar_t), DeviceType::CUDA);
-  //     ::lmp::tensor::detail::cuda::vecLog<scalar_t>(
-  //         static_cast<const scalar_t*>(a.data()),
-  //         static_cast<scalar_t*>(c.data()), a.size());
-  //     return TensorImpl(c, a.shape(), a.type());
-  //   });
-  return detail::cuda::log_cuda(a);
-}
+// TensorImpl log_cuda(const TensorImpl& a) {
+//   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
+//     Storage c(a.size() * sizeof(scalar_t), DeviceType::CUDA);
+//     ::lmp::tensor::detail::cuda::vecLog<scalar_t>(
+//         static_cast<const scalar_t*>(a.data()),
+//         static_cast<scalar_t*>(c.data()), a.size());
+//     return TensorImpl(c, a.shape(), a.type());
+//   });
+// return log_cuda(a);
+// }
 
 TensorImpl exp_cpu(const TensorImpl& a) {
   assert(false && "Not Implemented");

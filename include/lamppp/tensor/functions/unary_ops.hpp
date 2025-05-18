@@ -32,10 +32,10 @@ LMP_REGISTER_DISPATCH(exp_stub, DeviceType::CPU, exp_cpu);
 LMP_REGISTER_DISPATCH(exp_stub, DeviceType::CUDA, exp_cuda);
 
 TensorImpl log_cpu(const TensorImpl& a);
-TensorImpl log_cuda(const TensorImpl& a);
+// TensorImpl log_cuda(const TensorImpl& a);
 
 LMP_REGISTER_DISPATCH(log_stub, DeviceType::CPU, log_cpu);
-LMP_REGISTER_DISPATCH(log_stub, DeviceType::CUDA, log_cuda);
+// LMP_REGISTER_DISPATCH(log_stub, DeviceType::CUDA, log_cuda);
 
 TensorImpl sqrt_cpu(const TensorImpl& a);
 TensorImpl sqrt_cuda(const TensorImpl& a);

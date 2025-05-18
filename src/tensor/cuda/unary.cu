@@ -11,7 +11,7 @@ namespace lmp::tensor::detail::cuda {
 
 namespace internal {
 
-template <size_t N>  // this NEEDS to be an array of void*
+template <size_t N>
 ::cuda::std::array<void*, N + 1> pack_tens(tensor_list tens, void* out) {
   ::cuda::std::array<void*, N + 1> arr;
   assert(tens.size() == N && "pack_tens: tensor list size mismatch with N");
@@ -24,9 +24,6 @@ template <size_t N>  // this NEEDS to be an array of void*
 }
 
 }  // namespace internal
-//
-// responsible for calculating the results
-#include <stdio.h>
 
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_unary_kernel(PtrList ptr_, OpFn& fn_, size_t size) {
@@ -36,9 +33,7 @@ __global__ void vectorized_unary_kernel(PtrList ptr_, OpFn& fn_, size_t size) {
   }
 }
 
-// responsible for launching the kernel and cleaning up afterward
-template <typename PtrList,
-          typename OpFn>  // PtrList is cuda::std::array<N, void*>
+template <typename PtrList, typename OpFn>
 void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
@@ -53,8 +48,6 @@ void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
   }
 }
 
-// make fn_ a functor, then HERE we INITIALIZE the () operator with lambdas
-// responsble for: dtype promotion, broadcasting,
 template <template <typename, typename> class OpFunctor>
 void unary_gpu_kernel(const internal::TensorMetaHandler& meta) {
   LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
@@ -68,8 +61,6 @@ void unary_gpu_kernel(const internal::TensorMetaHandler& meta) {
   });
 }
 
-// do we need to access scalar_t when allocating new storage for outTensor?
-// we need the size of the outScalar for allocating storage, yes
 TensorImpl log_cuda(const TensorImpl& a) {
   internal::TensorMetaHandler meta({a});
   meta.handle_unary_op();

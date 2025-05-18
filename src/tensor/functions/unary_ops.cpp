@@ -1,4 +1,5 @@
 #include "lamppp/tensor/functions/unary_ops.hpp"
+#include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/cuda/unary_kern.cuh"
 #include "lamppp/tensor/tensor.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
@@ -19,13 +20,14 @@ TensorImpl log_cpu(const TensorImpl& a) {
 }
 
 TensorImpl log_cuda(const TensorImpl& a) {
-  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-    Storage c(a.size() * sizeof(scalar_t), DeviceType::CUDA);
-    ::lmp::tensor::detail::cuda::vecLog<scalar_t>(
-        static_cast<const scalar_t*>(a.data()),
-        static_cast<scalar_t*>(c.data()), a.size());
-    return TensorImpl(c, a.shape(), a.type());
-  });
+  //   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
+  //     Storage c(a.size() * sizeof(scalar_t), DeviceType::CUDA);
+  //     ::lmp::tensor::detail::cuda::vecLog<scalar_t>(
+  //         static_cast<const scalar_t*>(a.data()),
+  //         static_cast<scalar_t*>(c.data()), a.size());
+  //     return TensorImpl(c, a.shape(), a.type());
+  //   });
+  return detail::cuda::log_cuda(a);
 }
 
 TensorImpl exp_cpu(const TensorImpl& a) {

@@ -17,6 +17,7 @@ set(TENSOR_SOURCES
   cuda/basic_kern.cu
   cuda/unary_kern.cu
   cuda/offset_util.cu
+  cuda/unary.cu
   tensor.cpp
   tensor_impl.cpp
   storage.cpp

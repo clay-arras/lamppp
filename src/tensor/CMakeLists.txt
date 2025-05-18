@@ -15,7 +15,6 @@ set(TENSOR_SOURCES
   cuda/binary_kern.cu
   cuda/matrix_kern.cu
   cuda/basic_kern.cu
-  cuda/unary_kern.cu
   cuda/offset_util.cu
   cuda/unary.cu
   cuda/kernels.cu

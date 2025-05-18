@@ -11,8 +11,7 @@ using UnaryOpPtrList = ::cuda::std::array<void*, 2>;
 using BinaryOpPtrList = ::cuda::std::array<void*, 3>;
 
 template <typename OutType, typename InType>
-class LogFunctor {
- public:
+struct LogFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -22,8 +21,7 @@ class LogFunctor {
 };
 
 template <typename OutType, typename InType>
-class ExpFunctor {
- public:
+struct ExpFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -33,8 +31,7 @@ class ExpFunctor {
 };
 
 template <typename OutType, typename InType>
-class SqrtFunctor {
- public:
+struct SqrtFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -44,8 +41,7 @@ class SqrtFunctor {
 };
 
 template <typename OutType, typename InType>
-class AbsFunctor {
- public:
+struct AbsFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -55,8 +51,7 @@ class AbsFunctor {
 };
 
 template <typename OutType, typename InType>
-class SinFunctor {
- public:
+struct SinFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -66,8 +61,7 @@ class SinFunctor {
 };
 
 template <typename OutType, typename InType>
-class CosFunctor {
- public:
+struct CosFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -77,8 +71,7 @@ class CosFunctor {
 };
 
 template <typename OutType, typename InType>
-class TanFunctor {
- public:
+struct TanFunctor {
   __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
     OutType* out_data = static_cast<OutType*>(ptrs[0]);
     const InType* in_data = static_cast<const InType*>(ptrs[1]);
@@ -88,8 +81,7 @@ class TanFunctor {
 };
 
 template <typename OutType, typename InType>
-class ClampFunctor {
- public:
+struct ClampFunctor {
   explicit ClampFunctor(Scalar min_val, Scalar max_val)
       : min_val_(min_val), max_val_(max_val) {}
 

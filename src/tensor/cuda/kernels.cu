@@ -1,9 +1,17 @@
+#include "lamppp/tensor/cuda/expand.cuh"
 #include "lamppp/tensor/cuda/kernels.cuh"
 #include "lamppp/tensor/cuda/meta_util.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cuda {
+
+TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<AddFunctor>(meta);
+  return meta.out();
+}
 
 TensorImpl log_cuda(const TensorImpl& a) {
   internal::TensorMetaHandler meta({a});

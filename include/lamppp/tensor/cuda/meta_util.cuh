@@ -24,20 +24,48 @@ template <size_t N>
   return arr;
 }
 
+template <class OutT, class... SrcTs>
+class PtrPack {
+ public:
+  static constexpr std::size_t N = sizeof...(SrcTs);
+  using conv_fn = OutT (*)(void*, std::size_t);
+
+  ::cuda::std::array<void*, N + 1> data;
+  ::cuda::std::array<conv_fn, N + 1> fns;
+
+  __device__ __host__ constexpr PtrPack(OutT* out, SrcTs*... in)
+      : data{static_cast<void*>(out), static_cast<void*>(in)...},
+        fns{&transform<OutT, OutT>, &transform<OutT, SrcTs>...} {}
+
+  __device__ void set_Out(size_t idx, OutT value) {
+    static_cast<OutT*>(data[0])[idx] = value;
+  }
+
+ private:
+  template <typename U, typename V>
+  static __device__ U transform(void* p, std::size_t i) {
+    return static_cast<U>(static_cast<V*>(p)[i]);
+  }
+};
+
 class TensorMetaHandler {
  public:
   explicit TensorMetaHandler(tensor_list in);
 
-  void handle_binary_op();
-  void handle_unary_op();
   TensorImpl out() const;
   tensor_list in() const;
+  const OffsetUtil<2>* offset() const;
+
+  void handle_binary_op();
+  void handle_expand_op();
+  void handle_unary_op();
 
  private:
   DataType outDtype_;
   size_t outSize_;
   std::vector<size_t> outShape_;
 
+  std::unique_ptr<OffsetUtil<2>> outOffset;
   std::unique_ptr<TensorImpl> outTen;
   tensor_list inTens;
 };

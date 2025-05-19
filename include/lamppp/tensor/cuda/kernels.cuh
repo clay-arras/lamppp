@@ -2,6 +2,7 @@
 
 #include <cuda/std/array>
 #include "lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/functions/basic_ops.hpp"
 #include "lamppp/tensor/functions/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
@@ -9,6 +10,15 @@ namespace lmp::tensor::detail::cuda {
 
 using UnaryOpPtrList = ::cuda::std::array<void*, 2>;
 using BinaryOpPtrList = ::cuda::std::array<void*, 3>;
+
+template <typename T>
+struct AddFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) {
+    // printf("arg1: %f, arg2: %f\n", static_cast<double>(arg1),
+    //  static_cast<double>(arg2));
+    return arg1 + arg2;
+  }
+};
 
 template <typename OutType, typename InType>
 struct LogFunctor {
@@ -97,6 +107,8 @@ struct ClampFunctor {
   Scalar min_val_, max_val_;
 };
 
+TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
+
 TensorImpl log_cuda(const TensorImpl& a);
 TensorImpl exp_cuda(const TensorImpl& a);
 TensorImpl sqrt_cuda(const TensorImpl& a);
@@ -105,6 +117,8 @@ TensorImpl sin_cuda(const TensorImpl& a);
 TensorImpl cos_cuda(const TensorImpl& a);
 TensorImpl tan_cuda(const TensorImpl& a);
 TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
+
+LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
 
 LMP_REGISTER_DISPATCH(ops::log_stub, DeviceType::CUDA, log_cuda);
 LMP_REGISTER_DISPATCH(ops::exp_stub, DeviceType::CUDA, exp_cuda);

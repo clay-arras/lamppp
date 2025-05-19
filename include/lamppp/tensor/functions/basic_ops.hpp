@@ -18,10 +18,10 @@ LMP_DECLARE_DISPATCH(mul_fn, mul_stub);
 LMP_DECLARE_DISPATCH(div_fn, div_stub);
 
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
+// TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
 
 LMP_REGISTER_DISPATCH(add_stub, DeviceType::CPU, add_cpu);
-LMP_REGISTER_DISPATCH(add_stub, DeviceType::CUDA, add_cuda);
+// LMP_REGISTER_DISPATCH(add_stub, DeviceType::CUDA, add_cuda);
 
 TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b);

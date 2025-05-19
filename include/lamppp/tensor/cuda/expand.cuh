@@ -11,13 +11,14 @@
 namespace lmp::tensor::detail::cuda {
 
 template <typename PtrList, typename OpFn>
-__global__ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t size);
+__global__ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t size,
+                                         const OffsetUtil<2>* align);
 
 template <typename PtrList, typename OpFn>
-void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size);
+void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
+                            const OffsetUtil<2>* align);
 
-template <template <typename, typename, typename> class OpFunctor,
-          typename... Args>
+template <template <typename> class OpFunctor, typename... Args>
 void expand_dispatch_handler(const internal::TensorMetaHandler& meta,
                              Args&&... args) {
   LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
@@ -27,10 +28,12 @@ void expand_dispatch_handler(const internal::TensorMetaHandler& meta,
       LMP_DISPATCH_ALL_TYPES(meta.in()[1].type(), [&] {
         using arg2_dtype_t = scalar_t;
         expand_kernel_launcher(
-            internal::pack_tens<2>(meta.in(), meta.out().data()),
-            OpFunctor<out_dtype_t, arg1_dtype_t, arg2_dtype_t>(
-                std::forward<Args>(args)...),
-            meta.out().size());
+            internal::PtrPack<out_dtype_t, arg1_dtype_t, arg2_dtype_t>(
+                static_cast<out_dtype_t*>(meta.out().data()),
+                static_cast<arg1_dtype_t*>(meta.in()[0].data()),
+                static_cast<arg2_dtype_t*>(meta.in()[1].data())),
+            OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
+            meta.out().size(), meta.offset());
       });
     });
   });

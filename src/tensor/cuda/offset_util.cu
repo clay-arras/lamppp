@@ -4,45 +4,54 @@
 
 namespace lmp::tensor::detail::cuda {
 
-OffsetUtil::OffsetUtil(const shape_list& a_shape, const shape_list& b_shape,
-                       const stride_list& a_stride, const stride_list& b_stride,
-                       const stride_list& out_stride, size_t ndim)
-    : ndim(ndim) {
+template <size_t NArgs>
+OffsetUtil<NArgs>::OffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
+                              const TensorImpl& outs)
+    : ndim(outs.shape().size()) {
 
-  std::vector<stride_t> a_stride_tmp = init_padded_strides_(a_shape, a_stride);
-  std::vector<stride_t> b_stride_tmp = init_padded_strides_(b_shape, b_stride);
+  assert(NArgs == ins.size());
+  std::vector<std::vector<stride_t>> stride_exp(NArgs);
+
+#pragma omp unroll
+  for (size_t i = 0; i < NArgs; i++) {
+    stride_exp[i] = init_padded_strides_(ins[i]->shape(), ins[i]->strides());
+  }
 
   arg_strides_[0] =
-      ListDevicePtr<stride_t>(a_stride_tmp.data(), a_stride_tmp.size());
-  arg_strides_[1] =
-      ListDevicePtr<stride_t>(b_stride_tmp.data(), b_stride_tmp.size());
-  arg_strides_[2] =
-      ListDevicePtr<stride_t>(out_stride.data(), out_stride.size());
-
+      ListDevicePtr<stride_t>(outs.strides().data(), outs.strides().size());
   arg_pointers_[0] = arg_strides_[0].get();
-  arg_pointers_[1] = arg_strides_[1].get();
-  arg_pointers_[2] = arg_strides_[2].get();
+
+#pragma omp unroll
+  for (size_t i = 1; i <= NArgs; i++) {
+    arg_strides_[i] = ListDevicePtr<stride_t>(stride_exp[i - 1].data(),
+                                              stride_exp[i - 1].size());
+    arg_pointers_[i] = arg_strides_[i].get();
+  }
 }
 
-__device__ ::cuda::std::array<stride_t, NVARS> OffsetUtil::get(
+template <size_t NArgs>
+__device__ ::cuda::std::array<stride_t, NArgs + 1> OffsetUtil<NArgs>::get(
     size_t idx) const {
-  ::cuda::std::array<stride_t, NVARS> result;
-  result[0] = 0;
-  result[1] = 0;
-  result[2] = idx;
+  ::cuda::std::array<stride_t, NArgs + 1> result;
+  result.fill(0);
+  result[0] = idx;
 
   for (size_t i = 0; i < ndim; ++i) {
-    stride_t this_idx = idx / static_cast<const stride_t*>(arg_pointers_[2])[i];
-    idx = idx % static_cast<const stride_t*>(arg_pointers_[2])[i];
+    stride_t this_idx = idx / static_cast<const stride_t*>(arg_pointers_[0])[i];
+    idx = idx % static_cast<const stride_t*>(arg_pointers_[0])[i];
 
-    result[0] += (this_idx * static_cast<const stride_t*>(arg_pointers_[0])[i]);
-    result[1] += (this_idx * static_cast<const stride_t*>(arg_pointers_[1])[i]);
+#pragma omp unroll
+    for (size_t j = 1; j <= NArgs; j++) {
+      result[j] +=
+          (this_idx * static_cast<const stride_t*>(arg_pointers_[j])[i]);
+    }
   }
 
   return result;
 }
 
-std::vector<stride_t> OffsetUtil::init_padded_strides_(
+template <size_t NArgs>
+std::vector<stride_t> OffsetUtil<NArgs>::init_padded_strides_(
     const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
   assert(ndim > 0);
   assert(shape.size() <= ndim);
@@ -61,5 +70,8 @@ std::vector<stride_t> OffsetUtil::init_padded_strides_(
   }
   return padded;
 }
+
+template class OffsetUtil<2>;
+template class OffsetUtil<3>;  // in case for 3 argument operands, I guess
 
 }  // namespace lmp::tensor::detail::cuda

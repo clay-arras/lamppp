@@ -1,4 +1,5 @@
 #include "lamppp/tensor/functions/basic_ops.hpp"
+#include <array>
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/cuda/basic_kern.cuh"
 #include "lamppp/tensor/cuda/offset_util.cuh"
@@ -19,9 +20,6 @@ TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b) {
 TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
   // NOTE: this is absolutely horrible
   detail::AlignUtil meta(a.shape(), b.shape());
-  detail::cuda::OffsetUtil offset(a.shape(), b.shape(), a.strides(),
-                                  b.strides(), meta.aligned_stride_,
-                                  meta.aligned_shape_.size());
   DataType out_dtype = type_upcast(a.type(), b.type());
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
@@ -31,6 +29,9 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
         using out_type = scalar_t;
         Storage c_storage(meta.aligned_size_ * sizeof(out_type),
                           DeviceType::CUDA);
+        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
+        detail::cuda::OffsetUtil offset(
+            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
 
         ::lmp::tensor::detail::cuda::vecAdd<a_type_t, b_type_t, out_type>(
             meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
@@ -41,7 +42,7 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
         cudaError_t err = cudaGetLastError();
         assert(err == cudaSuccess && "add_cuda: CUDA error after synchronize.");
 
-        return TensorImpl(c_storage, meta.aligned_shape_, out_dtype);
+        return c_out;
       });
     });
   });
@@ -53,9 +54,6 @@ TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b) {
 
 TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
   detail::AlignUtil meta(a.shape(), b.shape());
-  detail::cuda::OffsetUtil offset(a.shape(), b.shape(), a.strides(),
-                                  b.strides(), meta.aligned_stride_,
-                                  meta.aligned_shape_.size());
   DataType out_dtype = type_upcast(a.type(), b.type());
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
@@ -65,6 +63,9 @@ TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
         using out_type = scalar_t;
         Storage c_storage(meta.aligned_size_ * sizeof(out_type),
                           DeviceType::CUDA);
+        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
+        detail::cuda::OffsetUtil offset(
+            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
 
         ::lmp::tensor::detail::cuda::vecSub<a_type_t, b_type_t, out_type>(
             meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
@@ -75,7 +76,7 @@ TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
         cudaError_t err = cudaGetLastError();
         assert(err == cudaSuccess && "sub_cuda: CUDA error after synchronize.");
 
-        return TensorImpl(c_storage, meta.aligned_shape_, out_dtype);
+        return c_out;
       });
     });
   });
@@ -87,9 +88,6 @@ TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b) {
 
 TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
   detail::AlignUtil meta(a.shape(), b.shape());
-  detail::cuda::OffsetUtil offset(a.shape(), b.shape(), a.strides(),
-                                  b.strides(), meta.aligned_stride_,
-                                  meta.aligned_shape_.size());
   DataType out_dtype = type_upcast(a.type(), b.type());
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
@@ -99,6 +97,9 @@ TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
         using out_type = scalar_t;
         Storage c_storage(meta.aligned_size_ * sizeof(out_type),
                           DeviceType::CUDA);
+        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
+        detail::cuda::OffsetUtil offset(
+            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
 
         ::lmp::tensor::detail::cuda::vecMul<a_type_t, b_type_t, out_type>(
             meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
@@ -109,7 +110,7 @@ TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
         cudaError_t err = cudaGetLastError();
         assert(err == cudaSuccess && "mul_cuda: CUDA error after synchronize.");
 
-        return TensorImpl(c_storage, meta.aligned_shape_, out_dtype);
+        return c_out;
       });
     });
   });
@@ -121,9 +122,6 @@ TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b) {
 
 TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
   detail::AlignUtil meta(a.shape(), b.shape());
-  detail::cuda::OffsetUtil offset(a.shape(), b.shape(), a.strides(),
-                                  b.strides(), meta.aligned_stride_,
-                                  meta.aligned_shape_.size());
   DataType out_dtype = type_upcast(a.type(), b.type());
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     using a_type_t = scalar_t;
@@ -133,6 +131,9 @@ TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
         using out_type = scalar_t;
         Storage c_storage(meta.aligned_size_ * sizeof(out_type),
                           DeviceType::CUDA);
+        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
+        detail::cuda::OffsetUtil offset(
+            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
 
         ::lmp::tensor::detail::cuda::vecDiv<a_type_t, b_type_t, out_type>(
             meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
@@ -143,7 +144,7 @@ TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
         cudaError_t err = cudaGetLastError();
         assert(err == cudaSuccess && "div_cuda: CUDA error after synchronize.");
 
-        return TensorImpl(c_storage, meta.aligned_shape_, out_dtype);
+        return c_out;
       });
     });
   });

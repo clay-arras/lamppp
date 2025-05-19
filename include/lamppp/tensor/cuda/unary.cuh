@@ -5,7 +5,7 @@
 #include <driver_types.h>
 #include <cassert>
 #include <cuda/std/detail/libcxx/include/array>
-#include "lamppp/tensor/cuda/utils.cuh"
+#include "lamppp/tensor/cuda/meta_util.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cuda {

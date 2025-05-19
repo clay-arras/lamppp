@@ -7,12 +7,11 @@
 #include <cuda/std/detail/libcxx/include/array>
 #include <memory>
 #include <vector>
+#include "lamppp/tensor/cuda/offset_util.cuh"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cuda::internal {
-
-using tensor_list = std::vector<lmp::tensor::TensorImpl>;
 
 template <size_t N>
 ::cuda::std::array<void*, N + 1> pack_tens(const tensor_list& tens, void* out) {
@@ -31,7 +30,6 @@ class TensorMetaHandler {
 
   void handle_binary_op();
   void handle_unary_op();
-
   TensorImpl out() const;
   tensor_list in() const;
 

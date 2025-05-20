@@ -12,7 +12,7 @@ template <typename PtrList, typename OpFn>
 __global__ void vectorized_unary_kernel(PtrList ptr_, OpFn fn_, size_t size) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
-    fn_(ptr_, i);
+    ptr_.set_Out(i, fn_(::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], i)));
   }
 }
 

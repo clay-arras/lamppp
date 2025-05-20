@@ -52,88 +52,54 @@ template <typename T>
 struct GeFunctor {
   __device__ __host__ T operator()(T arg1, T arg2) { return arg1 >= arg2; }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct LogFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::log(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::log(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct ExpFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::exp(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::exp(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct SqrtFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::sqrt(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::sqrt(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct AbsFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::abs(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::abs(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct SinFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::sin(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::sin(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct CosFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::cos(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::cos(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct TanFunctor {
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    out_data[index] =
-        static_cast<OutType>(::tan(static_cast<double>(in_data[index])));
+  __device__ __host__ T operator()(T arg) {
+    return static_cast<T>(::tan(static_cast<double>(arg)));
   }
 };
-
-template <typename OutType, typename InType>
+template <typename T>
 struct ClampFunctor {
   explicit ClampFunctor(Scalar min_val, Scalar max_val)
       : min_val_(min_val), max_val_(max_val) {}
-
-  __device__ __host__ void operator()(UnaryOpPtrList ptrs, size_t index) {
-    OutType* out_data = static_cast<OutType*>(ptrs[0]);
-    const InType* in_data = static_cast<const InType*>(ptrs[1]);
-    double val = static_cast<double>(in_data[index]);
-    val = val < min_val_ ? min_val_ : (val > max_val_ ? max_val_ : val);
-    out_data[index] = static_cast<OutType>(val);
+  __device__ __host__ T operator()(T arg) {
+    return arg < min_val_ ? min_val_ : (arg > max_val_ ? max_val_ : arg);
   }
 
  private:

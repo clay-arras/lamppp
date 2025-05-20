@@ -1,10 +1,9 @@
 #pragma once
 
 #include <cuda_runtime.h>
+#include <array>
 #include <cassert>
 #include <cuda/std/array>
-// #include <vector>
-#include <array>
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/cuda/list_ptr.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
@@ -15,8 +14,6 @@ namespace lmp::tensor::detail::cuda {
 
 using tensor_list = std::vector<lmp::tensor::TensorImpl>;
 
-// constexpr size_t NVARS = 3;
-// TODO: in the future maybe do template <size_t nArgs>
 template <size_t NArgs>
 class OffsetUtil {
  public:

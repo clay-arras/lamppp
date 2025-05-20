@@ -16,7 +16,7 @@ __global__ void vectorized_unary_kernel(PtrList ptr_, OpFn fn_, size_t size);
 template <typename PtrList, typename OpFn>
 void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size);
 
-template <template <typename, typename> class OpFunctor, typename... Args>
+template <template <typename> class OpFunctor, typename... Args>
 void unary_dispatch_handler(const internal::TensorMetaHandler& meta,
                             Args&&... args) {
   LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
@@ -24,8 +24,10 @@ void unary_dispatch_handler(const internal::TensorMetaHandler& meta,
     LMP_DISPATCH_ALL_TYPES(meta.in()[0].type(), [&] {
       using arg_dtype_t = scalar_t;
       unary_kernel_launcher(
-          internal::pack_tens<1>(meta.in(), meta.out().data()),
-          OpFunctor<out_dtype_t, arg_dtype_t>(std::forward<Args>(args)...),
+          internal::PtrPack<out_dtype_t, arg_dtype_t>(
+              static_cast<out_dtype_t*>(meta.out().data()),
+              static_cast<arg_dtype_t*>(meta.in()[0].data())),
+          OpFunctor<out_dtype_t>(std::forward<Args>(args)...),  // TEMP DTYPE
           meta.out().size());
     });
   });

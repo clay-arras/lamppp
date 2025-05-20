@@ -1,7 +1,6 @@
 #include "lamppp/tensor/functions/basic_ops.hpp"
 #include <array>
 #include "lamppp/tensor/align_utils.hpp"
-#include "lamppp/tensor/cuda/basic_kern.cuh"
 #include "lamppp/tensor/cuda/offset_util.cuh"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/tensor.hpp"
@@ -16,138 +15,14 @@ LMP_DEFINE_DISPATCH(div_stub);
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
 }
-
-// TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
-//   // NOTE: this is absolutely horrible
-//   detail::AlignUtil meta(a.shape(), b.shape());
-//   DataType out_dtype = type_upcast(a.type(), b.type());
-//   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-//     using a_type_t = scalar_t;
-//     return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
-//       using b_type_t = scalar_t;
-//       return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
-//         using out_type = scalar_t;
-//         Storage c_storage(meta.aligned_size_ * sizeof(out_type),
-//                           DeviceType::CUDA);
-//         TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
-//         detail::cuda::OffsetUtil offset(
-//             ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
-
-//         ::lmp::tensor::detail::cuda::vecAdd<a_type_t, b_type_t, out_type>(
-//             meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
-//             static_cast<const b_type_t*>(b.data()),
-//             static_cast<out_type*>(c_storage.data()), &offset);
-
-//         cudaDeviceSynchronize();
-//         cudaError_t err = cudaGetLastError();
-//         assert(err == cudaSuccess && "add_cuda: CUDA error after synchronize.");
-
-//         return c_out;
-//       });
-//     });
-//   });
-// }
-
 TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
 }
-
-TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
-  detail::AlignUtil meta(a.shape(), b.shape());
-  DataType out_dtype = type_upcast(a.type(), b.type());
-  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-    using a_type_t = scalar_t;
-    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
-      using b_type_t = scalar_t;
-      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
-        using out_type = scalar_t;
-        Storage c_storage(meta.aligned_size_ * sizeof(out_type),
-                          DeviceType::CUDA);
-        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
-        detail::cuda::OffsetUtil offset(
-            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
-
-        ::lmp::tensor::detail::cuda::vecSub<a_type_t, b_type_t, out_type>(
-            meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
-            static_cast<const b_type_t*>(b.data()),
-            static_cast<out_type*>(c_storage.data()), &offset);
-
-        cudaDeviceSynchronize();
-        cudaError_t err = cudaGetLastError();
-        assert(err == cudaSuccess && "sub_cuda: CUDA error after synchronize.");
-
-        return c_out;
-      });
-    });
-  });
-}
-
 TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
 }
-
-TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
-  detail::AlignUtil meta(a.shape(), b.shape());
-  DataType out_dtype = type_upcast(a.type(), b.type());
-  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-    using a_type_t = scalar_t;
-    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
-      using b_type_t = scalar_t;
-      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
-        using out_type = scalar_t;
-        Storage c_storage(meta.aligned_size_ * sizeof(out_type),
-                          DeviceType::CUDA);
-        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
-        detail::cuda::OffsetUtil offset(
-            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
-
-        ::lmp::tensor::detail::cuda::vecMul<a_type_t, b_type_t, out_type>(
-            meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
-            static_cast<const b_type_t*>(b.data()),
-            static_cast<out_type*>(c_storage.data()), &offset);
-
-        cudaDeviceSynchronize();
-        cudaError_t err = cudaGetLastError();
-        assert(err == cudaSuccess && "mul_cuda: CUDA error after synchronize.");
-
-        return c_out;
-      });
-    });
-  });
-}
-
 TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b) {
   assert(false && "Not Implemented");
-}
-
-TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
-  detail::AlignUtil meta(a.shape(), b.shape());
-  DataType out_dtype = type_upcast(a.type(), b.type());
-  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
-    using a_type_t = scalar_t;
-    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
-      using b_type_t = scalar_t;
-      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
-        using out_type = scalar_t;
-        Storage c_storage(meta.aligned_size_ * sizeof(out_type),
-                          DeviceType::CUDA);
-        TensorImpl c_out(c_storage, meta.aligned_shape_, out_dtype);
-        detail::cuda::OffsetUtil offset(
-            ::std::array<const TensorImpl*, 2>{&a, &b}, c_out);
-
-        ::lmp::tensor::detail::cuda::vecDiv<a_type_t, b_type_t, out_type>(
-            meta.aligned_size_, static_cast<const a_type_t*>(a.data()),
-            static_cast<const b_type_t*>(b.data()),
-            static_cast<out_type*>(c_storage.data()), &offset);
-
-        cudaDeviceSynchronize();
-        cudaError_t err = cudaGetLastError();
-        assert(err == cudaSuccess && "div_cuda: CUDA error after synchronize.");
-
-        return c_out;
-      });
-    });
-  });
 }
 
 Tensor add(const Tensor& a, const Tensor& b) {
@@ -156,21 +31,18 @@ Tensor add(const Tensor& a, const Tensor& b) {
       add_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-
 Tensor sub(const Tensor& a, const Tensor& b) {
   assert(a.device() == b.device() && "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       sub_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-
 Tensor mul(const Tensor& a, const Tensor& b) {
   assert(a.device() == b.device() && "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       mul_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-
 Tensor div(const Tensor& a, const Tensor& b) {
   assert(a.device() == b.device() && "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(

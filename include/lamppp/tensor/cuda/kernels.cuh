@@ -3,6 +3,7 @@
 #include <cuda/std/array>
 #include "lamppp/tensor/dispatch_stub.hpp"
 #include "lamppp/tensor/functions/basic_ops.hpp"
+#include "lamppp/tensor/functions/binary_ops.hpp"
 #include "lamppp/tensor/functions/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
@@ -14,6 +15,42 @@ using BinaryOpPtrList = ::cuda::std::array<void*, 3>;
 template <typename T>
 struct AddFunctor {
   __device__ __host__ T operator()(T arg1, T arg2) { return arg1 + arg2; }
+};
+template <typename T>
+struct SubFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 - arg2; }
+};
+template <typename T>
+struct MulFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 * arg2; }
+};
+template <typename T>
+struct DivFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 / arg2; }
+};
+template <typename T>
+struct EqFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 == arg2; }
+};
+template <typename T>
+struct NeFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 != arg2; }
+};
+template <typename T>
+struct LeFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 <= arg2; }
+};
+template <typename T>
+struct LtFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 < arg2; }
+};
+template <typename T>
+struct GtFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 > arg2; }
+};
+template <typename T>
+struct GeFunctor {
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 >= arg2; }
 };
 
 template <typename OutType, typename InType>
@@ -104,6 +141,16 @@ struct ClampFunctor {
 };
 
 TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b);
+
+TensorImpl eq_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl ne_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl le_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl lt_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl ge_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl gt_cuda(const TensorImpl& a, const TensorImpl& b);
 
 TensorImpl log_cuda(const TensorImpl& a);
 TensorImpl exp_cuda(const TensorImpl& a);
@@ -115,6 +162,16 @@ TensorImpl tan_cuda(const TensorImpl& a);
 TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
 
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
+LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);
+LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CUDA, mul_cuda);
+LMP_REGISTER_DISPATCH(ops::div_stub, DeviceType::CUDA, div_cuda);
+
+LMP_REGISTER_DISPATCH(ops::eq_stub, DeviceType::CUDA, eq_cuda);
+LMP_REGISTER_DISPATCH(ops::ne_stub, DeviceType::CUDA, ne_cuda);
+LMP_REGISTER_DISPATCH(ops::le_stub, DeviceType::CUDA, le_cuda);
+LMP_REGISTER_DISPATCH(ops::lt_stub, DeviceType::CUDA, lt_cuda);
+LMP_REGISTER_DISPATCH(ops::ge_stub, DeviceType::CUDA, ge_cuda);
+LMP_REGISTER_DISPATCH(ops::gt_stub, DeviceType::CUDA, gt_cuda);
 
 LMP_REGISTER_DISPATCH(ops::log_stub, DeviceType::CUDA, log_cuda);
 LMP_REGISTER_DISPATCH(ops::exp_stub, DeviceType::CUDA, exp_cuda);

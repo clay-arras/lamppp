@@ -13,6 +13,69 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
   return meta.out();
 }
 
+TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<SubFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<MulFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<DivFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl eq_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<EqFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl ne_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<NeFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl le_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<LeFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl lt_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<LtFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl ge_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<GeFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl gt_cuda(const TensorImpl& a, const TensorImpl& b) {
+  internal::TensorMetaHandler meta({a, b});
+  meta.handle_expand_op();
+  expand_dispatch_handler<GtFunctor>(meta);
+  return meta.out();
+}
+
 TensorImpl log_cuda(const TensorImpl& a) {
   internal::TensorMetaHandler meta({a});
   meta.handle_unary_op();

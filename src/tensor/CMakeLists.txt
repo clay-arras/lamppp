@@ -12,9 +12,7 @@ set(TENSOR_SOURCES
   native/fill.cu
   native/copy.cu
   cuda/reduct_kern.cu
-  cuda/binary_kern.cu
   cuda/matrix_kern.cu
-  cuda/basic_kern.cu
   cuda/offset_util.cu
   cuda/unary.cu
   cuda/expand.cu

@@ -18,28 +18,14 @@ LMP_DECLARE_DISPATCH(mul_fn, mul_stub);
 LMP_DECLARE_DISPATCH(div_fn, div_stub);
 
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
-// TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
 
 LMP_REGISTER_DISPATCH(add_stub, DeviceType::CPU, add_cpu);
-// LMP_REGISTER_DISPATCH(add_stub, DeviceType::CUDA, add_cuda);
-
-TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b);
-
-LMP_REGISTER_DISPATCH(sub_stub, DeviceType::CPU, sub_cpu);
-LMP_REGISTER_DISPATCH(sub_stub, DeviceType::CUDA, sub_cuda);
-
-TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b);
-
-LMP_REGISTER_DISPATCH(mul_stub, DeviceType::CPU, mul_cpu);
-LMP_REGISTER_DISPATCH(mul_stub, DeviceType::CUDA, mul_cuda);
-
-TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b);
-
 LMP_REGISTER_DISPATCH(div_stub, DeviceType::CPU, div_cpu);
-LMP_REGISTER_DISPATCH(div_stub, DeviceType::CUDA, div_cuda);
+LMP_REGISTER_DISPATCH(mul_stub, DeviceType::CPU, mul_cpu);
+LMP_REGISTER_DISPATCH(sub_stub, DeviceType::CPU, sub_cpu);
 
 Tensor add(const Tensor& a, const Tensor& b);
 Tensor sub(const Tensor& a, const Tensor& b);

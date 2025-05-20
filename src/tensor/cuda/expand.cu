@@ -35,5 +35,24 @@ void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
 
 template void expand_dispatch_handler<AddFunctor>(
     const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<SubFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<MulFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<DivFunctor>(
+    const internal::TensorMetaHandler&);
+
+template void expand_dispatch_handler<EqFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<NeFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<GeFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<GtFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<LeFunctor>(
+    const internal::TensorMetaHandler&);
+template void expand_dispatch_handler<LtFunctor>(
+    const internal::TensorMetaHandler&);
 
 }  // namespace lmp::tensor::detail::cuda

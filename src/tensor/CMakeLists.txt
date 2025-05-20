@@ -1,11 +1,10 @@
 project(tensor_lib LANGUAGES CXX CUDA)
 
 set(TENSOR_SOURCES
-  functions/binary_ops.cpp
+  functions/expand_ops.cpp
   functions/matrix_ops.cpp
   functions/unary_ops.cpp
   functions/reduct_ops.cpp
-  functions/basic_ops.cpp
   tensor_helper.cpp
   native/resize.cu
   native/empty.cu

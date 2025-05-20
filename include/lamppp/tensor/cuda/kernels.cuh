@@ -2,8 +2,7 @@
 
 #include <cuda/std/array>
 #include "lamppp/tensor/dispatch_stub.hpp"
-#include "lamppp/tensor/functions/basic_ops.hpp"
-#include "lamppp/tensor/functions/binary_ops.hpp"
+#include "lamppp/tensor/functions/expand_ops.hpp"
 #include "lamppp/tensor/functions/reduct_ops.hpp"
 #include "lamppp/tensor/functions/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"

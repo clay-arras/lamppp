@@ -26,22 +26,22 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
   update_strides_();
 }
 
-void* TensorImpl::data() const {
+void* TensorImpl::data() const noexcept {
   return data_.data();
 }
-DataType TensorImpl::type() const {
+DataType TensorImpl::type() const noexcept {
   return type_;
-};
-DeviceType TensorImpl::device() const {
+}
+DeviceType TensorImpl::device() const noexcept {
   return data_.device();
 }
-const std::vector<size_t>& TensorImpl::shape() const {
+const std::vector<size_t>& TensorImpl::shape() const noexcept {
   return shape_;
 }
-const std::vector<detail::stride_t>& TensorImpl::strides() const {
+const std::vector<detail::stride_t>& TensorImpl::strides() const noexcept {
   return strides_;
 }
-size_t TensorImpl::size() const {
+size_t TensorImpl::size() const noexcept {
   return size_;
 }
 

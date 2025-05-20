@@ -39,10 +39,10 @@ class Variable {
   explicit Variable(const tensor::Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
-  const tensor::Tensor& grad() const;
-  const tensor::Tensor& data() const;
-  const std::shared_ptr<Function>& grad_fn() const;
-  const bool requires_grad() const;
+  const tensor::Tensor& grad() const noexcept;
+  const tensor::Tensor& data() const noexcept;
+  const std::shared_ptr<Function>& grad_fn() const noexcept;
+  const bool requires_grad() const noexcept;
 
   void zero_grad();
   void incr_grad(const tensor::Tensor& other_grad);

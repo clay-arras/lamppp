@@ -28,12 +28,12 @@ class Tensor {
                   DataType dtype = DataType::Float64)
       : impl_(std::make_shared<TensorImpl>(data, shape, device, dtype)) {}
 
-  void* data() const;
-  DataType type() const;
-  DeviceType device() const;
-  const std::vector<size_t>& shape() const;
-  const std::vector<detail::stride_t>& strides() const;
-  size_t size() const;
+  void* data() const noexcept;
+  DataType type() const noexcept;
+  DeviceType device() const noexcept;
+  const std::vector<size_t>& shape() const noexcept;
+  const std::vector<detail::stride_t>& strides() const noexcept;
+  size_t size() const noexcept;
 
   // these functions only return an view
   template <typename T>

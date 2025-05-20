@@ -3,15 +3,15 @@
 
 namespace lmp::tensor {
 
-void* Storage::data() const {
+void* Storage::data() const noexcept {
   return impl->data();
 }
 
-size_t Storage::byte_size() const {
+size_t Storage::byte_size() const noexcept {
   return impl->byte_size();
 }
 
-DeviceType Storage::device() const {
+DeviceType Storage::device() const noexcept {
   return impl->device();
 }
 
@@ -22,6 +22,16 @@ void Storage::resize_(size_t nsize) {
 std::ostream& operator<<(std::ostream& os, const Storage& obj) {
   obj.impl->print_(os);
   return os;
+}
+
+void* Storage::StorageImpl::data() const noexcept {
+  return data_ptr_.data();
+}
+size_t Storage::StorageImpl::byte_size() const noexcept {
+  return byte_size_;
+}
+DeviceType Storage::StorageImpl::device() const noexcept {
+  return device_;
 }
 
 void Storage::StorageImpl::resize_(size_t nsize) {

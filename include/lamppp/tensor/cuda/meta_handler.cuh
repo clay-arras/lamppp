@@ -18,9 +18,9 @@ class TensorMetaHandler {
  public:
   explicit TensorMetaHandler(tensor_list in);
 
-  TensorImpl out() const;
-  tensor_list in() const;
-  const OffsetUtil<2>* offset() const;
+  TensorImpl out() const noexcept;
+  tensor_list in() const noexcept;
+  const OffsetUtil<2>* offset() const noexcept;
 
   void handle_expand_op();
   void handle_unary_op();

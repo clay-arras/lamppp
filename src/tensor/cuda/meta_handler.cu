@@ -62,15 +62,15 @@ void TensorMetaHandler::handle_reduct_op(size_t axis) {
   });
 }
 
-TensorImpl TensorMetaHandler::out() const {
+TensorImpl TensorMetaHandler::out() const noexcept {
   return *outTen.get();
 }
 
-tensor_list TensorMetaHandler::in() const {
+tensor_list TensorMetaHandler::in() const noexcept {
   return inTens;
 }
 
-const OffsetUtil<2>* TensorMetaHandler::offset() const {
+const OffsetUtil<2>* TensorMetaHandler::offset() const noexcept {
   return outOffset.get();
 }
 

@@ -9,10 +9,10 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
  <!-- - make global macros LMP prefix -->
  <!-- - remove relu -->
  <!-- - move all implementations to .cpp file -->
+<!-- - make all accessors noexcept and const??? -->
 
-- make all accessors noexcept and const???
-- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
 - merge the binary and basic ops into expand_ops.cpp
+- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
 
 add extra stuff (these aren't strictly necessary)
 
@@ -21,6 +21,7 @@ add extra stuff (these aren't strictly necessary)
 - add summation with -1 arg
 - element wise access (.get)
 - implement to_vector
+- fix max and log
 
 ## medium
 

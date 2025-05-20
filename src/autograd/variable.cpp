@@ -7,16 +7,16 @@
 
 namespace lmp::autograd {
 
-const tensor::Tensor& Variable::grad() const {
+const tensor::Tensor& Variable::grad() const noexcept {
   return impl_->grad;
 }
-const tensor::Tensor& Variable::data() const {
+const tensor::Tensor& Variable::data() const noexcept {
   return impl_->data;
 }
-const std::shared_ptr<Function>& Variable::grad_fn() const {
+const std::shared_ptr<Function>& Variable::grad_fn() const noexcept {
   return impl_->_grad_fn;
 }
-const bool Variable::requires_grad() const {
+const bool Variable::requires_grad() const noexcept {
   return impl_->requires_grad;
 }
 

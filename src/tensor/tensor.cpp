@@ -4,22 +4,22 @@
 
 namespace lmp::tensor {
 
-void* Tensor::data() const {
+void* Tensor::data() const noexcept {
   return impl_->data();
 }
-DataType Tensor::type() const {
+DataType Tensor::type() const noexcept {
   return impl_->type();
 }
-DeviceType Tensor::device() const {
+DeviceType Tensor::device() const noexcept {
   return impl_->device();
 }
-const std::vector<size_t>& Tensor::shape() const {
+const std::vector<size_t>& Tensor::shape() const noexcept {
   return impl_->shape();
 }
-const std::vector<detail::stride_t>& Tensor::strides() const {
+const std::vector<detail::stride_t>& Tensor::strides() const noexcept {
   return impl_->strides();
 }
-size_t Tensor::size() const {
+size_t Tensor::size() const noexcept {
   return impl_->size();
 }
 

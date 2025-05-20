@@ -1,5 +1,5 @@
 [project]
-name = "autograd"
+name = "lamppp"
 version = "0.1.0"
 description = ""
 authors = [
@@ -14,6 +14,7 @@ dependencies = [
     "numpy (>=2.2.4,<3.0.0)",
     "pybind11 (>=2.13.6,<3.0.0)",
     "pytest (>=8.3.5,<9.0.0)",
+    "hypothesis (>=6.131.20,<7.0.0)",
 ]
 
 [build-system]

@@ -1,8 +1,4 @@
 #include "lamppp/tensor/functions/basic_ops.hpp"
-#include <array>
-#include "lamppp/tensor/align_utils.hpp"
-#include "lamppp/tensor/cuda/offset_util.cuh"
-#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::tensor::ops {

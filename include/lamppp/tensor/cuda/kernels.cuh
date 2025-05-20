@@ -4,6 +4,7 @@
 #include "lamppp/tensor/dispatch_stub.hpp"
 #include "lamppp/tensor/functions/basic_ops.hpp"
 #include "lamppp/tensor/functions/binary_ops.hpp"
+#include "lamppp/tensor/functions/reduct_ops.hpp"
 #include "lamppp/tensor/functions/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
@@ -105,6 +106,21 @@ struct ClampFunctor {
  private:
   Scalar min_val_, max_val_;
 };
+template <typename T>
+struct SumFunctor {
+  static constexpr T identity = 0;
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 + arg2; }
+};
+template <typename T>
+struct MaxFunctor {
+  static constexpr T identity = std::numeric_limits<T>::min();
+  __device__ __host__ T operator()(T arg1, T arg2) { return max(arg1, arg2); }
+};
+template <typename T>
+struct MinFunctor {
+  static constexpr T identity = std::numeric_limits<T>::max();
+  __device__ __host__ T operator()(T arg1, T arg2) { return min(arg1, arg2); }
+};
 
 TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
 TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b);
@@ -127,6 +143,10 @@ TensorImpl cos_cuda(const TensorImpl& a);
 TensorImpl tan_cuda(const TensorImpl& a);
 TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
 
+TensorImpl sum_cuda(const TensorImpl& a, size_t axis);
+TensorImpl max_cuda(const TensorImpl& a, size_t axis);
+TensorImpl min_cuda(const TensorImpl& a, size_t axis);
+
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);
 LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CUDA, mul_cuda);
@@ -147,5 +167,9 @@ LMP_REGISTER_DISPATCH(ops::sin_stub, DeviceType::CUDA, sin_cuda);
 LMP_REGISTER_DISPATCH(ops::cos_stub, DeviceType::CUDA, cos_cuda);
 LMP_REGISTER_DISPATCH(ops::tan_stub, DeviceType::CUDA, tan_cuda);
 LMP_REGISTER_DISPATCH(ops::clamp_stub, DeviceType::CUDA, clamp_cuda);
+
+LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CUDA, sum_cuda);
+LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CUDA, max_cuda);
+LMP_REGISTER_DISPATCH(ops::min_stub, DeviceType::CUDA, min_cuda);
 
 }  // namespace lmp::tensor::detail::cuda

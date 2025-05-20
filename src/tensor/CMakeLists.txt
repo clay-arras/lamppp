@@ -11,13 +11,13 @@ set(TENSOR_SOURCES
   native/empty.cu
   native/fill.cu
   native/copy.cu
-  cuda/reduct_kern.cu
-  cuda/matrix_kern.cu
+  cuda/matrix.cu
   cuda/offset_util.cu
   cuda/unary.cu
+  cuda/reduct.cu
   cuda/expand.cu
   cuda/kernels.cu
-  cuda/meta_util.cu
+  cuda/meta_handler.cu
   tensor.cpp
   tensor_impl.cpp
   storage.cpp

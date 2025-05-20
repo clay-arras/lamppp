@@ -1,4 +1,4 @@
-#include "lamppp/tensor/cuda/meta_util.cuh"
+#include "lamppp/tensor/cuda/meta_handler.cuh"
 #include "lamppp/tensor/cuda/offset_util.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 
@@ -12,26 +12,6 @@ TensorMetaHandler::TensorMetaHandler(tensor_list in)
   for (TensorImpl ten : inTens) {
     outDtype_ = type_upcast(outDtype_, ten.type());
   }
-}
-
-void TensorMetaHandler::handle_binary_op() {
-  assert(false && "Not implemented yet");
-  for (TensorImpl ten : inTens) {
-    assert(ten.size() == outSize_ && "TensorMetaHandler: size mismatch");
-    assert(ten.shape() == outShape_ && "TensorMetaHandler: shape mismatch");
-  }
-  assert(inTens.size() == 2);
-  LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
-    using out_dtype_t = scalar_t;
-    LMP_DISPATCH_ALL_TYPES(inTens[0].type(), [&] {
-      using arg1_dtype_t = scalar_t;
-      LMP_DISPATCH_ALL_TYPES(inTens[1].type(), [&] {
-        using arg2_dtype_t = scalar_t;
-        Storage out_st(outSize_ * sizeof(out_dtype_t), DeviceType::CUDA);
-        outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
-      });
-    });
-  });
 }
 
 void TensorMetaHandler::handle_expand_op() {
@@ -57,11 +37,21 @@ void TensorMetaHandler::handle_expand_op() {
 }
 
 void TensorMetaHandler::handle_unary_op() {
-  for (TensorImpl ten : inTens) {
-    assert(ten.size() == outSize_ && "TensorMetaHandler: size mismatch");
-    assert(ten.shape() == outShape_ && "TensorMetaHandler: shape mismatch");
-  }
   assert(inTens.size() == 1);
+  LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
+    using out_dtype_t = scalar_t;
+    LMP_DISPATCH_ALL_TYPES(inTens[0].type(), [&] {
+      using arg_dtype_t = scalar_t;
+      Storage out_st(outSize_ * sizeof(out_dtype_t), DeviceType::CUDA);
+      outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
+    });
+  });
+}
+
+void TensorMetaHandler::handle_reduct_op(size_t axis) {
+  assert(inTens.size() == 1);
+  outSize_ /= outShape_[axis];
+  outShape_[axis] = 1;
   LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
     using out_dtype_t = scalar_t;
     LMP_DISPATCH_ALL_TYPES(inTens[0].type(), [&] {

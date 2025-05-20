@@ -1,7 +1,7 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
-#include "lamppp/tensor/cuda/matrix_kern.cuh"
+#include "lamppp/tensor/cuda/matrix.cuh"
 
 namespace lmp::tensor::detail::cuda {
 

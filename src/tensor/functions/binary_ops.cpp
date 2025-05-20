@@ -1,6 +1,4 @@
 #include "lamppp/tensor/functions/binary_ops.hpp"
-#include "lamppp/tensor/align_utils.hpp"
-#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/tensor.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 

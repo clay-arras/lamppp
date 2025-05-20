@@ -11,7 +11,10 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
  <!-- - move all implementations to .cpp file -->
 
 - make all accessors noexcept and const???
-  add extra stuff (these aren't strictly necessary)
+- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
+- merge the binary and basic ops into expand_ops.cpp
+
+add extra stuff (these aren't strictly necessary)
 
 - power
 - negation
@@ -28,7 +31,8 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
  <!-- - add strides (for element wise access) -- not as necessary -->
  <!-- - refactor scalar to make it work with broadcasting -->
 
-- refactor functions s.t. there's less repetitive code
+<!-- - refactor functions s.t. there's less repetitive code -->
+
 - make the context be saved from forward execution
 - add better tests including broadcasting tests and codegen; also use pytest instead
   - test broadcasting

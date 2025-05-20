@@ -1,6 +1,7 @@
 #include "lamppp/tensor/cuda/expand.cuh"
 #include "lamppp/tensor/cuda/kernels.cuh"
-#include "lamppp/tensor/cuda/meta_util.cuh"
+#include "lamppp/tensor/cuda/meta_handler.cuh"
+#include "lamppp/tensor/cuda/reduct.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 
@@ -129,6 +130,27 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val) {
   internal::TensorMetaHandler meta({a});
   meta.handle_unary_op();
   unary_dispatch_handler<ClampFunctor>(meta, min_val, max_val);
+  return meta.out();
+}
+
+TensorImpl sum_cuda(const TensorImpl& a, size_t axis) {
+  internal::TensorMetaHandler meta({a});
+  meta.handle_reduct_op(axis);
+  reduct_dispatch_handler<SumFunctor>(meta, axis);
+  return meta.out();
+}
+
+TensorImpl max_cuda(const TensorImpl& a, size_t axis) {
+  internal::TensorMetaHandler meta({a});
+  meta.handle_reduct_op(axis);
+  reduct_dispatch_handler<MaxFunctor>(meta, axis);
+  return meta.out();
+}
+
+TensorImpl min_cuda(const TensorImpl& a, size_t axis) {
+  internal::TensorMetaHandler meta({a});
+  meta.handle_reduct_op(axis);
+  reduct_dispatch_handler<MinFunctor>(meta, axis);
   return meta.out();
 }
 

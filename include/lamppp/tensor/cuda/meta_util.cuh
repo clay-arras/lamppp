@@ -5,6 +5,7 @@
 #include <driver_types.h>
 #include <cassert>
 #include <cuda/std/detail/libcxx/include/array>
+#include <cuda/std/tuple>
 #include <memory>
 #include <vector>
 #include "lamppp/tensor/cuda/offset_util.cuh"
@@ -24,27 +25,30 @@ template <size_t N>
   return arr;
 }
 
+template <typename U, typename V>
+struct TransformFunctor {
+  __device__ __host__ U operator()(void* p, std::size_t i) const {
+    return static_cast<U>(static_cast<V*>(p)[i]);
+  }
+};
+
 template <class OutT, class... SrcTs>
 class PtrPack {
  public:
   static constexpr std::size_t N = sizeof...(SrcTs);
-  using conv_fn = OutT (*)(void*, std::size_t);
 
   ::cuda::std::array<void*, N + 1> data;
-  ::cuda::std::array<conv_fn, N + 1> fns;
+  ::cuda::std::tuple<TransformFunctor<OutT, OutT>,
+                     TransformFunctor<OutT, SrcTs>...>
+      fns;
 
   __device__ __host__ constexpr PtrPack(OutT* out, SrcTs*... in)
       : data{static_cast<void*>(out), static_cast<void*>(in)...},
-        fns{&transform<OutT, OutT>, &transform<OutT, SrcTs>...} {}
+        fns{TransformFunctor<OutT, OutT>{},
+            TransformFunctor<OutT, SrcTs>{}...} {}
 
   __device__ void set_Out(size_t idx, OutT value) {
     static_cast<OutT*>(data[0])[idx] = value;
-  }
-
- private:
-  template <typename U, typename V>
-  static __device__ U transform(void* p, std::size_t i) {
-    return static_cast<U>(static_cast<V*>(p)[i]);
   }
 };
 

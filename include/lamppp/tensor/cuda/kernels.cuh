@@ -13,11 +13,7 @@ using BinaryOpPtrList = ::cuda::std::array<void*, 3>;
 
 template <typename T>
 struct AddFunctor {
-  __device__ __host__ T operator()(T arg1, T arg2) {
-    // printf("arg1: %f, arg2: %f\n", static_cast<double>(arg1),
-    //  static_cast<double>(arg2));
-    return arg1 + arg2;
-  }
+  __device__ __host__ T operator()(T arg1, T arg2) { return arg1 + arg2; }
 };
 
 template <typename OutType, typename InType>

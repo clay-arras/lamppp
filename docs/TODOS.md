@@ -10,18 +10,16 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
  <!-- - remove relu -->
  <!-- - move all implementations to .cpp file -->
 <!-- - make all accessors noexcept and const??? -->
+<!-- - merge the binary and basic ops into expand_ops.cpp -->
 
-- merge the binary and basic ops into expand_ops.cpp
 - refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
-
-add extra stuff (these aren't strictly necessary)
-
-- power
-- negation
-- add summation with -1 arg
-- element wise access (.get)
-- implement to_vector
-- fix max and log
+- add extra stuff (these aren't strictly necessary)
+  - power
+  - negation
+  - add summation with -1 arg
+  - element wise access (.get)
+  - implement to_vector
+  - fix max and log
 
 ## medium
 
@@ -31,15 +29,22 @@ add extra stuff (these aren't strictly necessary)
  <!-- - add some methods from tensor level to variable level -->
  <!-- - add strides (for element wise access) -- not as necessary -->
  <!-- - refactor scalar to make it work with broadcasting -->
+ <!-- - refactor functions s.t. there's less repetitive code -->
 
-<!-- - refactor functions s.t. there's less repetitive code -->
-
+- refactor the autograd functions
 - make the context be saved from forward execution
 - add better tests including broadcasting tests and codegen; also use pytest instead
-  - test broadcasting
+
+  - test broadcasting with autograd
   - test how reshaping, squeeze and expand dims effect gradients
-  - test compound operations
-  - test different data types (namely int64, int16, float64)
+  - test compound operations with autograd
+  - test different data types (namely int64, int16, float64) with autograd
+
+<!-- - tensor type upcast
+- broadcasting
+- reshaping then broadcasting
+- reduct + squeeze
+- expand_dims + broadcast -->
 
 ## hard
 

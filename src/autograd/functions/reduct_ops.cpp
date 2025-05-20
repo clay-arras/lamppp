@@ -1,7 +1,7 @@
 #include "lamppp/autograd/functions/reduct_ops.hpp"
 #include <cassert>
 #include "lamppp/autograd/variable.hpp"
-#include "lamppp/tensor/tensor_helper.hpp"
+#include "lamppp/tensor/fill_like.hpp"
 
 namespace lmp::autograd::ops {
 

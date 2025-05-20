@@ -6,8 +6,8 @@
 #include <vector>
 #include "lamppp/tensor/core.hpp"
 #include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/fill_like.hpp"
 #include "lamppp/tensor/tensor.hpp"
-#include "lamppp/tensor/tensor_helper.hpp"
 
 namespace lmp::autograd {
 

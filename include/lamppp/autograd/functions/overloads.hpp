@@ -3,8 +3,8 @@
 #include "lamppp/autograd/functions/basic_ops.hpp"
 #include "lamppp/autograd/functions/binary_ops.hpp"
 #include "lamppp/autograd/variable.hpp"
+#include "lamppp/tensor/fill_like.hpp"
 #include "lamppp/tensor/scalar.hpp"
-#include "lamppp/tensor/tensor_helper.hpp"
 
 namespace lmp::autograd {
 

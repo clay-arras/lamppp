@@ -27,6 +27,8 @@ void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
 
 template void unary_dispatch_handler<ExpFunctor>(
     const internal::TensorMetaHandler&);
+template void unary_dispatch_handler<LogFunctor>(
+    const internal::TensorMetaHandler&);
 template void unary_dispatch_handler<SqrtFunctor>(
     const internal::TensorMetaHandler&);
 template void unary_dispatch_handler<AbsFunctor>(

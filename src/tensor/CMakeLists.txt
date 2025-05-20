@@ -5,7 +5,7 @@ set(TENSOR_SOURCES
   functions/matrix_ops.cpp
   functions/unary_ops.cpp
   functions/reduct_ops.cpp
-  tensor_helper.cpp
+  fill_like.cpp
   native/resize.cu
   native/empty.cu
   native/fill.cu

@@ -73,6 +73,14 @@ target_link_libraries(autograd_tests
 include(GoogleTest)
 gtest_discover_tests(autograd_tests)
 
+add_executable(tensor_tests tests/tensor_tests.cpp)
+target_link_libraries(tensor_tests
+  PRIVATE autograd_core
+  PRIVATE GTest::gtest_main
+)
+include(GoogleTest)
+gtest_discover_tests(tensor_tests)
+
 add_executable(bench_ops benchmarks/bench_ops.cpp)
 target_link_libraries(bench_ops
   PRIVATE autograd_core

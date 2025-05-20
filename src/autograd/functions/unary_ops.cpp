@@ -3,8 +3,8 @@
 #include <cmath>
 #include "lamppp/autograd/functions/overloads.hpp"
 #include "lamppp/autograd/variable.hpp"
+#include "lamppp/tensor/fill_like.hpp"
 #include "lamppp/tensor/tensor.hpp"
-#include "lamppp/tensor/tensor_helper.hpp"
 
 namespace lmp::autograd::ops {
 
@@ -107,7 +107,6 @@ tensor::Tensor Sin::execute(const variable_list& inputs) {
   return tensor::ops::sin(self.data());
 }
 
-// --- Cos ---
 variable_list CosBackward::apply(const variable_list& gradOutputs) {
   assert(gradOutputs.size() == 1);
   const Variable& grad = gradOutputs[0];

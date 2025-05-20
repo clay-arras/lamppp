@@ -47,6 +47,7 @@ size_t TensorImpl::size() const noexcept {
 
 void TensorImpl::update_strides_() {
   detail::stride_t stride = 1;
+  strides_.resize(shape_.size());
   for (int i = shape_.size() - 1; i >= 0; --i) {
     strides_[i] = stride;
     stride *= shape_[i];

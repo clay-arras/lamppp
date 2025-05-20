@@ -80,7 +80,7 @@ TensorImpl gt_cuda(const TensorImpl& a, const TensorImpl& b) {
 TensorImpl log_cuda(const TensorImpl& a) {
   internal::TensorMetaHandler meta({a});
   meta.handle_unary_op();
-  unary_dispatch_handler<ExpFunctor>(meta);
+  unary_dispatch_handler<LogFunctor>(meta);
   return meta.out();
 }
 

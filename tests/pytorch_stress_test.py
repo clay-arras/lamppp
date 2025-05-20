@@ -5,34 +5,21 @@ sys.path.append(os.path.join(PROJECT_ROOT, "build"))
 
 import torch
 import lamppp
-from operations_helper import (
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Exp,
-    Log,
-    Sqrt,
-    Abs,
-    Sin,
-    Cos,
-    Tan,
-    Clamp,
-    Matmul,
-    Transpose,
-    Sum,
-    Max, 
-    Min,
-)
+import pytest
+from operations_helper import *
 
 ITERATIONS = 1000
 EPSILON = 1e-10
 TORCH_DTYPE = torch.float64
 
-torch.set_default_dtype(TORCH_DTYPE)
+
+@pytest.fixture
+def set_dtype(torch_dtype=TORCH_DTYPE):
+    torch.set_default_dtype(TORCH_DTYPE)
 
 
-def set_seed(seed):
+@pytest.fixture
+def set_seed(seed=42):
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
@@ -41,22 +28,31 @@ def set_seed(seed):
     torch.backends.cudnn.benchmark = False
 
 
-seed = 42
-set_seed(seed)
+def _to_row_major(mat):
+    return torch.tensor(mat).flatten().tolist()
 
 
-def compute_grads(cpp_op, torch_op, mats):
-    def _to_row_major(mat):
-        return torch.tensor(mat).flatten().tolist()
+def _from_row_major(flat, like):
+    t = torch.tensor(flat).reshape(torch.tensor(like).shape)
+    return t.tolist()
 
-    def _from_row_major(flat, like):
-        t = torch.tensor(flat).reshape(torch.tensor(like).shape)
-        return t.tolist()
 
-    def _to_cpp_var(mat, requires_grad=True):
-        ten = lamppp.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
-        return lamppp.cVariable(ten, requires_grad)
+def _to_lamppp_var(mat, requires_grad=True):
+    ten = lamppp.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
+    return lamppp.cVariable(ten, requires_grad)
 
+
+def _atol(pred, true):
+    return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true))))
+
+
+def _rtol(pred, true):
+    return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true)))) / (
+        float(torch.max(torch.tensor(true))) + EPSILON
+    )
+
+
+def compute_grads(lamppp_op, torch_op, mats):
     torch_vars = [torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats]
     torch_out = torch_op(*torch_vars)
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
@@ -65,77 +61,23 @@ def compute_grads(cpp_op, torch_op, mats):
         "out": [torch_out.data.tolist()],
     }
 
-    cpp_vars = [_to_cpp_var(m) for m in mats]
-    cpp_out = cpp_op(*cpp_vars)
-    cpp_vals = {
-        "grads": [_from_row_major(v.grad.data, m) for v, m in zip(cpp_vars, mats)],
-        "out": [_from_row_major(cpp_out.data.data, torch_out.data.tolist())],
+    lamppp_vars = [_to_lamppp_var(m) for m in mats]
+    lamppp_out = lamppp_op(*lamppp_vars)
+    lamppp_vals = {
+        "grads": [_from_row_major(v.grad.data, m) for v, m in zip(lamppp_vars, mats)],
+        "out": [_from_row_major(lamppp_out.data.data, torch_out.data.tolist())],
     }
-
-    return cpp_vals, torch_vals
-
-
-def run_test(case, its):
-    def _atol(pred, true):
-        return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true))))
-
-    def _rtol(pred, true):
-        return float(
-            torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true)))
-        ) / (float(torch.max(torch.tensor(true))) + EPSILON)
-
-    max_atol_forward, max_rtol_forward = 0, 0
-    max_atol_backward, max_rtol_backward = 0, 0
-
-    def check_tolerances(cg, tg, pass_type):
-        nonlocal max_atol_forward, max_rtol_forward, max_atol_backward, max_rtol_backward
-        atol_ = _atol(cg, tg)
-        rtol_ = _rtol(cg, tg)
-
-        if pass_type == "forward":
-            max_atol_forward = max(max_atol_forward, atol_)
-            max_rtol_forward = max(max_rtol_forward, rtol_)
-        elif pass_type == "backward":
-            max_atol_backward = max(max_atol_backward, atol_)
-            max_rtol_backward = max(max_rtol_backward, rtol_)
-        else:
-            raise ValueError(f"Unknown pass_type: {pass_type}")
-
-    for i in range(its):
-        mats = case.sampler()
-        cpp_results, torch_results = compute_grads(case.cpp_fn, case.torch_fn, mats)
-
-        for cpp_out, torch_out in zip(cpp_results["out"], torch_results["out"]):
-            check_tolerances(cpp_out, torch_out, "forward")
-        for cpp_grad, torch_grad in zip(cpp_results["grads"], torch_results["grads"]):
-            check_tolerances(cpp_grad, torch_grad, "backward")
-
-    forward_atol_threshold = case.atol
-    forward_rtol_threshold = case.rtol
-    backward_atol_threshold = case.atol * case.backward_atol_mult
-    backward_rtol_threshold = case.rtol * case.backward_atol_mult
-
-    atol_forward_pass = max_atol_forward <= forward_atol_threshold
-    rtol_forward_pass = max_rtol_forward <= forward_rtol_threshold
-    atol_backward_pass = max_atol_backward <= backward_atol_threshold
-    rtol_backward_pass = max_rtol_backward <= backward_rtol_threshold
-
-    atol_forward_result = "✅ pass" if atol_forward_pass else "❌ fail"
-    rtol_forward_result = "✅ pass" if rtol_forward_pass else "❌ fail"
-    atol_backward_result = "✅ pass" if atol_backward_pass else "❌ fail"
-    rtol_backward_result = "✅ pass" if rtol_backward_pass else "❌ fail"
-
-    print(
-        f"{case.__class__.__name__}:\n"
-        f"  Forward : atol {atol_forward_result} (max={max_atol_forward:.3e}, thr={forward_atol_threshold:.1e}), "
-        f"rtol {rtol_forward_result} (max={max_rtol_forward:.3e}, thr={forward_rtol_threshold:.1e})\n"
-        f"  Backward: atol {atol_backward_result} (max={max_atol_backward:.3e}, thr={backward_atol_threshold:.1e}), "
-        f"rtol {rtol_backward_result} (max={max_rtol_backward:.3e}, thr={backward_rtol_threshold:.1e})"
-    )
+    return lamppp_vals, torch_vals
 
 
-def main():
-    OPERATIONS = [
+def calculate_pair_tolerances(cg, tg):
+    return _atol(cg, tg), _rtol(cg, tg)
+
+
+@pytest.mark.usefixtures("set_seed", "set_dtype")
+@pytest.mark.parametrize(
+    "case",
+    [
         Add,
         Sub,
         Mul,
@@ -147,7 +89,7 @@ def main():
         Sin,
         Cos,
         Tan,
-        lambda: Clamp(-20, 20), # todo: randomize this
+        lambda: Clamp(-20, 20),  # todo: randomize this
         Matmul,
         Transpose,
         lambda: Sum(axis=0),
@@ -156,11 +98,69 @@ def main():
         lambda: Max(axis=1),
         lambda: Min(axis=0),
         lambda: Min(axis=1),
-    ]
+    ],
+    ids=[
+        "add",
+        "sub",
+        "mul",
+        "div",
+        "exp",
+        "log",
+        "sqrt",
+        "abs",
+        "sin",
+        "cos",
+        "tan",
+        "clamp",
+        "matmul",
+        "transpose",
+        "sum_axis_0",
+        "sum_axis_1",
+        "max_axis_0",
+        "max_axis_1",
+        "min_axis_0",
+        "min_axis_1",
+    ],
+)
+def test_ops(case):
+    instance = case()
 
-    for case in OPERATIONS:
-        run_test(case(), ITERATIONS)
+    max_atol_forward, max_rtol_forward = 0, 0
+    max_atol_backward, max_rtol_backward = 0, 0
 
+    for _ in range(ITERATIONS):
+        mats = instance.sampler()
+        cpp_results, torch_results = compute_grads(
+            instance.cpp_fn, instance.torch_fn, mats
+        )
 
-if __name__ == "__main__":
-    main()
+        for cpp_out, torch_out in zip(cpp_results["out"], torch_results["out"]):
+            max_atol_forward, max_rtol_forward = (
+                max(x, y)
+                for x, y in zip(
+                    (max_atol_forward, max_rtol_forward),
+                    calculate_pair_tolerances(cpp_out, torch_out),
+                )
+            )
+        for cpp_grad, torch_grad in zip(cpp_results["grads"], torch_results["grads"]):
+            max_atol_backward, max_rtol_backward = (
+                max(x, y)
+                for x, y in zip(
+                    (max_atol_backward, max_rtol_backward),
+                    calculate_pair_tolerances(cpp_grad, torch_grad),
+                )
+            )
+
+    atol_forward_pass = max_atol_forward <= instance.atol
+    rtol_forward_pass = max_rtol_forward <= instance.rtol
+    atol_backward_pass = (
+        max_atol_backward <= instance.atol * instance.backward_atol_mult
+    )
+    rtol_backward_pass = (
+        max_rtol_backward <= instance.rtol * instance.backward_atol_mult
+    )
+
+    assert atol_forward_pass
+    assert rtol_forward_pass
+    assert atol_backward_pass
+    assert rtol_backward_pass

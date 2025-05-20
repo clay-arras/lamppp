@@ -7,7 +7,7 @@
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
-#include "tensor_helper.hpp"
+#include "fill_like.hpp"
 #include "tensor_impl.hpp"
 
 namespace lmp::tensor {

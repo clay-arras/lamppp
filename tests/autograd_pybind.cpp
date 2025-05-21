@@ -16,105 +16,83 @@ using std::vector;
 namespace {
 
 Variable add_cust(const Variable& a, const Variable& b) {
-  Variable c = a + b;
-  c.backward();
-  return c;
+  return a + b;
 }
 
 Variable sub_cust(const Variable& a, const Variable& b) {
-  Variable c = a - b;
-  c.backward();
-  return c;
+  return a - b;
 }
 
 Variable mul_cust(const Variable& a, const Variable& b) {
-  Variable c = a * b;
-  c.backward();
-  return c;
+  return a * b;
 }
 
 Variable div_cust(const Variable& a, const Variable& b) {
-  Variable c = a / b;
-  c.backward();
-  return c;
+  return a / b;
 }
 
 Variable exp_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::exp(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::exp(a);
 }
 
 Variable log_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::log(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::log(a);
 }
 
 Variable sqrt_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::sqrt(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::sqrt(a);
 }
 
 Variable abs_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::abs(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::abs(a);
 }
 
 Variable sin_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::sin(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::sin(a);
 }
 
 Variable cos_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::cos(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::cos(a);
 }
 
 Variable tan_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::tan(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::tan(a);
 }
 
 Variable clamp_cust(const Variable& a, double min_val, double max_val) {
-  Variable c = lmp::autograd::ops::clamp(a, min_val, max_val);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::clamp(a, min_val, max_val);
 }
 
 Variable matmul_cust(const Variable& a, const Variable& b) {
-  Variable c = lmp::autograd::ops::matmul(a, b);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::matmul(a, b);
 }
 
 Variable transpose_cust(const Variable& a) {
-  Variable c = lmp::autograd::ops::transpose(a);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::transpose(a);
 }
 
 Variable sum_cust(const Variable& a, size_t axis) {
-  Variable c = lmp::autograd::ops::sum(a, axis);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::sum(a, axis);
 }
 
 Variable max_cust(const Variable& a, size_t axis) {
-  Variable c = lmp::autograd::ops::max(a, axis);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::max(a, axis);
 }
 
 Variable min_cust(const Variable& a, size_t axis) {
-  Variable c = lmp::autograd::ops::min(a, axis);
-  c.backward();
-  return c;
+  return lmp::autograd::ops::min(a, axis);
+}
+
+Variable reshape_cust(const Variable& a, const std::vector<size_t>& shape) {
+  return lmp::autograd::ops::reshape(a, shape);
+}
+
+Variable expand_cust(const Variable& a, size_t axis) {
+  return lmp::autograd::ops::expand_dims(a, axis);
+}
+
+Variable squeeze_cust(const Variable& a, size_t axis) {
+  return lmp::autograd::ops::squeeze(a, axis);
 }
 
 }  // namespace
@@ -157,6 +135,7 @@ PYBIND11_MODULE(lamppp, m) {
       .def_property(
           "requires_grad", [](const Variable& v) { return v.requires_grad(); },
           nullptr)
+      .def("backward", &Variable::backward)
       .def("__repr__", [](const Variable& self) {
         std::ostringstream oss;
         oss << self;
@@ -180,4 +159,7 @@ PYBIND11_MODULE(lamppp, m) {
   m.def("sum", &sum_cust);
   m.def("min", &min_cust);
   m.def("max", &max_cust);
+  m.def("squeeze", &squeeze_cust);
+  m.def("expand_dims", &expand_cust);
+  m.def("reshape", &reshape_cust);
 }

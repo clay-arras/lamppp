@@ -1,17 +1,25 @@
-from hypothesis import given
+import sys, os
+
+PROJECT_ROOT = "/home/nlin/workspace/code/projects/autograd_cpp"
+sys.path.append(os.path.join(PROJECT_ROOT, "build"))
+
+from hypothesis import given, settings
 from hypothesis.strategies import composite, lists, integers, sampled_from, permutations
 import torch
 import math
+import lamppp
 
-NUM_TENS = 5
-DTYPES = [torch.float32, torch.float64]
+
+NUM_TENS = 4
+DTYPES = [torch.float64] # bindings for Lamppp other dtypes not supported yet
 OPS = [torch.add, torch.sub, torch.mul]
 
 
 class DSU:
-    def __init__(self, n: int, vars):
+    def __init__(self, n: int, torch_vars, lamp_vars):
         self.e = [-1] * n
-        self.list_head = vars
+        self.torch_head = list(torch_vars)
+        self.lamp_head = list(lamp_vars)
 
     def get(self, x: int) -> int:
         """Find with path compression."""
@@ -20,8 +28,11 @@ class DSU:
         self.e[x] = self.get(self.e[x])
         return self.e[x]
 
-    def get_head(self, x: int):
-        return self.list_head[self.get(x)]
+    def get_torch(self, x: int):
+        return self.torch_head[self.get(x)]
+
+    def get_lamp(self, x: int):
+        return self.lamp_head[self.get(x)]
 
     def size(self, x: int) -> int:
         """Return size of the set containing x."""
@@ -40,13 +51,16 @@ class DSU:
         self.e[y] = x
 
         nshape_i, nshape_j = find_common_reshape(
-            self.list_head[x].shape, self.list_head[y].shape
+            self.torch_head[x].shape, self.torch_head[y].shape
         )
-        self.list_head[x] = torch.reshape(self.list_head[x], nshape_i)
-        self.list_head[y] = torch.reshape(self.list_head[y], nshape_j)
+        self.torch_head[x] = torch.reshape(self.torch_head[x], nshape_i)
+        self.torch_head[y] = torch.reshape(self.torch_head[y], nshape_j)
 
-        self.list_head[x] = op(self.list_head[x], self.list_head[y])
-        self.list_head[y] = None
+        # self.torch_head[x] = torch.reshape(self.torch_head[x], nshape_i)
+        # self.torch_head[y] = torch.reshape(self.torch_head[y], nshape_j)
+
+        self.torch_head[x] = op(self.torch_head[x], self.torch_head[y])
+        self.torch_head[y] = None
         return True
 
 
@@ -86,11 +100,18 @@ def find_common_reshape(init_a, init_b):
 def build_tensors(draw):
     shapes = draw(
         lists(
-            lists(integers(min_value=1, max_value=10), min_size=1, max_size=5),
+            lists(integers(min_value=1, max_value=5), min_size=1, max_size=5),
             min_size=NUM_TENS,
             max_size=NUM_TENS,
         )
     )
+    sizes = [torch.prod(torch.tensor(arr)).item() for arr in shapes]
+    tens_vals = [
+        draw(
+            lists(integers(min_value=-10, max_value=10), min_size=sz, max_size=sz),
+        )
+        for sz in sizes
+    ]
     dtypes = draw(
         lists(
             sampled_from(DTYPES),
@@ -98,24 +119,37 @@ def build_tensors(draw):
             max_size=NUM_TENS,
         )
     )
-    return [torch.rand(shape, dtype=dtype) for shape, dtype in zip(shapes, dtypes)]
+    return {
+        "bodies": tens_vals,
+        "shapes": shapes,
+        "dtypes": dtypes,
+    }
 
 
 @given(
-    tensors=build_tensors(),
+    meta=build_tensors(),
     operations=lists(sampled_from(OPS), min_size=NUM_TENS - 1, max_size=NUM_TENS - 1),
     edges=permutations([[i, i + 1] for i in range(NUM_TENS - 1)]),
 )
-def test_graph_builder(tensors, operations, edges):
-    assert len(tensors) == NUM_TENS and "test_graph_builder: died"
+@settings(deadline=None)
+def test_graph_builder(meta, operations, edges):
+    torch_tensors = [
+        torch.tensor(meta["bodies"][i], dtype=meta["dtypes"][i], requires_grad=True)
+        .reshape(meta["shapes"][i])
+        for i in range(len(meta["bodies"]))
+    ]
+    lmp_tensors = [
+        lamppp.cVariable(lamppp.cTensor(meta["bodies"][i], meta["shapes"][i]), True)
+        for i in range(len(meta["bodies"]))
+    ]
 
-    graph = DSU(len(tensors), tensors)
+    graph = DSU(len(torch_tensors), torch_vars=torch_tensors, lamp_vars=lmp_tensors)
     for edge in edges:
         if graph.get(edge[0]) == graph.get(edge[1]):
             assert False and "test_graph_builder: died"
         graph.unite(edge[0], edge[1], operations.pop())
 
-    # graph.get_head(0)
+    graph.get_head(0).backward(torch.ones_like(graph.get_head(0)))
 
 
-# test_graph_builder()
+test_graph_builder()

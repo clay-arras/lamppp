@@ -48,10 +48,6 @@ class Variable {
   void incr_grad(const tensor::Tensor& other_grad);
   void set_grad_fn(std::shared_ptr<Function> grad_fn);
 
-  Variable reshape(std::vector<size_t> new_shape);
-  Variable squeeze(size_t dim);
-  Variable expand_dims(size_t dim);
-
   void backward();
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);
 

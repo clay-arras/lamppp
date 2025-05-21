@@ -63,6 +63,7 @@ def compute_grads(lamppp_op, torch_op, mats):
 
     lamppp_vars = [_to_lamppp_var(m) for m in mats]
     lamppp_out = lamppp_op(*lamppp_vars)
+    lamppp_out.backward()
     lamppp_vals = {
         "grads": [_from_row_major(v.grad.data, m) for v, m in zip(lamppp_vars, mats)],
         "out": [_from_row_major(lamppp_out.data.data, torch_out.data.tolist())],

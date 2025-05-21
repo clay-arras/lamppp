@@ -9,4 +9,5 @@
 #include "lamppp/autograd/functions/overloads.hpp"
 #include "lamppp/autograd/functions/reduct_ops.hpp"
 #include "lamppp/autograd/functions/unary_ops.hpp"
+#include "lamppp/autograd/functions/view_ops.hpp"
 #include "lamppp/autograd/variable.hpp"

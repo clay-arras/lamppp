@@ -8,6 +8,7 @@ set(AUTOGRAD_SOURCES
   functions/unary_ops.cpp
   functions/reduct_ops.cpp
   functions/basic_ops.cpp
+  functions/view_ops.cpp
 )
 
 add_library(autograd_core ${AUTOGRAD_SOURCES})

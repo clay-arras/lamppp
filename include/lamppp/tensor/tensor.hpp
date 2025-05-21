@@ -55,9 +55,9 @@ class Tensor {
     });
     return std::span<T>(converted_data);
   }
-  Tensor reshape(std::vector<size_t> new_shape);
-  Tensor squeeze(size_t dim);
-  Tensor expand_dims(size_t dim);
+  Tensor reshape(std::vector<size_t> new_shape) const;
+  Tensor squeeze(size_t dim) const;
+  Tensor expand_dims(size_t dim) const;
 
   // these functions modify the actual data
   void copy(const Tensor& other);

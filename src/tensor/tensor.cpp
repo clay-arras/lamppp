@@ -23,16 +23,16 @@ size_t Tensor::size() const noexcept {
   return impl_->size();
 }
 
-Tensor Tensor::reshape(std::vector<size_t> new_shape) {
+Tensor Tensor::reshape(std::vector<size_t> new_shape) const {
   return Tensor(
       std::make_shared<TensorImpl>(impl_->reshape_(std::move(new_shape))));
 }
 
-Tensor Tensor::squeeze(size_t dim) {
+Tensor Tensor::squeeze(size_t dim) const {
   return Tensor(std::make_shared<TensorImpl>(impl_->squeeze_(dim)));
 }
 
-Tensor Tensor::expand_dims(size_t dim) {
+Tensor Tensor::expand_dims(size_t dim) const {
   return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims_(dim)));
 }
 

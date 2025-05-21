@@ -12,7 +12,11 @@ import lamppp
 
 NUM_TENS = 4
 DTYPES = [torch.float64] # bindings for Lamppp other dtypes not supported yet
-OPS = [torch.add, torch.sub, torch.mul]
+OPS = [
+    {"torch": torch.add, "lamp": lamppp.add},
+    # {"torch": torch.sub, "lamp": lamppp.sub},
+    # {"torch": torch.mul, "lamp": lamppp.mul}
+]
 
 
 class DSU:
@@ -53,14 +57,34 @@ class DSU:
         nshape_i, nshape_j = find_common_reshape(
             self.torch_head[x].shape, self.torch_head[y].shape
         )
+        print(nshape_i, nshape_j)
+
+        print(f'Torch head shape at index {x}: {self.torch_head[x].shape}')
+        print(f'Lamp head shape at index {x}: {self.lamp_head[x].data.shape}')
+
+        print(f'Torch head shape at index {y}: {self.torch_head[y].shape}')
+        print(f'Lamp head shape at index {y}: {self.lamp_head[y].data.shape}')
+
         self.torch_head[x] = torch.reshape(self.torch_head[x], nshape_i)
         self.torch_head[y] = torch.reshape(self.torch_head[y], nshape_j)
 
-        # self.torch_head[x] = torch.reshape(self.torch_head[x], nshape_i)
-        # self.torch_head[y] = torch.reshape(self.torch_head[y], nshape_j)
+        self.lamp_head[x] = lamppp.reshape(self.lamp_head[x], nshape_i)
+        self.lamp_head[y] = lamppp.reshape(self.lamp_head[y], nshape_j)
 
-        self.torch_head[x] = op(self.torch_head[x], self.torch_head[y])
+        print(f'RES Torch head shape at index {x}: {self.torch_head[x].shape}')
+        print(f'RES Lamp head shape at index {x}: {self.lamp_head[x].data.shape}')
+
+        print(f'RES Torch head shape at index {y}: {self.torch_head[y].shape}')
+        print(f'RES Lamp head shape at index {y}: {self.lamp_head[y].data.shape}')
+
+        print()
+
+        self.torch_head[x] = op["torch"](self.torch_head[x], self.torch_head[y])
         self.torch_head[y] = None
+
+        self.lamp_head[x] = op["lamp"](self.lamp_head[x], self.lamp_head[y])
+        self.lamp_head[y] = None
+
         return True
 
 
@@ -138,18 +162,33 @@ def test_graph_builder(meta, operations, edges):
         .reshape(meta["shapes"][i])
         for i in range(len(meta["bodies"]))
     ]
-    lmp_tensors = [
+    lamp_tensors = [
         lamppp.cVariable(lamppp.cTensor(meta["bodies"][i], meta["shapes"][i]), True)
         for i in range(len(meta["bodies"]))
     ]
 
-    graph = DSU(len(torch_tensors), torch_vars=torch_tensors, lamp_vars=lmp_tensors)
+    graph = DSU(len(torch_tensors), torch_vars=torch_tensors, lamp_vars=lamp_tensors)
     for edge in edges:
         if graph.get(edge[0]) == graph.get(edge[1]):
             assert False and "test_graph_builder: died"
         graph.unite(edge[0], edge[1], operations.pop())
+    print("FINISH UNITING")
+    print("FINISH UNITING")
 
-    graph.get_head(0).backward(torch.ones_like(graph.get_head(0)))
+    graph.get_torch(0).backward(torch.ones_like(graph.get_torch(0)))
+    graph.get_lamp(0).backward()
+    print("FINISH BACKWARD")
+    print("FINISH BACKWARD")
+
+    for t_ten, l_ten in zip(torch_tensors, lamp_tensors):
+        print("CHECKTEN", t_ten, t_ten.shape)
+        print("CHECKTEN", l_ten)
+        # assert t_ten.shape == l_ten.data.shape
+    
+    print("BING BONG DONE")
+    print("BING BONG DONE")
+    print("BING BONG DONE")
+    print("BING BONG DONE")
 
 
 test_graph_builder()

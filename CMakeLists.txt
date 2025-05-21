@@ -4,8 +4,32 @@ project(lamppp LANGUAGES CXX CUDA)
 # -----------------------------------------------------------------------------
 # 1) Core configuration
 # -----------------------------------------------------------------------------
+# find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+# message(STATUS "Using Python executable: ${Python3_EXECUTABLE}")
+# set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+
+# Temporary
+set(EXPECTED_PYTHON_VERSION_MAJOR 3)
+set(EXPECTED_PYTHON_VERSION_MINOR 11)
+set(PYTHON_VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
+
+if(EXISTS ${PYTHON_VENV_PATH})
+    set(Python3_EXECUTABLE ${PYTHON_VENV_PATH} CACHE FILEPATH "Path to Python3 executable from Poetry venv" FORCE)
+    message(STATUS "Attempting to use Python executable from Poetry venv: ${Python3_EXECUTABLE}")
+else()
+    message(WARNING "Poetry virtual environment Python not found at ${PYTHON_VENV_PATH}. CMake will attempt to find system Python. This may lead to version mismatches.")
+endif()
+
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+message(STATUS "CMake is using Python executable: ${Python3_EXECUTABLE}")
+message(STATUS "Python3 version: ${Python3_VERSION_STRING}")
+
+if(NOT Python3_VERSION_MAJOR EQUAL EXPECTED_PYTHON_VERSION_MAJOR OR NOT Python3_VERSION_MINOR EQUAL EXPECTED_PYTHON_VERSION_MINOR)
+    message(WARNING "CMake found Python ${Python3_VERSION_STRING} but expected version ${EXPECTED_PYTHON_VERSION_MAJOR}.${EXPECTED_PYTHON_VERSION_MINOR} based on project requirements. This might cause issues. Ensure ${PYTHON_VENV_PATH} is correct and accessible.")
+endif()
+
 set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+# End
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

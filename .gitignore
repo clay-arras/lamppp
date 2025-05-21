@@ -4,4 +4,5 @@ poetry.lock
 data/
 .venv/
 .cache/
+.hypothesis/
 **/.ipynb_checkpoints/

@@ -112,7 +112,7 @@ struct SumFunctor {
 };
 template <typename T>
 struct MaxFunctor {
-  static constexpr T identity = std::numeric_limits<T>::min();
+  static constexpr T identity = std::numeric_limits<T>::lowest();
   __device__ __host__ T operator()(T arg1, T arg2) { return max(arg1, arg2); }
 };
 template <typename T>

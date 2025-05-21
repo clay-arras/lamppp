@@ -24,11 +24,6 @@ void Variable::zero_grad() {
   impl_->grad = zeros_like(impl_->grad);
 }  // TODO: this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
-  if (other_grad.shape() != impl_->grad.shape()) {
-    std::cout << "BROADCSTING ERROR IN INCR GRAD" << std::endl;
-    std::cout << other_grad << std::endl;
-    std::cout << *this << std::endl;
-  }
   assert(other_grad.shape() == impl_->grad.shape() &&
          "There should be no broadcasting in incr_grad");
   impl_->grad = impl_->grad + other_grad;
@@ -39,7 +34,6 @@ void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {
 
 void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
-  std::cout << "BACKWARD CALLED " << *this << std::endl;
   impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {
     if (node.grad_fn() != nullptr) {
@@ -69,8 +63,6 @@ std::vector<Variable> Variable::topological_sort() {
 
   dfs(*this, visited, topo);
   std::reverse(topo.begin(), topo.end());
-  for (auto i : topo)
-    std::cout << "NODE VIS " << i << std::endl;
   return topo;
 }
 

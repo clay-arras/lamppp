@@ -1,17 +1,8 @@
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+`cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1`
 
 ## easy
 
- <!-- - add better error handling -->
- <!-- - organize repository, delete unused stuff -->
- <!-- - make better namespaces -->
- <!-- - add more data types (int, float 16 - 128) -->
- <!-- - make global macros LMP prefix -->
- <!-- - remove relu -->
- <!-- - move all implementations to .cpp file -->
-<!-- - make all accessors noexcept and const??? -->
-<!-- - merge the binary and basic ops into expand_ops.cpp -->
-
+- add stacktrace, assert, message
 - refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
 - add extra stuff (these aren't strictly necessary)
   - power
@@ -19,20 +10,20 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
   - add summation with -1 arg
   - element wise access (.get)
   - implement to_vector
-  - fix max and log
+- move basic and binary ops together
+- change size to numel
+- refactor the binary broadcasting backward bit
 
 ## medium
 
- <!-- - refactor adding operators/methods for codegen??? -->
- <!-- - add more pytorch operators, and remove ReLU  -->
- <!-- - add reshaping, etc. reshape, squeeze, expand dims -->
- <!-- - add some methods from tensor level to variable level -->
- <!-- - add strides (for element wise access) -- not as necessary -->
- <!-- - refactor scalar to make it work with broadcasting -->
- <!-- - refactor functions s.t. there's less repetitive code -->
-
 - refactor the autograd functions
 - make the context be saved from forward execution
+- get benchmarks up again
+- type broadcasting doesn't work with backward
+
+## hard
+
+- add CPU implementations with OMP
 - add better tests including broadcasting tests and codegen; also use pytest instead
 
   - test broadcasting with autograd
@@ -40,22 +31,14 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COM
   - test compound operations with autograd
   - test different data types (namely int64, int16, float64) with autograd
 
-<!-- - tensor type upcast
-- broadcasting
-- reshaping then broadcasting
-- reduct + squeeze
-- expand_dims + broadcast -->
+## automatic tests
 
-## hard
-
- <!-- - add broadcasting -->
-
-- add CPU implementations with OMP
-
-- does expand/squeeze dims modify grads, also reshape
-- my autograd engine might be wrong, because it takes grad.grad() in GENERAL, not just what that segment of the tree is contributing???
-- idea: have all kernels redirect to a central type converter?
-
-@src/tensor/functions
-@src/tensor/cuda
-@src/autograd/functions
+- a) generate a list of variables, set A where len(A) = N
+- b) generate a set of ALL of the possible edges between A, s.t. len(E) = N\*(N-1)/2
+- c) each union object has a "head"; on merge, we connect s.t. newHead = op(prevHead, newModule)
+- d) iterate through E, merging using reshape and expand_dims.
+  - reshape checker: pad shorter shape
+  - go from left to right; if both 1s, then skip; if a % b == 0, then s.t. the new shape is b, with a/b carried over
+  - fallback is to make the shape (N, 1) and (1, M)
+- e) after each merge, have an option to apply a unary operation x% of the time (between keepDims=false reduct, unary, and transpose)
+- f) stop when all objects have been connected into one "HEAD" variable

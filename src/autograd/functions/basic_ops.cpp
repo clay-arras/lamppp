@@ -60,8 +60,41 @@ variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  self.incr_grad(grad.grad());
-  other.incr_grad((-1.0) * grad.grad());
+  tensor::Tensor self_grad = grad.grad();
+  tensor::Tensor other_grad = (-1.0) * grad.grad();
+
+  size_t out_dims = grad.grad().shape().size();
+#pragma unroll
+  for (size_t i = LMP_MAX_DIMS; i-- > 0;) {
+    if (i >= out_dims)
+      continue;
+
+    int offset = out_dims - 1 - i;
+    int a_idx = self.data().shape().size() - 1 - offset;
+    int b_idx = other.data().shape().size() - 1 - offset;
+
+    int a_val = (a_idx >= 0 ? self.data().shape()[a_idx] : -1);
+    int b_val = (b_idx >= 0 ? other.data().shape()[b_idx] : -1);
+
+    if (a_val == 1 || a_val == -1) {
+      self_grad = tensor::ops::sum(self_grad, i);
+    }
+    if (b_val == 1 || b_val == -1) {
+      other_grad = tensor::ops::sum(other_grad, i);
+    }
+
+    while (self_grad.shape().size() > self.data().shape().size()) {
+      self_grad = tensor::ops::sum(self_grad, 0);
+      self_grad.squeeze(0);
+    }
+    while (other_grad.shape().size() > other.data().shape().size()) {
+      other_grad = tensor::ops::sum(other_grad, 0);
+      other_grad.squeeze(0);
+    }
+  }
+
+  self.incr_grad(self_grad);
+  other.incr_grad(other_grad);
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -73,8 +106,41 @@ variable_list MultiplyBackward::apply(const variable_list& gradOutputs) {
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  self.incr_grad(other.data() * grad.grad());
-  other.incr_grad(self.data() * grad.grad());
+  tensor::Tensor self_grad = other.data() * grad.grad();
+  tensor::Tensor other_grad = self.data() * grad.grad();
+
+  size_t out_dims = grad.grad().shape().size();
+#pragma unroll
+  for (size_t i = LMP_MAX_DIMS; i-- > 0;) {
+    if (i >= out_dims)
+      continue;
+
+    int offset = out_dims - 1 - i;
+    int a_idx = self.data().shape().size() - 1 - offset;
+    int b_idx = other.data().shape().size() - 1 - offset;
+
+    int a_val = (a_idx >= 0 ? self.data().shape()[a_idx] : -1);
+    int b_val = (b_idx >= 0 ? other.data().shape()[b_idx] : -1);
+
+    if (a_val == 1 || a_val == -1) {
+      self_grad = tensor::ops::sum(self_grad, i);
+    }
+    if (b_val == 1 || b_val == -1) {
+      other_grad = tensor::ops::sum(other_grad, i);
+    }
+
+    while (self_grad.shape().size() > self.data().shape().size()) {
+      self_grad = tensor::ops::sum(self_grad, 0);
+      self_grad.squeeze(0);
+    }
+    while (other_grad.shape().size() > other.data().shape().size()) {
+      other_grad = tensor::ops::sum(other_grad, 0);
+      other_grad.squeeze(0);
+    }
+  }
+
+  self.incr_grad(self_grad);
+  other.incr_grad(other_grad);
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -86,9 +152,42 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  self.incr_grad(grad.grad() / other.data());
-  other.incr_grad((-1.0) *
-                  (self.data() * grad.grad() / (other.data() * other.data())));
+  tensor::Tensor self_grad = grad.grad() / other.data();
+  tensor::Tensor other_grad =
+      (-1.0) * (self.data() * grad.grad() / (other.data() * other.data()));
+
+  size_t out_dims = grad.grad().shape().size();
+#pragma unroll
+  for (size_t i = LMP_MAX_DIMS; i-- > 0;) {
+    if (i >= out_dims)
+      continue;
+
+    int offset = out_dims - 1 - i;
+    int a_idx = self.data().shape().size() - 1 - offset;
+    int b_idx = other.data().shape().size() - 1 - offset;
+
+    int a_val = (a_idx >= 0 ? self.data().shape()[a_idx] : -1);
+    int b_val = (b_idx >= 0 ? other.data().shape()[b_idx] : -1);
+
+    if (a_val == 1 || a_val == -1) {
+      self_grad = tensor::ops::sum(self_grad, i);
+    }
+    if (b_val == 1 || b_val == -1) {
+      other_grad = tensor::ops::sum(other_grad, i);
+    }
+
+    while (self_grad.shape().size() > self.data().shape().size()) {
+      self_grad = tensor::ops::sum(self_grad, 0);
+      self_grad.squeeze(0);
+    }
+    while (other_grad.shape().size() > other.data().shape().size()) {
+      other_grad = tensor::ops::sum(other_grad, 0);
+      other_grad.squeeze(0);
+    }
+  }
+
+  self.incr_grad(self_grad);
+  other.incr_grad(other_grad);
 
   variable_list grad_inputs = {};
   return grad_inputs;

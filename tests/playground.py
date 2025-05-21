@@ -3,19 +3,80 @@ import sys, os
 PROJECT_ROOT = "/home/nlin/workspace/code/projects/autograd_cpp"
 sys.path.append(os.path.join(PROJECT_ROOT, "build"))
 
-from hypothesis import given, settings
+from hypothesis import Verbosity, given, settings
 from hypothesis.strategies import composite, lists, integers, sampled_from, permutations
 import torch
 import math
 import lamppp
 
 
+"""
+TODO: 
+- create more datatypes to test dtype promotion
+- test transpose and matmul
+- backpropogate the expected error (i.e. add with mul should propagate the two errors)
+"""
+
+
 NUM_TENS = 4
-DTYPES = [torch.float64] # bindings for Lamppp other dtypes not supported yet
+DTYPES = [torch.float64]  # bindings for Lamppp other dtypes not supported yet
 OPS = [
-    {"torch": torch.add, "lamp": lamppp.add},
-    # {"torch": torch.sub, "lamp": lamppp.sub},
-    # {"torch": torch.mul, "lamp": lamppp.mul}
+    {"id": "add", "torch": torch.add, "lamp": lamppp.add},
+    {"id": "sub", "torch": torch.sub, "lamp": lamppp.sub},
+    {"id": "mul", "torch": torch.mul, "lamp": lamppp.mul},
+    {
+        "id": "div_clamp_y_1e-1_1e6",
+        "torch": lambda x, y: torch.div(x, torch.clamp(y, 1e-1, 1e6)),
+        "lamp": lambda x, y: lamppp.div(x, lamppp.clamp(y, 1e-1, 1e6)),
+    },
+]
+UNARY_OPS = [
+    {
+        "id": "exp_clamp_-10_10",
+        "torch": lambda x: torch.exp(torch.clamp(x, -10, 10)),
+        "lamp": lambda x: lamppp.exp(lamppp.clamp(x, -10, 10)),
+    },
+    {
+        "id": "log_clamp_1e-3_500",
+        "torch": lambda x: torch.log(torch.clamp(x, 1e-3, 500)),
+        "lamp": lambda x: lamppp.log(lamppp.clamp(x, 1e-3, 500)),
+    },
+    {
+        "id": "sqrt_clamp_1e-3_500",
+        "torch": lambda x: torch.sqrt(torch.clamp(x, 1e-3, 500)),
+        "lamp": lambda x: lamppp.sqrt(lamppp.clamp(x, 1e-3, 500)),
+    },
+    {"id": "abs", "torch": torch.abs, "lamp": lamppp.abs},
+    {"id": "sin", "torch": torch.sin, "lamp": lamppp.sin},
+    {"id": "cos", "torch": torch.cos, "lamp": lamppp.cos},
+    {
+        "id": "sqrt_clamp_-1_1",
+        "torch": lambda x: torch.sqrt(torch.clamp(x, -1, 1)),
+        "lamp": lambda x: lamppp.sqrt(lamppp.clamp(x, -1, 1)),
+    },
+]
+REDUCT_OPS = lambda axis: [
+    {
+        "id": f"sum_axis_{axis}",
+        "torch": lambda x: torch.sum(x, dim=axis % x.ndim, keepdim=False),
+        "lamp": lambda x: lamppp.squeeze(
+            lamppp.sum(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+        ),
+    },
+    {
+        "id": f"min_axis_{axis}",
+        "torch": lambda x: torch.min(x, dim=axis % x.ndim, keepdim=False).values,
+        "lamp": lambda x: lamppp.squeeze(
+            lamppp.min(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+        ),
+    },
+    {
+        "id": f"max_axis_{axis}",
+        "torch": lambda x: torch.max(x, dim=axis % x.ndim, keepdim=False).values,
+        "lamp": lambda x: lamppp.squeeze(
+            lamppp.max(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+        ),
+    },
 ]
 
 
@@ -43,7 +104,7 @@ class DSU:
         root = self.get(x)
         return -self.e[root]
 
-    def unite(self, x: int, y: int, op) -> bool:
+    def unite(self, x: int, y: int, bin_op, una_op) -> bool:
         """Union by size. Returns True if merged, False if already same set."""
         x = self.get(x)
         y = self.get(y)
@@ -57,13 +118,6 @@ class DSU:
         nshape_i, nshape_j = find_common_reshape(
             self.torch_head[x].shape, self.torch_head[y].shape
         )
-        print(nshape_i, nshape_j)
-
-        print(f'Torch head shape at index {x}: {self.torch_head[x].shape}')
-        print(f'Lamp head shape at index {x}: {self.lamp_head[x].data.shape}')
-
-        print(f'Torch head shape at index {y}: {self.torch_head[y].shape}')
-        print(f'Lamp head shape at index {y}: {self.lamp_head[y].data.shape}')
 
         self.torch_head[x] = torch.reshape(self.torch_head[x], nshape_i)
         self.torch_head[y] = torch.reshape(self.torch_head[y], nshape_j)
@@ -71,18 +125,12 @@ class DSU:
         self.lamp_head[x] = lamppp.reshape(self.lamp_head[x], nshape_i)
         self.lamp_head[y] = lamppp.reshape(self.lamp_head[y], nshape_j)
 
-        print(f'RES Torch head shape at index {x}: {self.torch_head[x].shape}')
-        print(f'RES Lamp head shape at index {x}: {self.lamp_head[x].data.shape}')
-
-        print(f'RES Torch head shape at index {y}: {self.torch_head[y].shape}')
-        print(f'RES Lamp head shape at index {y}: {self.lamp_head[y].data.shape}')
-
-        print()
-
-        self.torch_head[x] = op["torch"](self.torch_head[x], self.torch_head[y])
+        self.torch_head[x] = bin_op["torch"](self.torch_head[x], self.torch_head[y])
+        self.torch_head[x] = una_op["torch"](self.torch_head[x])
         self.torch_head[y] = None
 
-        self.lamp_head[x] = op["lamp"](self.lamp_head[x], self.lamp_head[y])
+        self.lamp_head[x] = bin_op["lamp"](self.lamp_head[x], self.lamp_head[y])
+        self.lamp_head[x] = una_op["lamp"](self.lamp_head[x])
         self.lamp_head[y] = None
 
         return True
@@ -150,16 +198,45 @@ def build_tensors(draw):
     }
 
 
+@composite
+def build_unaries(draw):
+    srand_reduct = draw(
+        lists(
+            integers(min_value=1, max_value=5),
+            min_size=NUM_TENS,
+            max_size=NUM_TENS,
+        )
+    )
+    srand_choice = draw(
+        lists(
+            integers(min_value=0, max_value=1),
+            min_size=NUM_TENS - 1,
+            max_size=NUM_TENS - 1,
+        )
+    )
+
+    reduct_fns = []
+    for i in srand_reduct:
+        reduct_fns.extend(REDUCT_OPS(i))
+
+    return [
+        draw(sampled_from(reduct_fns)) if i else draw(sampled_from(UNARY_OPS))
+        for i in srand_choice
+    ]
+
+
 @given(
     meta=build_tensors(),
-    operations=lists(sampled_from(OPS), min_size=NUM_TENS - 1, max_size=NUM_TENS - 1),
+    bin_ops=lists(sampled_from(OPS), min_size=NUM_TENS - 1, max_size=NUM_TENS - 1),
+    una_ops=build_unaries(),
     edges=permutations([[i, i + 1] for i in range(NUM_TENS - 1)]),
 )
-@settings(deadline=None)
-def test_graph_builder(meta, operations, edges):
+@settings(deadline=400, verbosity=Verbosity.verbose, max_examples=20)
+def test_graph_builder(meta, bin_ops, una_ops, edges):
     torch_tensors = [
-        torch.tensor(meta["bodies"][i], dtype=meta["dtypes"][i], requires_grad=True)
-        .reshape(meta["shapes"][i])
+        torch.tensor(
+            meta["bodies"][i], dtype=meta["dtypes"][i], requires_grad=True
+        ).reshape(meta["shapes"][i])
         for i in range(len(meta["bodies"]))
     ]
     lamp_tensors = [
@@ -171,24 +248,37 @@ def test_graph_builder(meta, operations, edges):
     for edge in edges:
         if graph.get(edge[0]) == graph.get(edge[1]):
             assert False and "test_graph_builder: died"
-        graph.unite(edge[0], edge[1], operations.pop())
-    print("FINISH UNITING")
-    print("FINISH UNITING")
+        graph.unite(edge[0], edge[1], bin_ops.pop(), una_ops.pop())
 
     graph.get_torch(0).backward(torch.ones_like(graph.get_torch(0)))
     graph.get_lamp(0).backward()
-    print("FINISH BACKWARD")
-    print("FINISH BACKWARD")
 
-    for t_ten, l_ten in zip(torch_tensors, lamp_tensors):
-        print("CHECKTEN", t_ten, t_ten.shape)
-        print("CHECKTEN", l_ten)
-        # assert t_ten.shape == l_ten.data.shape
-    
-    print("BING BONG DONE")
-    print("BING BONG DONE")
-    print("BING BONG DONE")
-    print("BING BONG DONE")
+    for i in range(len(torch_tensors)):
+        t_ten = torch_tensors[i]
+        l_ten_var = lamp_tensors[i]
 
+        assert (
+            list(t_ten.shape) == l_ten_var.data.shape
+        ), f"Tensor {i} shapes mismatch. PyTorch: {t_ten.shape}, Lamppp: {l_ten_var.data.shape}"
 
-test_graph_builder()
+        if t_ten.grad is not None:
+            assert (
+                l_ten_var.grad is not None
+            ), f"Tensor {i}: PyTorch has grad, but Lamppp grad is None."
+            assert (
+                l_ten_var.grad.data is not None
+            ), f"Tensor {i}: PyTorch has grad, but Lamppp grad.data is None."
+
+            lamp_grad_torch_compatible = torch.tensor(
+                l_ten_var.grad.data, dtype=t_ten.dtype
+            ).reshape(l_ten_var.data.shape)
+
+            assert torch.allclose(
+                t_ten.grad, lamp_grad_torch_compatible, rtol=1e-4
+            ), f"Gradients for tensor {i} do not match.\nPyTorch grad: {t_ten.grad}\nLamppp grad: {lamp_grad_torch_compatible}"
+        else:
+            assert (
+                l_ten_var.grad is None
+                or l_ten_var.grad.data is None
+                or not l_ten_var.grad.data.data
+            ), f"Tensor {i}: PyTorch grad is None, but Lamppp grad is not effectively None.\nLamppp grad data: {l_ten_var.grad.data.data if l_ten_var.grad and l_ten_var.grad.data else 'N/A'}"

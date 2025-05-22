@@ -33,7 +33,7 @@ class Tensor {
   DeviceType device() const noexcept;
   const std::vector<size_t>& shape() const noexcept;
   const std::vector<detail::stride_t>& strides() const noexcept;
-  size_t size() const noexcept;
+  size_t numel() const noexcept;
 
   // these functions only return an view
   template <typename T>
@@ -41,14 +41,14 @@ class Tensor {
     static thread_local std::vector<T> converted_data;
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
       // TODO: there's gotta be a better way to do this that's faster
-      converted_data.resize(impl_->size());
+      converted_data.resize(impl_->numel());
 
       scalar_t* original_data =
-          static_cast<scalar_t*>(malloc(size() * sizeof(scalar_t)));
+          static_cast<scalar_t*>(malloc(numel() * sizeof(scalar_t)));
       detail::native::copy_stub(device(), DeviceType::CPU, data(),
-                                original_data, size(), type(), type());
+                                original_data, numel(), type(), type());
 
-      for (size_t i = 0; i < impl_->size(); ++i) {
+      for (size_t i = 0; i < impl_->numel(); ++i) {
         converted_data[i] = static_cast<T>(original_data[i]);
       }
       free(original_data);

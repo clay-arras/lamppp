@@ -1,0 +1,55 @@
+name: project-gtests
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install CUDA Toolkit
+        uses: Jimver/cuda-toolkit@v0.2.23
+        with:
+          cuda: 12.8.1
+          sub-packages: '["nvcc"]'
+          method: "network"
+
+      - name: Setup system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            python3-venv \
+            python3-pip \
+            git pybind11-dev python3-pybind11 libboost-all-dev
+
+      - name: Setup Python ≥3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: ">=3.11"
+
+      - name: Install Google Benchmarks
+        run: |
+          git clone https://github.com/google/benchmark.git
+          cd benchmark
+          cmake -E make_directory "build"
+          cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
+          cmake --build "build" --config Release
+          sudo cmake --build "build" --config Release --target install
+          cd ..
+
+      - name: Build CMake project
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build lamppp module
+        run: cmake --build build --target lamppp --parallel
+
+      - name: Run GTests
+        run: |
+          build/autograd_tests
+          build/tensor_tests

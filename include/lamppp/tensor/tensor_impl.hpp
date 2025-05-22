@@ -26,14 +26,14 @@ class TensorImpl {
         shape_(shape),
         type_(dtype),
         strides_(std::vector<detail::stride_t>(shape.size())),
-        size_(shape.empty() ? 0
-                            : std::accumulate(shape.begin(), shape.end(), 1,
-                                              std::multiplies<>())) {
-    LMP_CHECK(data.size() == size_,
+        numel_(shape.empty() ? 0
+                             : std::accumulate(shape.begin(), shape.end(), 1,
+                                               std::multiplies<>())) {
+    LMP_CHECK(data.size() == numel_,
               "Size mismatch, product of shape must equal num elements");
     DataType src_dtype = TypeMeta<T>::value;
     detail::native::copy_stub(DeviceType::CPU, device, data.data(),
-                              data_.data(), size_, src_dtype, type_);
+                              data_.data(), numel_, src_dtype, type_);
     update_strides_();
   }
   explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
@@ -44,7 +44,7 @@ class TensorImpl {
   DeviceType device() const noexcept;
   const std::vector<size_t>& shape() const noexcept;
   const std::vector<detail::stride_t>& strides() const noexcept;
-  size_t size() const noexcept;
+  size_t numel() const noexcept;
 
   TensorImpl reshape_(std::vector<size_t> new_shape);
   TensorImpl squeeze_(size_t dim);
@@ -61,7 +61,7 @@ class TensorImpl {
 
   DataType type_;
   Storage data_;
-  size_t size_;
+  size_t numel_;
   std::vector<size_t> shape_;
   std::vector<detail::stride_t> strides_;
 };

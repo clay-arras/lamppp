@@ -3,11 +3,10 @@ project(autograd_lib LANGUAGES CXX)
 set(AUTOGRAD_SOURCES
   constructor.cpp
   variable.cpp
-  functions/binary_ops.cpp
   functions/matrix_ops.cpp
   functions/unary_ops.cpp
   functions/reduct_ops.cpp
-  functions/basic_ops.cpp
+  functions/expand_ops.cpp
   functions/view_ops.cpp
 )
 

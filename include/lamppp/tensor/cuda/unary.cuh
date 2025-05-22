@@ -28,7 +28,7 @@ void unary_dispatch_handler(const internal::TensorMetaHandler& meta,
               static_cast<out_dtype_t*>(meta.out().data()),
               static_cast<arg_dtype_t*>(meta.in()[0].data())),
           OpFunctor<out_dtype_t>(std::forward<Args>(args)...),  // TEMP DTYPE
-          meta.out().size());
+          meta.out().numel());
     });
   });
 }

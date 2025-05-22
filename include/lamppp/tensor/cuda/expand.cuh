@@ -33,7 +33,7 @@ void expand_dispatch_handler(const internal::TensorMetaHandler& meta,
                 static_cast<arg1_dtype_t*>(meta.in()[0].data()),
                 static_cast<arg2_dtype_t*>(meta.in()[1].data())),
             OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
-            meta.out().size(), meta.offset());
+            meta.out().numel(), meta.offset());
       });
     });
   });

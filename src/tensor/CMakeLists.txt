@@ -33,7 +33,7 @@ set_target_properties(tensor_core PROPERTIES
 target_compile_definitions(tensor_core PUBLIC EIGEN_NO_DEBUG)
 
 target_link_libraries(tensor_core
-  PUBLIC Eigen3::Eigen
+  # PUBLIC Eigen3::Eigen
   PUBLIC CUDA::cudart
 )
 

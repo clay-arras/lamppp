@@ -7,7 +7,7 @@ namespace lmp::tensor::detail::cuda::internal {
 TensorMetaHandler::TensorMetaHandler(tensor_list in)
     : inTens(in),
       outDtype_(static_cast<DataType>(0)),
-      outSize_(in[0].size()),
+      outSize_(in[0].numel()),
       outShape_(in[0].shape()) {
   for (TensorImpl ten : inTens) {
     outDtype_ = type_upcast(outDtype_, ten.type());

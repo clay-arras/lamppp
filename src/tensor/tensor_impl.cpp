@@ -16,11 +16,11 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
       shape_(shape),
       type_(dtype),
       strides_(std::vector<detail::stride_t>(shape.size())),
-      size_(shape.empty() ? 0
-                          : std::accumulate(shape.begin(), shape.end(), 1,
-                                            std::multiplies<>())) {
+      numel_(shape.empty() ? 0
+                           : std::accumulate(shape.begin(), shape.end(), 1,
+                                             std::multiplies<>())) {
   LMP_DISPATCH_ALL_TYPES(dtype, [&] {
-    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == size_,
+    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_,
               "Size mismatch, product of shape must equal num elements");
   });
   update_strides_();
@@ -41,8 +41,8 @@ const std::vector<size_t>& TensorImpl::shape() const noexcept {
 const std::vector<detail::stride_t>& TensorImpl::strides() const noexcept {
   return strides_;
 }
-size_t TensorImpl::size() const noexcept {
-  return size_;
+size_t TensorImpl::numel() const noexcept {
+  return numel_;
 }
 
 void TensorImpl::update_strides_() {
@@ -60,7 +60,7 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
                         : std::accumulate(new_shape.begin(), new_shape.end(), 1,
                                           std::multiplies<>());
   LMP_CHECK(
-      new_size == size_,
+      new_size == numel_,
       "Cannot reshape tensor: total number of elements must remain the same.");
   TensorImpl other(*this);
   other.shape_ = std::move(new_shape);
@@ -90,13 +90,13 @@ TensorImpl TensorImpl::expand_dims_(size_t dim) {
 void TensorImpl::copy_(const TensorImpl& other) {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
     detail::native::copy_stub(other.device(), device(), other.data(), data(),
-                              other.size() * sizeof(scalar_t), other.type(),
+                              other.numel() * sizeof(scalar_t), other.type(),
                               type());
   });
 }
 
 void TensorImpl::fill_(Scalar item) {
-  detail::native::fill_stub(device(), data(), size(), item, type());
+  detail::native::fill_stub(device(), data(), numel(), item, type());
 }
 
 // NOTE: everything should be destroyed by default destructors
@@ -109,7 +109,7 @@ const size_t kMaxPrintElem = 1e2;
 void TensorImpl::print_(std::ostream& os) {
   os << "Tensor(data=[";
   LMP_DISPATCH_ALL_TYPES(this->type_, [&] {
-    size_t printSize = std::min(kMaxPrintElem, this->size());
+    size_t printSize = std::min(kMaxPrintElem, this->numel());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
     detail::native::copy_stub(this->device(), DeviceType::CPU, this->data(),
                               static_cast<void*>(data_ptr), printSize,
@@ -118,7 +118,7 @@ void TensorImpl::print_(std::ostream& os) {
       os << data_ptr[i];
       if (i < printSize - 1) {
         os << ", ";
-      } else if (printSize < this->size()) {
+      } else if (printSize < this->numel()) {
         os << ",...";
       }
     }

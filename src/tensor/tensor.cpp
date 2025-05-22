@@ -19,8 +19,8 @@ const std::vector<size_t>& Tensor::shape() const noexcept {
 const std::vector<detail::stride_t>& Tensor::strides() const noexcept {
   return impl_->strides();
 }
-size_t Tensor::size() const noexcept {
-  return impl_->size();
+size_t Tensor::numel() const noexcept {
+  return impl_->numel();
 }
 
 Tensor Tensor::reshape(std::vector<size_t> new_shape) const {

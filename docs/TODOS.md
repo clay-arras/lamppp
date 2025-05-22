@@ -2,30 +2,15 @@
 
 ### current todo
 
-- add stacktrace, assert, message; with cudaasserts and regular asserts
-- make the github tests pass by linking it to pytest
 - refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
-- move basic and binary ops together
-- change size to numel
-
-LMP_CHECK
-LMP_INTERNAL_ASSERT: different from lmp_check because ifndef
-LMP_CUDA_ASSERT
-
-```
-#define MY_INTERNAL_ASSERT(cond, ...) \
-  do { if(!(cond)) { \
-      std::cerr << boost::stacktrace::stacktrace(); \
-      throw std::runtime_error(fmt::format(__VA_ARGS__)); \
-  }} while(0)
-```
+  <!-- - move basic and binary ops together -->
+  <!-- - change size to numel -->
 
 ## easy
 
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
-  - add summation with -1 arg
   - element wise access (.get)
   - implement to_vector
 - refactor the binary broadcasting backward bit
@@ -35,7 +20,7 @@ LMP_CUDA_ASSERT
 - refactor the autograd functions
 - make the context be saved from forward execution
 - get benchmarks up again
-- type broadcasting doesn't work with backward
+- type upcasting doesn't work with backward
 
 ## hard
 

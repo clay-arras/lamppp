@@ -1,5 +1,4 @@
-#include "lamppp/autograd/functions/basic_ops.hpp"
-
+#include "lamppp/autograd/functions/expand_ops.hpp"
 #include <memory>
 #include "lamppp/autograd/function.hpp"
 #include "lamppp/autograd/variable.hpp"
@@ -225,6 +224,114 @@ tensor::Tensor Divide::execute(const variable_list& inputs) {
   const Variable& other = inputs[1];
 
   return self.data() / other.data();
+}
+
+variable_list EqualBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& lhs = (*saved_inputs)[0];
+  Variable& rhs = (*saved_inputs)[1];
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list LessBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& lhs = (*saved_inputs)[0];
+  Variable& rhs = (*saved_inputs)[1];
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list LessEqualBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& lhs = (*saved_inputs)[0];
+  Variable& rhs = (*saved_inputs)[1];
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list NotEqualBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& lhs = (*saved_inputs)[0];
+  Variable& rhs = (*saved_inputs)[1];
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list GreaterBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& lhs = (*saved_inputs)[0];
+  Variable& rhs = (*saved_inputs)[1];
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list GreaterEqualBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& lhs = (*saved_inputs)[0];
+  Variable& rhs = (*saved_inputs)[1];
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+tensor::Tensor Equal::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& lhs = inputs[0];
+  const Variable& rhs = inputs[1];
+
+  return lhs.data() == rhs.data();
+}
+
+tensor::Tensor Less::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& lhs = inputs[0];
+  const Variable& rhs = inputs[1];
+
+  return lhs.data() < rhs.data();
+}
+
+tensor::Tensor LessEqual::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& lhs = inputs[0];
+  const Variable& rhs = inputs[1];
+
+  return lhs.data() <= rhs.data();
+}
+
+tensor::Tensor NotEqual::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& lhs = inputs[0];
+  const Variable& rhs = inputs[1];
+
+  return lhs.data() != rhs.data();
+}
+
+tensor::Tensor Greater::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& lhs = inputs[0];
+  const Variable& rhs = inputs[1];
+
+  return lhs.data() > rhs.data();
+}
+
+tensor::Tensor GreaterEqual::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& lhs = inputs[0];
+  const Variable& rhs = inputs[1];
+
+  return lhs.data() >= rhs.data();
 }
 
 }  // namespace lmp::autograd::ops

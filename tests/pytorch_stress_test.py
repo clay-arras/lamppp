@@ -1,6 +1,14 @@
 import sys, os
+from pathlib import Path
 
-PROJECT_ROOT = "/home/nlin/workspace/code/projects/autograd_cpp"
+def get_project_root(marker = "pyproject.toml"):
+    path = Path(__file__).resolve()
+    for parent in [path, *path.parents]:
+        if (parent / marker).is_file():
+            return parent
+    raise FileNotFoundError(f"Couldn’t locate {marker} in any parent directory.")
+
+PROJECT_ROOT = get_project_root()
 sys.path.append(os.path.join(PROJECT_ROOT, "build"))
 
 import torch

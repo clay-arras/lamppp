@@ -43,7 +43,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # -----------------------------------------------------------------------------
 # 2) Dependencies
 # -----------------------------------------------------------------------------
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)     
+# find_package(Eigen3 3.3 REQUIRED NO_MODULE)     
 find_package(benchmark REQUIRED)                
 find_package(pybind11 CONFIG REQUIRED)          
 find_package(CUDAToolkit REQUIRED)              
@@ -113,6 +113,13 @@ target_link_libraries(bench_ops
 )
 
 pybind11_add_module(lamppp tests/autograd_pybind.cpp)
+
+set_target_properties(lamppp PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
+)
+
 target_link_libraries(lamppp
   PRIVATE autograd_core
 )

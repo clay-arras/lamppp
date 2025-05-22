@@ -4,7 +4,7 @@
 namespace lmp::tensor {
 
 Tensor full_like(const Tensor& tensor, Scalar scalar) {
-  std::vector<Scalar> data(tensor.size(), scalar);
+  std::vector<Scalar> data(tensor.numel(), scalar);
   return Tensor(data, tensor.shape(), tensor.device(), tensor.type());
 }
 

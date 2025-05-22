@@ -1,17 +1,33 @@
 `cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1`
 
+### current todo
+
+- add stacktrace, assert, message; with cudaasserts and regular asserts
+- make the github tests pass by linking it to pytest
+- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
+- move basic and binary ops together
+- change size to numel
+
+LMP_CHECK
+LMP_INTERNAL_ASSERT: different from lmp_check because ifndef
+LMP_CUDA_ASSERT
+
+```
+#define MY_INTERNAL_ASSERT(cond, ...) \
+  do { if(!(cond)) { \
+      std::cerr << boost::stacktrace::stacktrace(); \
+      throw std::runtime_error(fmt::format(__VA_ARGS__)); \
+  }} while(0)
+```
+
 ## easy
 
-- add stacktrace, assert, message
-- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
   - add summation with -1 arg
   - element wise access (.get)
   - implement to_vector
-- move basic and binary ops together
-- change size to numel
 - refactor the binary broadcasting backward bit
 
 ## medium

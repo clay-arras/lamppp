@@ -1,5 +1,5 @@
 #include "lamppp/autograd/functions/matrix_ops.hpp"
-#include <cassert>
+
 #include "lamppp/autograd/function.hpp"
 #include "lamppp/autograd/variable.hpp"
 
@@ -7,7 +7,7 @@ namespace lmp::autograd::ops {
 
 variable_list MatrixMultiplicationBackward::apply(
     const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
@@ -23,7 +23,7 @@ variable_list MatrixMultiplicationBackward::apply(
 }
 
 variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -34,7 +34,7 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor MatrixMultiplication::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -42,7 +42,7 @@ tensor::Tensor MatrixMultiplication::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor Transpose::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1 && "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
   const Variable& self = inputs[0];
 
   return tensor::ops::transpose(self.data());

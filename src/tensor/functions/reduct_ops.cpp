@@ -8,13 +8,13 @@ LMP_DEFINE_DISPATCH(max_stub);
 LMP_DEFINE_DISPATCH(min_stub);
 
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
 }
 TensorImpl max_cpu(const TensorImpl& a, size_t axis) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
 }
 TensorImpl min_cpu(const TensorImpl& a, size_t axis) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
 }
 
 Tensor sum(const Tensor& a, size_t axis) {

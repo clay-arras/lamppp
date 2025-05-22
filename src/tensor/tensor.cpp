@@ -1,5 +1,5 @@
 #include "lamppp/tensor/tensor.hpp"
-#include <cassert>
+
 #include <iostream>
 
 namespace lmp::tensor {

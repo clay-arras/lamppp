@@ -3,8 +3,7 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
-#include <cassert>
-#include <cuda/std/detail/libcxx/include/array>
+#include <cuda/std/array>
 #include "lamppp/tensor/cuda/kernels.cuh"
 #include "lamppp/tensor/cuda/meta_handler.cuh"
 #include "lamppp/tensor/cuda/pointer_pack.cuh"

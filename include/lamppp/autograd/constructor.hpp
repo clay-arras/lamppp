@@ -1,7 +1,6 @@
 #pragma once
 
 #include <algorithm>
-#include <cassert>
 #include "lamppp/tensor/scalar.hpp"  // TODO : maybe move scalar somewhere ?
 #include "variable.hpp"
 
@@ -31,7 +30,8 @@ struct TensorHelper {
     if (depth >= shape.size()) {
       shape.push_back(tensor.size());
     }
-    assert(tensor.size() == shape[depth]);
+    LMP_CHECK(tensor.size() == shape[depth],
+              "Dimensions along axis must be consistent.");
     if constexpr (IsVector<T>::value) {
       for (const T& t : tensor) {
         unroll(t, depth + 1);

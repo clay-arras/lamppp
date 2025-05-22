@@ -14,28 +14,28 @@ LMP_DEFINE_DISPATCH(tan_stub);
 LMP_DEFINE_DISPATCH(clamp_stub);
 
 TensorImpl log_cpu(const TensorImpl& a) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl exp_cpu(const TensorImpl& a) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl sqrt_cpu(const TensorImpl& a) {
-  assert(false && "CPU sqrt not implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl abs_cpu(const TensorImpl& a) {
-  assert(false && "CPU abs not implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl sin_cpu(const TensorImpl& a) {
-  assert(false && "CPU sin not implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl cos_cpu(const TensorImpl& a) {
-  assert(false && "CPU cos not implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl tan_cpu(const TensorImpl& a) {
-  assert(false && "CPU tan not implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val) {
-  assert(false && "CPU clamp not implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
 }
 
 Tensor exp(const Tensor& a) {

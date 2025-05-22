@@ -1,6 +1,7 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 #include <cstring>
+#include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_stub.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
@@ -13,7 +14,7 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
               DataType src_dtype, DataType dest_dtype) {
   switch (to_device) {
     case DeviceType::CPU: {
-      assert(false && "Not implemented");
+      LMP_INTERNAL_ASSERT(false, "Not implemented");
       memcpy(dest, src, size);
       break;
     }
@@ -24,26 +25,19 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          cudaError_t err = cudaMalloc(&tmp, size * sizeof(src_type));
-          assert(err == cudaSuccess &&
-                 "copy_cpu to CUDA: cudaMalloc for tmp failed.");
-
-          err = cudaMemcpy(tmp, src, size * sizeof(src_type),
-                           cudaMemcpyHostToDevice);
-          assert(err == cudaSuccess &&
-                 "copy_cpu to CUDA: cudaMemcpy HtoD for tmp failed.");
+          LMP_CUDA_ASSERT(cudaMalloc(&tmp, size * sizeof(src_type)),
+                          "copy_cpu to CUDA: cudaMalloc for tmp failed.");
+          LMP_CUDA_ASSERT(cudaMemcpy(tmp, src, size * sizeof(src_type),
+                                     cudaMemcpyHostToDevice),
+                          "copy_cpu to CUDA: cudaMemcpy HtoD for tmp failed.");
 
           vecCopy<src_type, dest_type>(size, static_cast<const src_type*>(tmp),
                                        static_cast<dest_type*>(dest));
 
-          cudaError_t post_kernel_err = cudaGetLastError();
-          assert(
-              post_kernel_err == cudaSuccess &&
-              "copy_cpu to CUDA: vecCopy kernel launch or execution failed.");
-
-          err = cudaFree(tmp);
-          assert(err == cudaSuccess &&
-                 "copy_cpu to CUDA: cudaFree for tmp failed.");
+          LMP_CUDA_ASSERT(cudaGetLastError(),
+                          "copy_cpu to CUDA: vecCopy kernel failed.");
+          LMP_CUDA_ASSERT(cudaFree(tmp),
+                          "copy_cpu to CUDA: cudaFree for tmp failed.");
         });
       });
       break;
@@ -61,25 +55,19 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          cudaError_t err = cudaMalloc(&tmp, size * sizeof(dest_type));
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CPU: cudaMalloc for tmp failed.");
+          LMP_CUDA_ASSERT(cudaMalloc(&tmp, size * sizeof(dest_type)),
+                          "copy_cuda to CPU: cudaMalloc for tmp failed.");
 
           vecCopy<src_type, dest_type>(size, static_cast<const src_type*>(src),
                                        static_cast<dest_type*>(tmp));
-          err = cudaGetLastError();
-          assert(
-              err == cudaSuccess &&
+          LMP_CUDA_ASSERT(
+              cudaGetLastError(),
               "copy_cuda to CPU: vecCopy kernel launch or execution failed.");
-
-          err = cudaMemcpy(dest, tmp, size * sizeof(dest_type),
-                           cudaMemcpyDeviceToHost);
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CPU: cudaMemcpy DtoH failed.");
-
-          err = cudaFree(tmp);
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CPU: cudaFree for tmp failed.");
+          LMP_CUDA_ASSERT(cudaMemcpy(dest, tmp, size * sizeof(dest_type),
+                                     cudaMemcpyDeviceToHost),
+                          "copy_cuda to CPU: cudaMemcpy DtoH failed.");
+          LMP_CUDA_ASSERT(cudaFree(tmp),
+                          "copy_cuda to CPU: cudaFree for tmp failed.");
         });
       });
       break;
@@ -91,25 +79,19 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          cudaError_t err = cudaMalloc(&tmp, size * sizeof(dest_type));
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CUDA (via tmp): cudaMalloc for tmp failed.");
+          LMP_CUDA_ASSERT(cudaMalloc(&tmp, size * sizeof(dest_type)),
+                          "copy_cuda to CUDA: cudaMalloc for tmp failed.");
 
           vecCopy<src_type, dest_type>(size, static_cast<const src_type*>(src),
                                        static_cast<dest_type*>(tmp));
-          err = cudaGetLastError();
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CUDA (via tmp): vecCopy kernel launch or "
-                 "execution failed.");
 
-          err = cudaMemcpy(dest, tmp, size * sizeof(dest_type),
-                           cudaMemcpyDeviceToDevice);
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CUDA (via tmp): cudaMemcpy DtoD failed.");
-
-          err = cudaFree(tmp);
-          assert(err == cudaSuccess &&
-                 "copy_cuda to CUDA (via tmp): cudaFree for tmp failed.");
+          LMP_CUDA_ASSERT(cudaGetLastError(),
+                          "copy_cuda to CUDA: vecCopy kernel failed.");
+          LMP_CUDA_ASSERT(cudaMemcpy(dest, tmp, size * sizeof(dest_type),
+                                     cudaMemcpyDeviceToDevice),
+                          "copy_cuda to CUDA: cudaMemcpy DtoD failed.");
+          LMP_CUDA_ASSERT(cudaFree(tmp),
+                          "copy_cuda to CUDA: cudaFree for tmp failed.");
         });
       });
       break;

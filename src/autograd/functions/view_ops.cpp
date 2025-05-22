@@ -1,5 +1,5 @@
 #include "lamppp/autograd/functions/view_ops.hpp"
-#include <cassert>
+
 #include <cmath>
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/tensor/fill_like.hpp"
@@ -8,7 +8,7 @@
 namespace lmp::autograd::ops {
 
 variable_list ReshapeBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -19,14 +19,14 @@ variable_list ReshapeBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Reshape::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1 && "Function must take one inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
   const Variable& self = inputs[0];
 
   return self.data().reshape(shape);
 }
 
 variable_list SqueezeBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -37,14 +37,14 @@ variable_list SqueezeBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Squeeze::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1 && "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
   const Variable& self = inputs[0];
 
   return self.data().squeeze(axis);
 }
 
 variable_list ExpandDimsBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -55,7 +55,7 @@ variable_list ExpandDimsBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor ExpandDims::execute(const variable_list& inputs) {
-  assert(inputs.size() == 1 && "Function must take one inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
   const Variable& self = inputs[0];
 
   return self.data().expand_dims(axis);

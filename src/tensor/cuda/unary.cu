@@ -1,8 +1,7 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
-#include <cassert>
-#include <cuda/std/detail/libcxx/include/array>
+#include <cuda/std/array>
 #include "lamppp/tensor/cuda/kernels.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 
@@ -21,8 +20,8 @@ void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vectorized_unary_kernel<<<blocks, threads>>>(ptr_, fn_, size);
-  cudaError_t sync_err = cudaDeviceSynchronize();
-  assert(sync_err == cudaSuccess && "unary_kernel_launcher: kernel failed.");
+  LMP_CUDA_ASSERT(cudaDeviceSynchronize(),
+                  "unary_kernel_launcher: kernel failed.");
 }
 
 template void unary_dispatch_handler<ExpFunctor>(

@@ -2,7 +2,6 @@
 
 #include <cuda_runtime.h>
 #include <array>
-#include <cassert>
 #include <cuda/std/array>
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/cuda/list_ptr.cuh"

@@ -1,4 +1,3 @@
-#include <cassert>
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/cuda/offset_util.cuh"
 
@@ -8,8 +7,8 @@ template <size_t NArgs>
 OffsetUtil<NArgs>::OffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
                               const TensorImpl& outs)
     : ndim(outs.shape().size()) {
-
-  assert(NArgs == ins.size());
+  LMP_INTERNAL_ASSERT(NArgs == ins.size(),
+                      "NArgs must equal number of input elements");
   std::vector<std::vector<stride_t>> stride_exp(NArgs);
 
 #pragma omp unroll
@@ -53,9 +52,11 @@ __device__ ::cuda::std::array<stride_t, NArgs + 1> OffsetUtil<NArgs>::get(
 template <size_t NArgs>
 std::vector<stride_t> OffsetUtil<NArgs>::init_padded_strides_(
     const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
-  assert(ndim > 0);
-  assert(shape.size() <= ndim);
-  assert(shape.size() == stride.size());
+  LMP_INTERNAL_ASSERT(ndim > 0, "ndim must be greater than 0");
+  LMP_INTERNAL_ASSERT(shape.size() <= ndim,
+                      "shape size must be less than or equal to ndim");
+  LMP_INTERNAL_ASSERT(shape.size() == stride.size(),
+                      "shape size must be equal to stride size");
 
   std::vector<stride_t> padded(ndim, 0);
   const size_t from_back = shape.size();

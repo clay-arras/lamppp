@@ -1,12 +1,12 @@
 #pragma once
 
-#include <cassert>
 #include <iostream>
 #include <numeric>
 #include <vector>
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
+#include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/native/copy.cuh"
 #include "lamppp/tensor/storage.hpp"
@@ -29,8 +29,8 @@ class TensorImpl {
         size_(shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>())) {
-    assert(data.size() == size_ &&
-           "Size mismatch, product of shape must equal num elements");
+    LMP_CHECK(data.size() == size_,
+              "Size mismatch, product of shape must equal num elements");
     DataType src_dtype = TypeMeta<T>::value;
     detail::native::copy_stub(DeviceType::CPU, device, data.data(),
                               data_.data(), size_, src_dtype, type_);

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-#include <cassert>
 #include "device_type.hpp"
+#include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail {
@@ -19,7 +19,7 @@ struct DispatchStub {
   template <typename... Args>
   decltype(auto) operator()(DeviceType dev, Args&&... args) const {
     fn_type f = table_[static_cast<size_t>(dev)];
-    assert(f && "Kernel for this backend not registered");
+    LMP_INTERNAL_ASSERT(f, "Kernel for this backend not registered");
     return f(std::forward<Args>(args)...);
   }
 };

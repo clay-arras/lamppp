@@ -9,16 +9,14 @@ LMP_DEFINE_DISPATCH(matmul_stub);
 LMP_DEFINE_DISPATCH(transpose_stub);
 
 TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
 }
 
 TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
-  assert(a.shape().size() == 2 && b.shape().size() == 2 &&
-         "Invalid argument, matrix multiplication can only be performed on "
-         "matrices of dim 2");
-  assert(a.shape()[1] == b.shape()[0] &&
-         "Invalid argument, the second dim of the first matrix must equal the "
-         "first dim of the second matrix");
+  LMP_CHECK(a.shape().size() == 2 && b.shape().size() == 2,
+            "Both matrices must be 2D.");
+  LMP_CHECK(a.shape()[1] == b.shape()[0],
+            "Incompatible matrix dimensions for multiplication.");
 
   size_t m = a.shape()[0];
   size_t n = b.shape()[1];
@@ -44,13 +42,13 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
 }
 
 TensorImpl transpose_cpu(const TensorImpl& a) {
-  assert(false && "Not Implemented");
+  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
   return TensorImpl(Storage(0, DeviceType::CPU), {}, DataType::Float32);
 }
 
 TensorImpl transpose_cuda(const TensorImpl& a) {
-  assert(
-      a.shape().size() == 2 &&
+  LMP_CHECK(
+      a.shape().size() == 2,
       "Invalid argument, transpose can only be performed on matrices of dim 2");
   size_t m = a.shape()[0];
   size_t n = a.shape()[1];
@@ -67,7 +65,7 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
 }
 
 Tensor matmul(const Tensor& a, const Tensor& b) {
-  assert(a.device() == b.device() && "Tensors must be on the same device");
+  LMP_CHECK(a.device() == b.device(), "Tensors must be on the same device");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       matmul_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                   *detail::UnsafeTensorAccessor::getImpl(b))));

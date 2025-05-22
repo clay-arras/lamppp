@@ -1,8 +1,7 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
-#include <cassert>
-#include <cuda/std/detail/libcxx/include/array>
+#include <cuda/std/array>
 #include "lamppp/tensor/cuda/reduct.cuh"
 
 namespace lmp::tensor::detail::cuda {
@@ -36,8 +35,8 @@ void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
   ListDevicePtr<size_t> d_shape(shape, ndims);
   vectorized_reduct_kernel<<<blocks, threads>>>(ptr_, fn_, size, axis,
                                                 d_shape.get(), d_strides.get());
-  cudaError_t sync_err = cudaDeviceSynchronize();
-  assert(sync_err == cudaSuccess && "reduct_kernel_launcher: kernel failed.");
+  LMP_CUDA_ASSERT(cudaDeviceSynchronize(),
+                  "reduct_kernel_launcher: kernel failed.");
 }
 
 }  // namespace lmp::tensor::detail::cuda

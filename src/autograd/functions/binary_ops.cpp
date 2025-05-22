@@ -1,12 +1,12 @@
 #include "lamppp/autograd/functions/binary_ops.hpp"
-#include <cassert>
+
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::autograd::ops {
 
 variable_list EqualBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
@@ -16,7 +16,7 @@ variable_list EqualBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list LessBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
@@ -26,7 +26,7 @@ variable_list LessBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list LessEqualBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
@@ -36,7 +36,7 @@ variable_list LessEqualBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list NotEqualBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
@@ -46,7 +46,7 @@ variable_list NotEqualBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list GreaterBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
@@ -56,7 +56,7 @@ variable_list GreaterBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list GreaterEqualBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& lhs = (*saved_inputs)[0];
   Variable& rhs = (*saved_inputs)[1];
@@ -66,7 +66,7 @@ variable_list GreaterEqualBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Equal::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -74,7 +74,7 @@ tensor::Tensor Equal::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor Less::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -82,7 +82,7 @@ tensor::Tensor Less::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor LessEqual::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -90,7 +90,7 @@ tensor::Tensor LessEqual::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor NotEqual::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -98,7 +98,7 @@ tensor::Tensor NotEqual::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor Greater::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 
@@ -106,7 +106,7 @@ tensor::Tensor Greater::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor GreaterEqual::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& lhs = inputs[0];
   const Variable& rhs = inputs[1];
 

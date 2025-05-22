@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <vector>
 #include "lamppp/tensor/data_type.hpp"
 

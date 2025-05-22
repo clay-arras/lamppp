@@ -10,8 +10,8 @@ DataPtr empty_cpu(size_t byte_size) {
 }
 DataPtr empty_cuda(size_t byte_size) {
   void* ptr_ = nullptr;
-  cudaError_t err = cudaMalloc(&ptr_, byte_size);
-  assert(err == cudaSuccess && "empty_cuda: cudaMalloc failed.");
+  LMP_CUDA_ASSERT(cudaMalloc(&ptr_, byte_size),
+                  "empty_cuda: cudaMalloc failed.");
   return DataPtr(ptr_, [](void* ptr) { cudaFree(ptr); });
 }
 

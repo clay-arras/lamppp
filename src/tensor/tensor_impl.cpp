@@ -1,5 +1,5 @@
 #include "lamppp/tensor/tensor_impl.hpp"
-#include <cassert>
+#include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/device_type.hpp"
@@ -20,8 +20,8 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                           : std::accumulate(shape.begin(), shape.end(), 1,
                                             std::multiplies<>())) {
   LMP_DISPATCH_ALL_TYPES(dtype, [&] {
-    assert(data_.byte_size() / sizeof(scalar_t) == size_ &&
-           "Size mismatch, product of shape must equal num elements");
+    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == size_,
+              "Size mismatch, product of shape must equal num elements");
   });
   update_strides_();
 }
@@ -59,8 +59,8 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
                         ? 0
                         : std::accumulate(new_shape.begin(), new_shape.end(), 1,
                                           std::multiplies<>());
-  assert(
-      new_size == size_ &&
+  LMP_CHECK(
+      new_size == size_,
       "Cannot reshape tensor: total number of elements must remain the same.");
   TensorImpl other(*this);
   other.shape_ = std::move(new_shape);
@@ -69,8 +69,8 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
 }
 
 TensorImpl TensorImpl::squeeze_(size_t dim) {
-  assert(dim < shape_.size() && "Dimension out of range for squeeze");
-  assert(shape_[dim] == 1 && "Cannot squeeze dimension that is not size 1");
+  LMP_CHECK(dim < shape_.size(), "Dimension out of range for squeeze");
+  LMP_CHECK(shape_[dim] == 1, "Cannot squeeze dimension that is not size 1");
   TensorImpl other(*this);
   other.shape_.erase(other.shape_.begin() + dim);
   other.update_strides_();
@@ -78,7 +78,7 @@ TensorImpl TensorImpl::squeeze_(size_t dim) {
 }
 
 TensorImpl TensorImpl::expand_dims_(size_t dim) {
-  assert(dim <= shape_.size() && "Dimension out of range for expand_dims");
+  LMP_CHECK(dim <= shape_.size(), "Dimension out of range for expand_dims");
   TensorImpl other(*this);
   other.shape_.insert(other.shape_.begin() + dim, 1);
   other.update_strides_();
@@ -101,8 +101,7 @@ void TensorImpl::fill_(Scalar item) {
 
 // NOTE: everything should be destroyed by default destructors
 void TensorImpl::to_(DeviceType device) {
-  assert(false && "Implement later");
-  // assert(device != data_.device());
+  LMP_INTERNAL_ASSERT(false, "Not Implemented");
   // data_ = Storage(data_.data(), size(), data_.device(), device);
 }
 

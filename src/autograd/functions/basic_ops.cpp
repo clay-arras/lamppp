@@ -1,14 +1,15 @@
 #include "lamppp/autograd/functions/basic_ops.hpp"
-#include <cassert>
+
 #include <memory>
 #include "lamppp/autograd/function.hpp"
 #include "lamppp/autograd/variable.hpp"
+#include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/functions/reduct_ops.hpp"
 
 namespace lmp::autograd::ops {
 
 variable_list AddBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
@@ -55,7 +56,7 @@ variable_list AddBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
@@ -101,7 +102,7 @@ variable_list SubtractBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list MultiplyBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
@@ -147,7 +148,7 @@ variable_list MultiplyBackward::apply(const variable_list& gradOutputs) {
 }
 
 variable_list DivideBackward::apply(const variable_list& gradOutputs) {
-  assert(gradOutputs.size() == 1);
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
@@ -195,7 +196,7 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
 
 // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
 tensor::Tensor Add::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -203,7 +204,7 @@ tensor::Tensor Add::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor Subtract::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -211,7 +212,7 @@ tensor::Tensor Subtract::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor Multiply::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 
@@ -219,7 +220,7 @@ tensor::Tensor Multiply::execute(const variable_list& inputs) {
 }
 
 tensor::Tensor Divide::execute(const variable_list& inputs) {
-  assert(inputs.size() == 2 && "Function must take 2 inputs");
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
   const Variable& self = inputs[0];
   const Variable& other = inputs[1];
 

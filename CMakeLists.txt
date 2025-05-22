@@ -8,7 +8,7 @@ project(lamppp LANGUAGES CXX CUDA)
 # message(STATUS "Using Python executable: ${Python3_EXECUTABLE}")
 # set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 
-# Temporary
+# Temporary PYTHON ---
 set(EXPECTED_PYTHON_VERSION_MAJOR 3)
 set(EXPECTED_PYTHON_VERSION_MINOR 11)
 set(PYTHON_VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
@@ -29,7 +29,7 @@ if(NOT Python3_VERSION_MAJOR EQUAL EXPECTED_PYTHON_VERSION_MAJOR OR NOT Python3_
 endif()
 
 set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
-# End
+# End ---
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -78,7 +78,8 @@ add_subdirectory(src/autograd)
 
 target_compile_options(autograd_core
   PRIVATE
-    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
+    # $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
+    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG>
 )
 
 # -----------------------------------------------------------------------------

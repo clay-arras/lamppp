@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_set>
 #include "lamppp/autograd/function.hpp"
+#include "lamppp/common/assert.hpp"
 
 namespace lmp::autograd {
 
@@ -24,8 +25,8 @@ void Variable::zero_grad() {
   impl_->grad = zeros_like(impl_->grad);
 }  // TODO: this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
-  assert(other_grad.shape() == impl_->grad.shape() &&
-         "There should be no broadcasting in incr_grad");
+  LMP_INTERNAL_ASSERT(other_grad.shape() == impl_->grad.shape(),
+                      "There should be no broadcasting in incr_grad");
   impl_->grad = impl_->grad + other_grad;
 }
 void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {

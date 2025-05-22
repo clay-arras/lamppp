@@ -60,11 +60,13 @@ int main(int argc, char** argv) {
       {1024, 1024},
   };
 
-  for (auto& [name, fn] : bin_functions) {
-    for (const auto& shape : shapes) {  // note: const&
+  for (const auto& pair : bin_functions) {
+    const std::string& name = pair.first;
+    const auto& fn = pair.second;
+    for (const auto& shape : shapes) {
       benchmark::RegisterBenchmark(
           name + "Forward" + std::to_string(shape[0]),
-          [fn, shape](benchmark::State& state) {  // capture by *value*
+          [fn, shape](benchmark::State& state) {
             for (auto _ : state) {
               state.PauseTiming();
               Variable a =
@@ -78,19 +80,61 @@ int main(int argc, char** argv) {
     }
   }
 
-  for (auto& [name, fn] : una_functions) {
-    for (const auto& shape : shapes) {  // note: const&
+  for (const auto& pair : bin_functions) {
+    const std::string& name = pair.first;
+    const auto& fn = pair.second;
+    for (const auto& shape : shapes) {
       benchmark::RegisterBenchmark(
-          name + "Forward" + std::to_string(shape[0]),
-          [fn, shape](benchmark::State& state) {  // capture by *value*
+          name + "Backward" + std::to_string(shape[0]),
+          [fn, shape](benchmark::State& state) {
             for (auto _ : state) {
               state.PauseTiming();
               Variable a =
-                  rand(shape, DeviceType::CUDA, DataType::Float32, false);
+                  rand(shape, DeviceType::CUDA, DataType::Float32, true);
+              Variable b =
+                  rand(shape, DeviceType::CUDA, DataType::Float32, true);
+              Variable c = fn(a, b);
               state.ResumeTiming();
-              Variable c = fn(a);
+              c.backward();
             }
           });
+    }
+  }
+
+  for (const auto& pair : una_functions) {
+    const std::string& name = pair.first;
+    const auto& fn = pair.second;
+    for (const auto& shape : shapes) {
+      benchmark::RegisterBenchmark(name + "Forward" + std::to_string(shape[0]),
+                                   [fn, shape](benchmark::State& state) {
+                                     for (auto _ : state) {
+                                       state.PauseTiming();
+                                       Variable a =
+                                           rand(shape, DeviceType::CUDA,
+                                                DataType::Float32, false);
+                                       state.ResumeTiming();
+                                       Variable c = fn(a);
+                                     }
+                                   });
+    }
+  }
+
+  for (const auto& pair : una_functions) {
+    const std::string& name = pair.first;
+    const auto& fn = pair.second;
+    for (const auto& shape : shapes) {
+      benchmark::RegisterBenchmark(name + "Backward" + std::to_string(shape[0]),
+                                   [fn, shape](benchmark::State& state) {
+                                     for (auto _ : state) {
+                                       state.PauseTiming();
+                                       Variable a =
+                                           rand(shape, DeviceType::CUDA,
+                                                DataType::Float32, true);
+                                       Variable c = fn(a);
+                                       state.ResumeTiming();
+                                       c.backward();
+                                     }
+                                   });
     }
   }
 

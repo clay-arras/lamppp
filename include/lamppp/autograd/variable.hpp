@@ -22,7 +22,7 @@ struct VariableImpl {
 
   explicit VariableImpl(const tensor::Tensor& data, bool requires_grad = false)
       : data(tensor::Tensor(data)),
-        grad(zeros_like(data)),
+        grad(requires_grad ? zeros_like(data) : tensor::Tensor()),
         requires_grad(requires_grad),
         _grad_fn(nullptr) {}
   explicit VariableImpl(const tensor::Tensor& data, const tensor::Tensor& grad,

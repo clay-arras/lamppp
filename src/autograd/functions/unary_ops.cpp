@@ -14,9 +14,7 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  // TODO(nlin): these can all be cached!!!
-  Variable exp_var(tensor::ops::exp(self.data()));
-  self.incr_grad(exp_var.data() * grad.grad());
+  self.incr_grad((*ctx)[0].data() * grad.grad());
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -34,8 +32,7 @@ variable_list LogarithmBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable recip_var(1.0 / self);
-  self.incr_grad(recip_var.data() * grad.grad());
+  self.incr_grad((1 / self.data()) * grad.grad());
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -53,7 +50,7 @@ variable_list SqrtBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable sqrt_var(1 / (2 * tensor::ops::sqrt(self.data())));
+  Variable sqrt_var(1 / (2 * (*ctx)[0].data()));
   self.incr_grad(sqrt_var.data() * grad.grad());
 
   variable_list grad_inputs = {};
@@ -92,8 +89,7 @@ variable_list SinBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable sin_var(tensor::ops::cos(self.data()));
-  self.incr_grad(grad.grad() * sin_var.data());
+  self.incr_grad(grad.grad() * tensor::ops::cos(self.data()));
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -111,8 +107,7 @@ variable_list CosBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable cos_var(-1 * tensor::ops::sin(self.data()));
-  self.incr_grad(cos_var.data() * grad.grad());
+  self.incr_grad(-1 * tensor::ops::sin(self.data()) * grad.grad());
 
   variable_list grad_inputs = {};
   return grad_inputs;

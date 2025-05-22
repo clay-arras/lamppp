@@ -31,11 +31,11 @@ endif()
 set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 # End ---
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 enable_language(CUDA)
-set(CMAKE_CUDA_STANDARD 20)
+set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -49,7 +49,7 @@ find_package(pybind11 CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)              
 
 # -----------------------------------------------------------------------------
-# 3) Static analysis (optional)
+# 3) Static analysis 
 # -----------------------------------------------------------------------------
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
@@ -79,7 +79,7 @@ add_subdirectory(src/autograd)
 target_compile_options(autograd_core
   PRIVATE
     # $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
-    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG>
+    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp>
 )
 
 # -----------------------------------------------------------------------------

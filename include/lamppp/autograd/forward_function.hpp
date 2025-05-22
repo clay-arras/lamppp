@@ -23,12 +23,16 @@ struct ForwardFunction : public Function {
 
   template <typename... Args>
   variable_list apply(const variable_list& inputs, Args&&... args) {
-    Variable result = Variable(static_cast<Derived*>(this)->execute(inputs),
-                               requires_grad(inputs));
-    auto backward_fn = std::make_shared<typename Derived::DefaultBackward>(
-        std::forward<Args>(args)...);
-    backward_fn->saved_inputs = std::make_unique<variable_list>(inputs);
-    result.set_grad_fn(backward_fn);
+    bool requires_grad_ = requires_grad(inputs);
+    Variable result =
+        Variable(static_cast<Derived*>(this)->execute(inputs), requires_grad_);
+    if (requires_grad_) {
+      auto backward_fn = std::make_shared<typename Derived::DefaultBackward>(
+          std::forward<Args>(args)...);
+      backward_fn->saved_inputs = std::make_unique<variable_list>(inputs);
+      backward_fn->ctx = std::make_unique<variable_list>(variable_list{result});
+      result.set_grad_fn(backward_fn);
+    }
 
     return {result};
   }

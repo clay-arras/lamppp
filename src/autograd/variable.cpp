@@ -34,6 +34,7 @@ void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {
 }
 
 void Variable::backward() {
+  LMP_CHECK(requires_grad(), "Must be declared with requires_grad");
   std::vector<Variable> topo = topological_sort();
   impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {

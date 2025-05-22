@@ -22,8 +22,7 @@ variable_list MaximumBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  tensor::Tensor mask =
-      tensor::ops::equal(self.data(), tensor::ops::max(self.data(), axis));
+  tensor::Tensor mask = tensor::ops::equal(self.data(), (*ctx)[0].data());
   self.incr_grad(grad.grad() * mask);
 
   variable_list grad_inputs = {};
@@ -35,8 +34,7 @@ variable_list MinimumBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  tensor::Tensor mask =
-      tensor::ops::equal(self.data(), tensor::ops::min(self.data(), axis));
+  tensor::Tensor mask = tensor::ops::equal(self.data(), (*ctx)[0].data());
   self.incr_grad(grad.grad() * mask);
 
   variable_list grad_inputs = {};

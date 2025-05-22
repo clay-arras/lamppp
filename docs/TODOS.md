@@ -2,38 +2,30 @@
 
 ### current todo
 
-  <!-- - move basic and binary ops together -->
-  <!-- - change size to numel -->
+<!-- - benchmark the backward functions -->
+<!-- - make the context be saved from forward execution -->
+<!-- - refactor the binary broadcasting backward bit -->
+
+- make regular binary operations different from broadcasting operations (see if it's speedup)
+- add CPU implementations with OMP
+- memory leak somwhere???
 
 ## easy
 
-- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
-    <!-- - element wise access (.get) -->
-    <!-- - implement to_vector -->
-- refactor the binary broadcasting backward bit
-- refactor s.t. there's different paths for binary vs broadcasting (get the ops back to speed)
-- go down to C++17
 
 ## medium
 
-<!-- - get benchmarks up again -->
-
+- fix github tests
 - refactor the autograd functions
-- make the context be saved from forward execution
 - type upcasting doesn't work with backward
+- refactor to have << operator with the macro LMP_CHECK
 
 ## hard
 
-- add CPU implementations with OMP
-- add better tests including broadcasting tests and codegen; also use pytest instead
-
-  - test broadcasting with autograd
-  - test how reshaping, squeeze and expand dims effect gradients
-  - test compound operations with autograd
-  - test different data types (namely int64, int16, float64) with autograd
+- add better tests with hypothesis
 
 ## automatic tests
 

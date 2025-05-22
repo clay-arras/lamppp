@@ -9,7 +9,7 @@ class Variable;
 struct Function;
 
 struct Function : public std::enable_shared_from_this<Function> {
-  std::unique_ptr<variable_list> saved_inputs;
+  std::unique_ptr<variable_list> saved_inputs, ctx;
 
   Function() = default;
   virtual ~Function() = default;

@@ -37,12 +37,9 @@ class Tensor {
 
   // these functions only return an view
   template <typename T>
-  std::span<T> view() const {
-    static thread_local std::vector<T> converted_data;
+  std::vector<T> to_vector() const {
+    std::vector<T> converted_data(impl_->numel());
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
-      // TODO: there's gotta be a better way to do this that's faster
-      converted_data.resize(impl_->numel());
-
       scalar_t* original_data =
           static_cast<scalar_t*>(malloc(numel() * sizeof(scalar_t)));
       detail::native::copy_stub(device(), DeviceType::CPU, data(),
@@ -53,11 +50,12 @@ class Tensor {
       }
       free(original_data);
     });
-    return std::span<T>(converted_data);
+    return converted_data;
   }
   Tensor reshape(std::vector<size_t> new_shape) const;
   Tensor squeeze(size_t dim) const;
   Tensor expand_dims(size_t dim) const;
+  Scalar index(const std::vector<size_t>& idx);
 
   // these functions modify the actual data
   void copy(const Tensor& other);

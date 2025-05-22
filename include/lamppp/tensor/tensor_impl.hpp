@@ -49,6 +49,7 @@ class TensorImpl {
   TensorImpl reshape_(std::vector<size_t> new_shape);
   TensorImpl squeeze_(size_t dim);
   TensorImpl expand_dims_(size_t dim);
+  Scalar index_(const std::vector<size_t>& idx);
 
   void copy_(const TensorImpl& other);
   void fill_(Scalar item);

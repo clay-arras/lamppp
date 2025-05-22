@@ -85,6 +85,17 @@ TensorImpl TensorImpl::expand_dims_(size_t dim) {
   return other;
 }
 
+Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
+  LMP_CHECK(idx.size() == shape_.size(), "Indexing does not match shape");
+  size_t at = 0;
+  for (size_t i = 0; i < idx.size(); i++) {
+    at += strides_[i] * idx[i];
+  }
+  return LMP_DISPATCH_ALL_TYPES(type_, [&]() {
+    return static_cast<Scalar>(static_cast<scalar_t*>(data())[at]);
+  });
+}
+
 // TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(const TensorImpl& other) {

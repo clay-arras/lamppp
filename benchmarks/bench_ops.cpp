@@ -2,6 +2,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include "lamppp/autograd/functions/unary_ops.hpp"
 #include "lamppp/lamppp.hpp"
 
 using lmp::autograd::rand;
@@ -22,6 +23,15 @@ Variable mul_variables(const Variable& a, const Variable& b) {
 Variable div_variables(const Variable& a, const Variable& b) {
   return a / b;
 }
+Variable abs_variable(const Variable& a) {
+  return lmp::autograd::ops::abs(a);
+}
+Variable sin_variable(const Variable& a) {
+  return lmp::autograd::ops::sin(a);
+}
+Variable cos_variable(const Variable& a) {
+  return lmp::autograd::ops::cos(a);
+}
 }  // anonymous namespace
 
 int main(int argc, char** argv) {
@@ -29,11 +39,20 @@ int main(int argc, char** argv) {
 
   std::vector<
       std::pair<std::string, std::function<Variable(Variable, Variable)>>>
-      functions = {
+      bin_functions = {
           {"Add", add_variables},
           {"Sub", sub_variables},
           {"Mul", mul_variables},
           {"Div", div_variables},
+      };
+  std::vector<std::pair<
+      std::string,
+      std::function<Variable(
+          Variable)>>>  // TODO: I'm too lazy to do the other ones because of domain constraints. do it later
+      una_functions = {
+          {"Abs", abs_variable},
+          {"Sin", sin_variable},
+          {"Cos", cos_variable},
       };
   std::vector<std::vector<size_t>> shapes = {
       {128, 128},
@@ -41,21 +60,37 @@ int main(int argc, char** argv) {
       {1024, 1024},
   };
 
-  for (const auto& pair : functions) {
-    const std::string& name = pair.first;
-    const auto& fn = pair.second;
+  for (auto& [name, fn] : bin_functions) {
+    for (const auto& shape : shapes) {  // note: const&
+      benchmark::RegisterBenchmark(
+          name + "Forward" + std::to_string(shape[0]),
+          [fn, shape](benchmark::State& state) {  // capture by *value*
+            for (auto _ : state) {
+              state.PauseTiming();
+              Variable a =
+                  rand(shape, DeviceType::CUDA, DataType::Float32, false);
+              Variable b =
+                  rand(shape, DeviceType::CUDA, DataType::Float32, false);
+              state.ResumeTiming();
+              Variable c = fn(a, b);
+            }
+          });
+    }
+  }
 
-    for (std::vector<size_t> shape : shapes) {
-      benchmark::RegisterBenchmark(name, [fn, &shape](benchmark::State& state) {
-        for (auto _ : state) {
-          state.PauseTiming();
-          Variable a = rand(shape, DeviceType::CUDA, DataType::Float32, false);
-          Variable b = rand(shape, DeviceType::CUDA, DataType::Float32, false);
-          state.ResumeTiming();
-
-          Variable c = fn(a, b);
-        }
-      });
+  for (auto& [name, fn] : una_functions) {
+    for (const auto& shape : shapes) {  // note: const&
+      benchmark::RegisterBenchmark(
+          name + "Forward" + std::to_string(shape[0]),
+          [fn, shape](benchmark::State& state) {  // capture by *value*
+            for (auto _ : state) {
+              state.PauseTiming();
+              Variable a =
+                  rand(shape, DeviceType::CUDA, DataType::Float32, false);
+              state.ResumeTiming();
+              Variable c = fn(a);
+            }
+          });
     }
   }
 

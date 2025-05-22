@@ -2,24 +2,27 @@
 
 ### current todo
 
-- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
   <!-- - move basic and binary ops together -->
   <!-- - change size to numel -->
 
 ## easy
 
+- refactor the namings to all be consistent (less or le or less_than); also reconsider namespaces
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
-  - element wise access (.get)
-  - implement to_vector
+    <!-- - element wise access (.get) -->
+    <!-- - implement to_vector -->
 - refactor the binary broadcasting backward bit
+- refactor s.t. there's different paths for binary vs broadcasting (get the ops back to speed)
+- go down to C++17
 
 ## medium
 
+<!-- - get benchmarks up again -->
+
 - refactor the autograd functions
 - make the context be saved from forward execution
-- get benchmarks up again
 - type upcasting doesn't work with backward
 
 ## hard

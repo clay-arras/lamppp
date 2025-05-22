@@ -108,10 +108,7 @@ PYBIND11_MODULE(lamppp, m) {
            py::arg("data"), py::arg("shape"))
       .def_property(
           "data",
-          [](Tensor& t) -> vector<double> {
-            std::span<double> sp = t.view<double>();
-            return vector<double>(sp.begin(), sp.end());
-          },
+          [](Tensor& t) -> vector<double> { return t.to_vector<double>(); },
           nullptr)
       .def_property(
           "shape",

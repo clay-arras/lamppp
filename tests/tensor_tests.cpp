@@ -45,13 +45,11 @@ class TensorOpTest : public testing::Test {
   }
   void TearDown() override {};
   std::vector<Scalar> getTenData(const Tensor& ten) {
-    std::span<Scalar> tmp = ten.view<Scalar>();
-    return std::vector<Scalar>(tmp.begin(), tmp.end());
+    return ten.to_vector<Scalar>();
   }
   template <typename T>
   std::vector<T> getIntegerTenData(const Tensor& ten) {
-    std::span<T> tmp = ten.view<T>();
-    return std::vector<T>(tmp.begin(), tmp.end());
+    return ten.to_vector<T>();
   }
 
   Tensor tensor_f32_A;

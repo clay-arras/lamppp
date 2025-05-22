@@ -33,10 +33,7 @@ class VariableOpTest : public testing::Test {
     b = Variable(b_data, true);
   }
   void TearDown() override {};
-  std::vector<Scalar> getTenData(Tensor ten) {
-    std::span<Scalar> tmp = ten.view<Scalar>();
-    return std::vector<Scalar>(tmp.begin(), tmp.end());
-  }
+  std::vector<Scalar> getTenData(Tensor ten) { return ten.to_vector<Scalar>(); }
 
   Variable a, b;
   Tensor a_data, b_data;

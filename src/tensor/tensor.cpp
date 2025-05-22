@@ -36,6 +36,10 @@ Tensor Tensor::expand_dims(size_t dim) const {
   return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims_(dim)));
 }
 
+Scalar Tensor::index(const std::vector<size_t>& idx) {
+  return impl_->index_(idx);
+}
+
 void Tensor::copy(const Tensor& other) {
   impl_->copy_(*other.impl_);
 }

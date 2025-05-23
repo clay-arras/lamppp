@@ -11,7 +11,7 @@ set(AUTOGRAD_SOURCES
   functions/view_ops.cpp
 )
 
-add_library(autograd_core ${AUTOGRAD_SOURCES})
+add_library(autograd_core SHARED ${AUTOGRAD_SOURCES})
 
 target_link_libraries(autograd_core
   PUBLIC tensor_core 

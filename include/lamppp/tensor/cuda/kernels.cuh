@@ -9,9 +9,6 @@
 
 namespace lmp::tensor::detail::cuda {
 
-using UnaryOpPtrList = ::cuda::std::array<void*, 2>;
-using BinaryOpPtrList = ::cuda::std::array<void*, 3>;
-
 template <typename T>
 struct AddFunctor {
   __device__ __host__ T operator()(T arg1, T arg2) { return arg1 + arg2; }
@@ -145,30 +142,5 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
 TensorImpl sum_cuda(const TensorImpl& a, size_t axis);
 TensorImpl max_cuda(const TensorImpl& a, size_t axis);
 TensorImpl min_cuda(const TensorImpl& a, size_t axis);
-
-LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
-LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);
-LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CUDA, mul_cuda);
-LMP_REGISTER_DISPATCH(ops::div_stub, DeviceType::CUDA, div_cuda);
-
-LMP_REGISTER_DISPATCH(ops::eq_stub, DeviceType::CUDA, eq_cuda);
-LMP_REGISTER_DISPATCH(ops::ne_stub, DeviceType::CUDA, ne_cuda);
-LMP_REGISTER_DISPATCH(ops::le_stub, DeviceType::CUDA, le_cuda);
-LMP_REGISTER_DISPATCH(ops::lt_stub, DeviceType::CUDA, lt_cuda);
-LMP_REGISTER_DISPATCH(ops::ge_stub, DeviceType::CUDA, ge_cuda);
-LMP_REGISTER_DISPATCH(ops::gt_stub, DeviceType::CUDA, gt_cuda);
-
-LMP_REGISTER_DISPATCH(ops::log_stub, DeviceType::CUDA, log_cuda);
-LMP_REGISTER_DISPATCH(ops::exp_stub, DeviceType::CUDA, exp_cuda);
-LMP_REGISTER_DISPATCH(ops::sqrt_stub, DeviceType::CUDA, sqrt_cuda);
-LMP_REGISTER_DISPATCH(ops::abs_stub, DeviceType::CUDA, abs_cuda);
-LMP_REGISTER_DISPATCH(ops::sin_stub, DeviceType::CUDA, sin_cuda);
-LMP_REGISTER_DISPATCH(ops::cos_stub, DeviceType::CUDA, cos_cuda);
-LMP_REGISTER_DISPATCH(ops::tan_stub, DeviceType::CUDA, tan_cuda);
-LMP_REGISTER_DISPATCH(ops::clamp_stub, DeviceType::CUDA, clamp_cuda);
-
-LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CUDA, sum_cuda);
-LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CUDA, max_cuda);
-LMP_REGISTER_DISPATCH(ops::min_stub, DeviceType::CUDA, min_cuda);
 
 }  // namespace lmp::tensor::detail::cuda

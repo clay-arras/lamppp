@@ -32,8 +32,8 @@ class TensorImpl {
     LMP_CHECK(data.size() == numel_,
               "Size mismatch, product of shape must equal num elements");
     DataType src_dtype = TypeMeta<T>::value;
-    detail::native::copy_stub(DeviceType::CPU, device, data.data(),
-                              data_.data(), numel_, src_dtype, type_);
+    detail::native::copy_stub()(DeviceType::CPU, device, data.data(),
+                                data_.data(), numel_, src_dtype, type_);
     update_strides_();
   }
   explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,

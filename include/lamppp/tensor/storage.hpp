@@ -30,7 +30,7 @@ class Storage {
 class Storage::StorageImpl {
  public:
   explicit StorageImpl(size_t byte_size, DeviceType device)
-      : data_ptr_(detail::native::empty_stub(device, byte_size)),
+      : data_ptr_(detail::native::empty_stub()(device, byte_size)),
         byte_size_(byte_size),
         device_(device) {}
 

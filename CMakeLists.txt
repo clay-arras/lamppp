@@ -131,8 +131,8 @@ if(CLANG_FORMAT_EXE)
   file(GLOB_RECURSE ALL_SOURCE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u" # .cu files for CUDA
     "${CMAKE_CURRENT_SOURCE_DIR}/src/autograd/*.[ch]pp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" # Assuming tests remain top-level
-    "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" # Assuming benchmarks remain top-level
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
+    "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
   )
 
   add_custom_target(format

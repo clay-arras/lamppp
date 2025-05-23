@@ -1,11 +1,11 @@
 #pragma once
 
-#include <cstdint>
+#include <cstddef>
 #include <ostream>
 
 namespace lmp::tensor {
 
-enum class DeviceType : uint8_t { CPU = 0, CUDA = 1 };
+enum class DeviceType : size_t { CPU = 0, CUDA = 1, Count };
 
 inline std::ostream& operator<<(std::ostream& os, DeviceType device) {
   switch (device) {

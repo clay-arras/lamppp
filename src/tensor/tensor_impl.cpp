@@ -100,14 +100,14 @@ Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy_(const TensorImpl& other) {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
-    detail::native::copy_stub(other.device(), device(), other.data(), data(),
-                              other.numel() * sizeof(scalar_t), other.type(),
-                              type());
+    detail::native::copy_stub()(other.device(), device(), other.data(), data(),
+                                other.numel() * sizeof(scalar_t), other.type(),
+                                type());
   });
 }
 
 void TensorImpl::fill_(Scalar item) {
-  detail::native::fill_stub(device(), data(), numel(), item, type());
+  detail::native::fill_stub()(device(), data(), numel(), item, type());
 }
 
 // NOTE: everything should be destroyed by default destructors
@@ -122,9 +122,9 @@ void TensorImpl::print_(std::ostream& os) {
   LMP_DISPATCH_ALL_TYPES(this->type_, [&] {
     size_t printSize = std::min(kMaxPrintElem, this->numel());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
-    detail::native::copy_stub(this->device(), DeviceType::CPU, this->data(),
-                              static_cast<void*>(data_ptr), printSize,
-                              this->type_, this->type_);
+    detail::native::copy_stub()(this->device(), DeviceType::CPU, this->data(),
+                                static_cast<void*>(data_ptr), printSize,
+                                this->type_, this->type_);
     for (size_t i = 0; i < printSize; i++) {
       os << data_ptr[i];
       if (i < printSize - 1) {

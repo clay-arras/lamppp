@@ -42,8 +42,8 @@ class Tensor {
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
       scalar_t* original_data =
           static_cast<scalar_t*>(malloc(numel() * sizeof(scalar_t)));
-      detail::native::copy_stub(device(), DeviceType::CPU, data(),
-                                original_data, numel(), type(), type());
+      detail::native::copy_stub()(device(), DeviceType::CPU, data(),
+                                  original_data, numel(), type(), type());
 
       for (size_t i = 0; i < impl_->numel(); ++i) {
         converted_data[i] = static_cast<T>(original_data[i]);

@@ -16,7 +16,7 @@ struct TransformFunctor {
 };
 
 template <class OutT, class... SrcTs>
-class PtrPack {
+class CUDAPtrPack {
  public:
   static constexpr std::size_t N = sizeof...(SrcTs);
 
@@ -25,7 +25,7 @@ class PtrPack {
                      TransformFunctor<OutT, SrcTs>...>
       fns;
 
-  __device__ __host__ constexpr PtrPack(OutT* out, SrcTs*... in)
+  __device__ __host__ constexpr CUDAPtrPack(OutT* out, SrcTs*... in)
       : data{static_cast<void*>(out), static_cast<void*>(in)...},
         fns{TransformFunctor<OutT, OutT>{},
             TransformFunctor<OutT, SrcTs>{}...} {}

@@ -5,7 +5,6 @@ set(TENSOR_SOURCES
   functions/matrix_ops.cpp
   functions/unary_ops.cpp
   functions/reduct_ops.cpp
-  fill_like.cpp
   native/resize.cu
   native/empty.cu
   native/fill.cu
@@ -19,23 +18,24 @@ set(TENSOR_SOURCES
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp
+  cpu/kernels.cpp
+  fill_like.cpp
   tensor.cpp
   tensor_impl.cpp
   storage.cpp
   align_utils.cpp
 )
 
-add_library(tensor_core ${TENSOR_SOURCES})
+add_library(tensor_core SHARED ${TENSOR_SOURCES})
 
 set_target_properties(tensor_core PROPERTIES
   CUDA_SEPARABLE_COMPILATION ON 
   CUDA_RESOLVE_DEVICE_SYMBOLS ON
 )
 
-target_compile_definitions(tensor_core PUBLIC EIGEN_NO_DEBUG)
+target_compile_definitions(tensor_core PUBLIC)
 
 target_link_libraries(tensor_core
-  # PUBLIC Eigen3::Eigen
   PUBLIC CUDA::cudart
 )
 
@@ -44,7 +44,6 @@ target_include_directories(
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-    ${EIGEN3_INCLUDE_DIRS}
     ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

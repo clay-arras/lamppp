@@ -25,24 +25,6 @@ LMP_DECLARE_DISPATCH(cos_fn, cos_stub);
 LMP_DECLARE_DISPATCH(tan_fn, tan_stub);
 LMP_DECLARE_DISPATCH(clamp_fn, clamp_stub);
 
-TensorImpl abs_cpu(const TensorImpl& a);
-TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val);
-TensorImpl cos_cpu(const TensorImpl& a);
-TensorImpl exp_cpu(const TensorImpl& a);
-TensorImpl log_cpu(const TensorImpl& a);
-TensorImpl sin_cpu(const TensorImpl& a);
-TensorImpl sqrt_cpu(const TensorImpl& a);
-TensorImpl tan_cpu(const TensorImpl& a);
-
-LMP_REGISTER_DISPATCH(abs_stub, DeviceType::CPU, abs_cpu);
-LMP_REGISTER_DISPATCH(clamp_stub, DeviceType::CPU, clamp_cpu);
-LMP_REGISTER_DISPATCH(cos_stub, DeviceType::CPU, cos_cpu);
-LMP_REGISTER_DISPATCH(exp_stub, DeviceType::CPU, exp_cpu);
-LMP_REGISTER_DISPATCH(log_stub, DeviceType::CPU, log_cpu);
-LMP_REGISTER_DISPATCH(sin_stub, DeviceType::CPU, sin_cpu);
-LMP_REGISTER_DISPATCH(sqrt_stub, DeviceType::CPU, sqrt_cpu);
-LMP_REGISTER_DISPATCH(tan_stub, DeviceType::CPU, tan_cpu);
-
 Tensor exp(const Tensor& a);
 Tensor log(const Tensor& a);
 Tensor sqrt(const Tensor& self);

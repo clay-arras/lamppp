@@ -6,7 +6,7 @@
 #include <cuda/std/array>
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cuda/kernels.cuh"
-#include "lamppp/tensor/cuda/pointer_pack.cuh"
+#include "lamppp/tensor/cuda/ptr_pack.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cuda {
@@ -29,7 +29,7 @@ void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,
     LMP_DISPATCH_ALL_TYPES(meta.in()[0]->type(), [&] {
       using arg_dtype_t = scalar_t;
       reduct_kernel_launcher(
-          internal::PtrPack<out_dtype_t, arg_dtype_t>(
+          internal::CUDAPtrPack<out_dtype_t, arg_dtype_t>(
               static_cast<out_dtype_t*>(meta.out().data()),
               static_cast<arg_dtype_t*>(meta.in()[0]->data())),
           OpFunctor<out_dtype_t>(std::forward<Args>(args)...),

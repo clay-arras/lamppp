@@ -16,11 +16,11 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
 void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
                DataType src_dtype, DataType dest_dtype);
 
-LMP_REGISTER_DISPATCH(copy_stub, DeviceType::CPU, copy_cpu);
-LMP_REGISTER_DISPATCH(copy_stub, DeviceType::CUDA, copy_cuda);
+template <typename U, typename V>
+__global__ void cudaVecCopyKernel(size_t size, const U* in, V* out);
 
 template <typename U, typename V>
-__global__ void vecCopyKernel(size_t size, const U* in, V* out);
+void cudaVecCopy(size_t size, const U* in, V* out);
 
 template <typename U, typename V>
 void vecCopy(size_t size, const U* in, V* out);

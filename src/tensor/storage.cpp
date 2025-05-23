@@ -35,7 +35,7 @@ DeviceType Storage::StorageImpl::device() const noexcept {
 }
 
 void Storage::StorageImpl::resize_(size_t nsize) {
-  detail::native::resize_stub(device_, data_ptr_, byte_size_, nsize);
+  detail::native::resize_stub()(device_, data_ptr_, byte_size_, nsize);
   byte_size_ = nsize;
 }
 

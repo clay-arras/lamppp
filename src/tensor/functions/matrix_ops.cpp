@@ -5,8 +5,8 @@
 
 namespace lmp::tensor::ops {
 
-LMP_DEFINE_DISPATCH(matmul_stub);
-LMP_DEFINE_DISPATCH(transpose_stub);
+LMP_DEFINE_DISPATCH(matmul_fn, matmul_stub);
+LMP_DEFINE_DISPATCH(transpose_fn, transpose_stub);
 
 TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   LMP_INTERNAL_ASSERT(false, "Not Implemented.");
@@ -67,13 +67,13 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
 Tensor matmul(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors must be on the same device");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
-      matmul_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
-                  *detail::UnsafeTensorAccessor::getImpl(b))));
+      matmul_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
+                    *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 
 Tensor transpose(const Tensor& a) {
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
-      transpose_stub(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));
+      transpose_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));
 }
 
 }  // namespace lmp::tensor::ops

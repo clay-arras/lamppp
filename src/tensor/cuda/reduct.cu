@@ -2,6 +2,7 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 #include <cuda/std/array>
+#include "lamppp/tensor/cuda/list_ptr.cuh"
 #include "lamppp/tensor/cuda/reduct.cuh"
 
 namespace lmp::tensor::detail::cuda {

@@ -16,7 +16,8 @@ set(TENSOR_SOURCES
   cuda/reduct.cu
   cuda/expand.cu
   cuda/kernels.cu
-  cuda/meta_handler.cu
+  cpu/meta_handler.cpp
+  cpu/offset_util.cpp
   cpu/unary.cpp
   tensor.cpp
   tensor_impl.cpp

@@ -4,16 +4,17 @@
 namespace lmp::tensor::detail::cuda {
 
 template <size_t NArgs>
-OffsetUtil<NArgs>::OffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
-                              const TensorImpl& outs)
-    : ndim(outs.shape().size()) {
+CUDAOffsetUtil<NArgs>::CUDAOffsetUtil(
+    ::std::array<const TensorImpl*, NArgs> ins, const TensorImpl& outs)
+    : OffsetUtil<NArgs>(outs.shape().size()) {
   LMP_INTERNAL_ASSERT(NArgs == ins.size(),
                       "NArgs must equal number of input elements");
   std::vector<std::vector<stride_t>> stride_exp(NArgs);
 
 #pragma omp unroll
   for (size_t i = 0; i < NArgs; i++) {
-    stride_exp[i] = init_padded_strides_(ins[i]->shape(), ins[i]->strides());
+    stride_exp[i] =
+        this->init_padded_strides_(ins[i]->shape(), ins[i]->strides());
   }
 
   arg_strides_[0] =
@@ -29,13 +30,13 @@ OffsetUtil<NArgs>::OffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
 }
 
 template <size_t NArgs>
-__device__ ::cuda::std::array<stride_t, NArgs + 1> OffsetUtil<NArgs>::get(
+__device__ ::cuda::std::array<stride_t, NArgs + 1> CUDAOffsetUtil<NArgs>::get(
     size_t idx) const {
   ::cuda::std::array<stride_t, NArgs + 1> result;
   result.fill(0);
   result[0] = idx;
 
-  for (size_t i = 0; i < ndim; ++i) {
+  for (size_t i = 0; i < this->ndim; ++i) {
     stride_t this_idx = idx / static_cast<const stride_t*>(arg_pointers_[0])[i];
     idx = idx % static_cast<const stride_t*>(arg_pointers_[0])[i];
 
@@ -49,30 +50,7 @@ __device__ ::cuda::std::array<stride_t, NArgs + 1> OffsetUtil<NArgs>::get(
   return result;
 }
 
-template <size_t NArgs>
-std::vector<stride_t> OffsetUtil<NArgs>::init_padded_strides_(
-    const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
-  LMP_INTERNAL_ASSERT(ndim > 0, "ndim must be greater than 0");
-  LMP_INTERNAL_ASSERT(shape.size() <= ndim,
-                      "shape size must be less than or equal to ndim");
-  LMP_INTERNAL_ASSERT(shape.size() == stride.size(),
-                      "shape size must be equal to stride size");
-
-  std::vector<stride_t> padded(ndim, 0);
-  const size_t from_back = shape.size();
-
-  for (size_t k = 0; k < from_back; ++k) {
-    size_t dst = ndim - 1 - k;
-    size_t src = from_back - 1 - k;
-
-    if (shape[src] != 1) {
-      padded[dst] = stride[src];
-    }
-  }
-  return padded;
-}
-
-template class OffsetUtil<2>;
-template class OffsetUtil<3>;  // in case for 3 argument operands, I guess
+template class CUDAOffsetUtil<2>;
+template class CUDAOffsetUtil<3>;
 
 }  // namespace lmp::tensor::detail::cuda

@@ -24,21 +24,14 @@ void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
                   "unary_kernel_launcher: kernel failed.");
 }
 
-template void unary_dispatch_handler<ExpFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<LogFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<SqrtFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<AbsFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<SinFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<CosFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<TanFunctor>(
-    const internal::TensorMetaHandler&);
-template void unary_dispatch_handler<ClampFunctor>(
-    const internal::TensorMetaHandler&, Scalar&&, Scalar&&);
+template void unary_dispatch_handler<ExpFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<LogFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<SqrtFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<AbsFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<SinFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<CosFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<TanFunctor>(UnaryMetaHandler&);
+template void unary_dispatch_handler<ClampFunctor>(UnaryMetaHandler&, Scalar&&,
+                                                   Scalar&&);
 
 }  // namespace lmp::tensor::detail::cuda

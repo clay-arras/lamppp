@@ -4,7 +4,6 @@
 #include "lamppp/autograd/grad_utils.hpp"
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/functions/reduct_ops.hpp"
 
 namespace lmp::autograd::ops {
 

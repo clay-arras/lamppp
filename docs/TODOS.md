@@ -6,6 +6,8 @@
 <!-- - make the context be saved from forward execution -->
 <!-- - refactor the binary broadcasting backward bit -->
 
+<!-- - TODO: isn't context just grad.data()??????? -->
+
 - make regular binary operations different from broadcasting operations (see if it's speedup)
 - add CPU implementations with OMP
 - memory leak somwhere???

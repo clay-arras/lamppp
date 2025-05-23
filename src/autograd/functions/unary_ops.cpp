@@ -14,7 +14,7 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  self.incr_grad((*ctx)[0].data() * grad.grad());
+  self.incr_grad(grad.data() * grad.grad());
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -50,7 +50,7 @@ variable_list SqrtBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  Variable sqrt_var(1 / (2 * (*ctx)[0].data()));
+  Variable sqrt_var(1 / (2 * grad.data()));
   self.incr_grad(sqrt_var.data() * grad.grad());
 
   variable_list grad_inputs = {};

@@ -58,7 +58,7 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   Variable& other = (*saved_inputs)[1];
 
   tensor::Tensor other_grad =
-      (-1.0) * ((*ctx)[0].data() * grad.grad() / (other.data()));
+      (-1.0) * (grad.data() * grad.grad() / (other.data()));
 
   self.incr_grad(detail::sum_broadcast_axis(grad.grad() / other.data(),
                                             self.data().shape()));

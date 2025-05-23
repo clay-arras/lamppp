@@ -30,7 +30,6 @@ struct ForwardFunction : public Function {
       auto backward_fn = std::make_shared<typename Derived::DefaultBackward>(
           std::forward<Args>(args)...);
       backward_fn->saved_inputs = std::make_unique<variable_list>(inputs);
-      backward_fn->ctx = std::make_unique<variable_list>(variable_list{result});
       result.set_grad_fn(backward_fn);
     }
 

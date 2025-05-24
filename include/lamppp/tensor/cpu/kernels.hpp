@@ -101,6 +101,21 @@ struct ClampFunctor {
  private:
   Scalar min_val_, max_val_;
 };
+template <typename T>
+struct SumFunctor {
+  static constexpr T identity = 0;
+  T operator()(T arg1, T arg2) { return arg1 + arg2; }
+};
+template <typename T>
+struct MaxFunctor {
+  static constexpr T identity = std::numeric_limits<T>::lowest();
+  T operator()(T arg1, T arg2) { return ::std::max(arg1, arg2); }
+};
+template <typename T>
+struct MinFunctor {
+  static constexpr T identity = std::numeric_limits<T>::max();
+  T operator()(T arg1, T arg2) { return ::std::min(arg1, arg2); }
+};
 
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
@@ -121,5 +136,9 @@ TensorImpl sin_cpu(const TensorImpl& a);
 TensorImpl cos_cpu(const TensorImpl& a);
 TensorImpl tan_cpu(const TensorImpl& a);
 TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val);
+
+TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
+TensorImpl max_cpu(const TensorImpl& a, size_t axis);
+TensorImpl min_cpu(const TensorImpl& a, size_t axis);
 
 }  // namespace lmp::tensor::detail::cpu

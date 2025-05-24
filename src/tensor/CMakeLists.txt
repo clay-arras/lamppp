@@ -19,6 +19,8 @@ set(TENSOR_SOURCES
   cpu/offset_util.cpp
   cpu/unary.cpp
   cpu/expand.cpp
+  cpu/reduct.cpp
+  cpu/matrix.cpp
   cpu/kernels.cpp
   fill_like.cpp
   tensor.cpp

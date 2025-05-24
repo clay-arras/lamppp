@@ -15,14 +15,6 @@ LMP_DECLARE_DISPATCH(sum_fn, sum_stub);
 LMP_DECLARE_DISPATCH(max_fn, max_stub);
 LMP_DECLARE_DISPATCH(min_fn, min_stub);
 
-TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
-TensorImpl max_cpu(const TensorImpl& a, size_t axis);
-TensorImpl min_cpu(const TensorImpl& a, size_t axis);
-
-LMP_REGISTER_DISPATCH(sum_stub, DeviceType::CPU, sum_cpu);
-LMP_REGISTER_DISPATCH(max_stub, DeviceType::CPU, max_cpu);
-LMP_REGISTER_DISPATCH(min_stub, DeviceType::CPU, min_cpu);
-
 Tensor sum(const Tensor& a, size_t axis);
 Tensor max(const Tensor& a, size_t axis);
 Tensor min(const Tensor& a, size_t axis);

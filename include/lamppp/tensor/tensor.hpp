@@ -24,7 +24,7 @@ class Tensor {
 
   template <typename T>
   explicit Tensor(const std::vector<T>& data, const std::vector<size_t>& shape,
-                  DeviceType device = DeviceType::CUDA,
+                  DeviceType device = DeviceType::CPU,
                   DataType dtype = DataType::Float64)
       : impl_(std::make_shared<TensorImpl>(data, shape, device, dtype)) {}
 

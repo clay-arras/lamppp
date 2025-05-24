@@ -7,16 +7,6 @@ LMP_DEFINE_DISPATCH(sum_fn, sum_stub);
 LMP_DEFINE_DISPATCH(max_fn, max_stub);
 LMP_DEFINE_DISPATCH(min_fn, min_stub);
 
-TensorImpl sum_cpu(const TensorImpl& a, size_t axis) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl max_cpu(const TensorImpl& a, size_t axis) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl min_cpu(const TensorImpl& a, size_t axis) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-
 Tensor sum(const Tensor& a, size_t axis) {
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       sum_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a), axis)));

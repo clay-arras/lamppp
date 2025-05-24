@@ -46,7 +46,6 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
   cudaTransposeKernel<T><<<blocks, threads>>>(in, out, m, n);
 }
 
-// clang-format off
 #define INSTANTIATE_MATMUL(r, product)                                      \
   template void                                                             \
   cudaMatMul<BOOST_PP_SEQ_ELEM(0, product), BOOST_PP_SEQ_ELEM(1, product),  \
@@ -66,6 +65,5 @@ BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_TRANSPOSE, , TYPES_LIST)
 
 #undef INSTANTIATE_MATMUL
 #undef INSTANTIATE_TRANSPOSE
-// clang-format on
 
 }  // namespace lmp::tensor::detail::cuda

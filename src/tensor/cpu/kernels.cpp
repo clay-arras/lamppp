@@ -1,8 +1,10 @@
 #include "lamppp/tensor/cpu/kernels.hpp"
 #include "lamppp/tensor/cpu/expand.hpp"
 #include "lamppp/tensor/cpu/meta_handler.hpp"
+#include "lamppp/tensor/cpu/reduct.hpp"
 #include "lamppp/tensor/cpu/unary.hpp"
 #include "lamppp/tensor/functions/expand_ops.hpp"
+#include "lamppp/tensor/functions/reduct_ops.hpp"
 
 namespace lmp::tensor::detail::cpu {
 
@@ -114,6 +116,24 @@ TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val) {
   return meta.out();
 }
 
+TensorImpl sum_cpu(const TensorImpl& a, size_t axis) {
+  TensorMetaHandler meta(&a, axis);
+  reduct_dispatch_handler<SumFunctor>(meta, axis);
+  return meta.out();
+}
+
+TensorImpl max_cpu(const TensorImpl& a, size_t axis) {
+  TensorMetaHandler meta(&a, axis);
+  reduct_dispatch_handler<MaxFunctor>(meta, axis);
+  return meta.out();
+}
+
+TensorImpl min_cpu(const TensorImpl& a, size_t axis) {
+  TensorMetaHandler meta(&a, axis);
+  reduct_dispatch_handler<MinFunctor>(meta, axis);
+  return meta.out();
+}
+
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CPU, add_cpu);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CPU, sub_cpu);
 LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CPU, mul_cpu);
@@ -133,5 +153,9 @@ LMP_REGISTER_DISPATCH(ops::log_stub, DeviceType::CPU, log_cpu);
 LMP_REGISTER_DISPATCH(ops::sin_stub, DeviceType::CPU, sin_cpu);
 LMP_REGISTER_DISPATCH(ops::sqrt_stub, DeviceType::CPU, sqrt_cpu);
 LMP_REGISTER_DISPATCH(ops::tan_stub, DeviceType::CPU, tan_cpu);
+
+LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CPU, sum_cpu);
+LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CPU, max_cpu);
+LMP_REGISTER_DISPATCH(ops::min_stub, DeviceType::CPU, min_cpu);
 
 }  // namespace lmp::tensor::detail::cpu

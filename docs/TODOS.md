@@ -7,10 +7,12 @@
 <!-- - refactor the binary broadcasting backward bit -->
 
 <!-- - TODO: isn't context just grad.data()??????? -->
+<!-- - add CPU implementations with OMP -->
 
+- memory leak somewhere
 - make regular binary operations different from broadcasting operations (see if it's speedup)
-- add CPU implementations with OMP
-- memory leak somwhere???
+- refactor: add offsetUtil passed into metaHandler as a dispatch
+- refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp
 
 ## easy
 

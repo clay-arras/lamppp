@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <ostream>
-#include <stdfloat>
 
 namespace lmp::tensor {
 

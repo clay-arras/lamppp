@@ -3,6 +3,12 @@ name: project-gtests
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Enable tmate debugging session'
+        required: false
+        default: 'false'
 
 jobs:
   greet:

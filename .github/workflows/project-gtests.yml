@@ -47,7 +47,7 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 
       - name: Build lamppp module
-        run: cmake --build build --target lamppp --parallel
+        run: cmake --build build --config Debug --parallel
 
       - name: Run GTests
         run: |

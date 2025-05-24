@@ -137,7 +137,6 @@ LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);
 LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CUDA, mul_cuda);
 LMP_REGISTER_DISPATCH(ops::div_stub, DeviceType::CUDA, div_cuda);
-
 LMP_REGISTER_DISPATCH(ops::eq_stub, DeviceType::CUDA, eq_cuda);
 LMP_REGISTER_DISPATCH(ops::ne_stub, DeviceType::CUDA, ne_cuda);
 LMP_REGISTER_DISPATCH(ops::le_stub, DeviceType::CUDA, le_cuda);

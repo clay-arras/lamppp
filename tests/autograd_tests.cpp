@@ -39,86 +39,86 @@ class VariableOpTest : public testing::Test {
   Tensor a_data, b_data;
 };
 
-// TEST_F(VariableOpTest, AddTest) {
-//   Variable res = a + b;
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {0.0, 6.0, 1.0, 4.0, 8.0, 2.5}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(getTenData(a.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}))
-//       << "Gradient mismatch for variable 1";
-//   EXPECT_THAT(getTenData(b.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}))
-//       << "Gradient mismatch for variable 2";
-// }
+TEST_F(VariableOpTest, AddTest) {
+  Variable res = a + b;
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {0.0, 6.0, 1.0, 4.0, 8.0, 2.5}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(a.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}))
+      << "Gradient mismatch for variable 1";
+  EXPECT_THAT(getTenData(b.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}))
+      << "Gradient mismatch for variable 2";
+}
 
-// TEST_F(VariableOpTest, SubTest) {
-//   Variable res = a - b;
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {2.0, -2.0, 5.0, 4.0, 2.0, 1.5}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(getTenData(a.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}))
-//       << "Gradient mismatch for variable 1";
-//   EXPECT_THAT(getTenData(b.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0}))
-//       << "Gradient mismatch for variable 2";
-// }
+TEST_F(VariableOpTest, SubTest) {
+  Variable res = a - b;
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {2.0, -2.0, 5.0, 4.0, 2.0, 1.5}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(a.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}))
+      << "Gradient mismatch for variable 1";
+  EXPECT_THAT(getTenData(b.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0}))
+      << "Gradient mismatch for variable 2";
+}
 
-// TEST_F(VariableOpTest, MulTest) {
-//   Variable res = a * b;
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {-1.0, 8.0, -6.0, 0.0, 15.0, 1.0}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(getTenData(a.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {-1.0, 4.0, -2.0, 0.0, 3.0, 0.5}))
-//       << "Gradient mismatch for variable 1";
-//   EXPECT_THAT(getTenData(b.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0, 2.0, 3.0, 4.0, 5.0, 2.0}))
-//       << "Gradient mismatch for variable 2";
-// }
+TEST_F(VariableOpTest, MulTest) {
+  Variable res = a * b;
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {-1.0, 8.0, -6.0, 0.0, 15.0, 1.0}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(a.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {-1.0, 4.0, -2.0, 0.0, 3.0, 0.5}))
+      << "Gradient mismatch for variable 1";
+  EXPECT_THAT(getTenData(b.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0, 2.0, 3.0, 4.0, 5.0, 2.0}))
+      << "Gradient mismatch for variable 2";
+}
 
-// TEST_F(VariableOpTest, DivTest) {
-//   Variable res = a / b;
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(
-//                   ::testing::FloatNear(kEps),
-//                   {-1.0, 0.5, -1.5, std::numeric_limits<Scalar>::infinity(),
-//                    5.0 / 3.0, 4.0}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(getTenData(a.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0 / -1.0, 1.0 / 4.0, 1.0 / -2.0,
-//                                     1.0 / 0.0, 1.0 / 3.0, 1.0 / 0.5}))
-//       << "Gradient mismatch for variable 1";
-//   EXPECT_THAT(getTenData(b.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {-1.0 / (-1.0 * -1.0), -2.0 / (4.0 * 4.0),
-//                                     -3.0 / (-2.0 * -2.0), -4.0 / (0.0 * 0.0),
-//                                     -5.0 / (3.0 * 3.0), -2.0 / (0.5 * 0.5)}))
-//       << "Gradient mismatch for variable 2";
-// }
+TEST_F(VariableOpTest, DivTest) {
+  Variable res = a / b;
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(
+                  ::testing::FloatNear(kEps),
+                  {-1.0, 0.5, -1.5, std::numeric_limits<Scalar>::infinity(),
+                   5.0 / 3.0, 4.0}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(a.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0 / -1.0, 1.0 / 4.0, 1.0 / -2.0,
+                                    1.0 / 0.0, 1.0 / 3.0, 1.0 / 0.5}))
+      << "Gradient mismatch for variable 1";
+  EXPECT_THAT(getTenData(b.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {-1.0 / (-1.0 * -1.0), -2.0 / (4.0 * 4.0),
+                                    -3.0 / (-2.0 * -2.0), -4.0 / (0.0 * 0.0),
+                                    -5.0 / (3.0 * 3.0), -2.0 / (0.5 * 0.5)}))
+      << "Gradient mismatch for variable 2";
+}
 
 TEST_F(VariableOpTest, ExpTest) {
   Variable res = lmp::autograd::ops::exp(b);
@@ -129,12 +129,12 @@ TEST_F(VariableOpTest, ExpTest) {
       << "Forward data mismatch";
   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
       << "Forward shape mismatch";
-  // res.backward();
-  // EXPECT_THAT(getTenData(b.grad()),
-  //             ::testing::Pointwise(::testing::FloatNear(kEps),
-  //                                  {exp(-1.0), exp(4.0), exp(-2.0), exp(0.0),
-  //                                   exp(3.0), exp(0.5)}))
-  //     << "Gradient mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(b.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {exp(-1.0), exp(4.0), exp(-2.0), exp(0.0),
+                                    exp(3.0), exp(0.5)}))
+      << "Gradient mismatch";
 }
 
 TEST_F(VariableOpTest, LogTest) {
@@ -146,12 +146,12 @@ TEST_F(VariableOpTest, LogTest) {
       << "Forward data mismatch";
   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u, 2u}))
       << "Forward shape mismatch";
-  // res.backward();
-  // EXPECT_THAT(getTenData(a.grad()),
-  //             ::testing::Pointwise(::testing::FloatNear(kEps),
-  //                                  {1.0 / 1.0, 1.0 / 2.0, 1.0 / 3.0, 1.0 / 4.0,
-  //                                   1.0 / 5.0, 1.0 / 2.0}))
-  //     << "Gradient mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(a.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0 / 1.0, 1.0 / 2.0, 1.0 / 3.0, 1.0 / 4.0,
+                                    1.0 / 5.0, 1.0 / 2.0}))
+      << "Gradient mismatch";
 }
 
 // TEST_F(VariableOpTest, MatMulTest) {
@@ -232,58 +232,58 @@ TEST_F(VariableOpTest, LogTest) {
 //       << "Gradient mismatch";
 // }
 
-// TEST_F(VariableOpTest, ReshapeTest) {
-//   Variable res = lmp::autograd::ops::reshape(a, {2, 1, 3});
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0, 2.0, 3.0, 4.0, 5.0, 2.0}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({2u, 1u, 3u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(
-//       getTenData(a.grad()),
-//       ::testing::Pointwise(::testing::FloatNear(kEps), {1, 1, 1, 1, 1, 1}))
-//       << "Gradient data mismatch";
-//   EXPECT_THAT(a.grad().shape(), ::testing::ElementsAreArray({3u, 2u}))
-//       << "Gradient shape mismatch";
-// }
+TEST_F(VariableOpTest, ReshapeTest) {
+  Variable res = lmp::autograd::ops::reshape(a, {2, 1, 3});
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0, 2.0, 3.0, 4.0, 5.0, 2.0}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({2u, 1u, 3u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(
+      getTenData(a.grad()),
+      ::testing::Pointwise(::testing::FloatNear(kEps), {1, 1, 1, 1, 1, 1}))
+      << "Gradient data mismatch";
+  EXPECT_THAT(a.grad().shape(), ::testing::ElementsAreArray({3u, 2u}))
+      << "Gradient shape mismatch";
+}
 
-// TEST_F(VariableOpTest, ExpandDimsTest) {
-//   Variable res = lmp::autograd::ops::expand_dims(a, 0);
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps),
-//                                    {1.0, 2.0, 3.0, 4.0, 5.0, 2.0}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({1u, 3u, 2u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(
-//       getTenData(a.grad()),
-//       ::testing::Pointwise(::testing::FloatNear(kEps), {1, 1, 1, 1, 1, 1}))
-//       << "Gradient data mismatch";
-//   EXPECT_THAT(a.grad().shape(), ::testing::ElementsAreArray({3u, 2u}))
-//       << "Gradient shape mismatch";
-// }
+TEST_F(VariableOpTest, ExpandDimsTest) {
+  Variable res = lmp::autograd::ops::expand_dims(a, 0);
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(::testing::FloatNear(kEps),
+                                   {1.0, 2.0, 3.0, 4.0, 5.0, 2.0}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({1u, 3u, 2u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(
+      getTenData(a.grad()),
+      ::testing::Pointwise(::testing::FloatNear(kEps), {1, 1, 1, 1, 1, 1}))
+      << "Gradient data mismatch";
+  EXPECT_THAT(a.grad().shape(), ::testing::ElementsAreArray({3u, 2u}))
+      << "Gradient shape mismatch";
+}
 
-// TEST_F(VariableOpTest, SqueezeTest) {
-//   Tensor squeeze_data =
-//       Tensor(std::vector<Scalar>{1.0, 2.0, 3.0}, std::vector<size_t>{3u, 1u},
-//              DeviceType::CUDA, DataType::Float32);
-//   Variable squeeze_var = Variable(squeeze_data, true);
-//   Variable res = lmp::autograd::ops::squeeze(squeeze_var, 1);
-//   EXPECT_THAT(getTenData(res.data()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps), {1.0, 2.0, 3.0}))
-//       << "Forward data mismatch";
-//   EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u}))
-//       << "Forward shape mismatch";
-//   res.backward();
-//   EXPECT_THAT(getTenData(squeeze_var.grad()),
-//               ::testing::Pointwise(::testing::FloatNear(kEps), {1, 1, 1}))
-//       << "Gradient data mismatch";
-//   EXPECT_THAT(squeeze_var.grad().shape(), ::testing::ElementsAreArray({3u, 1u}))
-//       << "Gradient shape mismatch";
-// }
+TEST_F(VariableOpTest, SqueezeTest) {
+  Tensor squeeze_data =
+      Tensor(std::vector<Scalar>{1.0, 2.0, 3.0}, std::vector<size_t>{3u, 1u},
+             DeviceType::CUDA, DataType::Float32);
+  Variable squeeze_var = Variable(squeeze_data, true);
+  Variable res = lmp::autograd::ops::squeeze(squeeze_var, 1);
+  EXPECT_THAT(getTenData(res.data()),
+              ::testing::Pointwise(::testing::FloatNear(kEps), {1.0, 2.0, 3.0}))
+      << "Forward data mismatch";
+  EXPECT_THAT(res.data().shape(), ::testing::ElementsAreArray({3u}))
+      << "Forward shape mismatch";
+  res.backward();
+  EXPECT_THAT(getTenData(squeeze_var.grad()),
+              ::testing::Pointwise(::testing::FloatNear(kEps), {1, 1, 1}))
+      << "Gradient data mismatch";
+  EXPECT_THAT(squeeze_var.grad().shape(), ::testing::ElementsAreArray({3u, 1u}))
+      << "Gradient shape mismatch";
+}
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

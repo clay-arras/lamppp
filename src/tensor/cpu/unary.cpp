@@ -10,8 +10,8 @@ void vectorized_unary_kernel(PtrList ptr_, OpFn fn_, size_t i) {
 
 template <typename PtrList, typename OpFn>
 void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
-#pragma omp \
-    parallel for simd  // TODO: should guarantee alignment?? with aligned(a,out:64)?
+// TODO: should guarantee alignment?? with aligned(a,out:64)?
+#pragma omp parallel for simd
   for (size_t i = 0; i < size; i++) {
     vectorized_unary_kernel(ptr_, fn_, i);
   }

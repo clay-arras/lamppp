@@ -29,33 +29,10 @@ LMP_DECLARE_DISPATCH(le_fn, le_stub);
 LMP_DECLARE_DISPATCH(gt_fn, gt_stub);
 LMP_DECLARE_DISPATCH(lt_fn, lt_stub);
 
-TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl eq_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl ge_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl gt_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl le_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl lt_cpu(const TensorImpl& a, const TensorImpl& b);
-TensorImpl ne_cpu(const TensorImpl& a, const TensorImpl& b);
-
-LMP_REGISTER_DISPATCH(add_stub, DeviceType::CPU, add_cpu);
-LMP_REGISTER_DISPATCH(div_stub, DeviceType::CPU, div_cpu);
-LMP_REGISTER_DISPATCH(mul_stub, DeviceType::CPU, mul_cpu);
-LMP_REGISTER_DISPATCH(sub_stub, DeviceType::CPU, sub_cpu);
-LMP_REGISTER_DISPATCH(eq_stub, DeviceType::CPU, eq_cpu);
-LMP_REGISTER_DISPATCH(ge_stub, DeviceType::CPU, ge_cpu);
-LMP_REGISTER_DISPATCH(gt_stub, DeviceType::CPU, gt_cpu);
-LMP_REGISTER_DISPATCH(le_stub, DeviceType::CPU, le_cpu);
-LMP_REGISTER_DISPATCH(lt_stub, DeviceType::CPU, lt_cpu);
-LMP_REGISTER_DISPATCH(ne_stub, DeviceType::CPU, ne_cpu);
-
 Tensor add(const Tensor& a, const Tensor& b);
 Tensor sub(const Tensor& a, const Tensor& b);
 Tensor mul(const Tensor& a, const Tensor& b);
 Tensor div(const Tensor& a, const Tensor& b);
-
 Tensor equal(const Tensor& a, const Tensor& b);
 Tensor not_equal(const Tensor& a, const Tensor& b);
 Tensor greater_equal(const Tensor& a, const Tensor& b);

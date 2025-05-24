@@ -18,6 +18,7 @@ set(TENSOR_SOURCES
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp
+  cpu/expand.cpp
   cpu/kernels.cpp
   fill_like.cpp
   tensor.cpp

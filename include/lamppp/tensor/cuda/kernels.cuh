@@ -122,7 +122,6 @@ TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b);
 TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b);
 TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b);
 TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b);
-
 TensorImpl eq_cuda(const TensorImpl& a, const TensorImpl& b);
 TensorImpl ne_cuda(const TensorImpl& a, const TensorImpl& b);
 TensorImpl le_cuda(const TensorImpl& a, const TensorImpl& b);

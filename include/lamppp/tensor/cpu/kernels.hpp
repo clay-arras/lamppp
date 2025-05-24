@@ -9,6 +9,46 @@
 namespace lmp::tensor::detail::cpu {
 
 template <typename T>
+struct AddFunctor {
+  T operator()(T arg1, T arg2) { return arg1 + arg2; }
+};
+template <typename T>
+struct SubFunctor {
+  T operator()(T arg1, T arg2) { return arg1 - arg2; }
+};
+template <typename T>
+struct MulFunctor {
+  T operator()(T arg1, T arg2) { return arg1 * arg2; }
+};
+template <typename T>
+struct DivFunctor {
+  T operator()(T arg1, T arg2) { return arg1 / arg2; }
+};
+template <typename T>
+struct EqFunctor {
+  T operator()(T arg1, T arg2) { return arg1 == arg2; }
+};
+template <typename T>
+struct NeFunctor {
+  T operator()(T arg1, T arg2) { return arg1 != arg2; }
+};
+template <typename T>
+struct LeFunctor {
+  T operator()(T arg1, T arg2) { return arg1 <= arg2; }
+};
+template <typename T>
+struct LtFunctor {
+  T operator()(T arg1, T arg2) { return arg1 < arg2; }
+};
+template <typename T>
+struct GtFunctor {
+  T operator()(T arg1, T arg2) { return arg1 > arg2; }
+};
+template <typename T>
+struct GeFunctor {
+  T operator()(T arg1, T arg2) { return arg1 >= arg2; }
+};
+template <typename T>
 struct LogFunctor {
   T operator()(T arg) {
     return static_cast<T>(::log(static_cast<double>(arg)));
@@ -61,6 +101,17 @@ struct ClampFunctor {
  private:
   Scalar min_val_, max_val_;
 };
+
+TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl eq_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl ne_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl le_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl lt_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl ge_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl gt_cpu(const TensorImpl& a, const TensorImpl& b);
 
 TensorImpl log_cpu(const TensorImpl& a);
 TensorImpl exp_cpu(const TensorImpl& a);

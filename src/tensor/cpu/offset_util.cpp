@@ -12,11 +12,11 @@ CPUOffsetUtil<NArgs>::CPUOffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
   LMP_INTERNAL_ASSERT(NArgs == ins.size(),
                       "NArgs must equal number of input elements");
 
+  arg_strides_[0] = outs.strides();
 #pragma omp unroll
-  for (size_t i = 0; i < NArgs; i++) {
+  for (size_t i = 1; i <= NArgs; i++) {
     arg_strides_[i] =
-        this->init_padded_strides_(ins[i]->shape(), ins[i]->strides());
-    arg_pointers_[i] = arg_strides_[i].data();
+        this->init_padded_strides_(ins[i - 1]->shape(), ins[i - 1]->strides());
   }
 }
 
@@ -27,13 +27,12 @@ template <size_t NArgs>
   result[0] = idx;
 
   for (size_t i = 0; i < this->ndim; ++i) {
-    stride_t this_idx = idx / static_cast<const stride_t*>(arg_pointers_[0])[i];
-    idx = idx % static_cast<const stride_t*>(arg_pointers_[0])[i];
+    stride_t this_idx = idx / (arg_strides_[0])[i];
+    idx = idx % (arg_strides_[0])[i];
 
 #pragma omp unroll
     for (size_t j = 1; j <= NArgs; j++) {
-      result[j] +=
-          (this_idx * static_cast<const stride_t*>(arg_pointers_[j])[i]);
+      result[j] += (this_idx * (arg_strides_[j])[i]);
     }
   }
   return result;

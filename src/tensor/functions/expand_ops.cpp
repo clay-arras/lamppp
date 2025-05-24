@@ -15,37 +15,6 @@ LMP_DEFINE_DISPATCH(le_fn, le_stub);
 LMP_DEFINE_DISPATCH(gt_fn, gt_stub);
 LMP_DEFINE_DISPATCH(lt_fn, lt_stub);
 
-TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl eq_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl ne_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl ge_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl le_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl gt_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-TensorImpl lt_cpu(const TensorImpl& a, const TensorImpl& b) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented.");
-}
-
 Tensor add(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(

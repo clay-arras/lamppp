@@ -31,7 +31,6 @@ class CPUOffsetUtil : public OffsetUtil<NArgs> {
   ::std::array<stride_t, NArgs + 1> get(size_t idx) const;
 
   ::std::array<std::vector<stride_t>, NArgs + 1> arg_strides_;
-  ::std::array<void*, NArgs + 1> arg_pointers_;
 };
 
 }  // namespace cpu

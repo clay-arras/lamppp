@@ -16,12 +16,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-        with:
-          limit-access-to-actor: true
           
       - name: Install CUDA Toolkit
         uses: Jimver/cuda-toolkit@v0.2.23
@@ -69,6 +63,12 @@ jobs:
 
       - name: Build lamppp module
         run: cmake --build build --config Debug --parallel
+        
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        with:
+          limit-access-to-actor: true
 
       - name: Run GTests
         run: |

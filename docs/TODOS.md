@@ -9,23 +9,39 @@
 <!-- - TODO: isn't context just grad.data()??????? -->
 <!-- - add CPU implementations with OMP -->
 
-- memory leak somewhere
-- make regular binary operations different from broadcasting operations (see if it's speedup)
-- refactor: add offsetUtil passed into metaHandler as a dispatch
-- refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp
-
-## easy
-
+- fix github tests
+- refactor the tests to test both CPU and CUDA sequentially
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
 
+## easy
+
+benchmarking
+
+- make regular binary operations different from broadcasting operations (see if it's speedup)
+- benchmark more operations
+
+for release:
+
+- remove all outside dependencies
+- start adding documenatation
+- make the code compile cuda optional
+
 ## medium
 
-- fix github tests
+for cleanliness:
+
+- refactor: add offsetUtil passed into metaHandler as a dispatch
+- refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp
 - refactor the autograd functions
-- type upcasting doesn't work with backward
 - refactor to have << operator with the macro LMP_CHECK
+
+testing functionality:
+
+- memory leak somewhere
+- test .to and make sure it has an implementation in Variable
+- type upcasting doesn't work with backward
 
 ## hard
 

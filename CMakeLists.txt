@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.17)
-project(lamppp LANGUAGES CXX CUDA)
+project(lamppp)
+
+option(ENABLE_CUDA "Compile with CUDA support" OFF)
+if(ENABLE_CUDA)
+    add_definitions(-DENABLE_CUDA)
+endif()
 
 # -----------------------------------------------------------------------------
 # 1) Core configuration
@@ -31,12 +36,15 @@ endif()
 set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 # End ---
 
+enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-enable_language(CUDA)
-set(CMAKE_CUDA_STANDARD 17)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+if (ENABLE_CUDA)
+  enable_language(CUDA)
+  set(CMAKE_CUDA_STANDARD 17)
+  set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -45,8 +53,9 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # -----------------------------------------------------------------------------
 # find_package(Eigen3 3.3 REQUIRED NO_MODULE)     
 find_package(benchmark REQUIRED)                
-find_package(pybind11 CONFIG REQUIRED)          
-find_package(CUDAToolkit REQUIRED)              
+# find_package(pybind11 CONFIG REQUIRED)          
+# find_package(CUDAToolkit REQUIRED)              
+find_package(Boost REQUIRED)
 
 # -----------------------------------------------------------------------------
 # 3) Static analysis 
@@ -106,23 +115,23 @@ target_link_libraries(tensor_tests
 include(GoogleTest)
 gtest_discover_tests(tensor_tests)
 
-add_executable(bench_ops benchmarks/bench_ops.cpp)
-target_link_libraries(bench_ops
-  PRIVATE autograd_core
-  PRIVATE benchmark::benchmark
-)
+# add_executable(bench_ops benchmarks/bench_ops.cpp)
+# target_link_libraries(bench_ops
+#   PRIVATE autograd_core
+#   PRIVATE benchmark::benchmark
+# )
 
-pybind11_add_module(lamppp tests/autograd_pybind.cpp)
+# pybind11_add_module(lamppp tests/autograd_pybind.cpp)
 
-set_target_properties(lamppp PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
-)
+# set_target_properties(lamppp PROPERTIES
+#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+#     LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
+#     LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
+# )
 
-target_link_libraries(lamppp
-  PRIVATE autograd_core
-)
+# target_link_libraries(lamppp
+#   PRIVATE autograd_core tensor_core
+# )
 
 # -----------------------------------------------------------------------------
 # 7) Formatting target

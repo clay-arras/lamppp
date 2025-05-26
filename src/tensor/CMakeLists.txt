@@ -1,20 +1,10 @@
-project(tensor_lib LANGUAGES CXX CUDA)
+project(tensor_lib LANGUAGES CXX)
 
 set(TENSOR_SOURCES
   functions/expand_ops.cpp
   functions/matrix_ops.cpp
   functions/unary_ops.cpp
   functions/reduct_ops.cpp
-  native/resize.cu
-  native/empty.cu
-  native/fill.cu
-  native/copy.cu
-  cuda/matrix.cu
-  cuda/offset_util.cu
-  cuda/unary.cu
-  cuda/reduct.cu
-  cuda/expand.cu
-  cuda/kernels.cu
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp
@@ -29,18 +19,35 @@ set(TENSOR_SOURCES
   align_utils.cpp
 )
 
+if (ENABLE_CUDA)
+  enable_language(CUDA)
+  list(APPEND TENSOR_SOURCES
+    native/resize.cu
+    native/empty.cu
+    native/fill.cu
+    native/copy.cu
+    cuda/matrix.cu
+    cuda/offset_util.cu
+    cuda/unary.cu
+    cuda/reduct.cu
+    cuda/expand.cu
+    cuda/kernels.cu
+  )
+endif()
+
 add_library(tensor_core SHARED ${TENSOR_SOURCES})
 
-set_target_properties(tensor_core PROPERTIES
-  CUDA_SEPARABLE_COMPILATION ON 
-  CUDA_RESOLVE_DEVICE_SYMBOLS ON
-)
+if (ENABLE_CUDA)
+  set_target_properties(tensor_core PROPERTIES
+    CUDA_SEPARABLE_COMPILATION ON 
+    CUDA_RESOLVE_DEVICE_SYMBOLS ON
+  )
+  target_link_libraries(tensor_core
+    PUBLIC CUDA::cudart
+  )
+endif()
 
 target_compile_definitions(tensor_core PUBLIC)
-
-target_link_libraries(tensor_core
-  PUBLIC CUDA::cudart
-)
 
 target_include_directories(
   tensor_core
@@ -50,6 +57,12 @@ target_include_directories(
     ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${Boost_INCLUDE_DIRS}
+)
+
+target_link_libraries(tensor_core
+  PUBLIC
+    ${Boost_LIBRARIES}
 )
 
 set(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE} PARENT_SCOPE)

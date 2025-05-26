@@ -6,7 +6,10 @@
 #include <ostream>
 #include "data_ptr.hpp"
 #include "lamppp/tensor/device_type.hpp"
+
+// # ifdef ENABLE_CUDA
 #include "lamppp/tensor/native/empty.cuh"
+// #endif
 
 namespace lmp::tensor {
 

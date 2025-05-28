@@ -1,7 +1,4 @@
 #include "lamppp/tensor/cpu/matrix.hpp"
-#include <boost/preprocessor/seq/elem.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
-#include <boost/preprocessor/seq/for_each_product.hpp>
 #include <cstdint>
 
 namespace lmp::tensor::detail::cpu {
@@ -41,22 +38,17 @@ void cpuTranspose(const T* in, T* out, size_t m, size_t n) {
       cpuTransposeKernel<T>(in, out, m, n, i, j);
 }
 
-#define INSTANTIATE_MATMUL(r, product)                                      \
-  template void                                                             \
-  cpuMatMul<BOOST_PP_SEQ_ELEM(0, product), BOOST_PP_SEQ_ELEM(1, product),   \
-            BOOST_PP_SEQ_ELEM(2, product)>(                                 \
-      const BOOST_PP_SEQ_ELEM(0, product)*,                                 \
-      const BOOST_PP_SEQ_ELEM(1, product)*, BOOST_PP_SEQ_ELEM(2, product)*, \
-      size_t, size_t, size_t);
-
-#define INSTANTIATE_TRANSPOSE(r, data, elem) \
-  template void cpuTranspose<elem>(const elem*, elem*, size_t, size_t);
-
 #include "lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST LMP_TYPES()
-BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_MATMUL,
-                              (TYPES_LIST)(TYPES_LIST)(TYPES_LIST))
-BOOST_PP_SEQ_FOR_EACH(INSTANTIATE_TRANSPOSE, , TYPES_LIST)
+
+#define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type) \
+  template void cpuMatMul<arg1_type, arg2_type, out_type>( \
+      const arg1_type*, const arg2_type*, out_type*, size_t, size_t, size_t);
+#define INSTANTIATE_TRANSPOSE(type) \
+  template void cpuTranspose<type>(const type*, type*, size_t, size_t);
+
+LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_MATMUL, LMP_LIST_TYPES,
+                               LMP_LIST_TYPES, LMP_LIST_TYPES)
+LMP_FOR_EACH(INSTANTIATE_TRANSPOSE, LMP_LIST_TYPES)
 
 #undef INSTANTIATE_MATMUL
 #undef INSTANTIATE_TRANSPOSE

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <boost/stacktrace.hpp>
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -10,7 +9,6 @@
     if (!(cond)) {                                                       \
       std::cerr << "Lamppp: Runtime error thrown at " << __FILE__ << ":" \
                 << __LINE__ << " in " << __func__                        \
-                << ". Stacktrace: " << boost::stacktrace::stacktrace()   \
                 << std::endl;                                            \
       throw std::runtime_error((message));                               \
     }                                                                    \
@@ -23,7 +21,6 @@
     if (!(cond)) {                                                             \
       std::cerr << "Lamppp: Internal assertion failure at " << __FILE__ << ":" \
                 << __LINE__ << " in " << __func__                              \
-                << ". Stacktrace: " << boost::stacktrace::stacktrace()         \
                 << std::endl;                                                  \
       assert((cond) && (message));                                             \
     }                                                                          \
@@ -36,7 +33,6 @@
       std::cerr << "Lamppp: CUDA error at " << __FILE__ << ":" << __LINE__ \
                 << " in " << __func__                                      \
                 << ". Error: " << cudaGetErrorString(err)                  \
-                << ". Stacktrace: " << boost::stacktrace::stacktrace()     \
                 << std::endl;                                              \
       assert(false && (message));                                          \
     }                                                                      \

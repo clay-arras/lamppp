@@ -1,5 +1,3 @@
-#include <boost/preprocessor/seq/elem.hpp>
-#include <boost/preprocessor/seq/for_each_product.hpp>
 #include <cstring>
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/device_type.hpp"
@@ -136,20 +134,15 @@ void vecCopy(size_t size, const U* in, V* out) {
   }
 }
 
-#define INSTANTIATE_COPY(r, product)                                         \
-  template void                                                              \
-  cudaVecCopy<BOOST_PP_SEQ_ELEM(0, product), BOOST_PP_SEQ_ELEM(1, product)>( \
-      size_t, const BOOST_PP_SEQ_ELEM(0, product)*,                          \
-      BOOST_PP_SEQ_ELEM(1, product)*);                                       \
-  template void                                                              \
-  vecCopy<BOOST_PP_SEQ_ELEM(0, product), BOOST_PP_SEQ_ELEM(1, product)>(     \
-      size_t, const BOOST_PP_SEQ_ELEM(0, product)*,                          \
-      BOOST_PP_SEQ_ELEM(1, product)*);
-
 #include "lamppp/tensor/supported_types.hpp"
-#define TYPES_LIST LMP_TYPES()
-BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_COPY, (TYPES_LIST)(TYPES_LIST))
 
+#define INSTANTIATE_COPY(arg1_type, arg2_type) \
+  template void cudaVecCopy<arg1_type, arg2_type>( \
+      size_t, const arg1_type*, arg2_type*); \
+  template void vecCopy<arg1_type, arg2_type>( \
+      size_t, const arg1_type*, arg2_type*);
+
+LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
 #undef INSTANTIATE_COPY
 
 LMP_REGISTER_DISPATCH(copy_stub, DeviceType::CPU, copy_cpu);

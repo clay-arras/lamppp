@@ -1,16 +1,9 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.24)
 project(lamppp LANGUAGES CXX CUDA)
 
 # -----------------------------------------------------------------------------
 # 1) Core configuration
 # -----------------------------------------------------------------------------
-# find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-# message(STATUS "Using Python executable: ${Python3_EXECUTABLE}")
-# set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
-
-# Temporary PYTHON ---
-set(EXPECTED_PYTHON_VERSION_MAJOR 3)
-set(EXPECTED_PYTHON_VERSION_MINOR 11)
 set(PYTHON_VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
 
 if(EXISTS ${PYTHON_VENV_PATH})
@@ -20,17 +13,13 @@ else()
     message(WARNING "Poetry virtual environment Python not found at ${PYTHON_VENV_PATH}. CMake will attempt to find system Python. This may lead to version mismatches.")
 endif()
 
+# Expected python version is >=3.11
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 message(STATUS "CMake is using Python executable: ${Python3_EXECUTABLE}")
 message(STATUS "Python3 version: ${Python3_VERSION_STRING}")
-
-if(NOT Python3_VERSION_MAJOR EQUAL EXPECTED_PYTHON_VERSION_MAJOR OR NOT Python3_VERSION_MINOR EQUAL EXPECTED_PYTHON_VERSION_MINOR)
-    message(WARNING "CMake found Python ${Python3_VERSION_STRING} but expected version ${EXPECTED_PYTHON_VERSION_MAJOR}.${EXPECTED_PYTHON_VERSION_MINOR} based on project requirements. This might cause issues. Ensure ${PYTHON_VENV_PATH} is correct and accessible.")
-endif()
-
 set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
-# End ---
 
+# Setting C++ and CUDA versions
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -38,14 +27,40 @@ enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
+# Enabled for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+
+# -----------------------------------------------------------------------------
+# 4) Fetch GoogleTest
+# -----------------------------------------------------------------------------
+include(FetchContent)
+set(FETCHCONTENT_TRY_FIND_PACKAGE TRUE)
+
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        v1.14.0
+  GIT_SHALLOW    TRUE
+  FIND_PACKAGE_ARGS CONFIG 
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+
+FetchContent_Declare(
+  benchmark
+  GIT_REPOSITORY https://github.com/google/benchmark.git
+  GIT_TAG        v1.9.0
+  GIT_SHALLOW    TRUE
+  FIND_PACKAGE_ARGS CONFIG
+)
+FetchContent_MakeAvailable(benchmark)
 
 # -----------------------------------------------------------------------------
 # 2) Dependencies
-# -----------------------------------------------------------------------------
-# find_package(Eigen3 3.3 REQUIRED NO_MODULE)     
-find_package(benchmark REQUIRED)                
-find_package(pybind11 CONFIG REQUIRED)          
+# -----------------------------------------------------------------------------      
 find_package(CUDAToolkit REQUIRED)              
 
 # -----------------------------------------------------------------------------
@@ -58,17 +73,7 @@ if(CLANG_TIDY_EXE)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 endif()
 
-# -----------------------------------------------------------------------------
-# 4) Fetch GoogleTest
-# -----------------------------------------------------------------------------
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/heads/main.zip
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+
 
 # -----------------------------------------------------------------------------
 # 5) Core library target
@@ -112,17 +117,17 @@ target_link_libraries(bench_ops
   PRIVATE benchmark::benchmark
 )
 
-pybind11_add_module(lamppp tests/autograd_pybind.cpp)
+# pybind11_add_module(lamppp tests/autograd_pybind.cpp)
 
-set_target_properties(lamppp PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
-)
+# set_target_properties(lamppp PROPERTIES
+#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+#     LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
+#     LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
+# )
 
-target_link_libraries(lamppp
-  PRIVATE autograd_core
-)
+# target_link_libraries(lamppp
+#   PRIVATE autograd_core
+# )
 
 # -----------------------------------------------------------------------------
 # 7) Formatting target

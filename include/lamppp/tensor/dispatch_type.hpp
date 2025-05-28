@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lamppp/common/assert.hpp"
+#include <cstdint>
 
 #define LMP_DISPATCH_ALL_TYPES(TYPE, ...)   \
   [&] {                                     \

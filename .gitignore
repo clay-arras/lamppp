@@ -5,4 +5,5 @@ data/
 .venv/
 .cache/
 .hypothesis/
+.vscode/
 **/.ipynb_checkpoints/

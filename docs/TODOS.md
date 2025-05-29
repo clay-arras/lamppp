@@ -2,15 +2,11 @@
 
 ### current todo
 
-<!-- - benchmark the backward functions -->
-<!-- - make the context be saved from forward execution -->
-<!-- - refactor the binary broadcasting backward bit -->
-
-<!-- - TODO: isn't context just grad.data()??????? -->
-<!-- - add CPU implementations with OMP -->
-
 - fix github tests
-- refactor the tests to test both CPU and CUDA sequentially
+<!-- - refactor the tests to test both CPU and CUDA sequentially -->
+- refactor the tests to test all data types
+- need to figure out how to abstract the code
+
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
@@ -40,7 +36,7 @@ for cleanliness:
 testing functionality:
 
 - memory leak somewhere
-- test .to and make sure it has an implementation in Variable
+- test .to and make sure it has an implementation in Variable, and test type promotion AND backwards type promotion
 - type upcasting doesn't work with backward
 
 ## hard

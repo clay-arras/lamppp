@@ -1,4 +1,5 @@
 #include "lamppp/tensor/cuda/matrix.cuh"
+#include "lamppp/common/macros.hpp"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -52,8 +53,8 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
   template void cudaTranspose<type>(const type*, type*, size_t, size_t);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_MATMUL, LMP_LIST_TYPES,
-                               LMP_LIST_TYPES, LMP_LIST_TYPES)
-LMP_FOR_EACH(INSTANTIATE_TRANSPOSE, LMP_LIST_TYPES)
+                               LMP_LIST_TYPES, LMP_LIST_TYPES);
+LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_TRANSPOSE, LMP_LIST_TYPES);
 
 #undef INSTANTIATE_MATMUL
 #undef INSTANTIATE_TRANSPOSE

@@ -3,7 +3,7 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
-#include <cuda/std/detail/libcxx/include/array>
+#include <cuda/std/array>
 #include <cuda/std/tuple>
 
 namespace lmp::tensor::detail::cuda::internal {

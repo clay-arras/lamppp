@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(lamppp LANGUAGES CXX CUDA)
 
-# -----------------------------------------------------------------------------
-# 1) Core configuration
-# -----------------------------------------------------------------------------
+# CORE CONFIG ---------------------------------
 set(PYTHON_VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
 
 if(EXISTS ${PYTHON_VENV_PATH})
@@ -30,10 +28,10 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 # Enabled for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+find_package(CUDAToolkit REQUIRED)              
 
-# -----------------------------------------------------------------------------
-# 4) Fetch GoogleTest
-# -----------------------------------------------------------------------------
+
+# FETCH CONTENT ---------------------------------
 include(FetchContent)
 set(FETCHCONTENT_TRY_FIND_PACKAGE TRUE)
 
@@ -58,14 +56,62 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(benchmark)
 
-# -----------------------------------------------------------------------------
-# 2) Dependencies
-# -----------------------------------------------------------------------------      
-find_package(CUDAToolkit REQUIRED)              
+FetchContent_Declare(
+  pybind11
+  GIT_REPOSITORY https://github.com/pybind/pybind11.git
+  GIT_TAG        v2.12.0
+  GIT_SHALLOW    TRUE
+  FIND_PACKAGE_ARGS CONFIG
+)
+FetchContent_MakeAvailable(pybind11)
 
-# -----------------------------------------------------------------------------
-# 3) Static analysis 
-# -----------------------------------------------------------------------------
+# CORE TARGETS ---------------------------------
+add_subdirectory(src/tensor)
+add_subdirectory(src/autograd)
+add_library(lamppp INTERFACE)
+target_link_libraries(lamppp INTERFACE autograd_core tensor_core)
+
+target_compile_options(lamppp
+  INTERFACE
+    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
+    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp>
+)
+
+# EXECUTABLES ---------------------------------
+enable_testing()
+
+add_executable(playground tests/playground.cpp)
+target_link_libraries(playground PRIVATE lamppp)
+
+add_executable(autograd_tests tests/autograd_tests.cpp)
+target_link_libraries(autograd_tests
+  PRIVATE autograd_core GTest::gtest_main GTest::gmock
+)
+include(GoogleTest)
+gtest_discover_tests(autograd_tests)
+
+add_executable(tensor_tests tests/tensor_tests.cpp)
+target_link_libraries(tensor_tests
+  PRIVATE tensor_core GTest::gtest_main GTest::gmock
+)
+include(GoogleTest)
+gtest_discover_tests(tensor_tests)
+
+add_executable(bench_ops benchmarks/bench_ops.cpp)
+target_link_libraries(bench_ops
+  PRIVATE lamppp benchmark::benchmark
+)
+
+pybind11_add_module(lamppp_module tests/autograd_pybind.cpp)
+target_link_libraries(lamppp_module PRIVATE lamppp)
+
+set_target_properties(lamppp_module PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
+)
+
+# STATIC ANALYSIS ---
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 
@@ -73,68 +119,10 @@ if(CLANG_TIDY_EXE)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 endif()
 
-
-
-# -----------------------------------------------------------------------------
-# 5) Core library target
-# -----------------------------------------------------------------------------
-add_subdirectory(src/tensor)
-add_subdirectory(src/autograd)
-
-target_compile_options(autograd_core
-  PRIVATE
-    # $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
-    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp>
-)
-
-# -----------------------------------------------------------------------------
-# 6) Executables and tests
-# -----------------------------------------------------------------------------
-enable_testing()
-
-add_executable(playground tests/playground.cpp)
-target_link_libraries(playground PRIVATE autograd_core)
-
-add_executable(autograd_tests tests/autograd_tests.cpp)
-target_link_libraries(autograd_tests
-  PRIVATE autograd_core
-  PRIVATE GTest::gtest_main
-)
-include(GoogleTest)
-gtest_discover_tests(autograd_tests)
-
-add_executable(tensor_tests tests/tensor_tests.cpp)
-target_link_libraries(tensor_tests
-  PRIVATE autograd_core
-  PRIVATE GTest::gtest_main
-)
-include(GoogleTest)
-gtest_discover_tests(tensor_tests)
-
-add_executable(bench_ops benchmarks/bench_ops.cpp)
-target_link_libraries(bench_ops
-  PRIVATE autograd_core
-  PRIVATE benchmark::benchmark
-)
-
-# pybind11_add_module(lamppp tests/autograd_pybind.cpp)
-
-# set_target_properties(lamppp PROPERTIES
-#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-#     LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
-#     LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
-# )
-
-# target_link_libraries(lamppp
-#   PRIVATE autograd_core
-# )
-
-# -----------------------------------------------------------------------------
-# 7) Formatting target
-# -----------------------------------------------------------------------------
+# FORMATTING --
 if(CLANG_FORMAT_EXE)
   file(GLOB_RECURSE ALL_SOURCE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u" # .cu files for CUDA
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/autograd/*.[ch]pp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
     "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 

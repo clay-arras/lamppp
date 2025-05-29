@@ -4,8 +4,10 @@
 #include <cmath>
 #include <cstdlib>
 #include <vector>
+#include <tuple>
 
 #include "lamppp/tensor/core.hpp"
+#include "lamppp/tensor/data_type.hpp"
 
 using lmp::tensor::DataType;
 using lmp::tensor::DeviceType;
@@ -14,34 +16,37 @@ using lmp::tensor::Tensor;
 
 const Scalar kEps = 1e-5;
 
-class TensorOpTest : public testing::Test {
+using ParamTypes = std::tuple<DeviceType, DataType>;
+
+class TensorOpTest : public testing::Test, 
+    public testing::WithParamInterface<ParamTypes> {
  protected:
   TensorOpTest() = default;
   ~TensorOpTest() = default;
 
   void SetUp() override {
+    device = std::get<0>(GetParam());
+    dtype = std::get<1>(GetParam());
+
     tensor_f32_A = Tensor(
         std::vector<float>{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f},
-        std::vector<size_t>{3u, 2u}, DeviceType::CUDA, DataType::Float32);
+        std::vector<size_t>{3u, 2u}, device, dtype);
     tensor_f32_B = Tensor(
         std::vector<float>{0.5f, 1.5f, 2.5f, 3.5f, 4.5f, 5.5f},
-        std::vector<size_t>{3u, 2u}, DeviceType::CUDA, DataType::Float32);
-    std::vector<int32_t> data_i32_C_vec = {1, 2, 3, 4, 5, 6};
-    tensor_i32_C = Tensor(data_i32_C_vec, std::vector<size_t>{3u, 2u},
-                          DeviceType::CUDA, DataType::Int32);
+        std::vector<size_t>{3u, 2u}, device, dtype);
 
     tensor_f32_1x2_broadcast =
         Tensor(std::vector<float>{10.0f, 20.0f}, std::vector<size_t>{1u, 2u},
-               DeviceType::CUDA, DataType::Float32);
+               device, dtype);
     tensor_f32_3x1_broadcast = Tensor(std::vector<float>{10.0f, 20.0f, 30.0f},
                                       std::vector<size_t>{3u, 1u},
-                                      DeviceType::CUDA, DataType::Float32);
+                                      device, dtype);
     scalar_tensor_f32 =
         Tensor(std::vector<Scalar>{100.0}, std::vector<size_t>{1},
-               DeviceType::CUDA, DataType::Float32);
+               device, dtype);
     tensor_f32_1x2x1_squeeze_expand =
         Tensor(std::vector<float>{7.0f, 8.0f}, std::vector<size_t>{1u, 2u, 1u},
-               DeviceType::CUDA, DataType::Float32);
+               device, dtype);
   }
   void TearDown() override {};
   std::vector<Scalar> getTenData(const Tensor& ten) {
@@ -54,17 +59,23 @@ class TensorOpTest : public testing::Test {
 
   Tensor tensor_f32_A;
   Tensor tensor_f32_B;
-  Tensor tensor_i32_C;
   Tensor tensor_f32_1x2_broadcast;
   Tensor tensor_f32_3x1_broadcast;
   Tensor scalar_tensor_f32;
   Tensor tensor_f32_1x2x1_squeeze_expand;
+  
+  DeviceType device;
+  DataType dtype;
 };
 
-TEST_F(TensorOpTest, TypeUpcastTest) {
+TEST_P(TensorOpTest, TypeUpcastTest) {
+  Tensor tensor_i32_C;
+  std::vector<int32_t> data_i32_C_vec = {1, 2, 3, 4, 5, 6};
+  tensor_i32_C = Tensor(data_i32_C_vec, std::vector<size_t>{3u, 2u},
+                        device, DataType::Int32);
   Tensor result = tensor_f32_A + tensor_i32_C;
 
-  EXPECT_EQ(result.type(), DataType::Float32) << "Result data type mismatch";
+  EXPECT_EQ(result.type(), lmp::tensor::type_upcast(tensor_i32_C.type(), dtype)) << "Result data type mismatch";
   EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3u, 2u}))
       << "Result shape mismatch";
 
@@ -74,7 +85,7 @@ TEST_F(TensorOpTest, TypeUpcastTest) {
       << "Result data mismatch";
 
   Tensor result_rev = tensor_i32_C + tensor_f32_A;
-  EXPECT_EQ(result_rev.type(), DataType::Float32)
+  EXPECT_EQ(result_rev.type(), lmp::tensor::type_upcast(tensor_i32_C.type(), dtype))
       << "Reversed op: Result data type mismatch";
   EXPECT_THAT(result_rev.shape(), ::testing::ElementsAreArray({3u, 2u}))
       << "Reversed op: Result shape mismatch";
@@ -82,10 +93,10 @@ TEST_F(TensorOpTest, TypeUpcastTest) {
               ::testing::Pointwise(::testing::FloatNear(kEps), expected_values))
       << "Reversed op: Result data mismatch";
 }
-TEST_F(TensorOpTest, SimpleBroadcastTest) {
+TEST_P(TensorOpTest, SimpleBroadcastTest) {
   {
     Tensor result = tensor_f32_A + scalar_tensor_f32;
-    EXPECT_EQ(result.type(), DataType::Float32)
+    EXPECT_EQ(result.type(), dtype)
         << "Scalar broadcast: Result data type mismatch";
     EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3u, 2u}))
         << "Scalar broadcast: Result shape mismatch";
@@ -99,7 +110,7 @@ TEST_F(TensorOpTest, SimpleBroadcastTest) {
 
   {
     Tensor result = tensor_f32_A + tensor_f32_1x2_broadcast;
-    EXPECT_EQ(result.type(), DataType::Float32)
+    EXPECT_EQ(result.type(), dtype)
         << "Row broadcast: Result data type mismatch";
     EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3u, 2u}))
         << "Row broadcast: Result shape mismatch";
@@ -113,7 +124,7 @@ TEST_F(TensorOpTest, SimpleBroadcastTest) {
 
   {
     Tensor result = tensor_f32_A + tensor_f32_3x1_broadcast;
-    EXPECT_EQ(result.type(), DataType::Float32)
+    EXPECT_EQ(result.type(), dtype)
         << "Column broadcast: Result data type mismatch";
     EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3u, 2u}))
         << "Column broadcast: Result shape mismatch";
@@ -125,10 +136,10 @@ TEST_F(TensorOpTest, SimpleBroadcastTest) {
         << "Column broadcast: Result data mismatch";
   }
 }
-TEST_F(TensorOpTest, ReshapeBroadcastTest) {
+TEST_P(TensorOpTest, ReshapeBroadcastTest) {
   Tensor flat_tensor =
       Tensor(std::vector<float>{10.f, 20.f, 30.f, 40.f, 50.f, 60.f},
-             std::vector<size_t>{6u}, DeviceType::CUDA, DataType::Float32);
+             std::vector<size_t>{6u}, device, dtype);
   Tensor reshaped_tensor = flat_tensor.reshape({3u, 2u});
 
   EXPECT_THAT(reshaped_tensor.shape(), ::testing::ElementsAreArray({3u, 2u}))
@@ -141,7 +152,7 @@ TEST_F(TensorOpTest, ReshapeBroadcastTest) {
       << "Reshaped tensor data mismatch";
   Tensor result = reshaped_tensor + tensor_f32_1x2_broadcast;
 
-  EXPECT_EQ(result.type(), DataType::Float32)
+  EXPECT_EQ(result.type(), dtype)
       << "Reshape-Broadcast: Result data type mismatch";
   EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3u, 2u}))
       << "Reshape-Broadcast: Result shape mismatch";
@@ -153,11 +164,11 @@ TEST_F(TensorOpTest, ReshapeBroadcastTest) {
       ::testing::Pointwise(::testing::FloatNear(kEps), expected_final_values))
       << "Reshape-Broadcast: Result data mismatch";
 }
-TEST_F(TensorOpTest, ExpandBroadcastTest) {
+TEST_P(TensorOpTest, ExpandBroadcastTest) {
   Tensor tensor_f32_A_expand = tensor_f32_A.expand_dims(2);
   Tensor result = tensor_f32_A_expand + tensor_f32_1x2x1_squeeze_expand;
 
-  EXPECT_EQ(result.type(), DataType::Float32)
+  EXPECT_EQ(result.type(), dtype)
       << "Expand-Broadcast: Result data type mismatch";
   EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3u, 2u, 1u}))
       << "Expand-Broadcast: Result shape mismatch";
@@ -171,7 +182,7 @@ TEST_F(TensorOpTest, ExpandBroadcastTest) {
       << "Expand-Broadcast: Result data mismatch";
 
   Tensor result_rev = tensor_f32_1x2x1_squeeze_expand + tensor_f32_A_expand;
-  EXPECT_EQ(result_rev.type(), DataType::Float32)
+  EXPECT_EQ(result_rev.type(), dtype)
       << "Reversed Expand-Broadcast: Result data type mismatch";
   EXPECT_THAT(result_rev.shape(), ::testing::ElementsAreArray({3u, 2u, 1u}))
       << "Reversed Expand-Broadcast: Result shape mismatch";
@@ -179,10 +190,10 @@ TEST_F(TensorOpTest, ExpandBroadcastTest) {
               ::testing::Pointwise(::testing::FloatNear(kEps), expected_values))
       << "Reversed Expand-Broadcast: Result data mismatch";
 }
-TEST_F(TensorOpTest, ReductSqueezeTest) {
+TEST_P(TensorOpTest, ReductSqueezeTest) {
   {
     Tensor sum_axis0_keepdims = lmp::tensor::ops::sum(tensor_f32_A, 0);
-    EXPECT_EQ(sum_axis0_keepdims.type(), DataType::Float32)
+    EXPECT_EQ(sum_axis0_keepdims.type(), dtype)
         << "Sum axis 0 (keepdims=true): Type mismatch";
     EXPECT_THAT(sum_axis0_keepdims.shape(),
                 ::testing::ElementsAreArray({1u, 2u}))
@@ -194,7 +205,7 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
         << "Sum axis 0 (keepdims=true): Data mismatch";
 
     Tensor sum_axis1_keepdims = lmp::tensor::ops::sum(tensor_f32_A, 1);
-    EXPECT_EQ(sum_axis1_keepdims.type(), DataType::Float32)
+    EXPECT_EQ(sum_axis1_keepdims.type(), dtype)
         << "Sum axis 1 (keepdims=true): Type mismatch";
     EXPECT_THAT(sum_axis1_keepdims.shape(),
                 ::testing::ElementsAreArray({3u, 1u}))
@@ -209,7 +220,7 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
   {
     Tensor sum_axis0 = lmp::tensor::ops::sum(tensor_f32_A, 0);  // Shape {1,2}
     Tensor squeezed_sum_axis0 = sum_axis0.squeeze(0);
-    EXPECT_EQ(squeezed_sum_axis0.type(), DataType::Float32)
+    EXPECT_EQ(squeezed_sum_axis0.type(), dtype)
         << "Sum axis 0 then squeeze: Type mismatch";
     EXPECT_THAT(squeezed_sum_axis0.shape(), ::testing::ElementsAreArray({2u}))
         << "Sum axis 0 then squeeze: Shape mismatch";
@@ -222,7 +233,7 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
   {
     Tensor sum_axis1 = lmp::tensor::ops::sum(tensor_f32_A, 1);
     Tensor squeezed_sum_axis1 = sum_axis1.squeeze(1);
-    EXPECT_EQ(squeezed_sum_axis1.type(), DataType::Float32)
+    EXPECT_EQ(squeezed_sum_axis1.type(), dtype)
         << "Sum axis 1 then squeeze: Type mismatch";
     EXPECT_THAT(squeezed_sum_axis1.shape(), ::testing::ElementsAreArray({3u}))
         << "Sum axis 1 then squeeze: Shape mismatch";
@@ -235,7 +246,7 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
 
   {
     Tensor squeezed_ax0 = tensor_f32_1x2x1_squeeze_expand.squeeze(0);
-    EXPECT_EQ(squeezed_ax0.type(), DataType::Float32)
+    EXPECT_EQ(squeezed_ax0.type(), dtype)
         << "Squeeze ax0: Type mismatch";
     EXPECT_THAT(squeezed_ax0.shape(), ::testing::ElementsAreArray({2u, 1u}))
         << "Squeeze ax0: Shape mismatch";
@@ -246,7 +257,7 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
         << "Squeeze ax0: Data mismatch";
 
     Tensor squeezed_ax2 = tensor_f32_1x2x1_squeeze_expand.squeeze(2);
-    EXPECT_EQ(squeezed_ax2.type(), DataType::Float32)
+    EXPECT_EQ(squeezed_ax2.type(), dtype)
         << "Squeeze ax2: Type mismatch";
     EXPECT_THAT(squeezed_ax2.shape(), ::testing::ElementsAreArray({1u, 2u}))
         << "Squeeze ax2: Shape mismatch";
@@ -257,7 +268,7 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
 
     Tensor temp_squeeze = tensor_f32_1x2x1_squeeze_expand.squeeze(0);
     Tensor final_squeezed = temp_squeeze.squeeze(1);
-    EXPECT_EQ(final_squeezed.type(), DataType::Float32)
+    EXPECT_EQ(final_squeezed.type(), dtype)
         << "Sequential squeeze: Type mismatch";
     EXPECT_THAT(final_squeezed.shape(), ::testing::ElementsAreArray({2u}))
         << "Sequential squeeze: Shape mismatch";
@@ -267,6 +278,26 @@ TEST_F(TensorOpTest, ReductSqueezeTest) {
         << "Sequential squeeze: Data mismatch";
   }
 }
+
+namespace {
+
+std::vector<ParamTypes> GenerateParamCombinations() {
+    std::vector<ParamTypes> comb;
+    for (auto dtype : {DataType::Int16, DataType::Int32, DataType::Int64, DataType::Float32, DataType::Float64}) {
+        for (auto device : {DeviceType::CPU, DeviceType::CUDA}) {
+            comb.push_back(std::make_tuple(device, dtype));
+        }
+    }
+    return comb;
+}
+
+}
+
+INSTANTIATE_TEST_SUITE_P(
+   TensorOp,
+   TensorOpTest,
+   testing::ValuesIn(GenerateParamCombinations())
+);
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

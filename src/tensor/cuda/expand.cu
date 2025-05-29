@@ -1,7 +1,7 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
-#include <cuda/std/detail/libcxx/include/array>
+#include <cuda/std/array>
 #include <cuda/std/tuple>
 #include "lamppp/tensor/cuda/expand.cuh"
 #include "lamppp/tensor/cuda/kernels.cuh"

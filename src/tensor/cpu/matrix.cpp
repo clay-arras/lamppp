@@ -1,4 +1,5 @@
 #include "lamppp/tensor/cpu/matrix.hpp"
+#include "lamppp/common/macros.hpp"
 #include <cstdint>
 
 namespace lmp::tensor::detail::cpu {
@@ -47,8 +48,8 @@ void cpuTranspose(const T* in, T* out, size_t m, size_t n) {
   template void cpuTranspose<type>(const type*, type*, size_t, size_t);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_MATMUL, LMP_LIST_TYPES,
-                               LMP_LIST_TYPES, LMP_LIST_TYPES)
-LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_TRANSPOSE, LMP_LIST_TYPES)
+                               LMP_LIST_TYPES, LMP_LIST_TYPES);
+LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_TRANSPOSE, LMP_LIST_TYPES);
 
 #undef INSTANTIATE_MATMUL
 #undef INSTANTIATE_TRANSPOSE

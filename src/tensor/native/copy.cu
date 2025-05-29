@@ -1,5 +1,6 @@
 #include <cstring>
 #include "lamppp/common/assert.hpp"
+#include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_stub.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"

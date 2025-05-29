@@ -18,18 +18,21 @@ using lmp::tensor::Tensor;
 
 const Scalar kEps = 1e-5;
 
-class VariableOpTest : public testing::Test {
+class VariableOpTest : public testing::Test, 
+    public testing::WithParamInterface<std::tuple<DeviceType>> {
  protected:
   VariableOpTest() = default;
   ~VariableOpTest() = default;
 
   void SetUp() override {
+    device = std::get<0>(GetParam());
+
     a_data =
         Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 2.0},
-               std::vector<size_t>{3u, 2u}, DeviceType::CPU, DataType::Float32);
+               std::vector<size_t>{3u, 2u}, device, DataType::Float32);
     b_data =
         Tensor(std::vector<Scalar>{-1.0, 4.0, -2.0, 0.0, 3.0, 0.5},
-               std::vector<size_t>{3u, 2u}, DeviceType::CPU, DataType::Float32);
+               std::vector<size_t>{3u, 2u}, device, DataType::Float32);
     a = Variable(a_data, true);
     b = Variable(b_data, true);
   }
@@ -38,9 +41,10 @@ class VariableOpTest : public testing::Test {
 
   Variable a, b;
   Tensor a_data, b_data;
+  DeviceType device;
 };
 
-TEST_F(VariableOpTest, AddTest) {
+TEST_P(VariableOpTest, AddTest) {
   Variable res = a + b;
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -59,7 +63,7 @@ TEST_F(VariableOpTest, AddTest) {
       << "Gradient mismatch for variable 2";
 }
 
-TEST_F(VariableOpTest, SubTest) {
+TEST_P(VariableOpTest, SubTest) {
   Variable res = a - b;
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -78,7 +82,7 @@ TEST_F(VariableOpTest, SubTest) {
       << "Gradient mismatch for variable 2";
 }
 
-TEST_F(VariableOpTest, MulTest) {
+TEST_P(VariableOpTest, MulTest) {
   Variable res = a * b;
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -97,7 +101,7 @@ TEST_F(VariableOpTest, MulTest) {
       << "Gradient mismatch for variable 2";
 }
 
-TEST_F(VariableOpTest, DivTest) {
+TEST_P(VariableOpTest, DivTest) {
   Variable res = a / b;
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(
@@ -121,7 +125,7 @@ TEST_F(VariableOpTest, DivTest) {
       << "Gradient mismatch for variable 2";
 }
 
-TEST_F(VariableOpTest, ExpTest) {
+TEST_P(VariableOpTest, ExpTest) {
   Variable res = lmp::autograd::ops::exp(b);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -138,7 +142,7 @@ TEST_F(VariableOpTest, ExpTest) {
       << "Gradient mismatch";
 }
 
-TEST_F(VariableOpTest, LogTest) {
+TEST_P(VariableOpTest, LogTest) {
   Variable res = lmp::autograd::ops::log(a);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(
@@ -155,9 +159,9 @@ TEST_F(VariableOpTest, LogTest) {
       << "Gradient mismatch";
 }
 
-TEST_F(VariableOpTest, MatMulTest) {
+TEST_P(VariableOpTest, MatMulTest) {
   Tensor b_mat = Tensor(std::vector<Scalar>{-1.0, 4.0},
-                        std::vector<size_t>{2u, 1u}, DeviceType::CPU);
+                        std::vector<size_t>{2u, 1u}, device);
   Variable b_mat_var(b_mat, true);
   Variable res = lmp::autograd::ops::matmul(a, b_mat_var);
   EXPECT_THAT(
@@ -176,7 +180,7 @@ TEST_F(VariableOpTest, MatMulTest) {
       << "Gradient mismatch for variable 2";
 }
 
-TEST_F(VariableOpTest, TransposeTest) {
+TEST_P(VariableOpTest, TransposeTest) {
   Variable res = lmp::autograd::ops::transpose(a);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -191,7 +195,7 @@ TEST_F(VariableOpTest, TransposeTest) {
       << "Gradient mismatch";
 }
 
-TEST_F(VariableOpTest, SumTest) {
+TEST_P(VariableOpTest, SumTest) {
   Variable res = lmp::autograd::ops::sum(a, 1);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps), {3.0, 7.0, 7.0}))
@@ -205,7 +209,7 @@ TEST_F(VariableOpTest, SumTest) {
       << "Gradient mismatch";
 }
 
-TEST_F(VariableOpTest, MaxTest) {
+TEST_P(VariableOpTest, MaxTest) {
   Variable res = lmp::autograd::ops::max(a, 1);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps), {2.0, 4.0, 5.0}))
@@ -219,7 +223,7 @@ TEST_F(VariableOpTest, MaxTest) {
       << "Gradient mismatch";
 }
 
-TEST_F(VariableOpTest, MinTest) {
+TEST_P(VariableOpTest, MinTest) {
   Variable res = lmp::autograd::ops::min(a, 1);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps), {1.0, 3.0, 2.0}))
@@ -233,7 +237,7 @@ TEST_F(VariableOpTest, MinTest) {
       << "Gradient mismatch";
 }
 
-TEST_F(VariableOpTest, ReshapeTest) {
+TEST_P(VariableOpTest, ReshapeTest) {
   Variable res = lmp::autograd::ops::reshape(a, {2, 1, 3});
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -250,7 +254,7 @@ TEST_F(VariableOpTest, ReshapeTest) {
       << "Gradient shape mismatch";
 }
 
-TEST_F(VariableOpTest, ExpandDimsTest) {
+TEST_P(VariableOpTest, ExpandDimsTest) {
   Variable res = lmp::autograd::ops::expand_dims(a, 0);
   EXPECT_THAT(getTenData(res.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
@@ -267,10 +271,10 @@ TEST_F(VariableOpTest, ExpandDimsTest) {
       << "Gradient shape mismatch";
 }
 
-TEST_F(VariableOpTest, SqueezeTest) {
+TEST_P(VariableOpTest, SqueezeTest) {
   Tensor squeeze_data =
       Tensor(std::vector<Scalar>{1.0, 2.0, 3.0}, std::vector<size_t>{3u, 1u},
-             DeviceType::CUDA, DataType::Float32);
+             device, DataType::Float32);
   Variable squeeze_var = Variable(squeeze_data, true);
   Variable res = lmp::autograd::ops::squeeze(squeeze_var, 1);
   EXPECT_THAT(getTenData(res.data()),
@@ -285,6 +289,12 @@ TEST_F(VariableOpTest, SqueezeTest) {
   EXPECT_THAT(squeeze_var.grad().shape(), ::testing::ElementsAreArray({3u, 1u}))
       << "Gradient shape mismatch";
 }
+
+INSTANTIATE_TEST_SUITE_P(
+   VariableOp,
+   VariableOpTest,
+   testing::Values(DeviceType::CPU, DeviceType::CUDA)
+);
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

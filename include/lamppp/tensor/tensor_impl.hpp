@@ -53,7 +53,7 @@ class TensorImpl {
 
   void copy_(const TensorImpl& other);
   void fill_(Scalar item);
-  void to_(DeviceType device);
+  TensorImpl to_(DeviceType to_device);
   void print_(std::ostream& os);
 
  private:

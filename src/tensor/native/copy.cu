@@ -23,8 +23,6 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
                   static_cast<dest_type*>(dest));
         });
       });
-
-      // memcpy(dest, src, size);
       break;
     }
     case DeviceType::CUDA: {
@@ -73,7 +71,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
                                            static_cast<dest_type*>(tmp));
           LMP_CUDA_ASSERT(
               cudaGetLastError(),
-              "copy_cuda to CPU: vecCopy kernel launch or execution failed.");
+              "copy_cuda to CPU: vecCopy kernel failed.");
           LMP_CUDA_ASSERT(cudaMemcpy(dest, tmp, size * sizeof(dest_type),
                                      cudaMemcpyDeviceToHost),
                           "copy_cuda to CPU: cudaMemcpy DtoH failed.");

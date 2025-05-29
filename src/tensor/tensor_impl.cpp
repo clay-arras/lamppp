@@ -110,10 +110,14 @@ void TensorImpl::fill_(Scalar item) {
   detail::native::fill_stub()(device(), data(), numel(), item, type());
 }
 
-// NOTE: everything should be destroyed by default destructors
-void TensorImpl::to_(DeviceType device) {
-  LMP_INTERNAL_ASSERT(false, "Not Implemented");
-  // data_ = Storage(data_.data(), size(), data_.device(), device);
+TensorImpl TensorImpl::to_(DeviceType to_device) {
+  LMP_CHECK(device() != to_device, "Device argument must be different from current device.");
+  Storage new_storage(data_.byte_size(), to_device);
+  detail::native::copy_stub()(device(), to_device, data(), new_storage.data(),
+                              data_.byte_size(), type(),
+                              type());
+  TensorImpl new_impl(new_storage, shape(), type());
+  return new_impl;
 }
 
 const size_t kMaxPrintElem = 1e2;

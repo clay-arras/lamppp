@@ -2,14 +2,25 @@
 
 ### current todo
 
+bug: dtype turns into a bool during the .to process for some reason, I'm guessing because bool is the LOWEST value, so defineitely means something somwhere default initialized
+device is also unintialized, its almost as if its MOVING the thing??
+
+
 - fix github tests
 <!-- - refactor the tests to test both CPU and CUDA sequentially -->
-- refactor the tests to test all data types
-- need to figure out how to abstract the code
+<!-- - refactor the tests to test all data types -->
 
+- test .to and make sure it has an implementation in Variable, and test type promotion AND backwards type promotion
+- type upcasting doesn't work with backward
+- refactor the testing folder with Cmake
+
+
+- need to figure out how to abstract the code
 - add extra stuff (these aren't strictly necessary)
   - power
   - negation
+- refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp
+- split the copy, empty, fill, and resize files
 
 ## easy
 
@@ -20,7 +31,6 @@ benchmarking
 
 for release:
 
-- remove all outside dependencies
 - start adding documenatation
 - make the code compile cuda optional
 
@@ -29,15 +39,12 @@ for release:
 for cleanliness:
 
 - refactor: add offsetUtil passed into metaHandler as a dispatch
-- refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp
 - refactor the autograd functions
 - refactor to have << operator with the macro LMP_CHECK
 
 testing functionality:
 
 - memory leak somewhere
-- test .to and make sure it has an implementation in Variable, and test type promotion AND backwards type promotion
-- type upcasting doesn't work with backward
 
 ## hard
 

@@ -278,6 +278,34 @@ TEST_P(TensorOpTest, ReductSqueezeTest) {
         << "Sequential squeeze: Data mismatch";
   }
 }
+TEST_P(TensorOpTest, ToTest) {
+  if (device == DeviceType::CPU) {
+    Tensor result = tensor_f32_B.to(DeviceType::CUDA);
+
+    EXPECT_EQ(result.device(), DeviceType::CUDA)
+        << "To: Result device mismatch";
+    EXPECT_NE(result.device(), tensor_f32_B.device())
+        << "To: Result device mismatch";
+    EXPECT_THAT(getTenData(result),
+                ::testing::Pointwise(::testing::FloatNear(kEps), getTenData(tensor_f32_B)))
+        << "To: Result data mismatch";
+  } else if (device == DeviceType::CUDA) {
+    Tensor result = tensor_f32_B.to(DeviceType::CPU);
+
+    EXPECT_EQ(result.device(), DeviceType::CPU)
+        << "To: Result device mismatch";
+    EXPECT_NE(result.device(), tensor_f32_B.device())
+        << "To: Result device mismatch";
+    EXPECT_THAT(getTenData(result),
+                ::testing::Pointwise(::testing::FloatNear(kEps), getTenData(tensor_f32_B)))
+        << "To: Result data mismatch";
+  } else {
+    ASSERT_TRUE(false);
+  }
+}
+TEST_P(TensorOpTest, CopyTest)  {}
+TEST_P(TensorOpTest, IndexTest)  {}
+TEST_P(TensorOpTest, FillTest)  {}
 
 namespace {
 

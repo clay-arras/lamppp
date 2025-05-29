@@ -1,5 +1,4 @@
 #include "lamppp/tensor/tensor.hpp"
-
 #include <iostream>
 
 namespace lmp::tensor {
@@ -48,8 +47,8 @@ void Tensor::fill(Scalar item) {
   impl_->fill_(item);
 }
 
-void Tensor::to(DeviceType device) {
-  impl_->to_(device);
+Tensor Tensor::to(DeviceType device) {
+  return Tensor(std::make_shared<TensorImpl>(impl_->to_(device)));
 }
 
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {

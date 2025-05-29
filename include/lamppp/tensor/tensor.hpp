@@ -60,7 +60,7 @@ class Tensor {
   // these functions modify the actual data
   void copy(const Tensor& other);
   void fill(Scalar item);
-  void to(DeviceType device);
+  Tensor to(DeviceType device);
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
   friend class TensorOpFact;

@@ -2,13 +2,24 @@
 
 ### current todo
 
-- fix github tests
+<!-- - refactor the testing folder with Cmake -->
 <!-- - refactor the tests to test both CPU and CUDA sequentially -->
 <!-- - refactor the tests to test all data types -->
+
+
+## easy
 
 testing: 
 - test .to and make sure it has an implementation in Variable, 
 - test type promotion AND backwards type promotion
+
+benchmarking
+- make regular binary operations different from broadcasting operations (see if it's speedup)
+- benchmark more operations
+
+for release:
+- start adding documenatation with Doxygen
+- make the code compile cuda optional
 
 extra operations: 
 - add extra stuff (these aren't strictly necessary)
@@ -20,20 +31,9 @@ extra operations:
 
 - relu, sigmoid, tanh -- define this in nn module
 
-## easy
-
-benchmarking
-- make regular binary operations different from broadcasting operations (see if it's speedup)
-- benchmark more operations
-
-for release:
-- start adding documenatation with Doxygen
-- make the code compile cuda optional
-
 ## medium
 
 for cleanliness:
-- refactor the testing folder with Cmake
 - refactor: add offsetUtil passed into metaHandler as a dispatch
 - refactor the autograd functions
 - refactor to have << operator with the macro LMP_CHECK
@@ -42,6 +42,7 @@ for cleanliness:
 
 ## hard
 
+- fix github tests
 - add better tests with hypothesis
 
 ## automatic tests

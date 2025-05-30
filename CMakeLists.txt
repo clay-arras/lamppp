@@ -30,41 +30,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 find_package(CUDAToolkit REQUIRED)              
 
-
-# FETCH CONTENT ---------------------------------
-include(FetchContent)
-set(FETCHCONTENT_TRY_FIND_PACKAGE TRUE)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        v1.14.0
-  GIT_SHALLOW    TRUE
-  FIND_PACKAGE_ARGS CONFIG 
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-
-FetchContent_Declare(
-  benchmark
-  GIT_REPOSITORY https://github.com/google/benchmark.git
-  GIT_TAG        v1.9.0
-  GIT_SHALLOW    TRUE
-  FIND_PACKAGE_ARGS CONFIG
-)
-FetchContent_MakeAvailable(benchmark)
-
-FetchContent_Declare(
-  pybind11
-  GIT_REPOSITORY https://github.com/pybind/pybind11.git
-  GIT_TAG        v2.12.0
-  GIT_SHALLOW    TRUE
-  FIND_PACKAGE_ARGS CONFIG
-)
-FetchContent_MakeAvailable(pybind11)
-
 # CORE TARGETS ---------------------------------
 add_subdirectory(src/tensor)
 add_subdirectory(src/autograd)
@@ -77,39 +42,8 @@ target_compile_options(lamppp
     $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp>
 )
 
-# EXECUTABLES ---------------------------------
-enable_testing()
-
-add_executable(playground tests/playground.cpp)
-target_link_libraries(playground PRIVATE lamppp)
-
-add_executable(autograd_tests tests/autograd_tests.cpp)
-target_link_libraries(autograd_tests
-  PRIVATE autograd_core GTest::gtest_main GTest::gmock
-)
-include(GoogleTest)
-gtest_discover_tests(autograd_tests)
-
-add_executable(tensor_tests tests/tensor_tests.cpp)
-target_link_libraries(tensor_tests
-  PRIVATE tensor_core GTest::gtest_main GTest::gmock
-)
-include(GoogleTest)
-gtest_discover_tests(tensor_tests)
-
-add_executable(bench_ops benchmarks/bench_ops.cpp)
-target_link_libraries(bench_ops
-  PRIVATE lamppp benchmark::benchmark
-)
-
-pybind11_add_module(lamppp_module tests/autograd_pybind.cpp)
-target_link_libraries(lamppp_module PRIVATE lamppp)
-
-set_target_properties(lamppp_module PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}"
-)
+add_subdirectory(tests)
+add_subdirectory(benchmarks)
 
 # STATIC ANALYSIS ---
 find_program(CLANG_FORMAT_EXE NAMES clang-format)

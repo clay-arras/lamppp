@@ -13,7 +13,7 @@ namespace lmp::tensor {
 class Storage {
  public:
   explicit Storage(size_t byte_size, DeviceType device)
-      : impl(std::make_shared<StorageImpl>(byte_size, device)) {}
+      : impl_(std::make_shared<StorageImpl>(byte_size, device)) {}
 
   void* data() const noexcept;
   size_t byte_size() const noexcept;
@@ -24,7 +24,7 @@ class Storage {
 
  private:
   class StorageImpl;
-  std::shared_ptr<StorageImpl> impl;
+  std::shared_ptr<StorageImpl> impl_;
 };
 
 class Storage::StorageImpl {

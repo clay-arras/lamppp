@@ -1,4 +1,4 @@
-import lamppp
+import lamppp_module as lamppp
 import torch
 from sample_helper import sample_matrices
 

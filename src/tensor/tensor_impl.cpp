@@ -91,8 +91,11 @@ Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
   for (size_t i = 0; i < idx.size(); i++) {
     at += strides_[i] * idx[i];
   }
-  return LMP_DISPATCH_ALL_TYPES(type_, [&]() {
-    return static_cast<Scalar>(static_cast<scalar_t*>(data())[at]);
+  return LMP_DISPATCH_ALL_TYPES(type(), [&]() {
+    scalar_t* elem = new scalar_t[1]; 
+    detail::native::copy_stub()(device(), DeviceType::CPU, 
+        static_cast<scalar_t*>(data()) + at, elem, 1, type(), type());
+    return static_cast<Scalar>(elem[0]);
   });
 }
 
@@ -101,8 +104,7 @@ Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
 void TensorImpl::copy_(const TensorImpl& other) {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
     detail::native::copy_stub()(other.device(), device(), other.data(), data(),
-                                other.numel() * sizeof(scalar_t), other.type(),
-                                type());
+                                other.numel(), other.type(), type());
   });
 }
 
@@ -114,8 +116,7 @@ TensorImpl TensorImpl::to_(DeviceType to_device) {
   LMP_CHECK(device() != to_device, "Device argument must be different from current device.");
   Storage new_storage(data_.byte_size(), to_device);
   detail::native::copy_stub()(device(), to_device, data(), new_storage.data(),
-                              data_.byte_size(), type(),
-                              type());
+                              numel(), type(), type());
   TensorImpl new_impl(new_storage, shape(), type());
   return new_impl;
 }

@@ -4,23 +4,23 @@
 namespace lmp::tensor {
 
 void* Storage::data() const noexcept {
-  return impl->data();
+  return impl_->data();
 }
 
 size_t Storage::byte_size() const noexcept {
-  return impl->byte_size();
+  return impl_->byte_size();
 }
 
 DeviceType Storage::device() const noexcept {
-  return impl->device();
+  return impl_->device();
 }
 
 void Storage::resize_(size_t nsize) {
-  impl->resize_(nsize);
+  impl_->resize_(nsize);
 }
 
 std::ostream& operator<<(std::ostream& os, const Storage& obj) {
-  obj.impl->print_(os);
+  obj.impl_->print_(os);
   return os;
 }
 

@@ -48,6 +48,10 @@ class Variable {
   void incr_grad(const tensor::Tensor& other_grad);
   void set_grad_fn(std::shared_ptr<Function> grad_fn);
 
+  void copy(const Variable& other);
+  void fill(tensor::Scalar item);
+  Variable to(tensor::DeviceType device);
+
   void backward();
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);
 

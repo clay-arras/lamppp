@@ -97,7 +97,7 @@ Variable squeeze_cust(const Variable& a, size_t axis) {
 
 }  // namespace
 
-PYBIND11_MODULE(lamppp, m) {
+PYBIND11_MODULE(lamppp_module, m) {
   py::enum_<DataType>(m, "cDataType")
       .value("Float32", DataType::Float32)
       .value("Float64", DataType::Float64)

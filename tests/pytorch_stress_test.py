@@ -12,7 +12,7 @@ PROJECT_ROOT = get_project_root()
 sys.path.append(os.path.join(PROJECT_ROOT, "build"))
 
 import torch
-import lamppp
+import lamppp_module as lamppp
 import pytest
 from operations_helper import *
 

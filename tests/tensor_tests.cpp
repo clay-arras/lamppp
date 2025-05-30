@@ -303,9 +303,201 @@ TEST_P(TensorOpTest, ToTest) {
     ASSERT_TRUE(false);
   }
 }
-TEST_P(TensorOpTest, CopyTest)  {}
-TEST_P(TensorOpTest, IndexTest)  {}
-TEST_P(TensorOpTest, FillTest)  {}
+TEST_P(TensorOpTest, CopyTest) {
+  {
+    Tensor tensor_copy_target = 
+        Tensor(std::vector<float>{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+               std::vector<size_t>{3u, 2u}, device, dtype);
+    
+    tensor_copy_target.copy(tensor_f32_A);
+    
+    EXPECT_EQ(tensor_copy_target.type(), dtype)
+        << "Copy: Result data type mismatch";
+    EXPECT_THAT(tensor_copy_target.shape(), ::testing::ElementsAreArray({3u, 2u}))
+        << "Copy: Result shape mismatch";
+    EXPECT_THAT(getTenData(tensor_copy_target),
+                ::testing::Pointwise(::testing::FloatNear(kEps), getTenData(tensor_f32_A)))
+        << "Copy: Result data mismatch";
+  }
+
+  {
+    std::vector<int32_t> data_i32_target = {0, 0, 0, 0, 0, 0};
+    Tensor tensor_i32_target = Tensor(data_i32_target, std::vector<size_t>{3u, 2u},
+                                     device, DataType::Int32);
+    
+    tensor_i32_target.copy(tensor_f32_A);
+    
+    EXPECT_EQ(tensor_i32_target.type(), DataType::Int32)
+        << "Copy with type conversion: Result data type mismatch";
+    EXPECT_THAT(tensor_i32_target.shape(), ::testing::ElementsAreArray({3u, 2u}))
+        << "Copy with type conversion: Result shape mismatch";
+    
+    std::vector<int32_t> expected_values = {1, 2, 3, 4, 5, 6};
+    EXPECT_THAT(getIntegerTenData<int32_t>(tensor_i32_target),
+                ::testing::ElementsAreArray(expected_values))
+        << "Copy with type conversion: Result data mismatch";
+  }
+  
+  if (device == DeviceType::CPU) {
+    Tensor tensor_cuda_target = 
+        Tensor(std::vector<float>{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+               std::vector<size_t>{3u, 2u}, DeviceType::CUDA, dtype);
+    
+    tensor_cuda_target.copy(tensor_f32_A);
+    
+    EXPECT_EQ(tensor_cuda_target.device(), DeviceType::CUDA)
+        << "Copy cross-device: Result device mismatch";
+    EXPECT_THAT(getTenData(tensor_cuda_target),
+                ::testing::Pointwise(::testing::FloatNear(kEps), getTenData(tensor_f32_A)))
+        << "Copy cross-device: Result data mismatch";
+  } else if (device == DeviceType::CUDA) {
+    Tensor tensor_cpu_target = 
+        Tensor(std::vector<float>{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+               std::vector<size_t>{3u, 2u}, DeviceType::CPU, dtype);
+    
+    tensor_cpu_target.copy(tensor_f32_A);
+    
+    EXPECT_EQ(tensor_cpu_target.device(), DeviceType::CPU)
+        << "Copy cross-device: Result device mismatch";
+    EXPECT_THAT(getTenData(tensor_cpu_target),
+                ::testing::Pointwise(::testing::FloatNear(kEps), getTenData(tensor_f32_A)))
+        << "Copy cross-device: Result data mismatch";
+  }
+}
+TEST_P(TensorOpTest, IndexTest) {
+  {
+    Scalar indexed_value = tensor_f32_A.index({0, 0}); 
+    EXPECT_NEAR(indexed_value, 1.0f, kEps)
+        << "Index [0,0]: Value mismatch";
+    
+    indexed_value = tensor_f32_A.index({0, 1}); 
+    EXPECT_NEAR(indexed_value, 2.0f, kEps)
+        << "Index [0,1]: Value mismatch";
+    
+    indexed_value = tensor_f32_A.index({1, 0}); 
+    EXPECT_NEAR(indexed_value, 3.0f, kEps)
+        << "Index [1,0]: Value mismatch";
+    
+    indexed_value = tensor_f32_A.index({2, 1}); 
+    EXPECT_NEAR(indexed_value, 6.0f, kEps)
+        << "Index [2,1]: Value mismatch";
+  }
+
+  {
+    Scalar scalar_value = scalar_tensor_f32.index({0});
+    EXPECT_NEAR(scalar_value, 100.0f, kEps)
+        << "Index scalar tensor: Value mismatch";
+  }
+  
+  {
+    Scalar indexed_3d_value = tensor_f32_1x2x1_squeeze_expand.index({0, 0, 0});
+    EXPECT_NEAR(indexed_3d_value, 7.0f, kEps)
+        << "Index 3D tensor [0,0,0]: Value mismatch";
+    
+    indexed_3d_value = tensor_f32_1x2x1_squeeze_expand.index({0, 1, 0});
+    EXPECT_NEAR(indexed_3d_value, 8.0f, kEps)
+        << "Index 3D tensor [0,1,0]: Value mismatch";
+  }
+
+  {
+    Scalar broadcast_1x2_val = tensor_f32_1x2_broadcast.index({0, 0});
+    EXPECT_NEAR(broadcast_1x2_val, 10.0f, kEps)
+        << "Index 1x2 broadcast [0,0]: Value mismatch";
+    
+    broadcast_1x2_val = tensor_f32_1x2_broadcast.index({0, 1});
+    EXPECT_NEAR(broadcast_1x2_val, 20.0f, kEps)
+        << "Index 1x2 broadcast [0,1]: Value mismatch";
+    
+    Scalar broadcast_3x1_val = tensor_f32_3x1_broadcast.index({1, 0});
+    EXPECT_NEAR(broadcast_3x1_val, 20.0f, kEps)
+        << "Index 3x1 broadcast [1,0]: Value mismatch";
+  }
+}
+TEST_P(TensorOpTest, FillTest) {
+  {
+    Tensor tensor_to_fill = 
+        Tensor(std::vector<float>{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f},
+               std::vector<size_t>{3u, 2u}, device, dtype);
+    
+    Scalar fill_value = 42.0;
+    tensor_to_fill.fill(fill_value);
+    
+    EXPECT_EQ(tensor_to_fill.type(), dtype)
+        << "Fill: Result data type mismatch";
+    EXPECT_THAT(tensor_to_fill.shape(), ::testing::ElementsAreArray({3u, 2u}))
+        << "Fill: Result shape mismatch";
+    
+    std::vector<Scalar> expected_values(6, fill_value);
+    EXPECT_THAT(getTenData(tensor_to_fill),
+                ::testing::Pointwise(::testing::FloatNear(kEps), expected_values))
+        << "Fill: Result data mismatch";
+  }
+
+  {
+    Tensor tensor_to_zero = tensor_f32_B; 
+    tensor_to_zero.fill(0.0);
+    
+    EXPECT_EQ(tensor_to_zero.type(), dtype)
+        << "Fill zero: Result data type mismatch";
+    EXPECT_THAT(tensor_to_zero.shape(), ::testing::ElementsAreArray({3u, 2u}))
+        << "Fill zero: Result shape mismatch";
+    
+    std::vector<Scalar> expected_zeros(6, 0.0);
+    EXPECT_THAT(getTenData(tensor_to_zero),
+                ::testing::Pointwise(::testing::FloatNear(kEps), expected_zeros))
+        << "Fill zero: Result data mismatch";
+  }
+
+  {
+    Tensor tensor_negative_fill = 
+        Tensor(std::vector<float>{10.0f, 20.0f}, std::vector<size_t>{1u, 2u},
+               device, dtype);
+    
+    Scalar negative_value = -99.0;
+    tensor_negative_fill.fill(negative_value);
+    
+    EXPECT_EQ(tensor_negative_fill.type(), dtype)
+        << "Fill negative: Result data type mismatch";
+    EXPECT_THAT(tensor_negative_fill.shape(), ::testing::ElementsAreArray({1u, 2u}))
+        << "Fill negative: Result shape mismatch";
+    
+    std::vector<Scalar> expected_negative(2, negative_value);
+    EXPECT_THAT(getTenData(tensor_negative_fill),
+                ::testing::Pointwise(::testing::FloatNear(kEps), expected_negative))
+        << "Fill negative: Result data mismatch";
+  }
+
+  {
+    Tensor scalar_fill_test = scalar_tensor_f32; 
+    scalar_fill_test.fill(777.0);
+    
+    EXPECT_EQ(scalar_fill_test.type(), dtype)
+        << "Fill scalar tensor: Result data type mismatch";
+    EXPECT_THAT(scalar_fill_test.shape(), ::testing::ElementsAreArray({1}))
+        << "Fill scalar tensor: Result shape mismatch";
+    
+    std::vector<Scalar> expected_scalar_value = {777.0};
+    EXPECT_THAT(getTenData(scalar_fill_test),
+                ::testing::Pointwise(::testing::FloatNear(kEps), expected_scalar_value))
+        << "Fill scalar tensor: Result data mismatch";
+  }
+
+  {
+    Tensor tensor_3d_fill = tensor_f32_1x2x1_squeeze_expand; // Copy constructor
+    Scalar fill_3d_value = 123.0;
+    tensor_3d_fill.fill(fill_3d_value);
+    
+    EXPECT_EQ(tensor_3d_fill.type(), dtype)
+        << "Fill 3D: Result data type mismatch";
+    EXPECT_THAT(tensor_3d_fill.shape(), ::testing::ElementsAreArray({1u, 2u, 1u}))
+        << "Fill 3D: Result shape mismatch";
+    
+    std::vector<Scalar> expected_3d_values(2, fill_3d_value);
+    EXPECT_THAT(getTenData(tensor_3d_fill),
+                ::testing::Pointwise(::testing::FloatNear(kEps), expected_3d_values))
+        << "Fill 3D: Result data mismatch";
+  }
+}
 
 namespace {
 

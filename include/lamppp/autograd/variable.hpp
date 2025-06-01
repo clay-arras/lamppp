@@ -50,7 +50,6 @@ class Variable {
 
   void copy(const Variable& other);
   void fill(tensor::Scalar item);
-  Variable to(tensor::DeviceType device);
 
   void backward();
   friend std::ostream& operator<<(std::ostream& os, const Variable& obj);

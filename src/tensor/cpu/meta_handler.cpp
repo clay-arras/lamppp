@@ -40,21 +40,8 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
         using arg2_dtype_t = scalar_t;
         Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
         outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
-
-        if (a->device() == DeviceType::CPU) {
-          outOffset =
-              std::make_unique<cpu::CPUOffsetUtil<ExpandMetaHandler::NumElem>>(
-                  ::std::array<const TensorImpl*, ExpandMetaHandler::NumElem>{
-                      a, b},
+        outOffset = offset_util_stub_2_()(a->device(), ::std::array<const TensorImpl*, ExpandMetaHandler::NumElem>{a, b},
                   *outTen.get());
-        } else if (a->device() == DeviceType::CUDA) {
-          outOffset = std::make_unique<
-              cuda::CUDAOffsetUtil<ExpandMetaHandler::NumElem>>(
-              ::std::array<const TensorImpl*, ExpandMetaHandler::NumElem>{a, b},
-              *outTen.get());
-        } else {  // TODO: this works better as a dispatch, need to fix sometime TODO TODO THIS IS BAD BAD BAD
-          LMP_INTERNAL_ASSERT(false, "Cannot support device");
-        }
       });
     });
   });

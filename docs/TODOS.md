@@ -21,7 +21,7 @@ for release:
 - start adding documenatation with Doxygen
 - make the code compile cuda optional
 - relu, sigmoid, tanh -- define this in nn module
-- add prod, neg, and pow backwards
+<!-- - add prod, neg, and pow backwards -->
 
 ## medium
 
@@ -29,7 +29,7 @@ for cleanliness:
 - refactor: add offsetUtil passed into metaHandler as a dispatch
 - refactor the autograd functions
 - refactor to have << operator with the macro LMP_CHECK
-- refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp
+<!-- - refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp -->
 - split the copy, empty, fill, and resize files
 
 ## hard

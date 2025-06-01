@@ -13,7 +13,7 @@
 namespace lmp::tensor::detail::cuda {
 
 template <size_t NArgs>
-class CUDAOffsetUtil : public OffsetUtil<NArgs> {
+class CUDAOffsetUtil : public OffsetUtil {
  public:
   explicit CUDAOffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
                           const TensorImpl& outs);
@@ -22,6 +22,12 @@ class CUDAOffsetUtil : public OffsetUtil<NArgs> {
   ::cuda::std::array<ListDevicePtr<stride_t>, NArgs + 1> arg_strides_;
   ::cuda::std::array<void*, NArgs + 1> arg_pointers_;
 };
+
+template <size_t NArgs>
+std::unique_ptr<OffsetUtil> offset_util_cuda(::std::array<const TensorImpl*, NArgs> ins, 
+    const TensorImpl& out) {
+  return std::make_unique<CUDAOffsetUtil<NArgs>>(ins, out);
+}
 
 };  // namespace lmp::tensor::detail::cuda
 

@@ -7,13 +7,9 @@
 
 namespace lmp::tensor::detail {
 
-// class OffsetUtil {};
-
-template <size_t NArgs>
 class OffsetUtil {
  public:
   OffsetUtil(size_t ndim) : ndim(ndim) {};
-  static constexpr size_t NVars = NArgs + 1;
   size_t ndim;
 
  protected:
@@ -24,7 +20,7 @@ class OffsetUtil {
 namespace cpu {
 
 template <size_t NArgs>
-class CPUOffsetUtil : public OffsetUtil<NArgs> {
+class CPUOffsetUtil : public OffsetUtil {
  public:
   explicit CPUOffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
                          const TensorImpl& outs);
@@ -33,6 +29,18 @@ class CPUOffsetUtil : public OffsetUtil<NArgs> {
   ::std::array<std::vector<stride_t>, NArgs + 1> arg_strides_;
 };
 
+template <size_t NArgs>
+std::unique_ptr<OffsetUtil> offset_util_cpu(::std::array<const TensorImpl*, NArgs> ins, 
+    const TensorImpl& out) {
+  return std::make_unique<cpu::CPUOffsetUtil<NArgs>>(ins, out);
+}
+
 }  // namespace cpu
+
+template <size_t NArgs>
+using offset_util_fn = std::unique_ptr<OffsetUtil> (*)(::std::array<const TensorImpl*, NArgs>, const TensorImpl&);
+
+LMP_DECLARE_DISPATCH(offset_util_fn<2>, offset_util_stub_2_);
+LMP_DECLARE_DISPATCH(offset_util_fn<3>, offset_util_stub_3_);
 
 };  // namespace lmp::tensor::detail

@@ -4,6 +4,7 @@
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_stub.hpp"
 #include "lamppp/tensor/functions/unary_ops.hpp"
+#include "lamppp/tensor/functions/matrix_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cpu {
@@ -151,6 +152,9 @@ TensorImpl sin_cpu(const TensorImpl& a);
 TensorImpl cos_cpu(const TensorImpl& a);
 TensorImpl tan_cpu(const TensorImpl& a);
 TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val);
+
+TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl transpose_cpu(const TensorImpl& a);
 
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
 TensorImpl max_cpu(const TensorImpl& a, size_t axis);

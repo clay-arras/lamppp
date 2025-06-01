@@ -2,6 +2,7 @@
 
 #include <cuda/std/array>
 #include "lamppp/tensor/dispatch_stub.hpp"
+#include "lamppp/tensor/functions/matrix_ops.hpp"
 #include "lamppp/tensor/functions/expand_ops.hpp"
 #include "lamppp/tensor/functions/reduct_ops.hpp"
 #include "lamppp/tensor/functions/unary_ops.hpp"
@@ -152,6 +153,9 @@ TensorImpl sin_cuda(const TensorImpl& a);
 TensorImpl cos_cuda(const TensorImpl& a);
 TensorImpl tan_cuda(const TensorImpl& a);
 TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
+
+TensorImpl transpose_cuda(const TensorImpl& a);
+TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b);
 
 TensorImpl sum_cuda(const TensorImpl& a, size_t axis);
 TensorImpl max_cuda(const TensorImpl& a, size_t axis);

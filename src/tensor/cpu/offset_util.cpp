@@ -3,12 +3,34 @@
 
 namespace lmp::tensor::detail {
 
+std::vector<stride_t> OffsetUtil::init_padded_strides_(
+    const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
+  LMP_INTERNAL_ASSERT(ndim > 0, "ndim must be greater than 0");
+  LMP_INTERNAL_ASSERT(shape.size() <= ndim,
+                      "shape size must be less than or equal to ndim");
+  LMP_INTERNAL_ASSERT(shape.size() == stride.size(),
+                      "shape size must be equal to stride size");
+
+  std::vector<stride_t> padded(ndim, 0);
+  const size_t from_back = shape.size();
+
+  for (size_t k = 0; k < from_back; ++k) {
+    size_t dst = ndim - 1 - k;
+    size_t src = from_back - 1 - k;
+
+    if (shape[src] != 1) {
+      padded[dst] = stride[src];
+    }
+  }
+  return padded;
+}
+
 namespace cpu {
 
 template <size_t NArgs>
 CPUOffsetUtil<NArgs>::CPUOffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
                                     const TensorImpl& outs)
-    : OffsetUtil<NArgs>(outs.shape().size()) {
+    : OffsetUtil(outs.shape().size()) {
   LMP_INTERNAL_ASSERT(NArgs == ins.size(),
                       "NArgs must equal number of input elements");
 
@@ -40,30 +62,20 @@ template <size_t NArgs>
 
 }  // namespace cpu
 
-template <size_t NArgs>
-std::vector<stride_t> OffsetUtil<NArgs>::init_padded_strides_(
-    const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
-  LMP_INTERNAL_ASSERT(ndim > 0, "ndim must be greater than 0");
-  LMP_INTERNAL_ASSERT(shape.size() <= ndim,
-                      "shape size must be less than or equal to ndim");
-  LMP_INTERNAL_ASSERT(shape.size() == stride.size(),
-                      "shape size must be equal to stride size");
+LMP_DEFINE_DISPATCH(offset_util_fn<2>, offset_util_stub_2_);
+LMP_DEFINE_DISPATCH(offset_util_fn<3>, offset_util_stub_3_);
 
-  std::vector<stride_t> padded(ndim, 0);
-  const size_t from_back = shape.size();
+namespace cpu {
 
-  for (size_t k = 0; k < from_back; ++k) {
-    size_t dst = ndim - 1 - k;
-    size_t src = from_back - 1 - k;
+template class CPUOffsetUtil<2>;
+template class CPUOffsetUtil<3>;
 
-    if (shape[src] != 1) {
-      padded[dst] = stride[src];
-    }
-  }
-  return padded;
+offset_util_fn<2> offset_util_cpu_2_ = offset_util_cpu<2>;
+offset_util_fn<3> offset_util_cpu_3_ = offset_util_cpu<3>;
+
+LMP_REGISTER_DISPATCH(offset_util_stub_2_, DeviceType::CPU, offset_util_cpu_2_);
+LMP_REGISTER_DISPATCH(offset_util_stub_3_, DeviceType::CPU, offset_util_cpu_3_);
+
 }
-
-template class cpu::CPUOffsetUtil<2>;
-template class cpu::CPUOffsetUtil<3>;
 
 }  // namespace lmp::tensor::detail

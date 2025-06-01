@@ -24,7 +24,7 @@ class TensorMetaHandler {
 
   inline TensorImpl& out() noexcept { return *outTen; }
   inline tensor_list& in() noexcept { return inTens; }
-  inline const OffsetUtil<NumElem>* offset() const noexcept {
+  inline const OffsetUtil* offset() const noexcept {
     return outOffset.get();
   }
 
@@ -33,7 +33,7 @@ class TensorMetaHandler {
   size_t outSize_;
   std::vector<size_t> outShape_;
 
-  std::unique_ptr<OffsetUtil<NumElem>> outOffset;
+  std::unique_ptr<OffsetUtil> outOffset;
   std::unique_ptr<TensorImpl> outTen;
   tensor_list inTens;
 };

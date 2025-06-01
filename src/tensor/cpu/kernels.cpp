@@ -1,4 +1,5 @@
 #include "lamppp/tensor/cpu/kernels.hpp"
+#include "lamppp/tensor/cpu/matrix.hpp"
 #include "lamppp/tensor/cpu/expand.hpp"
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cpu/reduct.hpp"
@@ -128,6 +129,53 @@ TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val) {
   return meta.out();
 }
 
+TensorImpl transpose_cpu(const TensorImpl& a) {
+  LMP_CHECK(
+      a.shape().size() == 2,
+      "Invalid argument, transpose can only be performed on matrices of dim 2");
+  size_t m = a.shape()[0];
+  size_t n = a.shape()[1];
+
+  DataType out_dtype = a.type();
+
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
+    Storage c_storage(m * n * sizeof(scalar_t), DeviceType::CPU);
+    ::lmp::tensor::detail::cpu::cpuTranspose<scalar_t>(
+        static_cast<const scalar_t*>(a.data()),
+        static_cast<scalar_t*>(c_storage.data()), m, n);
+    return TensorImpl(c_storage, {n, m}, out_dtype);
+  });
+}
+
+TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
+  LMP_CHECK(a.shape().size() == 2 && b.shape().size() == 2,
+            "Both matrices must be 2D.");
+  LMP_CHECK(a.shape()[1] == b.shape()[0],
+            "Incompatible matrix dimensions for multiplication.");
+
+  size_t m = a.shape()[0];
+  size_t n = b.shape()[1];
+  size_t k = a.shape()[1];
+
+  DataType out_dtype = type_upcast(a.type(), b.type());
+
+  return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
+    using a_type_t = scalar_t;
+    return LMP_DISPATCH_ALL_TYPES(b.type(), [&] {
+      using b_type_t = scalar_t;
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type_t = scalar_t;
+        Storage c_storage(m * n * sizeof(out_type_t), DeviceType::CPU);
+        ::lmp::tensor::detail::cpu::cpuMatMul<a_type_t, b_type_t, out_type_t>(
+            static_cast<const a_type_t*>(a.data()),
+            static_cast<const b_type_t*>(b.data()),
+            static_cast<out_type_t*>(c_storage.data()), m, n, k);
+        return TensorImpl(c_storage, {m, n}, out_dtype);
+      });
+    });
+  });
+}
+
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis) {
   TensorMetaHandler meta(&a, axis);
   reduct_dispatch_handler<SumFunctor>(meta, axis);
@@ -173,6 +221,9 @@ LMP_REGISTER_DISPATCH(ops::log_stub, DeviceType::CPU, log_cpu);
 LMP_REGISTER_DISPATCH(ops::sin_stub, DeviceType::CPU, sin_cpu);
 LMP_REGISTER_DISPATCH(ops::sqrt_stub, DeviceType::CPU, sqrt_cpu);
 LMP_REGISTER_DISPATCH(ops::tan_stub, DeviceType::CPU, tan_cpu);
+
+LMP_REGISTER_DISPATCH(ops::transpose_stub, DeviceType::CPU, transpose_cpu);
+LMP_REGISTER_DISPATCH(ops::matmul_stub, DeviceType::CPU, matmul_cpu);
 
 LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CPU, sum_cpu);
 LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CPU, max_cpu);

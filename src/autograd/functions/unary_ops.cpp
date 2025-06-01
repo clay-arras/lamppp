@@ -9,6 +9,24 @@
 
 namespace lmp::autograd::ops {
 
+variable_list NegationBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& self = (*saved_inputs)[0];
+
+  self.incr_grad(-grad.grad());
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+tensor::Tensor Negation::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  const Variable& self = inputs[0];
+
+  return -self.data();
+}
+
 variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
   LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
   const Variable& grad = gradOutputs[0];

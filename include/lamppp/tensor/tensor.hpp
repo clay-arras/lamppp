@@ -55,12 +55,12 @@ class Tensor {
   Tensor reshape(std::vector<size_t> new_shape) const;
   Tensor squeeze(size_t dim) const;
   Tensor expand_dims(size_t dim) const;
-  Scalar index(const std::vector<size_t>& idx);
+  Tensor to(DeviceType device) const;
+  Scalar index(const std::vector<size_t>& idx) const;
 
   // these functions modify the actual data
   void copy(const Tensor& other);
   void fill(Scalar item);
-  Tensor to(DeviceType device);
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& obj);
   friend class TensorOpFact;

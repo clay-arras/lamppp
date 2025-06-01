@@ -24,6 +24,7 @@ void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
                   "unary_kernel_launcher: kernel failed.");
 }
 
+template void unary_dispatch_handler<NegFunctor>(UnaryMetaHandler&);
 template void unary_dispatch_handler<ExpFunctor>(UnaryMetaHandler&);
 template void unary_dispatch_handler<LogFunctor>(UnaryMetaHandler&);
 template void unary_dispatch_handler<SqrtFunctor>(UnaryMetaHandler&);

@@ -67,6 +67,22 @@ variable_list DivideBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
+variable_list PowerBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& self = (*saved_inputs)[0];
+  Variable& other = (*saved_inputs)[1];
+
+  tensor::Tensor self_grad = grad.grad() * other.data() * tensor::ops::pow(self.data(), other.data() - 1);
+  tensor::Tensor other_grad = grad.grad() * grad.data() * tensor::ops::log(self.data());
+
+  self.incr_grad(detail::sum_broadcast_axis(self_grad, self.data().shape()));
+  other.incr_grad(detail::sum_broadcast_axis(other_grad, other.data().shape()));
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
 // TODO(nlin): need to optimize s.t. if requires_grad is false then it doesn't do the make_shared
 tensor::Tensor Add::execute(const variable_list& inputs) {
   LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
@@ -98,6 +114,14 @@ tensor::Tensor Divide::execute(const variable_list& inputs) {
   const Variable& other = inputs[1];
 
   return self.data() / other.data();
+}
+
+tensor::Tensor Power::execute(const variable_list& inputs) {
+  LMP_INTERNAL_ASSERT(inputs.size() == 2, "Function must take 2 inputs");
+  const Variable& self = inputs[0];
+  const Variable& other = inputs[1];
+
+  return tensor::ops::pow(self.data(), other.data());
 }
 
 variable_list EqualBackward::apply(const variable_list& gradOutputs) {

@@ -5,6 +5,14 @@
 
 namespace lmp::autograd::ops {
 
+struct NegationBackward : public Function {
+  variable_list apply(const variable_list& gradOutputs) override;
+};
+struct Negation : public ForwardFunction<Negation> {
+  using DefaultBackward = NegationBackward;
+  static tensor::Tensor execute(const variable_list& inputs);
+};
+
 struct ExponentialBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
@@ -75,6 +83,10 @@ struct Clamp : public ForwardFunction<Clamp> {
       : min_val_(min_val), max_val_(max_val) {}
   tensor::Tensor execute(const variable_list& inputs) const;
 };
+
+inline Variable neg(const Variable& a) {
+  return VariableOpFact::apply<Negation>({a})[0];
+}
 
 inline Variable exp(const Variable& a) {
   return VariableOpFact::apply<Exponential>({a})[0];

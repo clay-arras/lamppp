@@ -8,6 +8,7 @@ LMP_DEFINE_DISPATCH(add_fn, add_stub);
 LMP_DEFINE_DISPATCH(sub_fn, sub_stub);
 LMP_DEFINE_DISPATCH(mul_fn, mul_stub);
 LMP_DEFINE_DISPATCH(div_fn, div_stub);
+LMP_DEFINE_DISPATCH(pow_fn, pow_stub);
 LMP_DEFINE_DISPATCH(eq_fn, eq_stub);
 LMP_DEFINE_DISPATCH(ne_fn, ne_stub);
 LMP_DEFINE_DISPATCH(ge_fn, ge_stub);
@@ -39,38 +40,44 @@ Tensor div(const Tensor& a, const Tensor& b) {
       div_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                  *detail::UnsafeTensorAccessor::getImpl(b))));
 }
+Tensor pow(const Tensor& a, const Tensor& b) {
+  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
+      pow_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
+                 *detail::UnsafeTensorAccessor::getImpl(b))));
+}
 
-Tensor equal(const Tensor& a, const Tensor& b) {
+Tensor eq(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       eq_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-Tensor not_equal(const Tensor& a, const Tensor& b) {
+Tensor ne(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       ne_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-Tensor greater_equal(const Tensor& a, const Tensor& b) {
+Tensor ge(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       ge_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-Tensor less_equal(const Tensor& a, const Tensor& b) {
+Tensor le(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       le_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-Tensor greater(const Tensor& a, const Tensor& b) {
+Tensor gt(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       gt_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
-Tensor less(const Tensor& a, const Tensor& b) {
+Tensor lt(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       lt_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),

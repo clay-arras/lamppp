@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lamppp/tensor/functions/expand_ops.hpp"
+#include "lamppp/tensor/functions/unary_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::tensor {
@@ -42,16 +43,19 @@ struct TensorOpFact {
   _(-, ops::sub)             \
   _(*, ops::mul)             \
   _(/, ops::div)             \
-  _(==, ops::equal)          \
-  _(!=, ops::not_equal)      \
-  _(>=, ops::greater_equal)  \
-  _(<=, ops::less_equal)     \
-  _(>, ops::greater)         \
-  _(<, ops::less)
+  _(==, ops::eq)             \
+  _(!=, ops::ne)             \
+  _(>=, ops::ge)             \
+  _(<=, ops::le)             \
+  _(>, ops::gt)              \
+  _(<, ops::lt)
 
 FORALL_BINARY_OPS(DECL_BINARY_OP)
 
 #undef FORALL_BINARY_OPS
 #undef DECL_BINARY_OP
+
+// unary operators
+inline Tensor operator-(const Tensor& a) { return ops::neg(a); }
 
 }  // namespace lmp::tensor

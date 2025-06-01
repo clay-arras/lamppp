@@ -22,7 +22,7 @@ variable_list MaximumBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  tensor::Tensor mask = tensor::ops::equal(self.data(), grad.data());
+  tensor::Tensor mask = tensor::ops::eq(self.data(), grad.data());
   self.incr_grad(grad.grad() * mask);
 
   variable_list grad_inputs = {};
@@ -34,8 +34,19 @@ variable_list MinimumBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  tensor::Tensor mask = tensor::ops::equal(self.data(), grad.data());
+  tensor::Tensor mask = tensor::ops::eq(self.data(), grad.data());
   self.incr_grad(grad.grad() * mask);
+
+  variable_list grad_inputs = {};
+  return grad_inputs;
+}
+
+variable_list ProductBackward::apply(const variable_list& gradOutputs) {
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  const Variable& grad = gradOutputs[0];
+  Variable& self = (*saved_inputs)[0];
+
+  self.incr_grad(grad.grad() * (grad.data() / self.data()));
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -57,6 +68,12 @@ tensor::Tensor Minimum::execute(const variable_list& inputs) const {
   LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
   const Variable& self_var = inputs[0];
   return tensor::ops::min(self_var.data(), axis);
+}
+
+tensor::Tensor Product::execute(const variable_list& inputs) const {
+  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  const Variable& self_var = inputs[0];
+  return tensor::ops::prod(self_var.data(), axis);
 }
 
 }  // namespace lmp::autograd::ops

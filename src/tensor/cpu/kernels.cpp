@@ -32,6 +32,12 @@ TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b) {
   return meta.out();
 }
 
+TensorImpl pow_cpu(const TensorImpl& a, const TensorImpl& b) {
+  TensorMetaHandler meta(&a, &b);
+  expand_dispatch_handler<PowFunctor>(meta);
+  return meta.out();
+}
+
 TensorImpl eq_cpu(const TensorImpl& a, const TensorImpl& b) {
   TensorMetaHandler meta(&a, &b);
   expand_dispatch_handler<EqFunctor>(meta);
@@ -65,6 +71,12 @@ TensorImpl ge_cpu(const TensorImpl& a, const TensorImpl& b) {
 TensorImpl gt_cpu(const TensorImpl& a, const TensorImpl& b) {
   TensorMetaHandler meta(&a, &b);
   expand_dispatch_handler<GtFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl neg_cpu(const TensorImpl& a) {
+  TensorMetaHandler meta(&a);
+  unary_dispatch_handler<NegFunctor>(meta);
   return meta.out();
 }
 
@@ -134,10 +146,17 @@ TensorImpl min_cpu(const TensorImpl& a, size_t axis) {
   return meta.out();
 }
 
+TensorImpl prod_cpu(const TensorImpl& a, size_t axis) {
+  TensorMetaHandler meta(&a, axis);
+  reduct_dispatch_handler<ProdFunctor>(meta, axis);
+  return meta.out();
+}
+
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CPU, add_cpu);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CPU, sub_cpu);
 LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CPU, mul_cpu);
 LMP_REGISTER_DISPATCH(ops::div_stub, DeviceType::CPU, div_cpu);
+LMP_REGISTER_DISPATCH(ops::pow_stub, DeviceType::CPU, pow_cpu);
 LMP_REGISTER_DISPATCH(ops::eq_stub, DeviceType::CPU, eq_cpu);
 LMP_REGISTER_DISPATCH(ops::ne_stub, DeviceType::CPU, ne_cpu);
 LMP_REGISTER_DISPATCH(ops::le_stub, DeviceType::CPU, le_cpu);
@@ -145,6 +164,7 @@ LMP_REGISTER_DISPATCH(ops::lt_stub, DeviceType::CPU, lt_cpu);
 LMP_REGISTER_DISPATCH(ops::ge_stub, DeviceType::CPU, ge_cpu);
 LMP_REGISTER_DISPATCH(ops::gt_stub, DeviceType::CPU, gt_cpu);
 
+LMP_REGISTER_DISPATCH(ops::neg_stub, DeviceType::CPU, neg_cpu);
 LMP_REGISTER_DISPATCH(ops::abs_stub, DeviceType::CPU, abs_cpu);
 LMP_REGISTER_DISPATCH(ops::clamp_stub, DeviceType::CPU, clamp_cpu);
 LMP_REGISTER_DISPATCH(ops::cos_stub, DeviceType::CPU, cos_cpu);
@@ -157,5 +177,6 @@ LMP_REGISTER_DISPATCH(ops::tan_stub, DeviceType::CPU, tan_cpu);
 LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CPU, sum_cpu);
 LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CPU, max_cpu);
 LMP_REGISTER_DISPATCH(ops::min_stub, DeviceType::CPU, min_cpu);
+LMP_REGISTER_DISPATCH(ops::prod_stub, DeviceType::CPU, prod_cpu);
 
 }  // namespace lmp::tensor::detail::cpu

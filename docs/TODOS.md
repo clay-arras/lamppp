@@ -20,16 +20,8 @@ benchmarking
 for release:
 - start adding documenatation with Doxygen
 - make the code compile cuda optional
-
-extra operations: 
-- add extra stuff (these aren't strictly necessary)
-  - power
-  - negation
-  - reciprocal
-  - prod
-  - std, var
-
 - relu, sigmoid, tanh -- define this in nn module
+- add prod, neg, and pow backwards
 
 ## medium
 

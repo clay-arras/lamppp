@@ -35,7 +35,11 @@ Tensor Tensor::expand_dims(size_t dim) const {
   return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims_(dim)));
 }
 
-Scalar Tensor::index(const std::vector<size_t>& idx) {
+Tensor Tensor::to(DeviceType device) const {
+  return Tensor(std::make_shared<TensorImpl>(impl_->to_(device)));
+}
+
+Scalar Tensor::index(const std::vector<size_t>& idx) const {
   return impl_->index_(idx);
 }
 
@@ -45,10 +49,6 @@ void Tensor::copy(const Tensor& other) {
 
 void Tensor::fill(Scalar item) {
   impl_->fill_(item);
-}
-
-Tensor Tensor::to(DeviceType device) {
-  return Tensor(std::make_shared<TensorImpl>(impl_->to_(device)));
 }
 
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {

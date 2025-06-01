@@ -25,6 +25,10 @@ struct DivFunctor {
   T operator()(T arg1, T arg2) { return arg1 / arg2; }
 };
 template <typename T>
+struct PowFunctor {
+  T operator()(T arg1, T arg2) { return ::std::pow(arg1, arg2); }
+};
+template <typename T>
 struct EqFunctor {
   T operator()(T arg1, T arg2) { return arg1 == arg2; }
 };
@@ -47,6 +51,10 @@ struct GtFunctor {
 template <typename T>
 struct GeFunctor {
   T operator()(T arg1, T arg2) { return arg1 >= arg2; }
+};
+template <typename T>
+struct NegFunctor {
+  T operator()(T arg) { return (-arg); }
 };
 template <typename T>
 struct LogFunctor {
@@ -116,11 +124,17 @@ struct MinFunctor {
   static constexpr T identity = std::numeric_limits<T>::max();
   T operator()(T arg1, T arg2) { return ::std::min(arg1, arg2); }
 };
+template <typename T>
+struct ProdFunctor {
+  static constexpr T identity = 1;
+  T operator()(T arg1, T arg2) { return arg1 * arg2; }
+};
 
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl div_cpu(const TensorImpl& a, const TensorImpl& b);
+TensorImpl pow_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl eq_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl ne_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl le_cpu(const TensorImpl& a, const TensorImpl& b);
@@ -128,6 +142,7 @@ TensorImpl lt_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl ge_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl gt_cpu(const TensorImpl& a, const TensorImpl& b);
 
+TensorImpl neg_cpu(const TensorImpl& a);
 TensorImpl log_cpu(const TensorImpl& a);
 TensorImpl exp_cpu(const TensorImpl& a);
 TensorImpl sqrt_cpu(const TensorImpl& a);
@@ -140,5 +155,6 @@ TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val);
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
 TensorImpl max_cpu(const TensorImpl& a, size_t axis);
 TensorImpl min_cpu(const TensorImpl& a, size_t axis);
+TensorImpl prod_cpu(const TensorImpl& a, size_t axis);
 
 }  // namespace lmp::tensor::detail::cpu

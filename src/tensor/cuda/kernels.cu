@@ -31,6 +31,12 @@ TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
   return meta.out();
 }
 
+TensorImpl pow_cuda(const TensorImpl& a, const TensorImpl& b) {
+  TensorMetaHandler meta(&a, &b);
+  expand_dispatch_handler<PowFunctor>(meta);
+  return meta.out();
+}
+
 TensorImpl eq_cuda(const TensorImpl& a, const TensorImpl& b) {
   TensorMetaHandler meta(&a, &b);
   expand_dispatch_handler<EqFunctor>(meta);
@@ -64,6 +70,12 @@ TensorImpl ge_cuda(const TensorImpl& a, const TensorImpl& b) {
 TensorImpl gt_cuda(const TensorImpl& a, const TensorImpl& b) {
   TensorMetaHandler meta(&a, &b);
   expand_dispatch_handler<GtFunctor>(meta);
+  return meta.out();
+}
+
+TensorImpl neg_cuda(const TensorImpl& a) {
+  TensorMetaHandler meta(&a);
+  unary_dispatch_handler<NegFunctor>(meta);
   return meta.out();
 }
 
@@ -133,10 +145,17 @@ TensorImpl min_cuda(const TensorImpl& a, size_t axis) {
   return meta.out();
 }
 
+TensorImpl prod_cuda(const TensorImpl& a, size_t axis) {
+  TensorMetaHandler meta(&a, axis);
+  reduct_dispatch_handler<ProdFunctor>(meta, axis);
+  return meta.out();
+}
+
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);
 LMP_REGISTER_DISPATCH(ops::mul_stub, DeviceType::CUDA, mul_cuda);
 LMP_REGISTER_DISPATCH(ops::div_stub, DeviceType::CUDA, div_cuda);
+LMP_REGISTER_DISPATCH(ops::pow_stub, DeviceType::CUDA, pow_cuda);
 LMP_REGISTER_DISPATCH(ops::eq_stub, DeviceType::CUDA, eq_cuda);
 LMP_REGISTER_DISPATCH(ops::ne_stub, DeviceType::CUDA, ne_cuda);
 LMP_REGISTER_DISPATCH(ops::le_stub, DeviceType::CUDA, le_cuda);
@@ -144,6 +163,7 @@ LMP_REGISTER_DISPATCH(ops::lt_stub, DeviceType::CUDA, lt_cuda);
 LMP_REGISTER_DISPATCH(ops::ge_stub, DeviceType::CUDA, ge_cuda);
 LMP_REGISTER_DISPATCH(ops::gt_stub, DeviceType::CUDA, gt_cuda);
 
+LMP_REGISTER_DISPATCH(ops::neg_stub, DeviceType::CUDA, neg_cuda);
 LMP_REGISTER_DISPATCH(ops::log_stub, DeviceType::CUDA, log_cuda);
 LMP_REGISTER_DISPATCH(ops::exp_stub, DeviceType::CUDA, exp_cuda);
 LMP_REGISTER_DISPATCH(ops::sqrt_stub, DeviceType::CUDA, sqrt_cuda);
@@ -156,5 +176,6 @@ LMP_REGISTER_DISPATCH(ops::clamp_stub, DeviceType::CUDA, clamp_cuda);
 LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CUDA, sum_cuda);
 LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CUDA, max_cuda);
 LMP_REGISTER_DISPATCH(ops::min_stub, DeviceType::CUDA, min_cuda);
+LMP_REGISTER_DISPATCH(ops::prod_stub, DeviceType::CUDA, prod_cuda);
 
 }  // namespace lmp::tensor::detail::cuda

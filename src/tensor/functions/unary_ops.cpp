@@ -4,6 +4,7 @@
 
 namespace lmp::tensor::ops {
 
+LMP_DEFINE_DISPATCH(neg_fn, neg_stub);
 LMP_DEFINE_DISPATCH(log_fn, log_stub);
 LMP_DEFINE_DISPATCH(exp_fn, exp_stub);
 LMP_DEFINE_DISPATCH(sqrt_fn, sqrt_stub);
@@ -13,6 +14,10 @@ LMP_DEFINE_DISPATCH(cos_fn, cos_stub);
 LMP_DEFINE_DISPATCH(tan_fn, tan_stub);
 LMP_DEFINE_DISPATCH(clamp_fn, clamp_stub);
 
+Tensor neg(const Tensor& a) {
+  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
+      neg_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));
+}
 Tensor exp(const Tensor& a) {
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       exp_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a))));

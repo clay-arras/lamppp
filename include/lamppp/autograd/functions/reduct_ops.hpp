@@ -23,6 +23,12 @@ struct MinimumBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
 
+struct ProductBackward : public Function {
+  size_t axis;
+  explicit ProductBackward(size_t axis) : axis(axis) {}
+  variable_list apply(const variable_list& gradOutputs) override;
+};
+
 struct Summation : public ForwardFunction<Summation> {
   using DefaultBackward = SummationBackward;
   size_t axis;
@@ -44,6 +50,13 @@ struct Minimum : public ForwardFunction<Minimum> {
   tensor::Tensor execute(const variable_list& inputs) const;
 };
 
+struct Product : public ForwardFunction<Product> {
+  using DefaultBackward = ProductBackward;
+  size_t axis;
+  explicit Product(size_t axis) : axis(axis) {}
+  tensor::Tensor execute(const variable_list& inputs) const;
+};
+
 inline Variable sum(const Variable& a, size_t axis) {
   return VariableOpFact::apply<Summation>({a}, axis)[0];
 }
@@ -54,6 +67,10 @@ inline Variable max(const Variable& a, size_t axis) {
 
 inline Variable min(const Variable& a, size_t axis) {
   return VariableOpFact::apply<Minimum>({a}, axis)[0];
+}
+
+inline Variable prod(const Variable& a, size_t axis) {
+  return VariableOpFact::apply<Product>({a}, axis)[0];
 }
 
 }  // namespace lmp::autograd::ops

@@ -60,14 +60,15 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # FORMATTING ---------------------------------
+file(GLOB_RECURSE ALL_SOURCE
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/autograd/*.[ch]pp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
+)
+
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(CLANG_FORMAT_EXE)
-  file(GLOB_RECURSE ALL_SOURCE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/autograd/*.[ch]pp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
-    "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
-  )
 
   add_custom_target(format
     COMMAND ${CLANG_FORMAT_EXE}
@@ -80,9 +81,21 @@ endif()
 # DOCUMENTATION ---------------------------------
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
+  set(DOXYGEN_INPUT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include")
+  set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/docs")
+  set(PROJECT_NAME ${CMAKE_PROJECT_NAME})
+  
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in 
+    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile  
+    @ONLY
+  )
+
   doxygen_add_docs(
     docs
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
+    "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DOXYFILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
   )
 endif()

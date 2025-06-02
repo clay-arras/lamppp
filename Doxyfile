@@ -1,8 +1,0 @@
-PROJECT_NAME     = lamppp
-OUTPUT_DIRECTORY = ./docs
-INPUT            = ./src ./include
-FILE_PATTERNS    = *.hpp *.cpp *cuh *.cu
-RECURSIVE        = YES
-EXTRACT_ALL      = NO
-GENERATE_HTML    = YES
-WARN_IF_UNDOCUMENTED = YES

@@ -19,6 +19,14 @@ class UnsafeTensorAccessor;
 
 }
 
+/**
+ * @brief The main tensor data structure for Lamppp
+ *
+ * The data structure has type-erasure for both the deviceType 
+ * and the dataType, to prevent annoying template instantiations
+ *
+ */
+
 class Tensor {
  public:
   Tensor() = default;

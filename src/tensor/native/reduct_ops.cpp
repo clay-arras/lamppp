@@ -21,8 +21,9 @@ Tensor min(const Tensor& a, size_t axis) {
       min_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a), axis)));
 }
 Tensor prod(const Tensor& a, size_t axis) {
-  return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
-      prod_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a), axis)));
+  return detail::UnsafeTensorAccessor::fromImpl(
+      std::make_shared<TensorImpl>(prod_stub()(
+          a.device(), *detail::UnsafeTensorAccessor::getImpl(a), axis)));
 }
 
 }  // namespace lmp::tensor::ops

@@ -4,26 +4,19 @@
 
 for release:
 - start adding documenatation with Doxygen
-- make the code compile cuda optional
-
-for cleanliness:
+- do code coverage with gcov
+- fix the format cmake target
 - refactor the autograd functions
-- split the copy, empty, fill, and resize files
-
 
 ## easy
 
 testing: 
-- test .to and make sure it has an implementation in Variable, 
 - test type promotion AND backwards type promotion
 
 benchmarking
 - make regular binary operations different from broadcasting operations (see if it's speedup)
 - benchmark more operations
 
-<!-- for release:
-- start adding documenatation with Doxygen
-- make the code compile cuda optional -->
 - relu, sigmoid, tanh -- define this in nn module
 
 ## medium

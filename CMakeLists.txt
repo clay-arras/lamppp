@@ -53,15 +53,14 @@ target_compile_options(lamppp
 add_subdirectory(tests)
 add_subdirectory(benchmarks)
 
-# STATIC ANALYSIS ---
-find_program(CLANG_FORMAT_EXE NAMES clang-format)
+# STATIC ANALYSIS ---------------------------------
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-
 if(CLANG_TIDY_EXE)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 endif()
 
-# FORMATTING --
+# FORMATTING ---------------------------------
+find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(CLANG_FORMAT_EXE)
   file(GLOB_RECURSE ALL_SOURCE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u"
@@ -75,5 +74,15 @@ if(CLANG_FORMAT_EXE)
             -i
             ${ALL_SOURCE}
     COMMENT "Apply clang-format to all sources"
+  )
+endif()
+
+# DOCUMENTATION ---------------------------------
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+  doxygen_add_docs(
+    docs
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
   )
 endif()

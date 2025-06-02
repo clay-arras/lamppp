@@ -26,8 +26,8 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
       outDtype_(type_upcast(a->type(), b->type())),
       outSize_(a->numel()),
       outShape_(a->shape()) {
-  LMP_INTERNAL_ASSERT(a->device() == b->device()) <<
-                      "Should have asserted already";
+  LMP_INTERNAL_ASSERT(a->device() == b->device())
+      << "Should have asserted already";
   detail::AlignUtil expand_dims(a->shape(), b->shape());
   outSize_ = expand_dims.aligned_size_;
   outShape_ = expand_dims.aligned_shape_;
@@ -39,8 +39,10 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
         using arg2_dtype_t = scalar_t;
         Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
         outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
-        outOffset = offset_util_stub_2_()(a->device(), ::std::array<const TensorImpl*, ExpandMetaHandler::NumElem>{a, b},
-                  *outTen.get());
+        outOffset = offset_util_stub_2_()(
+            a->device(),
+            ::std::array<const TensorImpl*, ExpandMetaHandler::NumElem>{a, b},
+            *outTen.get());
       });
     });
   });

@@ -1,5 +1,5 @@
-#include "lamppp/tensor/cuda/matrix.cuh"
 #include "lamppp/common/macros.hpp"
+#include "lamppp/tensor/cuda/matrix.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -46,7 +46,7 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
 
 #include "lamppp/tensor/supported_types.hpp"
 
-#define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type) \
+#define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type)  \
   template void cudaMatMul<arg1_type, arg2_type, out_type>( \
       const arg1_type*, const arg2_type*, out_type*, size_t, size_t, size_t);
 #define INSTANTIATE_TRANSPOSE(type) \

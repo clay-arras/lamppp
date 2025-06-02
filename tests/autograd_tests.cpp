@@ -18,8 +18,9 @@ using lmp::tensor::Tensor;
 
 const Scalar kEps = 1e-5;
 
-class VariableOpTest : public testing::Test, 
-    public testing::WithParamInterface<std::tuple<DeviceType>> {
+class VariableOpTest
+    : public testing::Test,
+      public testing::WithParamInterface<std::tuple<DeviceType>> {
  protected:
   VariableOpTest() = default;
   ~VariableOpTest() = default;
@@ -27,12 +28,10 @@ class VariableOpTest : public testing::Test,
   void SetUp() override {
     device = std::get<0>(GetParam());
 
-    a_data =
-        Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 2.0},
-               std::vector<size_t>{3u, 2u}, device, DataType::Float32);
-    b_data =
-        Tensor(std::vector<Scalar>{-1.0, 4.0, -2.0, 0.0, 3.0, 0.5},
-               std::vector<size_t>{3u, 2u}, device, DataType::Float32);
+    a_data = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 2.0},
+                    std::vector<size_t>{3u, 2u}, device, DataType::Float32);
+    b_data = Tensor(std::vector<Scalar>{-1.0, 4.0, -2.0, 0.0, 3.0, 0.5},
+                    std::vector<size_t>{3u, 2u}, device, DataType::Float32);
     a = Variable(a_data, true);
     b = Variable(b_data, true);
   }
@@ -290,11 +289,8 @@ TEST_P(VariableOpTest, SqueezeTest) {
       << "Gradient shape mismatch";
 }
 
-INSTANTIATE_TEST_SUITE_P(
-   VariableOp,
-   VariableOpTest,
-   testing::Values(DeviceType::CPU, DeviceType::CUDA)
-);
+INSTANTIATE_TEST_SUITE_P(VariableOp, VariableOpTest,
+                         testing::Values(DeviceType::CPU, DeviceType::CUDA));
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

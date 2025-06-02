@@ -7,8 +7,8 @@ template <size_t NArgs>
 CUDAOffsetUtil<NArgs>::CUDAOffsetUtil(
     ::std::array<const TensorImpl*, NArgs> ins, const TensorImpl& outs)
     : OffsetUtil(outs.shape().size()) {
-  LMP_INTERNAL_ASSERT(NArgs == ins.size()) <<
-                      "NArgs must equal number of input elements";
+  LMP_INTERNAL_ASSERT(NArgs == ins.size())
+      << "NArgs must equal number of input elements";
   std::vector<std::vector<stride_t>> stride_exp(NArgs);
 
 #pragma omp unroll
@@ -56,7 +56,9 @@ template class CUDAOffsetUtil<3>;
 offset_util_fn<2> offset_util_cuda_2_ = offset_util_cuda<2>;
 offset_util_fn<3> offset_util_cuda_3_ = offset_util_cuda<3>;
 
-LMP_REGISTER_DISPATCH(offset_util_stub_2_, DeviceType::CUDA, offset_util_cuda_2_);
-LMP_REGISTER_DISPATCH(offset_util_stub_3_, DeviceType::CUDA, offset_util_cuda_3_);
+LMP_REGISTER_DISPATCH(offset_util_stub_2_, DeviceType::CUDA,
+                      offset_util_cuda_2_);
+LMP_REGISTER_DISPATCH(offset_util_stub_3_, DeviceType::CUDA,
+                      offset_util_cuda_3_);
 
 }  // namespace lmp::tensor::detail::cuda

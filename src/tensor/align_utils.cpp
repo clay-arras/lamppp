@@ -32,8 +32,8 @@ std::vector<size_t> AlignUtil::calc_aligned_shape(
     int a_val = (a_idx >= 0 ? a_shape[a_idx] : 1);
     int b_val = (b_idx >= 0 ? b_shape[b_idx] : 1);
 
-    LMP_CHECK(a_val == 1 || b_val == 1 || a_val == b_val) <<
-              "calc_aligned_shape: Broadcast rule violation.";
+    LMP_CHECK(a_val == 1 || b_val == 1 || a_val == b_val)
+        << "calc_aligned_shape: Broadcast rule violation.";
     out_shape[i] = (a_val != 1 ? a_val : b_val);
   }
   return out_shape;

@@ -1,9 +1,9 @@
 #include "lamppp/tensor/cpu/memory.hpp"
-#include "lamppp/tensor/native/memory_ops.hpp"
 #include <cstring>
+#include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
-#include "lamppp/common/macros.hpp"
+#include "lamppp/tensor/native/memory_ops.hpp"
 
 #ifdef ENABLE_CUDA
 #include "lamppp/tensor/cuda/memory.cuh"
@@ -50,7 +50,7 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
     case DeviceType::CUDA: {
 #ifdef ENABLE_CUDA
       cuda::vecCopyHostToDevice(src, dest, size, src_dtype, dest_dtype);
-#else 
+#else
       LMP_INTERNAL_ASSERT(false) << "Enable CUDA is false";
 #endif
       break;
@@ -68,9 +68,9 @@ void vecCopy(size_t size, const U* in, V* out) {
 
 #include "lamppp/tensor/supported_types.hpp"
 
-#define INSTANTIATE_COPY(arg1_type, arg2_type) \
-  template void vecCopy<arg1_type, arg2_type>( \
-      size_t, const arg1_type*, arg2_type*);
+#define INSTANTIATE_COPY(arg1_type, arg2_type)                          \
+  template void vecCopy<arg1_type, arg2_type>(size_t, const arg1_type*, \
+                                              arg2_type*);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
 #undef INSTANTIATE_COPY

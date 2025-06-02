@@ -5,7 +5,6 @@
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
-#include "lamppp/tensor/native/memory_ops.hpp"
 
 namespace lmp::tensor {
 
@@ -20,8 +19,8 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                            : std::accumulate(shape.begin(), shape.end(), 1,
                                              std::multiplies<>())) {
   LMP_DISPATCH_ALL_TYPES(dtype, [&] {
-    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_) <<
-              "Size mismatch, product of shape must equal num elements";
+    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_)
+        << "Size mismatch, product of shape must equal num elements";
   });
   update_strides_();
 }
@@ -59,8 +58,8 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
                         ? 0
                         : std::accumulate(new_shape.begin(), new_shape.end(), 1,
                                           std::multiplies<>());
-  LMP_CHECK(new_size == numel_) <<
-      "Cannot reshape tensor: total number of elements must remain the same.";
+  LMP_CHECK(new_size == numel_) << "Cannot reshape tensor: total number of "
+                                   "elements must remain the same.";
   TensorImpl other(*this);
   other.shape_ = std::move(new_shape);
   other.update_strides_();
@@ -91,9 +90,10 @@ Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
     at += strides_[i] * idx[i];
   }
   return LMP_DISPATCH_ALL_TYPES(type(), [&]() {
-    scalar_t* elem = new scalar_t[1]; 
-    ops::copy_stub()(device(), DeviceType::CPU, 
-        static_cast<scalar_t*>(data()) + at, elem, 1, type(), type());
+    scalar_t* elem = new scalar_t[1];
+    ops::copy_stub()(device(), DeviceType::CPU,
+                     static_cast<scalar_t*>(data()) + at, elem, 1, type(),
+                     type());
     return static_cast<Scalar>(elem[0]);
   });
 }
@@ -103,7 +103,7 @@ Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
 void TensorImpl::copy_(const TensorImpl& other) {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
     ops::copy_stub()(other.device(), device(), other.data(), data(),
-                                other.numel(), other.type(), type());
+                     other.numel(), other.type(), type());
   });
 }
 
@@ -112,10 +112,11 @@ void TensorImpl::fill_(Scalar item) {
 }
 
 TensorImpl TensorImpl::to_(DeviceType to_device) {
-  LMP_CHECK(device() != to_device) << "Device argument must be different from current device.";
+  LMP_CHECK(device() != to_device)
+      << "Device argument must be different from current device.";
   Storage new_storage(data_.byte_size(), to_device);
-  ops::copy_stub()(device(), to_device, data(), new_storage.data(),
-                              numel(), type(), type());
+  ops::copy_stub()(device(), to_device, data(), new_storage.data(), numel(),
+                   type(), type());
   TensorImpl new_impl(new_storage, shape(), type());
   return new_impl;
 }
@@ -127,8 +128,8 @@ void TensorImpl::print_(std::ostream& os) {
     size_t printSize = std::min(kMaxPrintElem, this->numel());
     scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
     ops::copy_stub()(this->device(), DeviceType::CPU, this->data(),
-                                static_cast<void*>(data_ptr), printSize,
-                                this->type_, this->type_);
+                     static_cast<void*>(data_ptr), printSize, this->type_,
+                     this->type_);
     for (size_t i = 0; i < printSize; i++) {
       os << data_ptr[i];
       if (i < printSize - 1) {

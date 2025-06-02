@@ -73,8 +73,10 @@ variable_list PowerBackward::apply(const variable_list& gradOutputs) {
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  tensor::Tensor self_grad = grad.grad() * other.data() * tensor::ops::pow(self.data(), other.data() - 1);
-  tensor::Tensor other_grad = grad.grad() * grad.data() * tensor::ops::log(self.data());
+  tensor::Tensor self_grad = grad.grad() * other.data() *
+                             tensor::ops::pow(self.data(), other.data() - 1);
+  tensor::Tensor other_grad =
+      grad.grad() * grad.data() * tensor::ops::log(self.data());
 
   self.incr_grad(detail::sum_broadcast_axis(self_grad, self.data().shape()));
   other.incr_grad(detail::sum_broadcast_axis(other_grad, other.data().shape()));

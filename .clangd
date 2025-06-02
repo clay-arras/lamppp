@@ -1,5 +1,0 @@
-CompileFlags:
-  Remove:
-    - "-forward-unknown-to-host-compiler" # just to remove nvcc flags
-    - "-Xcompiler=-fPIC"
-    - "-rdc=true"

@@ -6,10 +6,10 @@ namespace lmp::tensor::detail {
 std::vector<stride_t> OffsetUtil::init_padded_strides_(
     const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
   LMP_INTERNAL_ASSERT(ndim > 0) << "ndim must be greater than 0";
-  LMP_INTERNAL_ASSERT(shape.size() <= ndim) <<
-                      "shape size must be less than or equal to ndim";
-  LMP_INTERNAL_ASSERT(shape.size() == stride.size()) <<
-                      "shape size must be equal to stride size";
+  LMP_INTERNAL_ASSERT(shape.size() <= ndim)
+      << "shape size must be less than or equal to ndim";
+  LMP_INTERNAL_ASSERT(shape.size() == stride.size())
+      << "shape size must be equal to stride size";
 
   std::vector<stride_t> padded(ndim, 0);
   const size_t from_back = shape.size();
@@ -31,8 +31,8 @@ template <size_t NArgs>
 CPUOffsetUtil<NArgs>::CPUOffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
                                     const TensorImpl& outs)
     : OffsetUtil(outs.shape().size()) {
-  LMP_INTERNAL_ASSERT(NArgs == ins.size()) <<
-                      "NArgs must equal number of input elements";
+  LMP_INTERNAL_ASSERT(NArgs == ins.size())
+      << "NArgs must equal number of input elements";
 
   arg_strides_[0] = outs.strides();
 #pragma omp unroll
@@ -76,6 +76,6 @@ offset_util_fn<3> offset_util_cpu_3_ = offset_util_cpu<3>;
 LMP_REGISTER_DISPATCH(offset_util_stub_2_, DeviceType::CPU, offset_util_cpu_2_);
 LMP_REGISTER_DISPATCH(offset_util_stub_3_, DeviceType::CPU, offset_util_cpu_3_);
 
-}
+}  // namespace cpu
 
 }  // namespace lmp::tensor::detail

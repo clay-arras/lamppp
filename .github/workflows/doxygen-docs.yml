@@ -10,13 +10,15 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Install Doxygen
-        run: sudo apt-get update && sudo apt-get install doxygen -y
+        run: sudo apt-get update && sudo apt-get install build-essential doxygen cmake -y
         
       - name: Generate Doxygen Documentation
-        run: doxygen Doxyfile
+        run: |
+             cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CUDA=off
+             cmake --build build --target docs
         
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@master
+        uses: crazy-max/ghaction-github-pages@v4.2.0
         with:
-          branch: gh-pages
-          folder: docs/html 
+          target_branch: main
+          build_dir: docs/html 

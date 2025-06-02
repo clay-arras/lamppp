@@ -5,122 +5,50 @@
 #include "lamppp/tensor/cuda/reduct.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
+#include "lamppp/common/macros.hpp"
 
 namespace lmp::tensor::detail::cuda {
 
-TensorImpl add_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<AddFunctor>(meta);
-  return meta.out();
-}
+#define DECLARE_EXPAND_OPS_CUDA(op, functor)     \
+  TensorImpl op##_cuda(const TensorImpl& a, const TensorImpl& b) { \
+    TensorMetaHandler meta(&a, &b);              \
+    expand_dispatch_handler<functor>(meta);      \
+    return meta.out();                           \
+  }
+#define DECLARE_EXPAND_OPS_CUDA_HELPER(args) DECLARE_EXPAND_OPS_CUDA args
 
-TensorImpl sub_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<SubFunctor>(meta);
-  return meta.out();
-}
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_EXPAND_OPS_CUDA_HELPER, (
+  (add, AddFunctor),
+  (sub, SubFunctor),
+  (mul, MulFunctor),
+  (div, DivFunctor),
+  (pow, PowFunctor),
+  (eq, EqFunctor),
+  (ne, NeFunctor),
+  (le, LeFunctor),
+  (lt, LtFunctor),
+  (ge, GeFunctor),
+  (gt, GtFunctor),
+));
 
-TensorImpl mul_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<MulFunctor>(meta);
-  return meta.out();
-}
+#define DECLARE_UNARY_OPS_CUDA(op, functor)     \
+  TensorImpl op##_cuda(const TensorImpl& a) {   \
+    TensorMetaHandler meta(&a);                 \
+    unary_dispatch_handler<functor>(meta);      \
+    return meta.out();                          \
+  }
+#define DECLARE_UNARY_OPS_CUDA_HELPER(args) DECLARE_UNARY_OPS_CUDA args
 
-TensorImpl div_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<DivFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl pow_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<PowFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl eq_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<EqFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl ne_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<NeFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl le_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<LeFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl lt_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<LtFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl ge_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<GeFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl gt_cuda(const TensorImpl& a, const TensorImpl& b) {
-  TensorMetaHandler meta(&a, &b);
-  expand_dispatch_handler<GtFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl neg_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<NegFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl log_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<LogFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl exp_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<ExpFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl sqrt_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<SqrtFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl abs_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<AbsFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl sin_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<SinFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl cos_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<CosFunctor>(meta);
-  return meta.out();
-}
-
-TensorImpl tan_cuda(const TensorImpl& a) {
-  TensorMetaHandler meta(&a);
-  unary_dispatch_handler<TanFunctor>(meta);
-  return meta.out();
-}
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_UNARY_OPS_CUDA_HELPER, (
+  (neg, NegFunctor),
+  (log, LogFunctor),
+  (exp, ExpFunctor),
+  (sqrt, SqrtFunctor),
+  (abs, AbsFunctor),
+  (sin, SinFunctor),
+  (cos, CosFunctor), 
+  (tan, TanFunctor),
+));
 
 TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val) {
   TensorMetaHandler meta(&a);
@@ -174,29 +102,20 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
-TensorImpl sum_cuda(const TensorImpl& a, size_t axis) {
-  TensorMetaHandler meta(&a, axis);
-  reduct_dispatch_handler<SumFunctor>(meta, axis);
-  return meta.out();
-}
+#define DECLARE_REDUCT_OPS_CUDA(op, functor)      \
+  TensorImpl op##_cuda(const TensorImpl& a, size_t axis) { \
+    TensorMetaHandler meta(&a, axis);             \
+    reduct_dispatch_handler<functor>(meta, axis); \
+    return meta.out();                            \
+  }
+#define DECLARE_REDUCT_OPS_CUDA_HELPER(args) DECLARE_REDUCT_OPS_CUDA args
 
-TensorImpl max_cuda(const TensorImpl& a, size_t axis) {
-  TensorMetaHandler meta(&a, axis);
-  reduct_dispatch_handler<MaxFunctor>(meta, axis);
-  return meta.out();
-}
-
-TensorImpl min_cuda(const TensorImpl& a, size_t axis) {
-  TensorMetaHandler meta(&a, axis);
-  reduct_dispatch_handler<MinFunctor>(meta, axis);
-  return meta.out();
-}
-
-TensorImpl prod_cuda(const TensorImpl& a, size_t axis) {
-  TensorMetaHandler meta(&a, axis);
-  reduct_dispatch_handler<ProdFunctor>(meta, axis);
-  return meta.out();
-}
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_REDUCT_OPS_CUDA_HELPER, (
+  (sum, SumFunctor),
+  (max, MaxFunctor),
+  (min, MinFunctor),
+  (prod, ProdFunctor),
+));
 
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);

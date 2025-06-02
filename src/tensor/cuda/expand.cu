@@ -38,7 +38,6 @@ template void expand_dispatch_handler<SubFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<MulFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<DivFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<PowFunctor>(ExpandMetaHandler&);
-
 template void expand_dispatch_handler<EqFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<NeFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<GeFunctor>(ExpandMetaHandler&);

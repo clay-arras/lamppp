@@ -3,10 +3,13 @@
 ### current todo
 
 for release:
-- start adding documenatation with Doxygen
 - do code coverage with gcov
-- fix the format cmake target
 - refactor the autograd functions
+
+repetitive code:
+- @kernels.hpp -- maybe? 
+- @kernels.cpp -- maybe? 
+<!-- - in fn.hpp, and .cpp explicit declarations of dispatch_handlers -->
 
 ## easy
 

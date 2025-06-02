@@ -40,4 +40,9 @@ void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
       << "reduct_kernel_launcher: kernel failed.";
 }
 
+template void reduct_dispatch_handler<SumFunctor>(ReductMetaHandler&, size_t);
+template void reduct_dispatch_handler<MaxFunctor>(ReductMetaHandler&, size_t);
+template void reduct_dispatch_handler<MinFunctor>(ReductMetaHandler&, size_t);
+template void reduct_dispatch_handler<ProdFunctor>(ReductMetaHandler&, size_t);
+
 }  // namespace lmp::tensor::detail::cuda

@@ -39,9 +39,4 @@ void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,
   });
 }
 
-template void reduct_dispatch_handler<SumFunctor>(ReductMetaHandler&, size_t);
-template void reduct_dispatch_handler<MaxFunctor>(ReductMetaHandler&, size_t);
-template void reduct_dispatch_handler<MinFunctor>(ReductMetaHandler&, size_t);
-template void reduct_dispatch_handler<ProdFunctor>(ReductMetaHandler&, size_t);
-
 }  // namespace lmp::tensor::detail::cuda

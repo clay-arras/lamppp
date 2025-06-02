@@ -8,7 +8,7 @@
 namespace lmp::tensor::detail::cpu {
 
 template <typename PtrList, typename OpFn>
-__global__ void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t i,
+void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t i,
                                          size_t axis, const size_t* shape,
                                          const stride_t* strides);
 

@@ -1,10 +1,5 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include <cuda_runtime_api.h>
-#include <driver_types.h>
-#include <cuda/std/array>
-#include <cuda/std/tuple>
 #include <memory>
 #include <vector>
 #include "lamppp/tensor/cpu/offset_util.hpp"

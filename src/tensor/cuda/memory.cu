@@ -39,46 +39,30 @@ LMP_REGISTER_DISPATCH(ops::empty_stub, DeviceType::CUDA, empty_cuda);
 LMP_REGISTER_DISPATCH(ops::fill_stub, DeviceType::CUDA, fill_cuda);
 LMP_REGISTER_DISPATCH(ops::resize_stub, DeviceType::CUDA, resize_cuda);
 
-void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
+void vecCopyHostToDevice(const void* src, void* dest, size_t size,
               DataType src_dtype, DataType dest_dtype) {
-  switch (to_device) {
-    case DeviceType::CPU: {
-      LMP_DISPATCH_ALL_TYPES(src_dtype, [&] {
-        using src_type = scalar_t;
-        LMP_DISPATCH_ALL_TYPES(dest_dtype, [&] {
-          using dest_type = scalar_t;
-          vecCopy(size, static_cast<const src_type*>(src),
-                  static_cast<dest_type*>(dest));
-        });
-      });
-      break;
-    }
-    case DeviceType::CUDA: {
-      LMP_DISPATCH_ALL_TYPES(src_dtype, [&] {
-        using src_type = scalar_t;
-        LMP_DISPATCH_ALL_TYPES(dest_dtype, [&] {
-          using dest_type = scalar_t;
+  LMP_DISPATCH_ALL_TYPES(src_dtype, [&] {
+    using src_type = scalar_t;
+    LMP_DISPATCH_ALL_TYPES(dest_dtype, [&] {
+      using dest_type = scalar_t;
 
-          void* tmp = nullptr;
-          LMP_CUDA_ASSERT(cudaMalloc(&tmp, size * sizeof(src_type))) <<
-                          "copy_cpu to CUDA: cudaMalloc for tmp failed.";
-          LMP_CUDA_ASSERT(cudaMemcpy(tmp, src, size * sizeof(src_type),
-                                     cudaMemcpyHostToDevice)) <<
-                          "copy_cpu to CUDA: cudaMemcpy HtoD for tmp failed.";
+      void* tmp = nullptr;
+      LMP_CUDA_ASSERT(cudaMalloc(&tmp, size * sizeof(src_type))) <<
+                      "copy_cpu to CUDA: cudaMalloc for tmp failed.";
+      LMP_CUDA_ASSERT(cudaMemcpy(tmp, src, size * sizeof(src_type),
+                                  cudaMemcpyHostToDevice)) <<
+                      "copy_cpu to CUDA: cudaMemcpy HtoD for tmp failed.";
 
-          cudaVecCopy<src_type, dest_type>(size,
-                                           static_cast<const src_type*>(tmp),
-                                           static_cast<dest_type*>(dest));
+      cudaVecCopy<src_type, dest_type>(size,
+                                        static_cast<const src_type*>(tmp),
+                                        static_cast<dest_type*>(dest));
 
-          LMP_CUDA_ASSERT(cudaGetLastError()) <<
-                          "copy_cpu to CUDA: vecCopy kernel failed.";
-          LMP_CUDA_ASSERT(cudaFree(tmp)) <<
-                          "copy_cpu to CUDA: cudaFree for tmp failed.";
-        });
-      });
-      break;
-    }
-  }
+      LMP_CUDA_ASSERT(cudaGetLastError()) <<
+                      "copy_cpu to CUDA: vecCopy kernel failed.";
+      LMP_CUDA_ASSERT(cudaFree(tmp)) <<
+                      "copy_cpu to CUDA: cudaFree for tmp failed.";
+    });
+  });
 }
 
 void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
@@ -144,14 +128,6 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
   }
 }
 
-template <typename U, typename V>
-void vecCopy(size_t size, const U* in, V* out) {
-#pragma omp parallel for simd
-  for (size_t i = 0; i < size; i++) {
-    out[i] = in[i];
-  }
-}
-
 // TODO: need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
 template <typename U, typename V>
 void cudaVecCopy(size_t size, const U* in, V* out) {
@@ -164,14 +140,11 @@ void cudaVecCopy(size_t size, const U* in, V* out) {
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type) \
   template void cudaVecCopy<arg1_type, arg2_type>( \
-      size_t, const arg1_type*, arg2_type*);   \
-  template void vecCopy<arg1_type, arg2_type>( \
-      size_t, const arg1_type*, arg2_type*);
+      size_t, const arg1_type*, arg2_type*);   
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
 #undef INSTANTIATE_COPY
 
-LMP_REGISTER_DISPATCH(ops::copy_stub, DeviceType::CPU, copy_cpu);
 LMP_REGISTER_DISPATCH(ops::copy_stub, DeviceType::CUDA, copy_cuda);
 
 }  // namespace lmp::tensor::detail::cuda

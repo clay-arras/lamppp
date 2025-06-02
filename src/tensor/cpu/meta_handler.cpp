@@ -1,6 +1,5 @@
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/cuda/offset_util.cuh"
 #include "lamppp/tensor/device_type.hpp"
 
 namespace lmp::tensor::detail {

@@ -22,7 +22,7 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out);
 template <typename U, typename V>
 void cudaVecCopy(size_t size, const U* in, V* out);
 
-template <typename U, typename V>
-void vecCopy(size_t size, const U* in, V* out);
+void vecCopyHostToDevice(const void* src, void* dest, size_t size,
+              DataType src_dtype, DataType dest_dtype);
 
 }  // namespace lmp::tensor::detail::cuda

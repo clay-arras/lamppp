@@ -10,7 +10,6 @@
 #include "fill_like.hpp"
 #include "tensor_impl.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
-#include "lamppp/tensor/cuda/memory.cuh"
 
 namespace lmp::tensor {
 

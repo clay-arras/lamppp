@@ -4,7 +4,10 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
+
+#ifdef ENABLE_CUDA
 #include <cuda_runtime.h>
+#endif
 
 namespace lmp {
 namespace detail {
@@ -50,6 +53,7 @@ public:
     }
 };
 
+#ifdef ENABLE_CUDA
 class CudaAssertStream : public BaseStream<CudaAssertStream> {
 public:
     CudaAssertStream(const char* file, int line, const char* func, cudaError_t err) {
@@ -62,6 +66,7 @@ public:
         assert(false);
     }
 };
+#endif
 
 #endif
 
@@ -83,6 +88,7 @@ struct Voidify {
 #define LMP_INTERNAL_ASSERT(cond) \
     (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::AssertStream(__FILE__, __LINE__, __func__, #cond)
 
+#ifdef ENABLE_CUDA
 #define LMP_CUDA_ASSERT(call)                                                   \
   [&]() {                                                                       \
     cudaError_t _err = (call);                                                  \
@@ -91,6 +97,7 @@ struct Voidify {
            : ::lmp::detail::Voidify() &                                         \
              ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__, _err); \
   }()
+#endif
 
 
 #define LMP_PRINT(fmt, ...)                                              \

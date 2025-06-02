@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.24)
-project(lamppp LANGUAGES CXX CUDA)
+project(lamppp LANGUAGES CXX)
+
+option(ENABLE_CUDA "Compile with CUDA support" OFF)
+if(ENABLE_CUDA)
+  add_definitions(-DENABLE_CUDA)
+endif()
 
 # CORE CONFIG ---------------------------------
 set(PYTHON_VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
 
 if(EXISTS ${PYTHON_VENV_PATH})
-    set(Python3_EXECUTABLE ${PYTHON_VENV_PATH} CACHE FILEPATH "Path to Python3 executable from Poetry venv" FORCE)
-    message(STATUS "Attempting to use Python executable from Poetry venv: ${Python3_EXECUTABLE}")
+  set(Python3_EXECUTABLE ${PYTHON_VENV_PATH} CACHE FILEPATH "Path to Python3 executable from Poetry venv" FORCE)
+  message(STATUS "Attempting to use Python executable from Poetry venv: ${Python3_EXECUTABLE}")
 else()
-    message(WARNING "Poetry virtual environment Python not found at ${PYTHON_VENV_PATH}. CMake will attempt to find system Python. This may lead to version mismatches.")
+  message(WARNING "Poetry virtual environment Python not found at ${PYTHON_VENV_PATH}. CMake will attempt to find system Python. This may lead to version mismatches.")
 endif()
 
 # Expected python version is >=3.11
@@ -21,15 +26,17 @@ set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-enable_language(CUDA)
-set(CMAKE_CUDA_STANDARD 17)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+if (ENABLE_CUDA)
+  enable_language(CUDA)
+  set(CMAKE_CUDA_STANDARD 17)
+  set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+
+  set(CMAKE_CUDA_ARCHITECTURES native)
+  find_package(CUDAToolkit REQUIRED)              
+endif()
 
 # Enabled for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_CUDA_ARCHITECTURES native)
-
-find_package(CUDAToolkit REQUIRED)              
 
 # CORE TARGETS ---------------------------------
 add_subdirectory(src/tensor)

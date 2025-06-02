@@ -27,6 +27,7 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 # Enabled for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CUDA_ARCHITECTURES native)
 
 find_package(CUDAToolkit REQUIRED)              
 

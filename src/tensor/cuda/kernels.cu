@@ -129,9 +129,8 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val) {
 }
 
 TensorImpl transpose_cuda(const TensorImpl& a) {
-  LMP_CHECK(
-      a.shape().size() == 2,
-      "Invalid argument, transpose can only be performed on matrices of dim 2");
+  LMP_CHECK(a.shape().size() == 2) <<
+      "Invalid argument, transpose can only be performed on matrices of dim 2";
   size_t m = a.shape()[0];
   size_t n = a.shape()[1];
 
@@ -147,10 +146,8 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
 }
 
 TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
-  LMP_CHECK(a.shape().size() == 2 && b.shape().size() == 2,
-            "Both matrices must be 2D.");
-  LMP_CHECK(a.shape()[1] == b.shape()[0],
-            "Incompatible matrix dimensions for multiplication.");
+  LMP_CHECK(a.shape().size() == 2 && b.shape().size() == 2) << "Both matrices must be 2D.";
+  LMP_CHECK(a.shape()[1] == b.shape()[0]) << "Incompatible matrix dimensions for multiplication.";
 
   size_t m = a.shape()[0];
   size_t n = b.shape()[1];

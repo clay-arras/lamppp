@@ -25,8 +25,8 @@ void Variable::zero_grad() {
   impl_->grad = zeros_like(impl_->grad);
 }  // TODO: this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
-  LMP_INTERNAL_ASSERT(other_grad.shape() == impl_->grad.shape(),
-                      "There should be no broadcasting in incr_grad");
+  LMP_INTERNAL_ASSERT(other_grad.shape() == impl_->grad.shape()) <<
+                      "There should be no broadcasting in incr_grad";
   impl_->grad = impl_->grad + other_grad;
 }
 void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {
@@ -42,7 +42,7 @@ void Variable::fill(tensor::Scalar item) {
 }
 
 void Variable::backward() {
-  LMP_CHECK(requires_grad(), "Must be declared with requires_grad");
+  LMP_CHECK(requires_grad()) << "Must be declared with requires_grad";
   std::vector<Variable> topo = topological_sort();
   impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {

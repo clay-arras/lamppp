@@ -31,6 +31,6 @@
         return __VA_ARGS__();               \
       }                                     \
       default:                              \
-        LMP_CHECK(false, "Type not found"); \
+        LMP_CHECK(false) << "Type not found";\
     }                                       \
   }()

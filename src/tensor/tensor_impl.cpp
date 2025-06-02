@@ -20,8 +20,8 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                            : std::accumulate(shape.begin(), shape.end(), 1,
                                              std::multiplies<>())) {
   LMP_DISPATCH_ALL_TYPES(dtype, [&] {
-    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_,
-              "Size mismatch, product of shape must equal num elements");
+    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_) <<
+              "Size mismatch, product of shape must equal num elements";
   });
   update_strides_();
 }
@@ -59,9 +59,8 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
                         ? 0
                         : std::accumulate(new_shape.begin(), new_shape.end(), 1,
                                           std::multiplies<>());
-  LMP_CHECK(
-      new_size == numel_,
-      "Cannot reshape tensor: total number of elements must remain the same.");
+  LMP_CHECK(new_size == numel_) <<
+      "Cannot reshape tensor: total number of elements must remain the same.";
   TensorImpl other(*this);
   other.shape_ = std::move(new_shape);
   other.update_strides_();
@@ -69,8 +68,8 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
 }
 
 TensorImpl TensorImpl::squeeze_(size_t dim) {
-  LMP_CHECK(dim < shape_.size(), "Dimension out of range for squeeze");
-  LMP_CHECK(shape_[dim] == 1, "Cannot squeeze dimension that is not size 1");
+  LMP_CHECK(dim < shape_.size()) << "Dimension out of range for squeeze";
+  LMP_CHECK(shape_[dim] == 1) << "Cannot squeeze dimension that is not size 1";
   TensorImpl other(*this);
   other.shape_.erase(other.shape_.begin() + dim);
   other.update_strides_();
@@ -78,7 +77,7 @@ TensorImpl TensorImpl::squeeze_(size_t dim) {
 }
 
 TensorImpl TensorImpl::expand_dims_(size_t dim) {
-  LMP_CHECK(dim <= shape_.size(), "Dimension out of range for expand_dims");
+  LMP_CHECK(dim <= shape_.size()) << "Dimension out of range for expand_dims";
   TensorImpl other(*this);
   other.shape_.insert(other.shape_.begin() + dim, 1);
   other.update_strides_();
@@ -86,7 +85,7 @@ TensorImpl TensorImpl::expand_dims_(size_t dim) {
 }
 
 Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
-  LMP_CHECK(idx.size() == shape_.size(), "Indexing does not match shape");
+  LMP_CHECK(idx.size() == shape_.size()) << "Indexing does not match shape";
   size_t at = 0;
   for (size_t i = 0; i < idx.size(); i++) {
     at += strides_[i] * idx[i];
@@ -113,7 +112,7 @@ void TensorImpl::fill_(Scalar item) {
 }
 
 TensorImpl TensorImpl::to_(DeviceType to_device) {
-  LMP_CHECK(device() != to_device, "Device argument must be different from current device.");
+  LMP_CHECK(device() != to_device) << "Device argument must be different from current device.";
   Storage new_storage(data_.byte_size(), to_device);
   detail::native::copy_stub()(device(), to_device, data(), new_storage.data(),
                               numel(), type(), type());

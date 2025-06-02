@@ -10,7 +10,7 @@
 namespace lmp::autograd::ops {
 
 variable_list NegationBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -21,14 +21,14 @@ variable_list NegationBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Negation::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return -self.data();
 }
 
 variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -39,14 +39,14 @@ variable_list ExponentialBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Exponential::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::exp(self.data());
 }
 
 variable_list LogarithmBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -57,14 +57,14 @@ variable_list LogarithmBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Logarithm::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::log(self.data());
 }
 
 variable_list SqrtBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -76,14 +76,14 @@ variable_list SqrtBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Sqrt::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::sqrt(self.data());
 }
 
 variable_list AbsBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -96,14 +96,14 @@ variable_list AbsBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Abs::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::abs(self.data());
 }
 
 variable_list SinBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -114,14 +114,14 @@ variable_list SinBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Sin::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::sin(self.data());
 }
 
 variable_list CosBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -132,14 +132,14 @@ variable_list CosBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Cos::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::cos(self.data());
 }
 
 variable_list TanBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -151,14 +151,14 @@ variable_list TanBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Tan::execute(const variable_list& inputs) {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::tan(self.data());
 }
 
 variable_list ClampBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1, "Output size mismatch.");
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
@@ -172,7 +172,7 @@ variable_list ClampBackward::apply(const variable_list& gradOutputs) {
 }
 
 tensor::Tensor Clamp::execute(const variable_list& inputs) const {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1, "Function must take one input");
+  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];
 
   return tensor::ops::clamp(self.data(), min_val_, max_val_);

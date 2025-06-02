@@ -29,8 +29,8 @@ class TensorImpl {
         numel_(shape.empty() ? 0
                              : std::accumulate(shape.begin(), shape.end(), 1,
                                                std::multiplies<>())) {
-    LMP_CHECK(data.size() == numel_,
-              "Size mismatch, product of shape must equal num elements");
+    LMP_CHECK(data.size() == numel_) <<
+              "Size mismatch, product of shape must equal num elements";
     DataType src_dtype = TypeMeta<T>::value;
     detail::native::copy_stub()(DeviceType::CPU, device, data.data(),
                                 data_.data(), numel_, src_dtype, type_);

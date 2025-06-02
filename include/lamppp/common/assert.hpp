@@ -3,40 +3,95 @@
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
+#include <sstream>
+#include <cuda_runtime.h>
 
-#define LMP_CHECK(cond, message)                                         \
-  do {                                                                   \
-    if (!(cond)) {                                                       \
-      std::cerr << "Lamppp: Runtime error thrown at " << __FILE__ << ":" \
-                << __LINE__ << " in " << __func__                        \
-                << std::endl;                                            \
-      throw std::runtime_error((message));                               \
-    }                                                                    \
-  } while (0)
+namespace lmp {
+namespace detail {
+
+template<typename Derived>
+class BaseStream {
+public:
+    template<class T>
+    Derived& operator<<(T&& v) {
+        os_ << std::forward<T>(v);
+        return static_cast<Derived&>(*this);
+    }
+
+protected:
+    std::ostringstream os_;
+};
+
+class CheckStream : public BaseStream<CheckStream> {
+public:
+    CheckStream(const char* file, int line, const char* func, const char* expr) {
+        os_ << "Lamppp: Runtime error thrown at " << file << ':' << line 
+            << " in " << func << ". CHECK(" << expr << ") failed: ";
+    }
+
+    [[noreturn]] void trigger() const {
+        std::cerr << os_.str() << std::endl;
+        throw std::runtime_error(os_.str());
+    }
+};
 
 #ifdef LMP_DEBUG
 
-#define LMP_INTERNAL_ASSERT(cond, message)                                     \
-  do {                                                                         \
-    if (!(cond)) {                                                             \
-      std::cerr << "Lamppp: Internal assertion failure at " << __FILE__ << ":" \
-                << __LINE__ << " in " << __func__                              \
-                << std::endl;                                                  \
-      assert((cond) && (message));                                             \
-    }                                                                          \
-  } while (0)
+class AssertStream : public BaseStream<AssertStream> {
+public:
+    AssertStream(const char* file, int line, const char* func, const char* expr) {
+        os_ << "Lamppp: Internal assertion failure at " << file << ':' << line 
+            << " in " << func << ". ASSERT(" << expr << ") failed: ";
+    }
 
-#define LMP_CUDA_ASSERT(call, message)                                     \
-  do {                                                                     \
-    cudaError_t err = (call);                                              \
-    if (err != cudaSuccess) {                                              \
-      std::cerr << "Lamppp: CUDA error at " << __FILE__ << ":" << __LINE__ \
-                << " in " << __func__                                      \
-                << ". Error: " << cudaGetErrorString(err)                  \
-                << std::endl;                                              \
-      assert(false && (message));                                          \
-    }                                                                      \
-  } while (0)
+    [[noreturn]] void trigger() const {
+        std::cerr << os_.str() << std::endl;
+        assert(false);
+    }
+};
+
+class CudaAssertStream : public BaseStream<CudaAssertStream> {
+public:
+    CudaAssertStream(const char* file, int line, const char* func, cudaError_t err) {
+        os_ << "Lamppp: CUDA error at " << file << ':' << line 
+            << " in " << func << ". Error: " << cudaGetErrorString(err) << ". ";
+    }
+
+    [[noreturn]] void trigger() const {
+        std::cerr << os_.str() << std::endl;
+        assert(false);
+    }
+};
+
+#endif
+
+struct Voidify {
+    template<class T>
+    void operator&(T&& stream) const {
+        stream.trigger();    
+    }
+};
+
+} // namespace detail
+} // namespace lmp
+
+#define LMP_CHECK(cond) \
+    (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::CheckStream(__FILE__, __LINE__, __func__, #cond)
+
+#ifdef LMP_DEBUG
+
+#define LMP_INTERNAL_ASSERT(cond) \
+    (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::AssertStream(__FILE__, __LINE__, __func__, #cond)
+
+#define LMP_CUDA_ASSERT(call)                                                   \
+  [&]() {                                                                       \
+    cudaError_t _err = (call);                                                  \
+    return (_err == cudaSuccess)                                                \
+           ? (void)0                                                            \
+           : ::lmp::detail::Voidify() &                                         \
+             ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__, _err); \
+  }()
+
 
 #define LMP_PRINT(fmt, ...)                                              \
   fprintf(stderr, "[%s:%d] %s: " fmt "\n", __FILE__, __LINE__, __func__, \
@@ -44,8 +99,15 @@
 
 #else
 
-// in case LMP_CUDA_ASSERT contains running code
-#define LMP_INTERNAL_ASSERT(cond, ...)
-#define LMP_CUDA_ASSERT(cond, ...) (cond)
+namespace lmp::detail {
+struct NullStream {
+    template<typename T> NullStream& operator<<(T&&) { return *this; }
+    void trigger() const {}
+};
+} 
+#define LMP_INTERNAL_ASSERT(cond) \
+    true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
+#define LMP_CUDA_ASSERT(call) \
+    (call) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 
 #endif

@@ -21,7 +21,7 @@ void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
   LMP_DISPATCH_ALL_TYPES(type, [&]() {
     thrust::device_ptr<scalar_t> data(static_cast<scalar_t*>(ptr));
     thrust::fill(data, data + size, static_cast<scalar_t>(t));
-    LMP_CUDA_ASSERT(cudaGetLastError(), "fill_cuda: thrust::fill failed.");
+    LMP_CUDA_ASSERT(cudaGetLastError()) << "fill_cuda: thrust::fill failed.";
   });
 }
 

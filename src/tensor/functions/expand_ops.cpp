@@ -17,68 +17,68 @@ LMP_DEFINE_DISPATCH(gt_fn, gt_stub);
 LMP_DEFINE_DISPATCH(lt_fn, lt_stub);
 
 Tensor add(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       add_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                  *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor sub(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       sub_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                  *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor mul(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       mul_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                  *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor div(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       div_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                  *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor pow(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       pow_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                  *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 
 Tensor eq(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       eq_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor ne(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       ne_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor ge(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       ge_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor le(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       le_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor gt(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       gt_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));
 }
 Tensor lt(const Tensor& a, const Tensor& b) {
-  LMP_CHECK(a.device() == b.device(), "Tensors are on different devices");
+  LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(
       lt_stub()(a.device(), *detail::UnsafeTensorAccessor::getImpl(a),
                 *detail::UnsafeTensorAccessor::getImpl(b))));

@@ -30,8 +30,8 @@ struct TensorHelper {
     if (depth >= shape.size()) {
       shape.push_back(tensor.size());
     }
-    LMP_CHECK(tensor.size() == shape[depth],
-              "Dimensions along axis must be consistent.");
+    LMP_CHECK(tensor.size() == shape[depth]) <<
+              "Dimensions along axis must be consistent.";
     if constexpr (IsVector<T>::value) {
       for (const T& t : tensor) {
         unroll(t, depth + 1);

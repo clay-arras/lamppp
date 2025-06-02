@@ -7,8 +7,8 @@ template <size_t NArgs>
 CUDAOffsetUtil<NArgs>::CUDAOffsetUtil(
     ::std::array<const TensorImpl*, NArgs> ins, const TensorImpl& outs)
     : OffsetUtil(outs.shape().size()) {
-  LMP_INTERNAL_ASSERT(NArgs == ins.size(),
-                      "NArgs must equal number of input elements");
+  LMP_INTERNAL_ASSERT(NArgs == ins.size()) <<
+                      "NArgs must equal number of input elements";
   std::vector<std::vector<stride_t>> stride_exp(NArgs);
 
 #pragma omp unroll

@@ -27,8 +27,8 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
       outDtype_(type_upcast(a->type(), b->type())),
       outSize_(a->numel()),
       outShape_(a->shape()) {
-  LMP_INTERNAL_ASSERT(a->device() == b->device(),
-                      "Should have asserted already");
+  LMP_INTERNAL_ASSERT(a->device() == b->device()) <<
+                      "Should have asserted already";
   detail::AlignUtil expand_dims(a->shape(), b->shape());
   outSize_ = expand_dims.aligned_size_;
   outShape_ = expand_dims.aligned_shape_;

@@ -1,36 +1,47 @@
-#include <vector>
-#include "lamppp/lamppp.hpp"
-#include "lamppp/tensor/device_type.hpp"
+#include <cassert>
+#include <iostream>
+#include <sstream>
+
+namespace detail {
+
+class AssertStream {
+public:
+    AssertStream(const char* file, int line, const char* expr)
+    {
+        os_ << file << ':' << line << ": ASSERT(" << expr << ") failed: ";
+    }
+
+    template<class T>
+    AssertStream& operator<<(T&& v) {
+        os_ << std::forward<T>(v);
+        return *this;
+    }
+
+    [[noreturn]] void trigger() const {
+        throw std::runtime_error(os_.str());
+    }
+private:
+    std::ostringstream os_;
+};
+
+struct Voidify {
+    template<class T>
+    void operator&(T&& stream) const {
+        stream.trigger();    
+    }
+};
+
+} // namespace detail
+
+#define ASSERT(cond)                                             \
+    (cond) ? (void)0                                             \
+           : ::detail::Voidify() & ::detail::AssertStream(__FILE__, \
+                                                         __LINE__, \
+                                                         #cond)
+
+
 
 int main() {
-  auto a = lmp::autograd::Variable(lmp::tensor::Tensor(std::vector<float>{1, 2, 3, 4, 5, 2},
-                                                       std::vector<size_t>{3, 2},
-                                                       lmp::tensor::DeviceType::CUDA, 
-                                                       lmp::tensor::DataType::Float32), true);
-  auto b = lmp::autograd::Variable(lmp::tensor::Tensor(std::vector<float>{1, 2, 3.2, -1, 2, 3},
-                                                       std::vector<size_t>{3, 2},
-                                                       lmp::tensor::DeviceType::CPU, 
-                                                       lmp::tensor::DataType::Float32), true);
-
-  auto prod_result = lmp::autograd::ops::prod(a, 1);
-  std::cout << "prod result: " << prod_result.data() << std::endl;
-  prod_result.backward();
-  std::cout << "a grad after prod: " << a.grad() << std::endl;
-
-  a.zero_grad();
-  b.zero_grad();
-
-  auto neg_result = lmp::autograd::ops::neg(b);
-  std::cout << "neg result: " << neg_result.data() << std::endl;
-  neg_result.backward();
-  std::cout << "b grad after neg: " << b.grad() << std::endl;
-
-  a.zero_grad();
-  b.zero_grad();
-
-  auto c = lmp::autograd::ops::pow(a, -(lmp::autograd::ops::to(b, lmp::tensor::DeviceType::CUDA)));
-  std::cout << "pow result: " << c.data() << std::endl;
-  c.backward();
-  std::cout << "a grad after pow: " << a.grad() << std::endl;
-  std::cout << "b grad after pow: " << b.grad() << std::endl;
+    ASSERT(1 == 1) << "hello!!!";                   
+    ASSERT(1 == 2) << "hello"; 
 }

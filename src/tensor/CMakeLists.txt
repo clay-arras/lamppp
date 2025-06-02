@@ -6,6 +6,7 @@ set(TENSOR_SOURCES
   native/unary_ops.cpp
   native/reduct_ops.cpp
   native/memory_ops.cpp
+  native/shape_ops.cpp
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp

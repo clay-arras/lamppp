@@ -10,7 +10,7 @@ struct NegationBackward : public Function {
 };
 struct Negation : public ForwardFunction<Negation> {
   using DefaultBackward = NegationBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct ExponentialBackward : public Function {
@@ -18,7 +18,7 @@ struct ExponentialBackward : public Function {
 };
 struct Exponential : public ForwardFunction<Exponential> {
   using DefaultBackward = ExponentialBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct LogarithmBackward : public Function {
@@ -26,47 +26,47 @@ struct LogarithmBackward : public Function {
 };
 struct Logarithm : public ForwardFunction<Logarithm> {
   using DefaultBackward = LogarithmBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
-struct SqrtBackward : public Function {
+struct SquareRootBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
-struct Sqrt : public ForwardFunction<Sqrt> {
-  using DefaultBackward = SqrtBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+struct SquareRoot : public ForwardFunction<SquareRoot> {
+  using DefaultBackward = SquareRootBackward;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
-struct AbsBackward : public Function {
+struct AbsoluteValueBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
-struct Abs : public ForwardFunction<Abs> {
-  using DefaultBackward = AbsBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+struct AbsoluteValue : public ForwardFunction<AbsoluteValue> {
+  using DefaultBackward = AbsoluteValueBackward;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
-struct SinBackward : public Function {
+struct SineBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
-struct Sin : public ForwardFunction<Sin> {
-  using DefaultBackward = SinBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+struct Sine : public ForwardFunction<Sine> {
+  using DefaultBackward = SineBackward;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
-struct CosBackward : public Function {
+struct CosineBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
-struct Cos : public ForwardFunction<Cos> {
-  using DefaultBackward = CosBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+struct Cosine : public ForwardFunction<Cosine> {
+  using DefaultBackward = CosineBackward;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
-struct TanBackward : public Function {
+struct TangentBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
-struct Tan : public ForwardFunction<Tan> {
-  using DefaultBackward = TanBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+struct Tangent : public ForwardFunction<Tangent> {
+  using DefaultBackward = TangentBackward;
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct ClampBackward : public Function {
@@ -75,7 +75,6 @@ struct ClampBackward : public Function {
       : min_val_(min_val), max_val_(max_val) {}
   variable_list apply(const variable_list& gradOutputs) override;
 };
-
 struct Clamp : public ForwardFunction<Clamp> {
   using DefaultBackward = ClampBackward;
   tensor::Scalar min_val_, max_val_;
@@ -97,23 +96,23 @@ inline Variable log(const Variable& a) {
 }
 
 inline Variable sqrt(const Variable& a) {
-  return VariableOpFact::apply<Sqrt>({a})[0];
+  return VariableOpFact::apply<SquareRoot>({a})[0];
 }
 
 inline Variable abs(const Variable& a) {
-  return VariableOpFact::apply<Abs>({a})[0];
+  return VariableOpFact::apply<AbsoluteValue>({a})[0];
 }
 
 inline Variable sin(const Variable& a) {
-  return VariableOpFact::apply<Sin>({a})[0];
+  return VariableOpFact::apply<Sine>({a})[0];
 }
 
 inline Variable cos(const Variable& a) {
-  return VariableOpFact::apply<Cos>({a})[0];
+  return VariableOpFact::apply<Cosine>({a})[0];
 }
 
 inline Variable tan(const Variable& a) {
-  return VariableOpFact::apply<Tan>({a})[0];
+  return VariableOpFact::apply<Tangent>({a})[0];
 }
 
 inline Variable clamp(const Variable& a, tensor::Scalar min_val,

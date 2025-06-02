@@ -1,3 +1,4 @@
+#include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cuda/expand.cuh"
 #include "lamppp/tensor/cuda/kernels.cuh"
@@ -5,50 +6,36 @@
 #include "lamppp/tensor/cuda/reduct.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
-#include "lamppp/common/macros.hpp"
 
 namespace lmp::tensor::detail::cuda {
 
-#define DECLARE_EXPAND_OPS_CUDA(op, functor)     \
+#define DECLARE_EXPAND_OPS_CUDA(args) DECLARE_EXPAND_OPS_CUDA_HELPER args
+#define DECLARE_EXPAND_OPS_CUDA_HELPER(op, functor)                \
   TensorImpl op##_cuda(const TensorImpl& a, const TensorImpl& b) { \
-    TensorMetaHandler meta(&a, &b);              \
-    expand_dispatch_handler<functor>(meta);      \
-    return meta.out();                           \
+    TensorMetaHandler meta(&a, &b);                                \
+    expand_dispatch_handler<functor>(meta);                        \
+    return meta.out();                                             \
   }
-#define DECLARE_EXPAND_OPS_CUDA_HELPER(args) DECLARE_EXPAND_OPS_CUDA args
 
-LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_EXPAND_OPS_CUDA_HELPER, (
-  (add, AddFunctor),
-  (sub, SubFunctor),
-  (mul, MulFunctor),
-  (div, DivFunctor),
-  (pow, PowFunctor),
-  (eq, EqFunctor),
-  (ne, NeFunctor),
-  (le, LeFunctor),
-  (lt, LtFunctor),
-  (ge, GeFunctor),
-  (gt, GtFunctor),
-));
+LMP_FOR_EACH_CARTESIAN_PRODUCT(
+    DECLARE_EXPAND_OPS_CUDA,
+    ((add, AddFunctor), (sub, SubFunctor), (mul, MulFunctor), (div, DivFunctor),
+     (pow, PowFunctor), (eq, EqFunctor), (ne, NeFunctor), (le, LeFunctor),
+     (lt, LtFunctor), (ge, GeFunctor), (gt, GtFunctor), ));
 
-#define DECLARE_UNARY_OPS_CUDA(op, functor)     \
-  TensorImpl op##_cuda(const TensorImpl& a) {   \
-    TensorMetaHandler meta(&a);                 \
-    unary_dispatch_handler<functor>(meta);      \
-    return meta.out();                          \
+#define DECLARE_UNARY_OPS_CUDA(args) DECLARE_UNARY_OPS_CUDA_HELPER args
+#define DECLARE_UNARY_OPS_CUDA_HELPER(op, functor) \
+  TensorImpl op##_cuda(const TensorImpl& a) {      \
+    TensorMetaHandler meta(&a);                    \
+    unary_dispatch_handler<functor>(meta);         \
+    return meta.out();                             \
   }
-#define DECLARE_UNARY_OPS_CUDA_HELPER(args) DECLARE_UNARY_OPS_CUDA args
 
-LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_UNARY_OPS_CUDA_HELPER, (
-  (neg, NegFunctor),
-  (log, LogFunctor),
-  (exp, ExpFunctor),
-  (sqrt, SqrtFunctor),
-  (abs, AbsFunctor),
-  (sin, SinFunctor),
-  (cos, CosFunctor), 
-  (tan, TanFunctor),
-));
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_UNARY_OPS_CUDA,
+                               ((neg, NegFunctor), (log, LogFunctor),
+                                (exp, ExpFunctor), (sqrt, SqrtFunctor),
+                                (abs, AbsFunctor), (sin, SinFunctor),
+                                (cos, CosFunctor), (tan, TanFunctor), ));
 
 TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val) {
   TensorMetaHandler meta(&a);
@@ -102,20 +89,17 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
-#define DECLARE_REDUCT_OPS_CUDA(op, functor)      \
+#define DECLARE_REDUCT_OPS_CUDA(args) DECLARE_REDUCT_OPS_CUDA_HELPER args
+#define DECLARE_REDUCT_OPS_CUDA_HELPER(op, functor)        \
   TensorImpl op##_cuda(const TensorImpl& a, size_t axis) { \
-    TensorMetaHandler meta(&a, axis);             \
-    reduct_dispatch_handler<functor>(meta, axis); \
-    return meta.out();                            \
+    TensorMetaHandler meta(&a, axis);                      \
+    reduct_dispatch_handler<functor>(meta, axis);          \
+    return meta.out();                                     \
   }
-#define DECLARE_REDUCT_OPS_CUDA_HELPER(args) DECLARE_REDUCT_OPS_CUDA args
 
-LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_REDUCT_OPS_CUDA_HELPER, (
-  (sum, SumFunctor),
-  (max, MaxFunctor),
-  (min, MinFunctor),
-  (prod, ProdFunctor),
-));
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_REDUCT_OPS_CUDA,
+                               ((sum, SumFunctor), (max, MaxFunctor),
+                                (min, MinFunctor), (prod, ProdFunctor), ));
 
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CUDA, add_cuda);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CUDA, sub_cuda);

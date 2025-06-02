@@ -1,42 +1,21 @@
 #include <cassert>
 #include <iostream>
-#include <sstream>
 
-namespace detail {
+void func_with_args(int a, const char* str) {
+  printf("Function called with args: %d, %s\n", a, str);
+}
 
-class AssertStream {
- public:
-  AssertStream(const char* file, int line, const char* expr) {
-    os_ << file << ':' << line << ": ASSERT(" << expr << ") failed: ";
-  }
+void func_no_args() {
+  printf("Function called with no args\n");
+}
 
-  template <class T>
-  AssertStream& operator<<(T&& v) {
-    os_ << std::forward<T>(v);
-    return *this;
-  }
-
-  [[noreturn]] void trigger() const { throw std::runtime_error(os_.str()); }
-
- private:
-  std::ostringstream os_;
-};
-
-struct Voidify {
-  template <class T>
-  void operator&(T&& stream) const {
-    stream.trigger();
-  }
-};
-
-}  // namespace detail
-
-#define ASSERT(cond)             \
-  (cond) ? (void)0               \
-         : ::detail::Voidify() & \
-               ::detail::AssertStream(__FILE__, __LINE__, #cond)
+#define CALL_FUNC(...) \
+  __VA_OPT__(func_with_args(__VA_ARGS__);) __VA_OPT__(, func_no_args();)
+#define TEST(...) __VA_OPT__(, __VA_ARGS__)
 
 int main() {
-  ASSERT(1 == 1) << "hello!!!";
-  ASSERT(1 == 2) << "hello";
+  // CALL_FUNC(10, "hello"); // Calls func_with_args(10, "hello");
+  // CALL_FUNC();           // Calls func_no_args();
+
+  return 0;
 }

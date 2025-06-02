@@ -27,48 +27,28 @@ struct PowerBackward : public Function {
 
 struct Add : public ForwardFunction<Add> {
   using DefaultBackward = AddBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Subtract : public ForwardFunction<Subtract> {
   using DefaultBackward = SubtractBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Multiply : public ForwardFunction<Multiply> {
   using DefaultBackward = MultiplyBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Divide : public ForwardFunction<Divide> {
   using DefaultBackward = DivideBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Power : public ForwardFunction<Power> {
   using DefaultBackward = PowerBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
-
-inline Variable add(const Variable& a, const Variable& b) {
-  return VariableOpFact::apply<Add>({a, b})[0];
-}
-
-inline Variable sub(const Variable& a, const Variable& b) {
-  return VariableOpFact::apply<Subtract>({a, b})[0];
-}
-
-inline Variable mul(const Variable& a, const Variable& b) {
-  return VariableOpFact::apply<Multiply>({a, b})[0];
-}
-
-inline Variable div(const Variable& a, const Variable& b) {
-  return VariableOpFact::apply<Divide>({a, b})[0];
-}
-
-inline Variable pow(const Variable& a, const Variable& b) {
-  return VariableOpFact::apply<Power>({a, b})[0];
-}
 
 struct EqualBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
@@ -96,33 +76,53 @@ struct GreaterEqualBackward : public Function {
 
 struct Equal : public ForwardFunction<Equal> {
   using DefaultBackward = EqualBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Less : public ForwardFunction<Less> {
   using DefaultBackward = LessBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct LessEqual : public ForwardFunction<LessEqual> {
   using DefaultBackward = LessEqualBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct NotEqual : public ForwardFunction<NotEqual> {
   using DefaultBackward = NotEqualBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct Greater : public ForwardFunction<Greater> {
   using DefaultBackward = GreaterBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct GreaterEqual : public ForwardFunction<GreaterEqual> {
   using DefaultBackward = GreaterEqualBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
+
+inline Variable add(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Add>({a, b})[0];
+}
+
+inline Variable sub(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Subtract>({a, b})[0];
+}
+
+inline Variable mul(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Multiply>({a, b})[0];
+}
+
+inline Variable div(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Divide>({a, b})[0];
+}
+
+inline Variable pow(const Variable& a, const Variable& b) {
+  return VariableOpFact::apply<Power>({a, b})[0];
+}
 
 inline Variable eq(const Variable& a, const Variable& b) {
   return VariableOpFact::apply<Equal>({a, b})[0];

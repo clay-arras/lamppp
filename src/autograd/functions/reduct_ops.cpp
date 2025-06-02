@@ -1,79 +1,23 @@
 #include "lamppp/autograd/functions/reduct_ops.hpp"
-
+#include "lamppp/autograd/functions/unary_decl.hpp"
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/common/assert.hpp"
+#include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/fill_like.hpp"
 
 namespace lmp::autograd::ops {
 
-variable_list SummationBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
-  const Variable& grad = gradOutputs[0];
-  Variable& self = (*saved_inputs)[0];
+LMP_FOR_EACH_CARTESIAN_PRODUCT(
+    LMP_AUTOGRAD_FN_UNARY_DECL,
+    ((SummationBackward, tensor::ones_like(self.data()) * grad.grad()),
+     (MaximumBackward, grad.grad() * tensor::ops::eq(self.data(), grad.data())),
+     (MinimumBackward, grad.grad() * tensor::ops::eq(self.data(), grad.data())),
+     (ProductBackward, grad.grad() * (grad.data() / self.data())), ));
 
-  self.incr_grad(tensor::ones_like(self.data()) * grad.grad());
-
-  variable_list grad_inputs = {};
-  return grad_inputs;
-}
-
-variable_list MaximumBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
-  const Variable& grad = gradOutputs[0];
-  Variable& self = (*saved_inputs)[0];
-
-  tensor::Tensor mask = tensor::ops::eq(self.data(), grad.data());
-  self.incr_grad(grad.grad() * mask);
-
-  variable_list grad_inputs = {};
-  return grad_inputs;
-}
-
-variable_list MinimumBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
-  const Variable& grad = gradOutputs[0];
-  Variable& self = (*saved_inputs)[0];
-
-  tensor::Tensor mask = tensor::ops::eq(self.data(), grad.data());
-  self.incr_grad(grad.grad() * mask);
-
-  variable_list grad_inputs = {};
-  return grad_inputs;
-}
-
-variable_list ProductBackward::apply(const variable_list& gradOutputs) {
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch.";
-  const Variable& grad = gradOutputs[0];
-  Variable& self = (*saved_inputs)[0];
-
-  self.incr_grad(grad.grad() * (grad.data() / self.data()));
-
-  variable_list grad_inputs = {};
-  return grad_inputs;
-}
-
-tensor::Tensor Summation::execute(const variable_list& inputs) const {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
-  const Variable& self_var = inputs[0];
-  return tensor::ops::sum(self_var.data(), axis);
-}
-
-tensor::Tensor Maximum::execute(const variable_list& inputs) const {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
-  const Variable& self_var = inputs[0];
-  return tensor::ops::max(self_var.data(), axis);
-}
-
-tensor::Tensor Minimum::execute(const variable_list& inputs) const {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
-  const Variable& self_var = inputs[0];
-  return tensor::ops::min(self_var.data(), axis);
-}
-
-tensor::Tensor Product::execute(const variable_list& inputs) const {
-  LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
-  const Variable& self_var = inputs[0];
-  return tensor::ops::prod(self_var.data(), axis);
-}
+LMP_FOR_EACH_CARTESIAN_PRODUCT(LMP_AUTOGRAD_FFN_UNARY_DECL,
+                               ((Summation, tensor::ops::sum, axis_),
+                                (Maximum, tensor::ops::max, axis_),
+                                (Minimum, tensor::ops::min, axis_),
+                                (Product, tensor::ops::prod, axis_), ));
 
 }  // namespace lmp::autograd::ops

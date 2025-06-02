@@ -36,7 +36,7 @@ Tensor Tensor::expand_dims(size_t dim) const {
 }
 
 Tensor Tensor::to(DeviceType device) const {
-  return Tensor(std::make_shared<TensorImpl>(impl_->to_(device)));
+  return lmp::tensor::ops::to(*this, device);
 }
 
 Scalar Tensor::index(const std::vector<size_t>& idx) const {

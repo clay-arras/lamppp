@@ -5,7 +5,10 @@
 #include "lamppp/tensor/dispatch_stub.hpp"
 #include "lamppp/tensor/scalar.hpp"
 
-namespace lmp::tensor::ops {
+namespace lmp::tensor {
+    class Tensor;
+
+namespace ops {
 
 using copy_fn = void (*)(DeviceType, const void*, void*, size_t, DataType,
                          DataType);
@@ -18,4 +21,7 @@ LMP_DECLARE_DISPATCH(empty_fn, empty_stub);
 LMP_DECLARE_DISPATCH(fill_fn, fill_stub);
 LMP_DECLARE_DISPATCH(resize_fn, resize_stub);
 
+Tensor to(const Tensor& a, DeviceType to_device);
+
 }  // namespace lmp::tensor::ops
+}

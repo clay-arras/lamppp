@@ -1,5 +1,4 @@
 #include "lamppp/autograd/functions/matrix_ops.hpp"
-
 #include "lamppp/autograd/function.hpp"
 #include "lamppp/autograd/variable.hpp"
 
@@ -17,8 +16,7 @@ variable_list MatrixMultiplicationBackward::apply(
   other.incr_grad(
       tensor::ops::matmul(tensor::ops::transpose(self.data()), grad.grad()));
 
-  variable_list grad_inputs =
-      {};  // TODO(nlin): remove these maybe, this isn't right
+  variable_list grad_inputs = {};
   return grad_inputs;
 }
 

@@ -80,8 +80,14 @@ struct Voidify {
 } // namespace detail
 } // namespace lmp
 
+// ignoring some error with warning: control reaches end of non-void function [-Wreturn-type]
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wreturn-type"
+
 #define LMP_CHECK(cond) \
     (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::CheckStream(__FILE__, __LINE__, __func__, #cond)
+
+#pragma GCC diagnostic pop
 
 #ifdef LMP_DEBUG
 

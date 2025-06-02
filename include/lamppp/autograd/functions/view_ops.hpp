@@ -17,7 +17,7 @@ struct Reshape : public ForwardFunction<Reshape> {
   using DefaultBackward = ReshapeBackward;
   std::vector<size_t> shape;
   explicit Reshape(std::vector<size_t> shape) : shape(std::move(shape)) {}
-  tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct SqueezeBackward : public Function {
@@ -29,7 +29,7 @@ struct Squeeze : public ForwardFunction<Squeeze> {
   using DefaultBackward = SqueezeBackward;
   size_t axis;
   explicit Squeeze(size_t axis) : axis(axis) {}
-  tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct ExpandDimsBackward : public Function {
@@ -41,7 +41,7 @@ struct ExpandDims : public ForwardFunction<ExpandDims> {
   using DefaultBackward = ExpandDimsBackward;
   size_t axis;
   explicit ExpandDims(size_t axis) : axis(axis) {}
-  tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 struct ToBackward : public Function {
@@ -53,7 +53,7 @@ struct To : public ForwardFunction<To> {
   using DefaultBackward = ToBackward;
   tensor::DeviceType device;
   explicit To(tensor::DeviceType device) : device(device) {}
-  tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs) const;
 };
 
 inline Variable reshape(const Variable& a, const std::vector<size_t>& shape) {

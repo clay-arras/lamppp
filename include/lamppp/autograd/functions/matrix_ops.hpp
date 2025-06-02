@@ -15,12 +15,12 @@ struct TransposeBackward : public Function {
 
 struct MatrixMultiplication : public ForwardFunction<MatrixMultiplication> {
   using DefaultBackward = MatrixMultiplicationBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs);
 };
 
 struct Transpose : public ForwardFunction<Transpose> {
   using DefaultBackward = TransposeBackward;
-  static tensor::Tensor execute(const variable_list& inputs);
+  tensor::Tensor execute(const variable_list& inputs);
 };
 
 inline Variable matmul(const Variable& a, const Variable& b) {

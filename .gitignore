@@ -1,8 +1,10 @@
 poetry.lock
+Doxyfile
 **/__pycache__/
 **/build/
 data/
 .venv/
+.clangd
 .cache/
 .hypothesis/
 .vscode/

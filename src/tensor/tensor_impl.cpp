@@ -20,7 +20,10 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                                              std::multiplies<>())) {
   LMP_DISPATCH_ALL_TYPES(dtype, [&] {
     LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_)
-        << "Size mismatch, product of shape must equal num elements";
+        << "Storage size mismatch: expected " << numel_ << " elements of type "
+        << dtype << " (" << sizeof(scalar_t) << " bytes each), but storage has "
+        << data_.byte_size() << " bytes (capacity for "
+        << (data_.byte_size() / sizeof(scalar_t)) << " elements)";
   });
   update_strides_();
 }
@@ -109,16 +112,6 @@ void TensorImpl::copy_(const TensorImpl& other) {
 
 void TensorImpl::fill_(Scalar item) {
   ops::fill_stub()(device(), data(), numel(), item, type());
-}
-
-TensorImpl TensorImpl::to_(DeviceType to_device) {
-  LMP_CHECK(device() != to_device)
-      << "Device argument must be different from current device.";
-  Storage new_storage(data_.byte_size(), to_device);
-  ops::copy_stub()(device(), to_device, data(), new_storage.data(), numel(),
-                   type(), type());
-  TensorImpl new_impl(new_storage, shape(), type());
-  return new_impl;
 }
 
 const size_t kMaxPrintElem = 1e2;

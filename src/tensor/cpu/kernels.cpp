@@ -1,4 +1,5 @@
 #include "lamppp/tensor/cpu/kernels.hpp"
+#include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cpu/expand.hpp"
 #include "lamppp/tensor/cpu/matrix.hpp"
 #include "lamppp/tensor/cpu/meta_handler.hpp"
@@ -6,50 +7,36 @@
 #include "lamppp/tensor/cpu/unary.hpp"
 #include "lamppp/tensor/native/expand_ops.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
-#include "lamppp/common/macros.hpp"
 
 namespace lmp::tensor::detail::cpu {
 
-#define DECLARE_EXPAND_OPS_CPU(op, functor)      \
+#define DECLARE_EXPAND_OPS_CPU(args) DECLARE_EXPAND_OPS_CPU_HELPER args
+#define DECLARE_EXPAND_OPS_CPU_HELPER(op, functor)                \
   TensorImpl op##_cpu(const TensorImpl& a, const TensorImpl& b) { \
-    TensorMetaHandler meta(&a, &b);              \
-    expand_dispatch_handler<functor>(meta);      \
-    return meta.out();                           \
+    TensorMetaHandler meta(&a, &b);                               \
+    expand_dispatch_handler<functor>(meta);                       \
+    return meta.out();                                            \
   }
-#define DECLARE_EXPAND_OPS_CPU_HELPER(args) DECLARE_EXPAND_OPS_CPU args
 
-LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_EXPAND_OPS_CPU_HELPER, (
-  (add, AddFunctor),
-  (sub, SubFunctor),
-  (mul, MulFunctor),
-  (div, DivFunctor),
-  (pow, PowFunctor),
-  (eq, EqFunctor),
-  (ne, NeFunctor),
-  (le, LeFunctor),
-  (lt, LtFunctor),
-  (ge, GeFunctor),
-  (gt, GtFunctor),
-));
+LMP_FOR_EACH_CARTESIAN_PRODUCT(
+    DECLARE_EXPAND_OPS_CPU,
+    ((add, AddFunctor), (sub, SubFunctor), (mul, MulFunctor), (div, DivFunctor),
+     (pow, PowFunctor), (eq, EqFunctor), (ne, NeFunctor), (le, LeFunctor),
+     (lt, LtFunctor), (ge, GeFunctor), (gt, GtFunctor), ));
 
-#define DECLARE_UNARY_OPS_CPU(op, functor)      \
-  TensorImpl op##_cpu(const TensorImpl& a) {    \
-    TensorMetaHandler meta(&a);                 \
-    unary_dispatch_handler<functor>(meta);      \
-    return meta.out();                          \
+#define DECLARE_UNARY_OPS_CPU(args) DECLARE_UNARY_OPS_CPU_HELPER args
+#define DECLARE_UNARY_OPS_CPU_HELPER(op, functor) \
+  TensorImpl op##_cpu(const TensorImpl& a) {      \
+    TensorMetaHandler meta(&a);                   \
+    unary_dispatch_handler<functor>(meta);        \
+    return meta.out();                            \
   }
-#define DECLARE_UNARY_OPS_CPU_HELPER(args) DECLARE_UNARY_OPS_CPU args
 
-LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_UNARY_OPS_CPU_HELPER, (
-  (neg, NegFunctor),
-  (log, LogFunctor),
-  (exp, ExpFunctor),
-  (sqrt, SqrtFunctor),
-  (abs, AbsFunctor),
-  (sin, SinFunctor),
-  (cos, CosFunctor), 
-  (tan, TanFunctor),
-));
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_UNARY_OPS_CPU,
+                               ((neg, NegFunctor), (log, LogFunctor),
+                                (exp, ExpFunctor), (sqrt, SqrtFunctor),
+                                (abs, AbsFunctor), (sin, SinFunctor),
+                                (cos, CosFunctor), (tan, TanFunctor), ));
 
 TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val) {
   TensorMetaHandler meta(&a);
@@ -103,20 +90,17 @@ TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
-#define DECLARE_REDUCT_OPS_CPU(op, functor)       \
+#define DECLARE_REDUCT_OPS_CPU(args) DECLARE_REDUCT_OPS_CPU_HELPER args
+#define DECLARE_REDUCT_OPS_CPU_HELPER(op, functor)        \
   TensorImpl op##_cpu(const TensorImpl& a, size_t axis) { \
-    TensorMetaHandler meta(&a, axis);             \
-    reduct_dispatch_handler<functor>(meta, axis); \
-    return meta.out();                            \
+    TensorMetaHandler meta(&a, axis);                     \
+    reduct_dispatch_handler<functor>(meta, axis);         \
+    return meta.out();                                    \
   }
-#define DECLARE_REDUCT_OPS_CPU_HELPER(args) DECLARE_REDUCT_OPS_CPU args
 
-LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_REDUCT_OPS_CPU_HELPER, (
-  (sum, SumFunctor),
-  (max, MaxFunctor),
-  (min, MinFunctor),
-  (prod, ProdFunctor),
-));
+LMP_FOR_EACH_CARTESIAN_PRODUCT(DECLARE_REDUCT_OPS_CPU,
+                               ((sum, SumFunctor), (max, MaxFunctor),
+                                (min, MinFunctor), (prod, ProdFunctor), ));
 
 LMP_REGISTER_DISPATCH(ops::add_stub, DeviceType::CPU, add_cpu);
 LMP_REGISTER_DISPATCH(ops::sub_stub, DeviceType::CPU, sub_cpu);

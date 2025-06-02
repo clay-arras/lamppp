@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lamppp/tensor/functions/expand_ops.hpp"
-#include "lamppp/tensor/functions/unary_ops.hpp"
+#include "lamppp/tensor/native/expand_ops.hpp"
+#include "lamppp/tensor/native/unary_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::tensor {

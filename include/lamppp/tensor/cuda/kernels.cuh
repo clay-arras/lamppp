@@ -2,10 +2,10 @@
 
 #include <cuda/std/array>
 #include "lamppp/tensor/dispatch_stub.hpp"
-#include "lamppp/tensor/functions/matrix_ops.hpp"
-#include "lamppp/tensor/functions/expand_ops.hpp"
-#include "lamppp/tensor/functions/reduct_ops.hpp"
-#include "lamppp/tensor/functions/unary_ops.hpp"
+#include "lamppp/tensor/native/matrix_ops.hpp"
+#include "lamppp/tensor/native/expand_ops.hpp"
+#include "lamppp/tensor/native/reduct_ops.hpp"
+#include "lamppp/tensor/native/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cuda {

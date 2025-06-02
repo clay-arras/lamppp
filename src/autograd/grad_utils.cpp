@@ -1,4 +1,4 @@
-#include "lamppp/tensor/functions/reduct_ops.hpp"
+#include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::autograd::detail {

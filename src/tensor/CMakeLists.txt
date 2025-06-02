@@ -1,20 +1,18 @@
 project(tensor_lib LANGUAGES CXX CUDA)
 
 set(TENSOR_SOURCES
-  functions/expand_ops.cpp
-  functions/matrix_ops.cpp
-  functions/unary_ops.cpp
-  functions/reduct_ops.cpp
-  native/resize.cu
-  native/empty.cu
-  native/fill.cu
-  native/copy.cu
+  native/expand_ops.cpp
+  native/matrix_ops.cpp
+  native/unary_ops.cpp
+  native/reduct_ops.cpp
+  native/memory_ops.cpp
   cuda/matrix.cu
   cuda/offset_util.cu
   cuda/unary.cu
   cuda/reduct.cu
   cuda/expand.cu
   cuda/kernels.cu
+  cuda/memory.cu
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp
@@ -22,6 +20,7 @@ set(TENSOR_SOURCES
   cpu/reduct.cpp
   cpu/matrix.cpp
   cpu/kernels.cpp
+  cpu/memory.cpp
   fill_like.cpp
   tensor.cpp
   tensor_impl.cpp

@@ -3,8 +3,8 @@
 #include <cmath>
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_stub.hpp"
-#include "lamppp/tensor/functions/unary_ops.hpp"
-#include "lamppp/tensor/functions/matrix_ops.hpp"
+#include "lamppp/tensor/native/unary_ops.hpp"
+#include "lamppp/tensor/native/matrix_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cpu {

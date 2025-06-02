@@ -8,7 +8,7 @@
 #include "dispatch_type.hpp"
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/align_utils.hpp"
-#include "lamppp/tensor/native/copy.cuh"
+#include "lamppp/tensor/native/memory_ops.hpp"
 #include "lamppp/tensor/storage.hpp"
 #include "scalar.hpp"
 
@@ -32,7 +32,7 @@ class TensorImpl {
     LMP_CHECK(data.size() == numel_) <<
               "Size mismatch, product of shape must equal num elements";
     DataType src_dtype = TypeMeta<T>::value;
-    detail::native::copy_stub()(DeviceType::CPU, device, data.data(),
+    ops::copy_stub()(DeviceType::CPU, device, data.data(),
                                 data_.data(), numel_, src_dtype, type_);
     update_strides_();
   }

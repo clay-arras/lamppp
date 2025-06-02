@@ -1,15 +1,43 @@
-#include <cstring>
-#include "lamppp/common/assert.hpp"
+#include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
+#include <driver_types.h>
+#include <cuda/std/array>
+#include "lamppp/tensor/cuda/list_ptr.cuh"
 #include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/device_type.hpp"
-#include "lamppp/tensor/dispatch_stub.hpp"
+#include <thrust/device_ptr.h>
+#include "lamppp/tensor/cuda/memory.cuh"
+#include "lamppp/tensor/cpu/memory.hpp"
+#include "lamppp/tensor/native/memory_ops.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
-#include "lamppp/tensor/native/copy.cuh"
-#include "lamppp/tensor/supported_types.hpp"
 
-namespace lmp::tensor::detail::native {
+namespace lmp::tensor::detail::cuda {
 
-LMP_DEFINE_DISPATCH(copy_fn, copy_stub);
+DataPtr empty_cuda(size_t byte_size) {
+  void* ptr_ = nullptr;
+  LMP_CUDA_ASSERT(cudaMalloc(&ptr_, byte_size)) << 
+                  "empty_cuda: cudaMalloc failed.";
+  return DataPtr(ptr_, [](void* ptr) { cudaFree(ptr); });
+}
+void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
+  LMP_DISPATCH_ALL_TYPES(type, [&]() {
+    thrust::device_ptr<scalar_t> data(static_cast<scalar_t*>(ptr));
+    thrust::fill(data, data + size, static_cast<scalar_t>(t));
+    LMP_CUDA_ASSERT(cudaGetLastError()) << "fill_cuda: thrust::fill failed.";
+  });
+}
+void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
+  void* ptr = nullptr;
+  cudaMalloc(&ptr, new_byte_size);
+  cudaMemcpy(ptr, dptr.data(), std::min(old_byte_size, new_byte_size),
+             cudaMemcpyDeviceToDevice);
+
+  auto deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
+  dptr = DataPtr(ptr, *deleter);
+}
+
+LMP_REGISTER_DISPATCH(ops::empty_stub, DeviceType::CUDA, empty_cuda);
+LMP_REGISTER_DISPATCH(ops::fill_stub, DeviceType::CUDA, fill_cuda);
+LMP_REGISTER_DISPATCH(ops::resize_stub, DeviceType::CUDA, resize_cuda);
 
 void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
               DataType src_dtype, DataType dest_dtype) {
@@ -116,14 +144,6 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
   }
 }
 
-// TODO: need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
-template <typename U, typename V>
-void cudaVecCopy(size_t size, const U* in, V* out) {
-  size_t threads = 256;
-  size_t blocks = (size + threads - 1) / threads;
-  cudaVecCopyKernel<U, V><<<blocks, threads>>>(size, in, out);
-}
-
 template <typename U, typename V>
 void vecCopy(size_t size, const U* in, V* out) {
 #pragma omp parallel for simd
@@ -132,18 +152,26 @@ void vecCopy(size_t size, const U* in, V* out) {
   }
 }
 
+// TODO: need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
+template <typename U, typename V>
+void cudaVecCopy(size_t size, const U* in, V* out) {
+  size_t threads = 256;
+  size_t blocks = (size + threads - 1) / threads;
+  cudaVecCopyKernel<U, V><<<blocks, threads>>>(size, in, out);
+}
+
 #include "lamppp/tensor/supported_types.hpp"
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type) \
   template void cudaVecCopy<arg1_type, arg2_type>( \
-      size_t, const arg1_type*, arg2_type*); \
+      size_t, const arg1_type*, arg2_type*);   \
   template void vecCopy<arg1_type, arg2_type>( \
       size_t, const arg1_type*, arg2_type*);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
 #undef INSTANTIATE_COPY
 
-LMP_REGISTER_DISPATCH(copy_stub, DeviceType::CPU, copy_cpu);
-LMP_REGISTER_DISPATCH(copy_stub, DeviceType::CUDA, copy_cuda);
+LMP_REGISTER_DISPATCH(ops::copy_stub, DeviceType::CPU, copy_cpu);
+LMP_REGISTER_DISPATCH(ops::copy_stub, DeviceType::CUDA, copy_cuda);
 
-}  // namespace lmp::tensor::detail::native
+}  // namespace lmp::tensor::detail::cuda

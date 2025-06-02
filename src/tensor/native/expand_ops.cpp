@@ -1,4 +1,4 @@
-#include "lamppp/tensor/functions/expand_ops.hpp"
+#include "lamppp/tensor/native/expand_ops.hpp"
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/tensor.hpp"
 

@@ -32,7 +32,7 @@ struct DispatchStub {
   ::lmp::tensor::detail::DispatchStub<fn_type>& stub_name();
 
 #define LMP_DEFINE_DISPATCH(fn_type, stub_name)                      \
-  inline ::lmp::tensor::detail::DispatchStub<fn_type>& stub_name() { \
+  ::lmp::tensor::detail::DispatchStub<fn_type>& stub_name() {        \
     static ::lmp::tensor::detail::DispatchStub<fn_type> s;           \
     return s;                                                        \
   };

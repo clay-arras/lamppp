@@ -2,9 +2,13 @@
 
 ### current todo
 
-<!-- - refactor the testing folder with Cmake -->
-<!-- - refactor the tests to test both CPU and CUDA sequentially -->
-<!-- - refactor the tests to test all data types -->
+for release:
+- start adding documenatation with Doxygen
+- make the code compile cuda optional
+
+for cleanliness:
+- refactor the autograd functions
+- split the copy, empty, fill, and resize files
 
 
 ## easy
@@ -17,27 +21,19 @@ benchmarking
 - make regular binary operations different from broadcasting operations (see if it's speedup)
 - benchmark more operations
 
-for release:
+<!-- for release:
 - start adding documenatation with Doxygen
-- make the code compile cuda optional
+- make the code compile cuda optional -->
 - relu, sigmoid, tanh -- define this in nn module
-<!-- - add prod, neg, and pow backwards -->
 
 ## medium
-
-for cleanliness:
-<!-- - refactor: add offsetUtil passed into metaHandler as a dispatch -->
-- refactor the autograd functions
-<!-- - refactor to have << operator with the macro LMP_CHECK -->
-<!-- - refactor: move matrix cuda and cpu to their respective @matrix.cuh and @matrix.hpp -->
-- split the copy, empty, fill, and resize files
 
 ## hard
 
 - fix github tests
 - add better tests with hypothesis
 
-## automatic tests
+### automatic tests
 
 - a) generate a list of variables, set A where len(A) = N
 - b) generate a set of ALL of the possible edges between A, s.t. len(E) = N\*(N-1)/2

@@ -9,6 +9,8 @@
 #include "dispatch_type.hpp"
 #include "fill_like.hpp"
 #include "tensor_impl.hpp"
+#include "lamppp/tensor/native/memory_ops.hpp"
+#include "lamppp/tensor/cuda/memory.cuh"
 
 namespace lmp::tensor {
 
@@ -41,8 +43,8 @@ class Tensor {
     std::vector<T> converted_data(impl_->numel());
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
       scalar_t* original_data =
-          static_cast<scalar_t*>(malloc(numel() * sizeof(scalar_t)));
-      detail::native::copy_stub()(device(), DeviceType::CPU, data(),
+          static_cast<scalar_t*>(malloc(numel() * sizeof(scalar_t))); // TODO; malloc is probably bad
+      ops::copy_stub()(device(), DeviceType::CPU, data(),
                                   original_data, numel(), type(), type());
 
       for (size_t i = 0; i < impl_->numel(); ++i) {

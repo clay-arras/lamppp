@@ -4,8 +4,8 @@
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cpu/reduct.hpp"
 #include "lamppp/tensor/cpu/unary.hpp"
-#include "lamppp/tensor/functions/expand_ops.hpp"
-#include "lamppp/tensor/functions/reduct_ops.hpp"
+#include "lamppp/tensor/native/expand_ops.hpp"
+#include "lamppp/tensor/native/reduct_ops.hpp"
 
 namespace lmp::tensor::detail::cpu {
 

@@ -1,4 +1,4 @@
-#include "lamppp/tensor/functions/unary_ops.hpp"
+#include "lamppp/tensor/native/unary_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 

@@ -1,12 +1,14 @@
-# Lamp++
+<div align="left">
+  <img src="https://github.com/user-attachments/assets/52f467bf-bc40-4e01-8389-358d74777731" alt="neural_bulb_svg (3)" width="600">
+</div>
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/clay-arras/lamp) <!-- Placeholder -->
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/clay-arras/lamp/blob/main/LICENSE) <!-- Placeholder -->
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/clay-arras/lamp) <!-- Placeholder -->
 
-Lamp++ is a C++ automatic differentiation (autograd) engine and tensor library, built from scratch with a focus on performance, extensibility, and modern C++ design. It aims to provide a transparent and adaptable foundation for machine learning research and development.
+Lamp++ is a C++ automatic differentiation (autograd) engine and tensor library, built from scratch with a focus on performance, extensibility, and modern C++ design. It aims to provide a transparent and adaptable foundation for machine learning research and development. The entire library is about ~4k lines of code, with ~2.5k being the tensor module, and ~1.5k being the autograd module. 
 
-Performance is a key focus, with benchmarks indicating speeds comparable to PyTorch for many tensor operations. The library supports CUDA for GPU acceleration and leverages Eigen for optimized CPU matrix math.
+The library supports CUDA for GPU acceleration and leverages OMP for optimized CPU matrix math. CUDA Compilation is optional
 
 ## Core Design & Capabilities
 
@@ -24,22 +26,13 @@ Performance is a key focus, with benchmarks indicating speeds comparable to PyTo
 
 ## Getting Started
 
-### Requirements
-
-- C++17 compatible compiler (e.g., GCC 9+, Clang 10+)
-- CMake (3.10+ recommended)
-- Eigen (3.4+ recommended)
-- NVIDIA CUDA Toolkit (optional, for GPU support, 11.x+ recommended)
-- Google Benchmark (optional, for running benchmarks)
-
 ### Building Lamp++
 
 ```bash
-git clone https://github.com/clay-arras/lamp.git # Or your repository URL
+git clone https://github.com/clay-arras/lamp.git 
 cd lamp
-mkdir -p build && cd build
-cmake .. # Add -DLAMP_ENABLE_CUDA=ON to enable CUDA
-cmake --build . --config Release
+cmake -S . -B build -DENABLE_CUDA=ON   # turn it on or off
+cmake --build build
 ```
 
 ## Usage Example
@@ -50,22 +43,15 @@ A minimal example demonstrating autograd:
 #include <iostream>
 #include "lamppp/lamppp.hpp"
 
-using lmp::autograd::Variable;
-using lmp::tensor::Tensor;
-using lmp::tensor::DeviceType;
-using lmp::tensor::DataType;
-using namespace lmp::autograd::ops;
-
 int main() {
+    lmp::Tensor data_a(std::vector<float>{2.0f, 4.0f}, {1, 2}, lmp::DeviceType::CUDA, lmp::DataType::Float32);
+    lmp::Tensor data_b(std::vector<float>{3.0f, 1.0f}, {1, 2}, lmp::DeviceType::CUDA, lmp::DataType::Float32);
 
-    Tensor data_a(std::vector<float>{2.0f, 4.0f}, {1, 2}, DeviceType::CUDA, DataType::Float32);
-    Tensor data_b(std::vector<float>{3.0f, 1.0f}, {1, 2}, DeviceType::CUDA, DataType::Float32);
+    lmp::Variable a(data_a, true);
+    lmp::Variable b(data_b, true);
 
-    Variable a(data_a, true);
-    Variable b(data_b, true);
-
-    Variable c = a * b;
-    Variable loss = sum(sum(c, 1), 0);
+    lmp::Variable c = a * b;
+    lmp::Variable loss = lmp::sum(lmp::sum(c, 1), 0);
 
     loss.backward();
 
@@ -73,8 +59,6 @@ int main() {
     std::cout << "Gradient of b (should be data of a: {2.0, 4.0}):\n" << b.grad() << std::endl;
 }
 ```
-
-_(Note: Tensor initialization and operation naming have been verified. The `using namespace lmp::autograd::ops;` brings `mul` and `sum` into scope. The reduction to scalar loss is done by summing over each axis sequentially.)_
 
 ## Project Structure Highlights
 
@@ -86,7 +70,7 @@ _(Note: Tensor initialization and operation naming have been verified. The `usin
   - `tensor/`: Tensor operations, including `cuda/` for GPU kernels and `native/` for CPU/dispatch.
 - **`examples/`**: Contains usage examples like the MNIST digit classifier.
 - **`benchmarks/`**: Performance tests.
-- **`test/`**: Unit and integration tests.
+- **`tests/`**: Unit and integration tests.
 
 ## Contributing
 
@@ -98,6 +82,3 @@ Contributions are welcome. Please fork the repository, create a feature branch, 
 - Exploring further graph optimizations.
 - Broadening hardware backend support.
 
-## License
-
-Distributed under the MIT License. See the `LICENSE` file for details.

@@ -5,6 +5,7 @@
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/tensor/fill_like.hpp"
 #include "lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::autograd {
 
@@ -14,13 +15,15 @@ inline Variable binary_op(const Variable& a, const Variable& b) {
 }
 template <Variable (*OpTag)(const Variable&, const Variable&)>
 inline Variable binary_op(const Variable& v, tensor::Scalar s) {
-  tensor::Tensor tmp = full_like(v.data(), s);
-  return binary_op<OpTag>(v, Variable(tmp));
+  tensor::Tensor scalar_tensor(std::vector<tensor::Scalar>(1, s), {1}, v.data().device(),
+                        v.data().type());  // rely on broadcasting
+  return binary_op<OpTag>(v, Variable(scalar_tensor));
 }
 template <Variable (*OpTag)(const Variable&, const Variable&)>
 inline Variable binary_op(tensor::Scalar s, const Variable& v) {
-  tensor::Tensor tmp = full_like(v.data(), s);
-  return binary_op<OpTag>(Variable(tmp), v);
+  tensor::Tensor scalar_tensor(std::vector<tensor::Scalar>(1, s), {1}, v.data().device(),
+                        v.data().type());  // rely on broadcasting
+  return binary_op<OpTag>(Variable(scalar_tensor), v);
 }
 
 #define DECL_BINARY_OP(op, tag)                                       \

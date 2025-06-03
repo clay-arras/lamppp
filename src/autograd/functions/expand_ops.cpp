@@ -35,7 +35,25 @@ LMP_FOR_EACH_CARTESIAN_PRODUCT(
                                  self.data().shape()),
       detail::sum_broadcast_axis(grad.grad() * grad.data() *
                                      tensor::ops::log(self.data()),
-                                 other.data().shape())), ));
+                                 other.data().shape())),
+     (EqualBackward,
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()),
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor())),
+     (LessBackward,
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()),
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor())),
+     (LessEqualBackward,
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()),
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor())),
+     (NotEqualBackward,
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()),
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor())),
+     (GreaterBackward,
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()),
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor())),
+     (GreaterEqualBackward,
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()),
+      ((LMP_INTERNAL_ASSERT(false) << "Not implemented"), tensor::Tensor()))));
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(
     LMP_AUTOGRAD_FFN_BINARY_DECL,

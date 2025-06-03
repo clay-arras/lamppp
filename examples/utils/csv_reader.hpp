@@ -1,4 +1,7 @@
-#include "csv_reader.hpp"
+#pragma once
+
+#include <string>
+#include <vector>
 #include <fstream>
 #include <iostream>
 #include <ostream>

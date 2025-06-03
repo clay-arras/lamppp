@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef _BATCH_SAMPLE_H_
-#define _BATCH_SAMPLE_H_
-
 #include <algorithm>
 #include <cassert>
 #include <iterator>
@@ -32,5 +29,3 @@ void sample_batch_sample(const std::vector<X>& data,
     out_labels.push_back(labels[i]);
   }
 }
-
-#endif  // _BATCH_SAMPLE_H_

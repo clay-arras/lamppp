@@ -4,12 +4,9 @@
 
 for release:
 - do code coverage with gcov
-- refactor the autograd functions
-
-repetitive code:
-- @kernels.hpp -- maybe? 
-- @kernels.cpp -- maybe? 
-<!-- - in fn.hpp, and .cpp explicit declarations of dispatch_handlers -->
+- add documentation
+- make mnist working again
+- make bench_ops working again
 
 ## easy
 
@@ -19,7 +16,6 @@ testing:
 benchmarking
 - make regular binary operations different from broadcasting operations (see if it's speedup)
 - benchmark more operations
-
 - relu, sigmoid, tanh -- define this in nn module
 
 ## medium

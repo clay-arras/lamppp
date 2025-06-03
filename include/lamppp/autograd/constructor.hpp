@@ -48,7 +48,7 @@ Variable tensor(const std::vector<V>& data, tensor::DeviceType device,
   TensorHelper constr;
   constr.unroll(data);
   std::vector<tensor::DataType> body(constr.data.size());
-  std::transform(__pstl::execution::par_unseq, constr.data.begin(),
+  std::transform(constr.data.begin(), // TODO: __pstl::execution::par_unseq
                  constr.data.end(), body.begin(), [](tensor::Scalar x) {
                    return static_cast<tensor::DataType>(x);
                  });

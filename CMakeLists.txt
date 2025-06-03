@@ -52,6 +52,7 @@ target_compile_options(lamppp
 
 add_subdirectory(tests)
 add_subdirectory(benchmarks)
+add_subdirectory(examples)
 
 # STATIC ANALYSIS ---------------------------------
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)

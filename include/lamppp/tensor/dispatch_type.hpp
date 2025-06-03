@@ -3,6 +3,13 @@
 #include "lamppp/common/assert.hpp"
 #include <cstdint>
 
+/// @internal
+/**
+ * @brief utility that enables type-erasure and type-agnostic Tensors.
+ * 
+ * @details All methods in `Tensor`, `Storage`, etc. return a `void*`
+ * to it's data. to access the original `DataType`, we use this macro
+ */
 #define LMP_DISPATCH_ALL_TYPES(TYPE, ...)   \
   [&] {                                     \
     switch (TYPE) {                         \
@@ -34,3 +41,5 @@
         LMP_CHECK(false) << "Type not found";\
     }                                       \
   }()
+
+/// @endinternal

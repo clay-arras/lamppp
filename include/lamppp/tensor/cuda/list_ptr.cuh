@@ -6,6 +6,10 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
+/**
+ * @brief A simple utility for managing a list of device pointers
+ */
 template <typename T>
 class ListDevicePtr {
  private:
@@ -26,5 +30,6 @@ class ListDevicePtr {
   T* get() const noexcept { return ptr_.get(); }
   size_t size() const noexcept { return size_; }
 };
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda

@@ -9,6 +9,7 @@ namespace lmp::tensor::detail::cpu {
 
 constexpr size_t NArgs = ExpandMetaHandler::NumElem;
 
+/// @internal
 template <typename PtrList, typename OpFn>
 void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t i,
                               const CPUOffsetUtil<NArgs>* align);
@@ -16,7 +17,9 @@ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t i,
 template <typename PtrList, typename OpFn>
 void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
                             const CPUOffsetUtil<NArgs>* align);
+/// @endinternal
 
+/// @internal
 template <template <typename> class OpFunctor, typename... Args>
 void expand_dispatch_handler(ExpandMetaHandler& meta, Args&&... args) {
   LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
@@ -37,5 +40,6 @@ void expand_dispatch_handler(ExpandMetaHandler& meta, Args&&... args) {
     });
   });
 }
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cpu

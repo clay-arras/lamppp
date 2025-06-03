@@ -6,6 +6,7 @@
 
 namespace lmp::tensor {
 
+/// @internal
 struct TensorOpFact {
   template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
   static inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
@@ -55,7 +56,13 @@ FORALL_BINARY_OPS(DECL_BINARY_OP)
 #undef FORALL_BINARY_OPS
 #undef DECL_BINARY_OP
 
-// unary operators
+/**
+ * @brief Negate a tensor
+ * @param a The tensor to negate
+ * @return A new tensor with the result of the negation
+ */
 inline Tensor operator-(const Tensor& a) { return ops::neg(a); }
+
+/// @endinternal
 
 }  // namespace lmp::tensor

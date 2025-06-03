@@ -10,6 +10,27 @@
 
 namespace lmp::tensor {
 
+/// @internal
+/**
+ * @brief  Low-level data manager for Tensor and TensorImpl
+ *
+ * @details Storage is what manages the lifetime of the data that Tensor points to, in
+ * the form of an array of bytes.
+ * 
+ * Storage maintains three core properties:
+ * - A DataPtr containing the raw data pointer and its associated deleter
+ * - The allocated size in bytes
+ * - The target device type (CPU, CUDA, etc.)
+ * 
+ * @note Storage is type-agnostic and operates solely on raw bytes (a void*). Type information
+ * is maintained at the Tensor/TensorImpl level, in the form of DataType. Data interpretation
+ * must be handled using LMP_DISPATCH_ALL_TYPES at higher levels.
+ * 
+ * @warning Direct manipulation of Storage should be avoided in user code. Use Tensor
+ * operations instead for type-safe data access and manipulation.
+ *
+ * @see Tensor, DataPtr
+ */
 class Storage {
  public:
   explicit Storage(size_t byte_size, DeviceType device)
@@ -46,5 +67,6 @@ class Storage::StorageImpl {
   size_t byte_size_;
   DeviceType device_;
 };
+/// @endinternal
 
 }  // namespace lmp::tensor

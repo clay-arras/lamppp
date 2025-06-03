@@ -10,6 +10,7 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
 template <typename T>
 struct AddFunctor {
   __device__ __host__ T operator()(T arg1, T arg2) { return arg1 + arg2; }
@@ -161,5 +162,6 @@ TensorImpl sum_cuda(const TensorImpl& a, size_t axis);
 TensorImpl max_cuda(const TensorImpl& a, size_t axis);
 TensorImpl min_cuda(const TensorImpl& a, size_t axis);
 TensorImpl prod_cuda(const TensorImpl& a, size_t axis);
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda

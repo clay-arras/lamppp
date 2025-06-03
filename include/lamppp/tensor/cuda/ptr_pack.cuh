@@ -8,6 +8,7 @@
 
 namespace lmp::tensor::detail::cuda::internal {
 
+/// @internal
 template <typename U, typename V>
 struct TransformFunctor {
   __device__ __host__ U operator()(void* p, std::size_t i) const {
@@ -15,6 +16,10 @@ struct TransformFunctor {
   }
 };
 
+/**
+ * @brief Pack of pointers for CUDA
+ * @details see ptr_pack.hpp for more details
+ */
 template <class OutT, class... SrcTs>
 class CUDAPtrPack {
  public:
@@ -34,5 +39,6 @@ class CUDAPtrPack {
     static_cast<OutT*>(data[0])[idx] = value;
   }
 };
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda::internal

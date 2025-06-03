@@ -7,6 +7,11 @@
 
 namespace lmp::tensor::detail {
 
+/// @internal
+/**
+ * @brief Offset utility for CPU
+ * @details this class is used to get the offset of the elements in the tensor.
+ */
 class OffsetUtil {
  public:
   OffsetUtil(size_t ndim) : ndim(ndim) {};
@@ -16,9 +21,11 @@ class OffsetUtil {
   std::vector<stride_t> init_padded_strides_(
       const std::vector<size_t>& shape, const std::vector<stride_t>& stride);
 };
+/// @endinternal
 
 namespace cpu {
 
+/// @internal
 template <size_t NArgs>
 class CPUOffsetUtil : public OffsetUtil {
  public:
@@ -28,6 +35,7 @@ class CPUOffsetUtil : public OffsetUtil {
 
   ::std::array<std::vector<stride_t>, NArgs + 1> arg_strides_;
 };
+/// @endinternal
 
 template <size_t NArgs>
 std::unique_ptr<OffsetUtil> offset_util_cpu(::std::array<const TensorImpl*, NArgs> ins, 

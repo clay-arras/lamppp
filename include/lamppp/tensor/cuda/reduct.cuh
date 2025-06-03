@@ -11,6 +11,7 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t size,
                                          size_t axis, const size_t* shape,
@@ -38,5 +39,6 @@ void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,
     });
   });
 }
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda

@@ -4,7 +4,7 @@ I have no idea how this works, but I need it for some explicit instatiations and
 include the whole Boost library just for the boost/preprocessor stuff. All credit goes to sillycross
 */
 
-
+/// @internal
 // Macro utility 'PP_FOR_EACH' and 'PP_FOR_EACH_CARTESIAN_PRODUCT'
 // Apply macro to all elements in a list, or all elements in the Cartesian product of multiple lists
 // Requires C++20.
@@ -186,3 +186,4 @@ include the whole Boost library just for the boost/preprocessor stuff. All credi
 #define LMP_FOR_EACH_CARTESIAN_PRODUCT(macro, list1, ...)															\
     LMP_EXPAND(LMP_CARTESIAN_IMPL_ENTRY(LMP_COUNT_ARGS(__VA_ARGS__), macro, (__VA_ARGS__), LMP_EXPAND_LIST(list1)))
 
+/// @endinternal

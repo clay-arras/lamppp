@@ -6,7 +6,19 @@
 
 namespace lmp::tensor::detail {
 
-// TODO: have it crash in the DEBUG mode, otherwise catch it in production
+/// @internal 
+/// @todo have it crash in the DEBUG mode, otherwise catch it in production
+/**
+ * @brief Smart pointer wrapper for tensor data with custom deleter support
+ * 
+ * @details DataPtr wraps raw pointers with automatic memory management and
+ * custom deallocators for different allocation strategies (CPU, CUDA, etc.).
+ *
+ * @note that DataPtr does not actually define any of the allocation strategies.
+ * they are defined in empty_stub()
+ *
+ * @see empty_stub
+ */
 struct DataPtr {
   std::shared_ptr<void> ptr;
 
@@ -25,5 +37,6 @@ struct DataPtr {
   void* data() { return ptr.get(); }
   void* data() const { return ptr.get(); }
 };
+/// @endinternal
 
 }  // namespace lmp::tensor::detail

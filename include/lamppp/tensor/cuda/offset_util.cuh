@@ -12,6 +12,11 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
+/**
+ * @brief Offset utility for CUDA
+ * @details see OffsetUtil.hpp for more details
+ */
 template <size_t NArgs>
 class CUDAOffsetUtil : public OffsetUtil {
  public:
@@ -28,6 +33,7 @@ std::unique_ptr<OffsetUtil> offset_util_cuda(::std::array<const TensorImpl*, NAr
     const TensorImpl& out) {
   return std::make_unique<CUDAOffsetUtil<NArgs>>(ins, out);
 }
+/// @endinternal
 
 };  // namespace lmp::tensor::detail::cuda
 

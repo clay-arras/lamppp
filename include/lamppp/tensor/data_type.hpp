@@ -5,6 +5,14 @@
 
 namespace lmp::tensor {
 
+/**
+* @brief simple dataType enum
+*
+* @note this class works deeply in conjunction with LMP_DISPATCH_ALL_TYPES
+* to enable type-agnostic tensors
+*
+* @see type_upcast for more details on how type upcasting works
+*/
 enum class DataType : uint8_t {
   Bool = 0,
   Int16 = 1,
@@ -14,6 +22,11 @@ enum class DataType : uint8_t {
   Float64 = 5
 };
 
+/// @internal
+/**
+* @brief simple template to convert from a concrete type (like int) to the enum type, 
+* Int32. example usage: TypeMeta<T>::value, where T is a template
+*/
 template <typename T>
 struct TypeMeta;
 
@@ -42,6 +55,16 @@ struct TypeMeta<double> {
   static constexpr DataType value = DataType::Float64;
 };
 
+/// @endinternal
+
+/**
+* @brief simple type-upcasting system which leverages the values in enums
+* 
+* @details this library does not, and will not, support complex numbers; therefore, 
+* we have this simple system of hardcoding priority where Bool = 0 = lowest priority, and
+* Float64 = 5 = highest priority. To decide which type to upcast to, we just take the maximum.
+*
+*/
 inline DataType type_upcast(DataType a_type, DataType b_type) {
   return static_cast<DataType>(
       std::max(static_cast<uint8_t>(a_type), static_cast<uint8_t>(b_type)));

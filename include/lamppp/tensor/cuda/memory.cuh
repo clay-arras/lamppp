@@ -11,6 +11,7 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
 void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
                DataType src_dtype, DataType dest_dtype);
 DataPtr empty_cuda(size_t byte_size);
@@ -24,5 +25,6 @@ void cudaVecCopy(size_t size, const U* in, V* out);
 
 void vecCopyHostToDevice(const void* src, void* dest, size_t size,
               DataType src_dtype, DataType dest_dtype);
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda

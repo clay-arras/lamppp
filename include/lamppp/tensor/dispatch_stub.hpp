@@ -8,6 +8,16 @@
 
 namespace lmp::tensor::detail {
 
+/// @internal
+/**
+ * @brief simple static registration class 
+ * 
+ * @details this class keeps a dispatch table (`table_`), which directs to the correct overload
+ * during runtime. e.g. calling `add_stub()(DeviceType::CUDA, a, b)` calls `add_cuda` on the tensors
+ * `a` and `b`
+ * 
+ * @see DeviceType
+ */
 template <typename Fn>
 struct DispatchStub {
   using fn_type = Fn;
@@ -28,6 +38,13 @@ struct DispatchStub {
 
 }  // namespace lmp::tensor::detail
 
+/**
+ * @brief simple static registration macros. 
+ * 
+ * @details this set of macros use the static keyword in C++ to avoid the static initialization 
+ * order fiasco (see this: https://artificial-mind.net/blog/2020/10/17/static-registration-macro)
+ * 
+ */
 #define LMP_DECLARE_DISPATCH(fn_type, stub_name) \
   ::lmp::tensor::detail::DispatchStub<fn_type>& stub_name();
 
@@ -45,3 +62,5 @@ struct DispatchStub {
     }                                                    \
   } _auto_reg_##kernel_fn;                               \
   }
+
+/// @endinternal

@@ -13,6 +13,7 @@ namespace lmp::tensor::detail::cuda {
 
 constexpr size_t NArgs = ExpandMetaHandler::NumElem;
 
+/// @internal
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t size,
                                          const CUDAOffsetUtil<NArgs>* align);
@@ -41,5 +42,6 @@ void expand_dispatch_handler(ExpandMetaHandler& meta, Args&&... args) {
     });
   });
 }
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda

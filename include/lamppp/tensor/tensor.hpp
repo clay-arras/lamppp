@@ -14,23 +14,28 @@
 namespace lmp::tensor {
 
 namespace detail {
-
 class UnsafeTensorAccessor;
-
 }
 
 /**
- * @brief The main tensor data structure for Lamppp
+ * @brief  Main tensor object for Lamppp
  *
- * The data structure has type-erasure for both the deviceType 
- * and the dataType, to prevent annoying template instantiations
+ * @details A thin, type-erased handle that shares ownership of an
+ * underlying `TensorImpl`.  Multiple `Tensor` objects can
+ * point to the same storage, so no deep copies occur. 
  *
  */
-
 class Tensor {
  public:
   Tensor() = default;
 
+  /**
+  * @brief Construct a tensor from a vector
+  * @param data   Flat vector in row-major order
+  * @param shape  Dimensions, e.g. {28, 28} for MNIST
+  * @param device Destination device (CPU/GPU)
+  * @param dtype  Element type (defaults to float64)
+  */
   template <typename T>
   explicit Tensor(const std::vector<T>& data, const std::vector<size_t>& shape,
                   DeviceType device = DeviceType::CPU,
@@ -44,30 +49,38 @@ class Tensor {
   const std::vector<detail::stride_t>& strides() const noexcept;
   size_t numel() const noexcept;
 
-  // these functions only return an view
+  /// @note These functions return an object representing the underlying data
   template <typename T>
   std::vector<T> to_vector() const {
     std::vector<T> converted_data(impl_->numel());
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
-      scalar_t* original_data =
-          static_cast<scalar_t*>(malloc(numel() * sizeof(scalar_t))); // TODO; malloc is probably bad
+      std::unique_ptr<scalar_t[]> original_data = std::make_unique<scalar_t[]>(numel());
       ops::copy_stub()(device(), DeviceType::CPU, data(),
-                                  original_data, numel(), type(), type());
+                                  original_data.get(), numel(), type(), type());
 
       for (size_t i = 0; i < impl_->numel(); ++i) {
         converted_data[i] = static_cast<T>(original_data[i]);
       }
-      free(original_data);
     });
     return converted_data;
   }
+  Scalar index(const std::vector<size_t>& idx) const;
+
+  /** 
+  * @note These functions are similar to Pytorch in that they return a VIEW
+  * i.e. don't change the underlying storage @see storage.hpp
+  */ 
   Tensor reshape(std::vector<size_t> new_shape) const;
   Tensor squeeze(size_t dim) const;
   Tensor expand_dims(size_t dim) const;
-  Tensor to(DeviceType device) const;
-  Scalar index(const std::vector<size_t>& idx) const;
 
-  // these functions modify the actual data
+  /**
+  * @note `to` is similar to a unary operation because it returns a completely new 
+  * object (NOT a view, which is what Pytorch does).
+  */
+  Tensor to(DeviceType device) const;
+
+  /// @note These functions modify the actual data in-place. 
   void copy(const Tensor& other);
   void fill(Scalar item);
 
@@ -81,7 +94,12 @@ class Tensor {
 };
 
 namespace detail {
-
+// @internal
+/** @brief Unsafe accessor for Tensor, for getting and using impl
+ * 
+ * @details This class should only be used for operations which need access to the underlying Impl.
+ * This class should be used SPARINGLY. 
+ */
 struct UnsafeTensorAccessor {
   static std::shared_ptr<TensorImpl> getImpl(const Tensor& ten) {
     return ten.impl_;
@@ -90,7 +108,7 @@ struct UnsafeTensorAccessor {
     return Tensor(ptr);
   }
 };
-
+// @endinternal
 }  // namespace detail
 
 }  // namespace lmp::tensor

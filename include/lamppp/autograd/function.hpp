@@ -8,6 +8,7 @@ namespace lmp::autograd {
 class Variable;
 struct Function;
 
+/// @internal
 struct Function : public std::enable_shared_from_this<Function> {
   std::unique_ptr<variable_list> saved_inputs;
 
@@ -19,5 +20,6 @@ struct Function : public std::enable_shared_from_this<Function> {
     return apply(inputs);
   }
 };
+/// @endinternal
 
 }  // namespace lmp::autograd

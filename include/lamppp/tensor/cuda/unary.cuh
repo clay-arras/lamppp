@@ -10,6 +10,7 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_unary_kernel(PtrList ptr_, OpFn fn_, size_t size);
 
@@ -31,5 +32,6 @@ void unary_dispatch_handler(UnaryMetaHandler& meta, Args&&... args) {
     });
   });
 }
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda

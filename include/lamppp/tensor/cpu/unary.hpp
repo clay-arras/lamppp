@@ -7,6 +7,7 @@
 
 namespace lmp::tensor::detail::cpu {
 
+/// @internal
 template <typename PtrList, typename OpFn>
 void vectorized_unary_kernel(PtrList ptr_, OpFn fn_, size_t i);
 
@@ -28,5 +29,6 @@ void unary_dispatch_handler(UnaryMetaHandler& meta, Args&&... args) {
     });
   });
 }
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cpu

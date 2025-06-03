@@ -7,6 +7,7 @@
 
 namespace lmp::tensor::ops {
 
+/// @internal
 using add_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
 using sub_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
 using mul_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&);
@@ -30,17 +31,87 @@ LMP_DECLARE_DISPATCH(ge_fn, ge_stub);
 LMP_DECLARE_DISPATCH(le_fn, le_stub);
 LMP_DECLARE_DISPATCH(gt_fn, gt_stub);
 LMP_DECLARE_DISPATCH(lt_fn, lt_stub);
+/// @endinternal
 
+/**
+ * @brief Add two tensors
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the addition
+ */
 Tensor add(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Subtract two tensors
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the subtraction
+ */
 Tensor sub(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Multiply two tensors
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the multiplication
+ */
 Tensor mul(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Divide two tensors
+ * @param a The first tensor
+ * @param b The second tensor
+ * @note if b is very small, this function will return have undefined behavior.
+ * @return A new tensor with the result of the division
+ */
 Tensor div(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Raise a tensor to the power of another tensor
+ * @param a The base tensor
+ * @param b The exponent tensor
+ * @return A new tensor with the result of the power operation
+ */
 Tensor pow(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Check if two tensors are equal
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the equality check
+ */
 Tensor eq(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Check if two tensors are not equal
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the inequality check
+ */
 Tensor ne(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Check if the first tensor is greater than or equal to the second tensor
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the inequality check
+ */
 Tensor ge(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Check if the first tensor is less than or equal to the second tensor
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the inequality check
+ */
 Tensor le(const Tensor& a, const Tensor& b);
-Tensor gt(const Tensor& a, const Tensor& b);
+
+/**
+ * @brief Check if the first tensor is less than the second tensor
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the inequality check
+ */
 Tensor lt(const Tensor& a, const Tensor& b);
 
 }  // namespace lmp::tensor::ops

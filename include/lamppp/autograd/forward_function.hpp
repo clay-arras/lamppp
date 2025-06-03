@@ -6,6 +6,7 @@
 
 namespace lmp::autograd {
 
+/// @internal
 template <typename Derived>
 struct ForwardFunction : public Function {
   static bool requires_grad(const variable_list& variables) {
@@ -36,5 +37,6 @@ struct ForwardFunction : public Function {
     return {result};
   }
 };
+/// @endinternal
 
 }  // namespace lmp::autograd

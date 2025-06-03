@@ -14,8 +14,36 @@
 
 namespace lmp::tensor {
 
+/// @internal
+/**
+ * @brief  Main implementation class for Tensor object
+ *
+ * @details `TensorImpl` contains a few core members: `type_`, `shape_`, and `data_`
+ * Note that similar to Pytorch, Tensor/TensorImpl is not responsible for the 
+ * low-level data storage -- note that `TensorImpl` has no member called `device_`.
+ * That is managed by `Storage`.
+ *
+ * @see Tensor, Storage
+ */
 class TensorImpl {
  public:
+  /**
+   * @brief Construct a TensorImpl from a vector of data
+   * 
+   * @tparam T The element type of the input data vector
+   * @param data   Flat vector containing the tensor data in row-major order
+   * @param shape  Dimensions of the tensor, e.g. {28, 28} for a 2D tensor
+   * @param device Target device where the tensor will be stored (CPU/GPU)
+   * @param dtype  Data type for the tensor elements (may differ from T)
+   * 
+   * @throws std::runtime_error if data.size() != product of shape dimensions
+   * 
+   * @details This constructor allocates storage on the specified device and
+   * copies the input data.
+   *
+   * @note Note that the input data's type T does NOT have to be the same as dtype. 
+   * i.e. inputting dtype = DataType::Float64, but data = std::vector<int>{...} is valid
+   */
   template <typename T>
   explicit TensorImpl(const std::vector<T>& data,
                       const std::vector<size_t>& shape, DeviceType device,
@@ -36,8 +64,11 @@ class TensorImpl {
                                 data_.data(), numel_, src_dtype, type_);
     update_strides_();
   }
+  /// @internal
+  /// @note: this should not be used by the user.
   explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
                       DataType dtype);
+  /// @endinternal
 
   void* data() const noexcept;
   DataType type() const noexcept;
@@ -57,6 +88,13 @@ class TensorImpl {
 
  private:
   friend class Tensor;
+
+  /**
+  * @brief a simple function to recalculate the strides 
+  *
+  * @note after each operation that involves changing the shape, update_strides_()
+  * MUST be called for the broadcasting to work correctly. 
+  */
   void update_strides_();
 
   DataType type_;
@@ -65,5 +103,6 @@ class TensorImpl {
   std::vector<size_t> shape_;
   std::vector<detail::stride_t> strides_;
 };
+/// @endinternal
 
 }  // namespace lmp::tensor

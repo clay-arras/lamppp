@@ -9,6 +9,7 @@
 
 namespace lmp::tensor::detail::cpu {
 
+/// @internal
 template <typename T>
 struct AddFunctor {
   T operator()(T arg1, T arg2) { return arg1 + arg2; }
@@ -130,7 +131,9 @@ struct ProdFunctor {
   static constexpr T identity = 1;
   T operator()(T arg1, T arg2) { return arg1 * arg2; }
 };
+/// @endinternal
 
+/// @internal
 TensorImpl add_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl sub_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl mul_cpu(const TensorImpl& a, const TensorImpl& b);
@@ -160,5 +163,6 @@ TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
 TensorImpl max_cpu(const TensorImpl& a, size_t axis);
 TensorImpl min_cpu(const TensorImpl& a, size_t axis);
 TensorImpl prod_cpu(const TensorImpl& a, size_t axis);
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cpu

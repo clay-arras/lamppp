@@ -5,6 +5,7 @@
 
 namespace lmp::autograd::ops {
 
+/// @internal
 struct NegationBackward : public Function {
   variable_list apply(const variable_list& gradOutputs) override;
 };
@@ -82,39 +83,87 @@ struct Clamp : public ForwardFunction<Clamp> {
       : min_val_(min_val), max_val_(max_val) {}
   tensor::Tensor execute(const variable_list& inputs) const;
 };
+/// @endinternal
 
+/**
+ * @brief Negate a variable
+ * @param a The variable to negate
+ * @return The result of the negation
+ */
 inline Variable neg(const Variable& a) {
   return VariableOpFact::apply<Negation>({a})[0];
 }
 
+/**
+ * @brief Exponentiate a variable
+ * @param a The variable to exponentiate
+ * @return The result of the exponentiation
+ */
 inline Variable exp(const Variable& a) {
   return VariableOpFact::apply<Exponential>({a})[0];
 }
 
+/**
+ * @brief Take the logarithm of a variable
+ * @param a The variable to take the logarithm of
+ * @return The result of the logarithm
+ */
 inline Variable log(const Variable& a) {
   return VariableOpFact::apply<Logarithm>({a})[0];
 }
 
+/**
+ * @brief Take the square root of a variable
+ * @param a The variable to take the square root of
+ * @return The result of the square root
+ */
 inline Variable sqrt(const Variable& a) {
   return VariableOpFact::apply<SquareRoot>({a})[0];
 }
 
+/**
+ * @brief Take the absolute value of a variable
+ * @param a The variable to take the absolute value of
+ * @return The result of the absolute value
+ */
 inline Variable abs(const Variable& a) {
   return VariableOpFact::apply<AbsoluteValue>({a})[0];
 }
 
+/**
+ * @brief Take the sine of a variable
+ * @param a The variable to take the sine of
+ * @return The result of the sine
+ */
 inline Variable sin(const Variable& a) {
   return VariableOpFact::apply<Sine>({a})[0];
 }
 
+/**
+ * @brief Take the cosine of a variable
+ * @param a The variable to take the cosine of
+ * @return The result of the cosine
+ */
 inline Variable cos(const Variable& a) {
   return VariableOpFact::apply<Cosine>({a})[0];
 }
 
+/**
+ * @brief Take the tangent of a variable
+ * @param a The variable to take the tangent of
+ * @return The result of the tangent
+ */
 inline Variable tan(const Variable& a) {
   return VariableOpFact::apply<Tangent>({a})[0];
 }
 
+/**
+ * @brief Clamp a variable between a minimum and maximum value
+ * @param a The variable to clamp
+ * @param min_val The minimum value
+ * @param max_val The maximum value
+ * @return The result of the clamping
+ */
 inline Variable clamp(const Variable& a, tensor::Scalar min_val,
                       tensor::Scalar max_val) {
   return VariableOpFact::apply<Clamp>({a}, min_val, max_val)[0];

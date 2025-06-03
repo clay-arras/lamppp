@@ -7,6 +7,7 @@
 
 namespace lmp::tensor::detail::cpu {
 
+/// @internal
 template <typename PtrList, typename OpFn>
 void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t i,
                                          size_t axis, const size_t* shape,
@@ -34,5 +35,6 @@ void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,
     });
   });
 }
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cpu

@@ -6,6 +6,7 @@
 
 namespace lmp::tensor::detail::cuda {
 
+/// @internal
 template <typename U, typename V, typename OutType>
 __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
                                  size_t n, size_t k);
@@ -19,6 +20,7 @@ __global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n);
 
 template <typename T>
 void cudaTranspose(const T* in, T* out, size_t m, size_t n);
+/// @endinternal
 
 }  // namespace lmp::tensor::detail::cuda
 

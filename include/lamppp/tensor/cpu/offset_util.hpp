@@ -14,12 +14,12 @@ namespace lmp::tensor::detail {
  */
 class OffsetUtil {
  public:
-  OffsetUtil(size_t ndim) : ndim(ndim) {};
+  explicit OffsetUtil(size_t ndim) : ndim(ndim) {};
   size_t ndim;
 
  protected:
-  std::vector<stride_t> init_padded_strides_(
-      const std::vector<size_t>& shape, const std::vector<stride_t>& stride);
+  std::vector<stride_t> init_padded_strides(
+      const std::vector<size_t>& shape, const std::vector<stride_t>& stride) const;
 };
 /// @endinternal
 
@@ -48,7 +48,7 @@ std::unique_ptr<OffsetUtil> offset_util_cpu(::std::array<const TensorImpl*, NArg
 template <size_t NArgs>
 using offset_util_fn = std::unique_ptr<OffsetUtil> (*)(::std::array<const TensorImpl*, NArgs>, const TensorImpl&);
 
-LMP_DECLARE_DISPATCH(offset_util_fn<2>, offset_util_stub_2_);
-LMP_DECLARE_DISPATCH(offset_util_fn<3>, offset_util_stub_3_);
+LMP_DECLARE_DISPATCH(offset_util_fn<2>, offset_util_stub_2);
+LMP_DECLARE_DISPATCH(offset_util_fn<3>, offset_util_stub_3);
 
 };  // namespace lmp::tensor::detail

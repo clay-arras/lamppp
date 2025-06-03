@@ -13,14 +13,14 @@ using tensor_list = std::vector<const lmp::tensor::TensorImpl*>;
 template <typename... Args>
 class TensorMetaHandler {
  public:
-  static constexpr std::size_t NumElem =
+  static constexpr std::size_t kNumElem =
       (0 + ... + std::size_t{std::is_same_v<const TensorImpl*, Args>});
   explicit TensorMetaHandler(Args... args);
 
-  inline TensorImpl& out() noexcept { return *outTen; }
-  inline tensor_list& in() noexcept { return inTens; }
-  inline const OffsetUtil* offset() const noexcept {
-    return outOffset.get();
+  TensorImpl& out() noexcept { return *outTen_; }
+  tensor_list& in() noexcept { return inTens_; }
+  const OffsetUtil* offset() const noexcept {
+    return outOffset_.get();
   }
 
  private:
@@ -28,9 +28,9 @@ class TensorMetaHandler {
   size_t outSize_;
   std::vector<size_t> outShape_;
 
-  std::unique_ptr<OffsetUtil> outOffset;
-  std::unique_ptr<TensorImpl> outTen;
-  tensor_list inTens;
+  std::unique_ptr<OffsetUtil> outOffset_;
+  std::unique_ptr<TensorImpl> outTen_;
+  tensor_list inTens_;
 };
 
 using UnaryMetaHandler = TensorMetaHandler<const TensorImpl*>;

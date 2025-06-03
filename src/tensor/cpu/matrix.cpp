@@ -1,6 +1,6 @@
 #include "lamppp/tensor/cpu/matrix.hpp"
-#include <cstdint>
 #include "lamppp/common/macros.hpp"
+#include <cstdint>
 
 namespace lmp::tensor::detail::cpu {
 

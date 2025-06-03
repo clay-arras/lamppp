@@ -15,12 +15,12 @@ DeviceType Storage::device() const noexcept {
   return impl_->device();
 }
 
-void Storage::resize_(size_t nsize) {
-  impl_->resize_(nsize);
+void Storage::resize(size_t nsize) {
+  impl_->resize(nsize);
 }
 
 std::ostream& operator<<(std::ostream& os, const Storage& obj) {
-  obj.impl_->print_(os);
+  obj.impl_->print(os);
   return os;
 }
 
@@ -34,12 +34,12 @@ DeviceType Storage::StorageImpl::device() const noexcept {
   return device_;
 }
 
-void Storage::StorageImpl::resize_(size_t nsize) {
+void Storage::StorageImpl::resize(size_t nsize) {
   ops::resize_stub()(device_, data_ptr_, byte_size_, nsize);
   byte_size_ = nsize;
 }
 
-void Storage::StorageImpl::print_(std::ostream& os) {
+void Storage::StorageImpl::print(std::ostream& os) const {
   os << "Storage(dataPtr=" << data() << ", byteSize=" << byte_size()
      << "device=" << device() << ")";
 }

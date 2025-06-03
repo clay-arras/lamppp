@@ -28,10 +28,12 @@ class CUDAOffsetUtil : public OffsetUtil {
   ::cuda::std::array<void*, NArgs + 1> arg_pointers_;
 };
 
+namespace {
 template <size_t NArgs>
 std::unique_ptr<OffsetUtil> offset_util_cuda(::std::array<const TensorImpl*, NArgs> ins, 
     const TensorImpl& out) {
   return std::make_unique<CUDAOffsetUtil<NArgs>>(ins, out);
+}
 }
 /// @endinternal
 

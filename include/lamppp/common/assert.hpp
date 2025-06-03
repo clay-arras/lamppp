@@ -14,15 +14,16 @@ namespace detail {
 
 template<typename Derived>
 class BaseStream {
+    BaseStream() = default;
 public:
     template<class T>
     Derived& operator<<(T&& v) {
         os_ << std::forward<T>(v);
         return static_cast<Derived&>(*this);
     }
-
 protected:
     std::ostringstream os_;
+friend Derived;
 };
 
 class CheckStream : public BaseStream<CheckStream> {

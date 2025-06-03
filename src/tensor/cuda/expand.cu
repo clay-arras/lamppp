@@ -4,14 +4,14 @@
 #include <cuda/std/array>
 #include <cuda/std/tuple>
 #include "lamppp/tensor/cuda/expand.cuh"
-#include "lamppp/tensor/cuda/kernels.cuh"
 #include "lamppp/tensor/cuda/list_ptr.cuh"
+#include "lamppp/tensor/cuda/kernels.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t size,
-                                         const CUDAOffsetUtil<NArgs>* align) {
+                                         const CUDAOffsetUtil<kNArgs>* align) {
   size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
   if (i < size) {
     ::cuda::std::array offsets = align->get(i);
@@ -23,10 +23,10 @@ __global__ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t size,
 
 template <typename PtrList, typename OpFn>
 void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
-                            const CUDAOffsetUtil<NArgs>* align) {
+                            const CUDAOffsetUtil<kNArgs>* align) {
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
-  ListDevicePtr<CUDAOffsetUtil<NArgs>> d_align(align, 1);
+  ListDevicePtr<CUDAOffsetUtil<kNArgs>> d_align(align, 1);
   vectorized_expand_kernel<<<blocks, threads>>>(ptr_, fn_, size, d_align.get());
 
   LMP_CUDA_ASSERT(cudaDeviceSynchronize())

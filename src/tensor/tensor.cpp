@@ -24,15 +24,15 @@ size_t Tensor::numel() const noexcept {
 
 Tensor Tensor::reshape(std::vector<size_t> new_shape) const {
   return Tensor(
-      std::make_shared<TensorImpl>(impl_->reshape_(std::move(new_shape))));
+      std::make_shared<TensorImpl>(impl_->reshape(std::move(new_shape))));
 }
 
 Tensor Tensor::squeeze(size_t dim) const {
-  return Tensor(std::make_shared<TensorImpl>(impl_->squeeze_(dim)));
+  return Tensor(std::make_shared<TensorImpl>(impl_->squeeze(dim)));
 }
 
 Tensor Tensor::expand_dims(size_t dim) const {
-  return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims_(dim)));
+  return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims(dim)));
 }
 
 Tensor Tensor::to(DeviceType device) const {
@@ -40,19 +40,19 @@ Tensor Tensor::to(DeviceType device) const {
 }
 
 Scalar Tensor::index(const std::vector<size_t>& idx) const {
-  return impl_->index_(idx);
+  return impl_->index(idx);
 }
 
 void Tensor::copy(const Tensor& other) {
-  impl_->copy_(*other.impl_);
+  impl_->copy(*other.impl_);
 }
 
 void Tensor::fill(Scalar item) {
-  impl_->fill_(item);
+  impl_->fill(item);
 }
 
 std::ostream& operator<<(std::ostream& os, const Tensor& obj) {
-  obj.impl_->print_(os);
+  obj.impl_->print(os);
   return os;
 }
 

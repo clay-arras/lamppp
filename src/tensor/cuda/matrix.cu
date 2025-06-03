@@ -1,8 +1,10 @@
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cuda/matrix.cuh"
+#include <cstdint>
 
 namespace lmp::tensor::detail::cuda {
 
+namespace {
 template <typename U, typename V, typename OutType>
 __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
                                  size_t n, size_t k) {
@@ -27,6 +29,7 @@ __global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n) {
   if (i < m && j < n) {
     out[(j * m) + i] = in[(i * n) + j];
   }
+}
 }
 
 template <typename U, typename V, typename OutType>

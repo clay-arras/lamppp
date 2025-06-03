@@ -35,8 +35,7 @@ Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
   std::mt19937 gen(rd());
 
   std::uniform_real_distribution<> distrib(0.0, 1.0);
-  std::generate(rand_vec.begin(), rand_vec.end(),
-                [&]() { return distrib(gen); });
+  std::ranges::generate(rand_vec, [&]() { return distrib(gen); });
 
   return Variable(tensor::Tensor(rand_vec, shape, device, dtype),
                   requires_grad);

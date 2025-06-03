@@ -1,5 +1,6 @@
 #include "lamppp/tensor/cpu/memory.hpp"
 #include <cstring>
+#include <cstdint>
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
@@ -13,7 +14,7 @@ namespace lmp::tensor::detail::cpu {
 
 void fill_cpu(void* ptr, size_t size, Scalar t, DataType type) {
   LMP_DISPATCH_ALL_TYPES(type, [&]() {
-    scalar_t* data = static_cast<scalar_t*>(ptr);
+    auto* data = static_cast<scalar_t*>(ptr);
     std::fill(data, data + size, static_cast<scalar_t>(t));
   });
 }
@@ -21,12 +22,12 @@ void resize_cpu(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = ::operator new(new_byte_size);
   std::memcpy(ptr, dptr.data(), std::min(old_byte_size, new_byte_size));
 
-  auto deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
+  auto *deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
   dptr = DataPtr(ptr, *deleter);
 }
 DataPtr empty_cpu(size_t byte_size) {
-  void* ptr_ = static_cast<void*>(new char[byte_size]);
-  return DataPtr(ptr_, [](void* ptr) { delete[] static_cast<char*>(ptr); });
+  void* raw = static_cast<void*>(new char[byte_size]);
+  return DataPtr(raw, [](void* ptr) { delete[] static_cast<char*>(ptr); });
 }
 
 LMP_REGISTER_DISPATCH(ops::empty_stub, DeviceType::CPU, empty_cpu);
@@ -58,6 +59,15 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
   }
 }
 
+/**
+ * @brief Small parallized copy function using OMP
+ * 
+ * @tparam U Input template type
+ * @tparam V Output template type
+ * @param size Size of the array being used
+ * @param in Input array
+ * @param out Output array
+ */
 template <typename U, typename V>
 void vecCopy(size_t size, const U* in, V* out) {
 #pragma omp parallel for simd

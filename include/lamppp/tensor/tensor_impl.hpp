@@ -62,11 +62,11 @@ class TensorImpl {
     DataType src_dtype = TypeMeta<T>::value;
     ops::copy_stub()(DeviceType::CPU, device, data.data(),
                                 data_.data(), numel_, src_dtype, type_);
-    update_strides_();
+    update_strides();
   }
   /// @internal
   /// @note: this should not be used by the user.
-  explicit TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
+  explicit TensorImpl(Storage storage, const std::vector<size_t>& shape,
                       DataType dtype);
   /// @endinternal
 
@@ -77,14 +77,14 @@ class TensorImpl {
   const std::vector<detail::stride_t>& strides() const noexcept;
   size_t numel() const noexcept;
 
-  TensorImpl reshape_(std::vector<size_t> new_shape);
-  TensorImpl squeeze_(size_t dim);
-  TensorImpl expand_dims_(size_t dim);
-  Scalar index_(const std::vector<size_t>& idx);
+  TensorImpl reshape(std::vector<size_t> new_shape);
+  TensorImpl squeeze(size_t dim);
+  TensorImpl expand_dims(size_t dim);
+  Scalar index(const std::vector<size_t>& idx);
 
-  void copy_(const TensorImpl& other);
-  void fill_(Scalar item);
-  void print_(std::ostream& os);
+  void copy(const TensorImpl& other) const;
+  void fill(Scalar item) const;
+  void print(std::ostream& os) const;
 
  private:
   friend class Tensor;
@@ -95,7 +95,7 @@ class TensorImpl {
   * @note after each operation that involves changing the shape, update_strides_()
   * MUST be called for the broadcasting to work correctly. 
   */
-  void update_strides_();
+  void update_strides();
 
   DataType type_;
   Storage data_;

@@ -1,6 +1,4 @@
 #include "lamppp/tensor/native/matrix_ops.hpp"
-#include "lamppp/tensor/cpu/matrix.hpp"
-#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {

@@ -5,7 +5,7 @@ namespace lmp::tensor::detail::cpu {
 
 template <typename PtrList, typename OpFn>
 void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t i,
-                              const CPUOffsetUtil<NArgs>* align) {
+                              const CPUOffsetUtil<kNArgs>* align) {
   ::std::array offsets = align->get(i);
   ptr_.set_Out(i, fn_(::std::get<1>(ptr_.fns)(ptr_.data[1], offsets[1]),
                       ::std::get<2>(ptr_.fns)(ptr_.data[2], offsets[2])));
@@ -13,7 +13,7 @@ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t i,
 
 template <typename PtrList, typename OpFn>
 void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
-                            const CPUOffsetUtil<NArgs>* align) {
+                            const CPUOffsetUtil<kNArgs>* align) {
 #pragma omp parallel for simd
   for (size_t i = 0; i < size; i++) {
     vectorized_expand_kernel(ptr_, fn_, i, align);

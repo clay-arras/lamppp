@@ -8,10 +8,10 @@
 
 namespace lmp::tensor {
 
-// TODO: can potentially lazy initialize strides, if you never use it for aligneding
-TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
+// TODO(astronaut): can potentially lazy initialize strides, if you never use it for aligneding
+TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
                        DataType dtype)
-    : data_(storage),
+    : data_(std::move(storage)),
       shape_(shape),
       type_(dtype),
       strides_(std::vector<detail::stride_t>(shape.size())),
@@ -25,7 +25,7 @@ TensorImpl::TensorImpl(const Storage& storage, const std::vector<size_t>& shape,
         << data_.byte_size() << " bytes (capacity for "
         << (data_.byte_size() / sizeof(scalar_t)) << " elements)";
   });
-  update_strides_();
+  update_strides();
 }
 
 void* TensorImpl::data() const noexcept {
@@ -47,7 +47,7 @@ size_t TensorImpl::numel() const noexcept {
   return numel_;
 }
 
-void TensorImpl::update_strides_() {
+void TensorImpl::update_strides() {
   detail::stride_t stride = 1;
   strides_.resize(shape_.size());
   for (int i = shape_.size() - 1; i >= 0; --i) {
@@ -56,7 +56,7 @@ void TensorImpl::update_strides_() {
   }
 }
 
-TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
+TensorImpl TensorImpl::reshape(std::vector<size_t> new_shape) {
   size_t new_size = new_shape.empty()
                         ? 0
                         : std::accumulate(new_shape.begin(), new_shape.end(), 1,
@@ -65,35 +65,35 @@ TensorImpl TensorImpl::reshape_(std::vector<size_t> new_shape) {
                                    "elements must remain the same.";
   TensorImpl other(*this);
   other.shape_ = std::move(new_shape);
-  other.update_strides_();
+  other.update_strides();
   return other;
 }
 
-TensorImpl TensorImpl::squeeze_(size_t dim) {
+TensorImpl TensorImpl::squeeze(size_t dim) {
   LMP_CHECK(dim < shape_.size()) << "Dimension out of range for squeeze";
   LMP_CHECK(shape_[dim] == 1) << "Cannot squeeze dimension that is not size 1";
   TensorImpl other(*this);
   other.shape_.erase(other.shape_.begin() + dim);
-  other.update_strides_();
+  other.update_strides();
   return other;
 }
 
-TensorImpl TensorImpl::expand_dims_(size_t dim) {
+TensorImpl TensorImpl::expand_dims(size_t dim) {
   LMP_CHECK(dim <= shape_.size()) << "Dimension out of range for expand_dims";
   TensorImpl other(*this);
   other.shape_.insert(other.shape_.begin() + dim, 1);
-  other.update_strides_();
+  other.update_strides();
   return other;
 }
 
-Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
+Scalar TensorImpl::index(const std::vector<size_t>& idx) {
   LMP_CHECK(idx.size() == shape_.size()) << "Indexing does not match shape";
   size_t at = 0;
   for (size_t i = 0; i < idx.size(); i++) {
     at += strides_[i] * idx[i];
   }
   return LMP_DISPATCH_ALL_TYPES(type(), [&]() {
-    scalar_t* elem = new scalar_t[1];
+    auto* elem = new scalar_t[1];
     ops::copy_stub()(device(), DeviceType::CPU,
                      static_cast<scalar_t*>(data()) + at, elem, 1, type(),
                      type());
@@ -101,33 +101,33 @@ Scalar TensorImpl::index_(const std::vector<size_t>& idx) {
   });
 }
 
-// TODO: this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
+// TODO(astronaut): this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
-void TensorImpl::copy_(const TensorImpl& other) {
+void TensorImpl::copy(const TensorImpl& other) const {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
     ops::copy_stub()(other.device(), device(), other.data(), data(),
                      other.numel(), other.type(), type());
   });
 }
 
-void TensorImpl::fill_(Scalar item) {
+void TensorImpl::fill(Scalar item) const {
   ops::fill_stub()(device(), data(), numel(), item, type());
 }
 
 const size_t kMaxPrintElem = 1e2;
-void TensorImpl::print_(std::ostream& os) {
+void TensorImpl::print(std::ostream& os) const {
   os << "Tensor(data=[";
   LMP_DISPATCH_ALL_TYPES(this->type_, [&] {
-    size_t printSize = std::min(kMaxPrintElem, this->numel());
-    scalar_t* data_ptr = new scalar_t[printSize * sizeof(scalar_t)];
+    size_t print_size = std::min(kMaxPrintElem, this->numel());
+    auto* data_ptr = new scalar_t[print_size * sizeof(scalar_t)];
     ops::copy_stub()(this->device(), DeviceType::CPU, this->data(),
-                     static_cast<void*>(data_ptr), printSize, this->type_,
+                     static_cast<void*>(data_ptr), print_size, this->type_,
                      this->type_);
-    for (size_t i = 0; i < printSize; i++) {
+    for (size_t i = 0; i < print_size; i++) {
       os << data_ptr[i];
-      if (i < printSize - 1) {
+      if (i < print_size - 1) {
         os << ", ";
-      } else if (printSize < this->numel()) {
+      } else if (print_size < this->numel()) {
         os << ",...";
       }
     }

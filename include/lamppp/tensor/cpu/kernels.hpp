@@ -113,22 +113,22 @@ struct ClampFunctor {
 };
 template <typename T>
 struct SumFunctor {
-  static constexpr T identity = 0;
+  static constexpr T kIdentity = 0;
   T operator()(T arg1, T arg2) { return arg1 + arg2; }
 };
 template <typename T>
 struct MaxFunctor {
-  static constexpr T identity = std::numeric_limits<T>::lowest();
+  static constexpr T kIdentity = std::numeric_limits<T>::lowest();
   T operator()(T arg1, T arg2) { return ::std::max(arg1, arg2); }
 };
 template <typename T>
 struct MinFunctor {
-  static constexpr T identity = std::numeric_limits<T>::max();
+  static constexpr T kIdentity = std::numeric_limits<T>::max();
   T operator()(T arg1, T arg2) { return ::std::min(arg1, arg2); }
 };
 template <typename T>
 struct ProdFunctor {
-  static constexpr T identity = 1;
+  static constexpr T kIdentity = 1;
   T operator()(T arg1, T arg2) { return arg1 * arg2; }
 };
 /// @endinternal

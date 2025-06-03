@@ -37,8 +37,9 @@
         using scalar_t = double;            \
         return __VA_ARGS__();               \
       }                                     \
-      default:                              \
+      default: {                            \
         LMP_CHECK(false) << "Type not found";\
+      }                                     \
     }                                       \
   }()
 

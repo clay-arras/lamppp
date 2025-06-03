@@ -99,6 +99,14 @@ Tensor ne(const Tensor& a, const Tensor& b);
 Tensor ge(const Tensor& a, const Tensor& b);
 
 /**
+ * @brief Check if the first tensor is greater than to the second tensor
+ * @param a The first tensor
+ * @param b The second tensor
+ * @return A new tensor with the result of the inequality check
+ */
+Tensor gt(const Tensor& a, const Tensor& b);
+
+/**
  * @brief Check if the first tensor is less than or equal to the second tensor
  * @param a The first tensor
  * @param b The second tensor

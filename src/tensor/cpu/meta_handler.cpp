@@ -6,7 +6,7 @@ namespace lmp::tensor::detail {
 
 template <>
 UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a)
-    : inTens({a}),
+    : inTens_({a}),
       outDtype_(a->type()),
       outSize_(a->numel()),
       outShape_(a->shape()) {
@@ -15,14 +15,14 @@ UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a)
     LMP_DISPATCH_ALL_TYPES(a->type(), [&] {
       using arg_dtype_t = scalar_t;
       Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
-      outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
+      outTen_ = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
     });
   });
 }
 
 template <>
 ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
-    : inTens({a, b}),
+    : inTens_({a, b}),
       outDtype_(type_upcast(a->type(), b->type())),
       outSize_(a->numel()),
       outShape_(a->shape()) {
@@ -38,11 +38,11 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
       LMP_DISPATCH_ALL_TYPES(b->type(), [&] {
         using arg2_dtype_t = scalar_t;
         Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
-        outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
-        outOffset = offset_util_stub_2_()(
+        outTen_ = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
+        outOffset_ = offset_util_stub_2()(
             a->device(),
-            ::std::array<const TensorImpl*, ExpandMetaHandler::NumElem>{a, b},
-            *outTen.get());
+            ::std::array<const TensorImpl*, ExpandMetaHandler::kNumElem>{a, b},
+            *outTen_.get());
       });
     });
   });
@@ -50,7 +50,7 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
 
 template <>
 ReductMetaHandler::TensorMetaHandler(const TensorImpl* a, size_t axis)
-    : inTens({a}),
+    : inTens_({a}),
       outDtype_(a->type()),
       outSize_(a->numel()),
       outShape_(a->shape()) {
@@ -61,7 +61,7 @@ ReductMetaHandler::TensorMetaHandler(const TensorImpl* a, size_t axis)
     LMP_DISPATCH_ALL_TYPES(a->type(), [&] {
       using arg_dtype_t = scalar_t;
       Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
-      outTen = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
+      outTen_ = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
     });
   });
 }

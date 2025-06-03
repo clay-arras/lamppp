@@ -3,8 +3,8 @@
 
 namespace lmp::tensor::detail {
 
-std::vector<stride_t> OffsetUtil::init_padded_strides_(
-    const std::vector<size_t>& shape, const std::vector<stride_t>& stride) {
+std::vector<stride_t> OffsetUtil::init_padded_strides(
+    const std::vector<size_t>& shape, const std::vector<stride_t>& stride) const {
   LMP_INTERNAL_ASSERT(ndim > 0) << "ndim must be greater than 0";
   LMP_INTERNAL_ASSERT(shape.size() <= ndim)
       << "shape size must be less than or equal to ndim";
@@ -38,7 +38,7 @@ CPUOffsetUtil<NArgs>::CPUOffsetUtil(::std::array<const TensorImpl*, NArgs> ins,
 #pragma omp unroll
   for (size_t i = 1; i <= NArgs; i++) {
     arg_strides_[i] =
-        this->init_padded_strides_(ins[i - 1]->shape(), ins[i - 1]->strides());
+        this->init_padded_strides(ins[i - 1]->shape(), ins[i - 1]->strides());
   }
 }
 
@@ -62,19 +62,21 @@ template <size_t NArgs>
 
 }  // namespace cpu
 
-LMP_DEFINE_DISPATCH(offset_util_fn<2>, offset_util_stub_2_);
-LMP_DEFINE_DISPATCH(offset_util_fn<3>, offset_util_stub_3_);
+LMP_DEFINE_DISPATCH(offset_util_fn<2>, offset_util_stub_2);
+LMP_DEFINE_DISPATCH(offset_util_fn<3>, offset_util_stub_3);
 
 namespace cpu {
 
 template class CPUOffsetUtil<2>;
 template class CPUOffsetUtil<3>;
 
-offset_util_fn<2> offset_util_cpu_2_ = offset_util_cpu<2>;
-offset_util_fn<3> offset_util_cpu_3_ = offset_util_cpu<3>;
+namespace {
+offset_util_fn<2> offset_util_cpu_2 = offset_util_cpu<2>;
+offset_util_fn<3> offset_util_cpu_3 = offset_util_cpu<3>;
+}
 
-LMP_REGISTER_DISPATCH(offset_util_stub_2_, DeviceType::CPU, offset_util_cpu_2_);
-LMP_REGISTER_DISPATCH(offset_util_stub_3_, DeviceType::CPU, offset_util_cpu_3_);
+LMP_REGISTER_DISPATCH(offset_util_stub_2, DeviceType::CPU, offset_util_cpu_2);
+LMP_REGISTER_DISPATCH(offset_util_stub_3, DeviceType::CPU, offset_util_cpu_3);
 
 }  // namespace cpu
 

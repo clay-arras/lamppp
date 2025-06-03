@@ -3,6 +3,8 @@
 #include <driver_types.h>
 #include <thrust/device_ptr.h>
 #include <cuda/std/array>
+#include <cstdint>
+#include "lamppp/common/assert.hpp"
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cpu/memory.hpp"
 #include "lamppp/tensor/cuda/list_ptr.cuh"
@@ -13,10 +15,10 @@
 namespace lmp::tensor::detail::cuda {
 
 DataPtr empty_cuda(size_t byte_size) {
-  void* ptr_ = nullptr;
-  LMP_CUDA_ASSERT(cudaMalloc(&ptr_, byte_size))
+  void* raw = nullptr;
+  LMP_CUDA_ASSERT(cudaMalloc(&raw, byte_size))
       << "empty_cuda: cudaMalloc failed.";
-  return DataPtr(ptr_, [](void* ptr) { cudaFree(ptr); });
+  return DataPtr(raw, [](void* ptr) { cudaFree(ptr); });
 }
 void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
   LMP_DISPATCH_ALL_TYPES(type, [&]() {
@@ -31,7 +33,7 @@ void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   cudaMemcpy(ptr, dptr.data(), std::min(old_byte_size, new_byte_size),
              cudaMemcpyDeviceToDevice);
 
-  auto deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
+  auto *deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
   dptr = DataPtr(ptr, *deleter);
 }
 
@@ -116,6 +118,9 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
       });
       break;
     }
+    case DeviceType::Count:
+      LMP_INTERNAL_ASSERT(false) << "DeviceType::Count is an internal utility.";
+      break;
   }
 }
 
@@ -127,7 +132,7 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
   }
 }
 
-// TODO: need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
+// TODO(astronaut): need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
 template <typename U, typename V>
 void cudaVecCopy(size_t size, const U* in, V* out) {
   size_t threads = 256;

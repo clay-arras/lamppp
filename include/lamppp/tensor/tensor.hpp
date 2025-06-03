@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <span>
+#include <utility>
 #include <vector>
 #include "data_type.hpp"
 #include "device_type.hpp"
@@ -89,7 +90,7 @@ class Tensor {
   friend class detail::UnsafeTensorAccessor;
 
  private:
-  explicit Tensor(std::shared_ptr<TensorImpl> ptr) : impl_(ptr) {}
+  explicit Tensor(std::shared_ptr<TensorImpl> ptr) : impl_(std::move(ptr)) {}
   std::shared_ptr<TensorImpl> impl_;
 };
 
@@ -105,7 +106,7 @@ struct UnsafeTensorAccessor {
     return ten.impl_;
   }
   static Tensor fromImpl(std::shared_ptr<TensorImpl> ptr) {
-    return Tensor(ptr);
+    return Tensor(std::move(ptr));
   }
 };
 // @endinternal

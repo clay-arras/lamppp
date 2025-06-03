@@ -44,8 +44,8 @@ A minimal example demonstrating autograd:
 #include "lamppp/lamppp.hpp"
 
 int main() {
-    lmp::Tensor data_a(std::vector<float>{2.0f, 4.0f}, {1, 2}, lmp::DeviceType::CUDA, lmp::DataType::Float32);
-    lmp::Tensor data_b(std::vector<float>{3.0f, 1.0f}, {1, 2}, lmp::DeviceType::CUDA, lmp::DataType::Float32);
+    lmp::Tensor data_a(std::vector<float>{2.0F, 4.0F}, {1, 2}, lmp::DeviceType::CUDA, lmp::DataType::Float32);
+    lmp::Tensor data_b(std::vector<float>{3.0F, 1.0F}, {1, 2}, lmp::DeviceType::CUDA, lmp::DataType::Float32);
 
     lmp::Variable a(data_a, true);
     lmp::Variable b(data_b, true);

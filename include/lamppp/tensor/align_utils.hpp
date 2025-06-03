@@ -31,7 +31,7 @@ class AlignUtil {
   size_t aligned_size_;
 
  private:
-  std::vector<size_t> calc_aligned_shape(const std::vector<size_t>& a_shape,
+  static std::vector<size_t> calc_aligned_shape(const std::vector<size_t>& a_shape,
                                          const std::vector<size_t>& b_shape);
   std::vector<stride_t> calc_aligned_stride();
 };

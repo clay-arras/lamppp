@@ -40,7 +40,7 @@ class Storage {
   size_t byte_size() const noexcept;
   DeviceType device() const noexcept;
 
-  void resize_(size_t nsize);
+  void resize(size_t nsize);
   friend std::ostream& operator<<(std::ostream& os, const Storage& obj);
 
  private:
@@ -59,8 +59,8 @@ class Storage::StorageImpl {
   size_t byte_size() const noexcept;
   DeviceType device() const noexcept;
 
-  void resize_(size_t nsize);
-  void print_(std::ostream& os);
+  void resize(size_t nsize);
+  void print(std::ostream& os) const;
 
  private:
   detail::DataPtr data_ptr_;

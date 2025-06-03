@@ -20,7 +20,7 @@ __global__ void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t size,
 template <typename PtrList, typename OpFn>
 void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
                             const size_t* shape, const stride_t* strides,
-                            const size_t ndims);
+                            size_t ndims);
 
 template <template <typename> class OpFunctor, typename... Args>
 void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,

@@ -15,12 +15,12 @@ __global__ void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t size,
   if (i < size) {
     stride_t outer = strides[axis];
     stride_t inner = strides[axis - 1];
-    stride_t idx = (i / outer) * inner + (i % outer);
+    stride_t idx = ((i / outer) * inner) + (i % outer);
 
-    auto incr = OpFn::identity;
+    auto incr = OpFn::kIdentity;
     for (size_t j = 0; j < shape[axis]; ++j) {
       incr = fn_(incr,
-                 ::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], idx + j * outer));
+                 ::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], idx + (j * outer)));
     }
     ptr_.set_Out(i, incr);
   }

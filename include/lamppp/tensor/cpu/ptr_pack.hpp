@@ -23,13 +23,13 @@ struct TransformFunctor {
 template <class OutT, class... SrcTs>
 class PtrPack {
  public:
-  static constexpr std::size_t N = sizeof...(SrcTs);
+  static constexpr std::size_t kN = sizeof...(SrcTs);
 
-  ::std::array<void*, N + 1> data;
+  ::std::array<void*, kN + 1> data;
   ::std::tuple<TransformFunctor<OutT, OutT>, TransformFunctor<OutT, SrcTs>...>
       fns;
 
-  constexpr PtrPack(OutT* out, SrcTs*... in)
+  constexpr explicit PtrPack(OutT* out, SrcTs*... in)
       : data{static_cast<void*>(out), static_cast<void*>(in)...},
         fns{TransformFunctor<OutT, OutT>{},
             TransformFunctor<OutT, SrcTs>{}...} {}

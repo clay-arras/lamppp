@@ -17,13 +17,13 @@ const tensor::Tensor& Variable::data() const noexcept {
 const std::shared_ptr<Function>& Variable::grad_fn() const noexcept {
   return impl_->_grad_fn;
 }
-const bool Variable::requires_grad() const noexcept {
+bool Variable::requires_grad() const noexcept {
   return impl_->requires_grad;
 }
 
 void Variable::zero_grad() {
   impl_->grad = zeros_like(impl_->grad);
-}  // TODO: this can be better, implement fill in tensor
+}  // TODO(root): this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
   LMP_INTERNAL_ASSERT(other_grad.shape() == impl_->grad.shape())
       << "There should be no broadcasting in incr_grad";
@@ -72,7 +72,7 @@ std::vector<Variable> Variable::topological_sort() {
   std::vector<Variable> topo;
 
   dfs(*this, visited, topo);
-  std::reverse(topo.begin(), topo.end());
+  std::ranges::reverse(topo);
   return topo;
 }
 

@@ -28,7 +28,7 @@ tensor::Tensor sum_broadcast_axis(tensor::Tensor grad,
 
     while (aligned_grad.shape().size() > orig_shape.size()) {
       aligned_grad = tensor::ops::sum(aligned_grad, 0);
-      aligned_grad.squeeze(0);
+      aligned_grad = aligned_grad.squeeze(0);
     }
   }
   return aligned_grad;

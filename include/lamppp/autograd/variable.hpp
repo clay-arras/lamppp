@@ -22,7 +22,7 @@ struct VariableImpl {
 
   explicit VariableImpl(const tensor::Tensor& data, bool requires_grad = false)
       : data(tensor::Tensor(data)),
-        grad(requires_grad ? zeros_like(data) : tensor::Tensor()),
+        grad(zeros_like(data)), // TODO(root): can be optimized when requires_grad = false
         requires_grad(requires_grad),
         _grad_fn(nullptr) {}
   explicit VariableImpl(const tensor::Tensor& data, const tensor::Tensor& grad,
@@ -30,7 +30,7 @@ struct VariableImpl {
       : data(tensor::Tensor(data)),
         grad(tensor::Tensor(grad)),
         requires_grad(requires_grad),
-        _grad_fn(grad_fn) {}
+        _grad_fn(std::move(grad_fn)) {}
 };
 
 class Variable {
@@ -42,7 +42,7 @@ class Variable {
   const tensor::Tensor& grad() const noexcept;
   const tensor::Tensor& data() const noexcept;
   const std::shared_ptr<Function>& grad_fn() const noexcept;
-  const bool requires_grad() const noexcept;
+  bool requires_grad() const noexcept;
 
   void zero_grad();
   void incr_grad(const tensor::Tensor& other_grad);

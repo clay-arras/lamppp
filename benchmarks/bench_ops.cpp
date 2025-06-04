@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
   std::vector<std::pair<
       std::string,
       std::function<Variable(
-          Variable)>>>  // TODO: I'm too lazy to do the other ones because of domain constraints. do it later
+          Variable)>>>  // TODO(root): I'm too lazy to do the other ones because of domain constraints. do it later
       una_functions = {
           {"Abs", abs_variable},
           {"Sin", sin_variable},

@@ -13,6 +13,12 @@ set(AUTOGRAD_SOURCES
 
 add_library(autograd_core SHARED ${AUTOGRAD_SOURCES})
 
+# Apply coverage flags if enabled
+if(ENABLE_COVERAGE)
+  target_compile_options(autograd_core PRIVATE --coverage -O0 -g)
+  target_link_options(autograd_core PRIVATE --coverage)
+endif()
+
 target_link_libraries(autograd_core
   PUBLIC tensor_core 
 )

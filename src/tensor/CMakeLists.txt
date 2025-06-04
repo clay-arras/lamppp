@@ -37,6 +37,12 @@ endif()
 
 add_library(tensor_core SHARED ${TENSOR_SOURCES})
 
+# Apply coverage flags if enabled
+if(ENABLE_COVERAGE)
+  target_compile_options(tensor_core PRIVATE --coverage -O0 -g)
+  target_link_options(tensor_core PRIVATE --coverage)
+endif()
+
 if (ENABLE_CUDA)
   set_target_properties(tensor_core PROPERTIES
     CUDA_SEPARABLE_COMPILATION ON 

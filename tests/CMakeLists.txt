@@ -34,6 +34,13 @@ add_executable(autograd_tests autograd_tests.cpp)
 target_link_libraries(autograd_tests
   PRIVATE autograd_core GTest::gtest_main GTest::gmock
 )
+
+# Apply coverage flags if enabled
+if(ENABLE_COVERAGE)
+  target_compile_options(autograd_tests PRIVATE --coverage -O0 -g)
+  target_link_options(autograd_tests PRIVATE --coverage)
+endif()
+
 include(GoogleTest)
 gtest_discover_tests(autograd_tests)
 
@@ -41,6 +48,13 @@ add_executable(tensor_tests tensor_tests.cpp)
 target_link_libraries(tensor_tests
   PRIVATE tensor_core GTest::gtest_main GTest::gmock
 )
+
+# Apply coverage flags if enabled
+if(ENABLE_COVERAGE)
+  target_compile_options(tensor_tests PRIVATE --coverage -O0 -g)
+  target_link_options(tensor_tests PRIVATE --coverage)
+endif()
+
 include(GoogleTest)
 gtest_discover_tests(tensor_tests)
 

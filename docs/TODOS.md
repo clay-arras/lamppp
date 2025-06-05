@@ -3,10 +3,15 @@
 ### current todo
 
 for release:
-- do code coverage with gcov
-- add documentation
-- make mnist working again
-- make bench_ops working again
+- fix code coverage
+  - tensor w/ scalar, scalar w/ tensor
+  - pow, comparison <=>
+  - sqrt, abs, sin, cos, tan, clamp tensor
+  - CPU!!!
+  - broadcasting backwards!!
+  - constructor
+- test if its different w/ or w/o the python tests (and what the python tests cover) 
+
 
 ## easy
 

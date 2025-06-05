@@ -42,7 +42,7 @@ if(ENABLE_COVERAGE)
 endif()
 
 include(GoogleTest)
-gtest_discover_tests(autograd_tests)
+gtest_discover_tests(autograd_tests PROPERTIES LABELS "library_tests")
 
 add_executable(tensor_tests tensor_tests.cpp)
 target_link_libraries(tensor_tests
@@ -56,7 +56,7 @@ if(ENABLE_COVERAGE)
 endif()
 
 include(GoogleTest)
-gtest_discover_tests(tensor_tests)
+gtest_discover_tests(tensor_tests PROPERTIES LABELS "library_tests")
 
 pybind11_add_module(lamppp_module autograd_pybind.cpp)
 target_link_libraries(lamppp_module PRIVATE lamppp)

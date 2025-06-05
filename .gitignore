@@ -8,4 +8,6 @@ data/
 .cache/
 .hypothesis/
 .vscode/
+coverage/
+.coverage
 **/.ipynb_checkpoints/

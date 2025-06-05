@@ -1,12 +1,14 @@
 import sys, os
 from pathlib import Path
 
-def get_project_root(marker = "pyproject.toml"):
+
+def get_project_root(marker="pyproject.toml"):
     path = Path(__file__).resolve()
     for parent in [path, *path.parents]:
         if (parent / marker).is_file():
             return parent
     raise FileNotFoundError(f"Couldn’t locate {marker} in any parent directory.")
+
 
 PROJECT_ROOT = get_project_root()
 sys.path.append(os.path.join(PROJECT_ROOT, "build"))
@@ -45,8 +47,13 @@ def _from_row_major(flat, like):
     return t.tolist()
 
 
-def _to_lamppp_var(mat, requires_grad=True):
-    ten = lamppp.cTensor(_to_row_major(mat), list(torch.tensor(mat).shape))
+def _to_lamppp_var(mat, device, requires_grad=True):
+    ten = lamppp.cTensor(
+        _to_row_major(mat),
+        list(torch.tensor(mat).shape),
+        device,
+        lamppp.cDataType.Float64,
+    )
     return lamppp.cVariable(ten, requires_grad)
 
 
@@ -60,7 +67,7 @@ def _rtol(pred, true):
     )
 
 
-def compute_grads(lamppp_op, torch_op, mats):
+def compute_grads(lamppp_op, torch_op, mats, device):
     torch_vars = [torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats]
     torch_out = torch_op(*torch_vars)
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
@@ -69,7 +76,7 @@ def compute_grads(lamppp_op, torch_op, mats):
         "out": [torch_out.data.tolist()],
     }
 
-    lamppp_vars = [_to_lamppp_var(m) for m in mats]
+    lamppp_vars = [_to_lamppp_var(m, device) for m in mats]
     lamppp_out = lamppp_op(*lamppp_vars)
     lamppp_out.backward()
     lamppp_vals = {
@@ -131,7 +138,10 @@ def calculate_pair_tolerances(cg, tg):
         "min_axis_1",
     ],
 )
-def test_ops(case):
+@pytest.mark.parametrize(
+    "device", [lamppp.cDeviceType.CPU, lamppp.cDeviceType.CUDA], ids=["cpu", "cuda"]
+)
+def test_ops(case, device):
     instance = case()
 
     max_atol_forward, max_rtol_forward = 0, 0
@@ -140,7 +150,7 @@ def test_ops(case):
     for _ in range(ITERATIONS):
         mats = instance.sampler()
         cpp_results, torch_results = compute_grads(
-            instance.cpp_fn, instance.torch_fn, mats
+            instance.cpp_fn, instance.torch_fn, mats, device
         )
 
         for cpp_out, torch_out in zip(cpp_results["out"], torch_results["out"]):

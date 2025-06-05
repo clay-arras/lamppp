@@ -8,23 +8,45 @@ if(ENABLE_CUDA)
   add_definitions(-DENABLE_CUDA)
 endif()
 
-# # Coverage configuration
-# if(ENABLE_COVERAGE)
-#   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-#     # Coverage flags
-#     set(COVERAGE_COMPILE_FLAGS "--coverage -O0 -g")
-#     set(COVERAGE_LINK_FLAGS "--coverage")
-    
-#     # Apply to CMAKE_CXX_FLAGS
-#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COVERAGE_COMPILE_FLAGS}")
-#     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${COVERAGE_LINK_FLAGS}")
-#     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${COVERAGE_LINK_FLAGS}")
-    
-#     message(STATUS "Code coverage enabled")
-#   else()
-#     message(WARNING "Code coverage requested but compiler is not GNU GCC or Clang")
-#   endif()
-# endif()
+# Coverage configuration  
+if(ENABLE_COVERAGE)
+  include(CTest)
+  set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
+  set(CMAKE_EXE_LINKER_FLAGS_DEBUG "--coverage")
+  set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "--coverage")
+  message(STATUS "Code coverage enabled")
+  
+  add_custom_target(coverage_clean
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/coverage.info ${CMAKE_BINARY_DIR}/python_coverage.info ${CMAKE_BINARY_DIR}/cpp_filtered.info ${CMAKE_BINARY_DIR}/combined_coverage.info
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/coverage || true
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Cleaning up previous coverage artifacts"
+  )
+
+  add_custom_target(coverage_cpp
+    COMMAND ctest --test-dir ${CMAKE_BINARY_DIR} -L library_tests -T Test -T Coverage
+    COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file ${CMAKE_BINARY_DIR}/coverage.info --ignore-errors mismatch,gcov,negative,source --rc geninfo_unexecuted_blocks=1
+    COMMAND lcov --remove ${CMAKE_BINARY_DIR}/coverage.info '*/tmp/*' '*/_deps/*' '/usr/*' -o ${CMAKE_BINARY_DIR}/cpp_filtered.info
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running C++ tests and generating coverage data"
+    DEPENDS coverage_clean
+  )
+
+  add_custom_target(coverage_python
+    COMMAND poetry run pytest tests/ --cov=. --cov-report=lcov:${CMAKE_BINARY_DIR}/python_coverage.info || true
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running Python tests and generating coverage data"
+    DEPENDS coverage_clean
+  )
+
+  add_custom_target(coverage
+    COMMAND lcov --add-tracefile ${CMAKE_BINARY_DIR}/cpp_filtered.info --add-tracefile ${CMAKE_BINARY_DIR}/python_coverage.info --output-file ${CMAKE_BINARY_DIR}/combined_coverage.info || lcov --add-tracefile ${CMAKE_BINARY_DIR}/cpp_filtered.info --output-file ${CMAKE_BINARY_DIR}/combined_coverage.info
+    COMMAND genhtml ${CMAKE_BINARY_DIR}/combined_coverage.info --output-directory ${CMAKE_BINARY_DIR}/coverage
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Combining coverage reports and generating HTML output"
+    DEPENDS coverage_cpp coverage_python
+  )
+endif()
 
 # CORE CONFIG ---------------------------------
 set(PYTHON_VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python")
@@ -69,14 +91,6 @@ target_compile_options(lamppp
     $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
     $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp -g>
 )
-
-# # Override optimization for coverage builds
-# if(ENABLE_COVERAGE)
-#   target_compile_options(lamppp
-#     INTERFACE
-#       -O0 -g --coverage
-#   )
-# endif()
 
 add_subdirectory(tests)
 add_subdirectory(benchmarks)
@@ -128,68 +142,3 @@ if (DOXYGEN_FOUND)
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
   )
 endif()
-
-# # COVERAGE TARGETS ---------------------------------
-# if(ENABLE_COVERAGE)
-#   # Find gcovr for coverage reports
-#   find_program(GCOVR_PATH gcovr)
-#   if(GCOVR_PATH)
-#     # Coverage cleanup target
-#     add_custom_target(coverage_clean
-#       COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
-#       COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcno" -delete
-#       COMMENT "Cleaning coverage data"
-#     )
-    
-#     # Coverage report target (HTML)
-#     add_custom_target(coverage_html
-#       COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage
-#       COMMAND ${GCOVR_PATH}
-#         --root=${CMAKE_SOURCE_DIR}
-#         --object-directory=${CMAKE_BINARY_DIR}
-#         --exclude-unreachable-branches
-#         --exclude-throw-branches
-#         --exclude='.*_deps.*'
-#         --exclude='.*external.*'
-#         --exclude='.*build.*cuda.*'
-#         --gcov-ignore-errors=no_working_dir_found
-#         --html --html-details
-#         --output=${CMAKE_BINARY_DIR}/coverage/index.html
-#       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-#       COMMENT "Generating HTML coverage report"
-#     )
-    
-#     # Coverage report target (XML for CI)
-#     add_custom_target(coverage_xml
-#       COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage
-#       COMMAND ${GCOVR_PATH}
-#         --root=${CMAKE_SOURCE_DIR}
-#         --object-directory=${CMAKE_BINARY_DIR}
-#         --exclude-unreachable-branches
-#         --exclude-throw-branches
-#         --exclude='.*_deps.*'
-#         --exclude='.*external.*'
-#         --exclude='.*build.*cuda.*'
-#         --gcov-ignore-errors=no_working_dir_found
-#         --xml
-#         --output=${CMAKE_BINARY_DIR}/coverage/coverage.xml
-#       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-#       COMMENT "Generating XML coverage report"
-#     )
-    
-#     # Combined coverage target that runs tests and generates report
-#     add_custom_target(coverage
-#       COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target coverage_clean
-#       COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target autograd_tests
-#       COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target tensor_tests
-#       COMMAND ${CMAKE_BINARY_DIR}/tests/autograd_tests --gtest_filter="*/0"
-#       COMMAND ${CMAKE_BINARY_DIR}/tests/tensor_tests --gtest_filter="*/0"
-#       COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target coverage_html
-#       COMMENT "Running tests and generating coverage report"
-#     )
-    
-#     message(STATUS "Coverage targets added: coverage, coverage_html, coverage_xml, coverage_clean")
-#   else()
-#     message(WARNING "gcovr not found. Coverage reports will not be available.")
-#   endif()
-# endif()

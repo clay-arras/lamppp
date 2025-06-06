@@ -15,7 +15,6 @@ dependencies = [
     "pybind11 (>=2.13.6,<3.0.0)",
     "pytest (>=8.3.5,<9.0.0)",
     "hypothesis (>=6.131.20,<7.0.0)",
-    "pytest-cov (>=6.1.1,<7.0.0)",
 ]
 
 [build-system]

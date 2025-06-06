@@ -27,39 +27,34 @@ FetchContent_MakeAvailable(pybind11)
 # EXECUTABLES ---------------------------------
 enable_testing()
 
-add_executable(playground playground.cpp)
-target_link_libraries(playground PRIVATE lamppp)
+# add_executable(playground playground.cpp)
+# target_link_libraries(playground PRIVATE lamppp)
 
-add_executable(autograd_tests autograd_tests.cpp)
+add_executable(autograd_tests unit/autograd_tests.cpp)
 target_link_libraries(autograd_tests
   PRIVATE autograd_core GTest::gtest_main GTest::gmock
 )
 
-# Apply coverage flags if enabled
-if(ENABLE_COVERAGE)
-  target_compile_options(autograd_tests PRIVATE --coverage -O0 -g)
-  target_link_options(autograd_tests PRIVATE --coverage)
-endif()
-
-include(GoogleTest)
-gtest_discover_tests(autograd_tests PROPERTIES LABELS "library_tests")
-
-add_executable(tensor_tests tensor_tests.cpp)
+add_executable(tensor_tests unit/tensor_tests.cpp)
 target_link_libraries(tensor_tests
   PRIVATE tensor_core GTest::gtest_main GTest::gmock
 )
 
-# Apply coverage flags if enabled
+pybind11_add_module(lamppp_module stress/autograd_pybind.cpp)
+target_link_libraries(lamppp_module PRIVATE lamppp)
+
 if(ENABLE_COVERAGE)
   target_compile_options(tensor_tests PRIVATE --coverage -O0 -g)
   target_link_options(tensor_tests PRIVATE --coverage)
+  target_compile_options(autograd_tests PRIVATE --coverage -O0 -g)
+  target_link_options(autograd_tests PRIVATE --coverage)
+  target_compile_options(lamppp_module PRIVATE --coverage -O0 -g)
+  target_link_options(lamppp_module PRIVATE --coverage)
 endif()
 
 include(GoogleTest)
 gtest_discover_tests(tensor_tests PROPERTIES LABELS "library_tests")
-
-pybind11_add_module(lamppp_module autograd_pybind.cpp)
-target_link_libraries(lamppp_module PRIVATE lamppp)
+gtest_discover_tests(autograd_tests PROPERTIES LABELS "library_tests")
 
 set_target_properties(lamppp_module PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"

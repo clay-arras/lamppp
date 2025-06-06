@@ -11,13 +11,13 @@ endif()
 # Coverage configuration  
 if(ENABLE_COVERAGE)
   include(CTest)
-  set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
+  set(CMAKE_CXX_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage")
   set(CMAKE_EXE_LINKER_FLAGS_DEBUG "--coverage")
   set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "--coverage")
   message(STATUS "Code coverage enabled")
   
   add_custom_target(coverage_clean
-    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/coverage.info ${CMAKE_BINARY_DIR}/python_coverage.info ${CMAKE_BINARY_DIR}/cpp_filtered.info ${CMAKE_BINARY_DIR}/combined_coverage.info
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/coverage.info ${CMAKE_BINARY_DIR}/python_cpp_coverage.info ${CMAKE_BINARY_DIR}/cpp_filtered.info ${CMAKE_BINARY_DIR}/python_filtered.info ${CMAKE_BINARY_DIR}/combined_coverage.info
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/coverage || true
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Cleaning up previous coverage artifacts"
@@ -26,21 +26,23 @@ if(ENABLE_COVERAGE)
   add_custom_target(coverage_cpp
     COMMAND ctest --test-dir ${CMAKE_BINARY_DIR} -L library_tests -T Test -T Coverage
     COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file ${CMAKE_BINARY_DIR}/coverage.info --ignore-errors mismatch,gcov,negative,source --rc geninfo_unexecuted_blocks=1
-    COMMAND lcov --remove ${CMAKE_BINARY_DIR}/coverage.info '*/tmp/*' '*/_deps/*' '/usr/*' -o ${CMAKE_BINARY_DIR}/cpp_filtered.info
+    COMMAND lcov --extract ${CMAKE_BINARY_DIR}/coverage.info '${CMAKE_SOURCE_DIR}/src/*' '${CMAKE_SOURCE_DIR}/include/*' -o ${CMAKE_BINARY_DIR}/cpp_filtered.info
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running C++ tests and generating coverage data"
     DEPENDS coverage_clean
   )
 
   add_custom_target(coverage_python
-    COMMAND poetry run pytest tests/ --cov=. --cov-report=lcov:${CMAKE_BINARY_DIR}/python_coverage.info || true
+    COMMAND poetry run pytest tests/
+    COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file ${CMAKE_BINARY_DIR}/python_cpp_coverage.info --ignore-errors mismatch,gcov,negative,source --rc geninfo_unexecuted_blocks=1
+    COMMAND lcov --extract ${CMAKE_BINARY_DIR}/python_cpp_coverage.info '${CMAKE_SOURCE_DIR}/src/*' '${CMAKE_SOURCE_DIR}/include/*' -o ${CMAKE_BINARY_DIR}/python_filtered.info
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running Python tests and generating coverage data"
+    COMMENT "Running Python tests and capturing C++ coverage data"
     DEPENDS coverage_clean
   )
 
   add_custom_target(coverage
-    COMMAND lcov --add-tracefile ${CMAKE_BINARY_DIR}/cpp_filtered.info --add-tracefile ${CMAKE_BINARY_DIR}/python_coverage.info --output-file ${CMAKE_BINARY_DIR}/combined_coverage.info || lcov --add-tracefile ${CMAKE_BINARY_DIR}/cpp_filtered.info --output-file ${CMAKE_BINARY_DIR}/combined_coverage.info
+    COMMAND lcov --add-tracefile ${CMAKE_BINARY_DIR}/cpp_filtered.info --add-tracefile ${CMAKE_BINARY_DIR}/python_filtered.info --output-file ${CMAKE_BINARY_DIR}/combined_coverage.info || lcov --add-tracefile ${CMAKE_BINARY_DIR}/cpp_filtered.info --output-file ${CMAKE_BINARY_DIR}/combined_coverage.info
     COMMAND genhtml ${CMAKE_BINARY_DIR}/combined_coverage.info --output-directory ${CMAKE_BINARY_DIR}/coverage
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Combining coverage reports and generating HTML output"
@@ -88,7 +90,7 @@ target_link_libraries(lamppp INTERFACE autograd_core tensor_core)
 
 target_compile_options(lamppp
   INTERFACE
-    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG>
+    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -DNDEBUG -fopenmp>
     $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp -g>
 )
 

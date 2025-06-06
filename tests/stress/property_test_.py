@@ -1,3 +1,19 @@
+"""
+WIP: the goal of this file is to stress test ALL aspects of the library by generating dynamic computation graphs
+using Hypothesis, and try to find holes in the logic. This approach helps discover bugs that might not be caught by unit tests,
+particularly in complex interaction scenarios between different operations.
+
+- a) generate a list of variables, set A where len(A) = N
+- b) generate a set of ALL of the possible edges between A, s.t. len(E) = N\*(N-1)/2
+- c) each union object has a "head"; on merge, we connect s.t. newHead = op(prevHead, newModule)
+- d) iterate through E, merging using reshape and expand_dims.
+  - reshape checker: pad shorter shape
+  - go from left to right; if both 1s, then skip; if a % b == 0, then s.t. the new shape is b, with a/b carried over
+  - fallback is to make the shape (N, 1) and (1, M)
+- e) after each merge, have an option to apply a unary operation x% of the time (between keepDims=false reduct, unary, and transpose)
+- f) stop when all objects have been connected into one "HEAD" variable
+"""
+
 import sys, os
 
 PROJECT_ROOT = "/home/nlin/workspace/code/projects/autograd_cpp"

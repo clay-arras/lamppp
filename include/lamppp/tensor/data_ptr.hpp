@@ -34,7 +34,6 @@ struct DataPtr {
           }
         }) {}
 
-  void* data() { return ptr.get(); }
   void* data() const { return ptr.get(); }
 };
 /// @endinternal

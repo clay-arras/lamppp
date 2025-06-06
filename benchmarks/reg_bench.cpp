@@ -18,9 +18,22 @@ int main(int argc, char** argv) {
         {1024, 1024}
     };
 
-    // Create operators
     std::vector<std::unique_ptr<OperatorBase>> operators;
+    
     operators.push_back(std::make_unique<AddOp>());
+    operators.push_back(std::make_unique<SubOp>());
+    operators.push_back(std::make_unique<MulOp>());
+    operators.push_back(std::make_unique<DivOp>());
+    operators.push_back(std::make_unique<PowOp>());
+    
+    operators.push_back(std::make_unique<LogOp>());
+    operators.push_back(std::make_unique<ExpOp>());
+    operators.push_back(std::make_unique<SqrtOp>());
+    operators.push_back(std::make_unique<AbsOp>());
+    operators.push_back(std::make_unique<SinOp>());
+    operators.push_back(std::make_unique<CosOp>());
+    operators.push_back(std::make_unique<TanOp>());
+    operators.push_back(std::make_unique<ClampOp>());
 
     // Register all combinations
     for (const auto& op : operators) {

@@ -11,36 +11,77 @@ int main(int argc, char** argv) {
         lmp::tensor::DeviceType::CPU, 
         lmp::tensor::DeviceType::CUDA
     };
-    std::vector<std::vector<size_t>> shapes = {
+    std::vector<std::vector<size_t>> sqr_shapes = {
         {128, 128},
         {256, 256}, 
         {512, 512},
         {1024, 1024}
     };
+    std::vector<std::vector<size_t>> rect_shapes = {
+        {256, 512},
+        {256, 32}, 
+        {64, 512},
+        {64, 32}
+    };
+    std::vector<std::array<std::vector<size_t>, 2>> cast_shapes = {
+        {{{1, 64, 1}, {64, 1, 64}}}
+    };
 
-    std::vector<std::unique_ptr<OperatorBase>> operators;
-    
-    operators.push_back(std::make_unique<AddOp>());
-    operators.push_back(std::make_unique<SubOp>());
-    operators.push_back(std::make_unique<MulOp>());
-    operators.push_back(std::make_unique<DivOp>());
-    operators.push_back(std::make_unique<PowOp>());
-    
-    operators.push_back(std::make_unique<LogOp>());
-    operators.push_back(std::make_unique<ExpOp>());
-    operators.push_back(std::make_unique<SqrtOp>());
-    operators.push_back(std::make_unique<AbsOp>());
-    operators.push_back(std::make_unique<SinOp>());
-    operators.push_back(std::make_unique<CosOp>());
-    operators.push_back(std::make_unique<TanOp>());
-    operators.push_back(std::make_unique<ClampOp>());
+    std::vector<std::unique_ptr<BinaryOperatorBase>> binary_operators;
+    binary_operators.push_back(std::make_unique<AddOp>());
+    binary_operators.push_back(std::make_unique<SubOp>());
+    binary_operators.push_back(std::make_unique<MulOp>());
+    binary_operators.push_back(std::make_unique<DivOp>());
+    binary_operators.push_back(std::make_unique<PowOp>());
 
-    // Register all combinations
-    for (const auto& op : operators) {
+    for (const auto& op : binary_operators) {
         for (const auto& dtype : dtypes) {
             for (const auto& device : devices) {
-                for (const auto& shape : shapes) {
-                    OperatorConfig config{.shape = shape, .device = device, .dtype = dtype};
+                for (const auto& shape : sqr_shapes) {
+                    OperatorConfig<2> config{.shapes = {shape, shape}, .device = device, .dtype = dtype};
+                    op->register_benchmarks(config);
+                }
+                for (const auto& shapes : cast_shapes) {
+                    OperatorConfig<2> config{.shapes = shapes, .device = device, .dtype = dtype};
+                    op->register_benchmarks(config);
+                }
+            }
+        }
+    }
+
+    std::vector<std::unique_ptr<UnaryOperatorBase>> unary_operators;
+    unary_operators.push_back(std::make_unique<NegOp>());
+    unary_operators.push_back(std::make_unique<LogOp>());
+    unary_operators.push_back(std::make_unique<ExpOp>());
+    unary_operators.push_back(std::make_unique<SqrtOp>());
+    unary_operators.push_back(std::make_unique<AbsOp>());
+    unary_operators.push_back(std::make_unique<SinOp>());
+    unary_operators.push_back(std::make_unique<CosOp>());
+    unary_operators.push_back(std::make_unique<TanOp>());
+    unary_operators.push_back(std::make_unique<ClampOp>());
+
+    for (const auto& op : unary_operators) {
+        for (const auto& dtype : dtypes) {
+            for (const auto& device : devices) {
+                for (const auto& shape : sqr_shapes) {
+                    OperatorConfig<1> config{.shapes = {shape}, .device = device, .dtype = dtype};
+                    op->register_benchmarks(config);
+                }
+            }
+        }
+    }
+
+    std::vector<std::unique_ptr<ReductOperatorBase>> reduct_operators;
+    reduct_operators.push_back(std::make_unique<SumOp>());
+    reduct_operators.push_back(std::make_unique<MinOp>());
+    reduct_operators.push_back(std::make_unique<MaxOp>());
+    reduct_operators.push_back(std::make_unique<ProdOp>());
+
+    for (const auto& op : reduct_operators) {
+        for (const auto& dtype : dtypes) {
+            for (const auto& device : devices) {
+                for (const auto& shape : rect_shapes) {
+                    OperatorConfig<1> config{.shapes = {shape}, .device = device, .dtype = dtype};
                     op->register_benchmarks(config);
                 }
             }

@@ -40,6 +40,19 @@ Variable ones(const std::vector<size_t>& shape, tensor::DeviceType device,
 Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
               tensor::DataType dtype, bool requires_grad);
 
+/**
+ * @brief Create a variable with random values from a normal distribution
+ * @param mean The mean of the normal distribution
+ * @param var The variance of the normal distribution
+ * @param shape The shape of the variable
+ * @param device The device to create the variable on
+ * @param dtype The data type of the variable
+ * @param requires_grad Whether the variable requires gradients
+ * @return A variable with random values
+ */
+Variable randn(tensor::Scalar mean, tensor::Scalar var, const std::vector<size_t>& shape, tensor::DeviceType device,
+              tensor::DataType dtype, bool requires_grad);
+
 /// @internal
 template <typename>
 struct IsVector : std::false_type {};

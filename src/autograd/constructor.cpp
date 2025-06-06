@@ -41,4 +41,18 @@ Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
                   requires_grad);
 }
 
+Variable randn(tensor::Scalar mean, tensor::Scalar var, const std::vector<size_t>& shape, tensor::DeviceType device,
+              tensor::DataType dtype, bool requires_grad) {
+  size_t sz = shape.empty() ? 0
+                            : std::accumulate(shape.begin(), shape.end(), 1,
+                                              std::multiplies<>());
+  std::vector<tensor::Scalar> rand_vec(sz);
+
+  std::mt19937_64 rg{std::random_device{}()}; 
+  std::normal_distribution<> gauss(mean, var);
+
+  std::ranges::generate(rand_vec, [&]() { return gauss(rg); });
+  return Variable(tensor::Tensor(rand_vec, shape, device, dtype), requires_grad);
+}
+
 }  // namespace lmp::autograd

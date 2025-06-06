@@ -9,6 +9,7 @@ benchmarking
 - make regular binary operations different from broadcasting operations (see if it's speedup)
 - benchmark more operations
 - relu, sigmoid, tanh -- define this in nn module
+- add default values - quick
 
 - fix github tests
 - add better tests with hypothesis
@@ -41,6 +42,7 @@ reduct: [256, 512], [256, 32], [64, 512], [64, 32]
 value initializations: 
 devices: cpu, cuda
 data types: float32
+next: how to make it take multiple shapes
 
 
 ```cpp
@@ -68,9 +70,6 @@ struct OperatorSpec {
 
 // how to do sum? 
 // how to have extra parameters?
-
-
-
 
 
 ```

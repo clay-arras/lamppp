@@ -50,7 +50,7 @@ public:
 
     [[noreturn]] void trigger() const {
         std::cerr << os_.str() << std::endl;
-        assert(false);
+        std::terminate();
     }
 };
 
@@ -64,7 +64,7 @@ public:
 
     [[noreturn]] void trigger() const {
         std::cerr << os_.str() << std::endl;
-        assert(false);
+        std::terminate();
     }
 };
 #endif
@@ -120,7 +120,7 @@ struct NullStream {
 };
 } 
 #define LMP_INTERNAL_ASSERT(cond) \
-    true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
+    (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 #define LMP_CUDA_ASSERT(call) \
     (call) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 

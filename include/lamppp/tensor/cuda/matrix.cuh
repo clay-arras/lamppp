@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
+#include <cstddef>
 
 namespace lmp::tensor::detail::cuda {
 

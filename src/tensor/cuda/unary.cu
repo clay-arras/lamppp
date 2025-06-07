@@ -20,7 +20,7 @@ void unary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
   size_t threads = 256;
   size_t blocks = (size + threads - 1) / threads;
   vectorized_unary_kernel<<<blocks, threads>>>(ptr_, fn_, size);
-  LMP_CUDA_ASSERT(cudaDeviceSynchronize())
+  LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize())
       << "unary_kernel_launcher: kernel failed.";
 }
 

@@ -2,6 +2,10 @@
 
 ### current todo
 
+- grid stride trick
+<!-- - make another lmp_cuda_assert for removable calls -->
+<!-- - fast divmod - done -->
+
 testing: 
 - test type promotion AND backwards type promotion
 

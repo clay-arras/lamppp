@@ -96,7 +96,15 @@ struct Voidify {
     (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::AssertStream(__FILE__, __LINE__, __func__, #cond)
 
 #ifdef ENABLE_CUDA
-#define LMP_CUDA_ASSERT(call)                                                   \
+#define LMP_CUDA_INTERNAL_ASSERT(call)                                                   \
+  [&]() {                                                                       \
+    cudaError_t _err = (call);                                                  \
+    return (_err == cudaSuccess)                                                \
+           ? (void)0                                                            \
+           : ::lmp::detail::Voidify() &                                         \
+             ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__, _err); \
+  }()
+#define LMP_CUDA_CHECK(call)                                                   \
   [&]() {                                                                       \
     cudaError_t _err = (call);                                                  \
     return (_err == cudaSuccess)                                                \
@@ -120,8 +128,10 @@ struct NullStream {
 };
 } 
 #define LMP_INTERNAL_ASSERT(cond) \
-    (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
-#define LMP_CUDA_ASSERT(call) \
+    true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
+#define LMP_CUDA_INTERNAL_ASSERT(call) \
+    true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
+#define LMP_CUDA_CHECK(call) \
     (call) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 
 #endif

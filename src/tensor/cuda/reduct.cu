@@ -36,7 +36,7 @@ void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
   ListDevicePtr<size_t> d_shape(shape, ndims);
   vectorized_reduct_kernel<<<blocks, threads>>>(ptr_, fn_, size, axis,
                                                 d_shape.get(), d_strides.get());
-  LMP_CUDA_ASSERT(cudaDeviceSynchronize())
+  LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize())
       << "reduct_kernel_launcher: kernel failed.";
 }
 

@@ -37,8 +37,9 @@ __device__ ::cuda::std::array<stride_t, NArgs + 1> CUDAOffsetUtil<NArgs>::get(
   result[0] = idx;
 
   for (size_t i = 0; i < this->ndim; ++i) {
-    stride_t this_idx = idx / static_cast<const stride_t*>(arg_pointers_[0])[i];
-    idx = idx % static_cast<const stride_t*>(arg_pointers_[0])[i];
+    stride_t stride = static_cast<const stride_t*>(arg_pointers_[0])[i];
+    stride_t this_idx = idx / stride; 
+    idx = idx % stride;
 
 #pragma omp unroll
     for (size_t j = 1; j <= NArgs; j++) {

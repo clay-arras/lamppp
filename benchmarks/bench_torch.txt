@@ -1,0 +1,2116 @@
+# ----------------------------------------
+# PyTorch/Caffe2 Operator Micro-benchmarks
+# ----------------------------------------
+# Tag : short
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 6.609
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.880
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 57.533
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.901
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 66.335
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.743
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2523.976
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.930
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 7.626
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.450
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 62.636
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.979
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 46.823
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.834
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2489.934
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.915
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 8.053
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.388
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 62.894
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.372
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 81.520
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.049
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2740.642
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.209
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 7.218
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.178
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 63.245
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.980
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 63.971
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.912
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2506.277
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.089
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 73.487
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 216.568
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 453.258
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 195.447
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 814.513
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 152.588
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 995.553
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 147.095
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 80.564
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 217.766
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 495.426
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 166.460
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 510.585
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 185.396
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 8011.001
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 166.466
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 105.035
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 229.349
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 755.525
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 212.165
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 947.862
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 202.410
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 21159.088
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 417.212
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[128,128]_in_two[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 85.397
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[128,128]_in_two[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], in_two: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 172.988
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[256,256]_in_two[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 880.284
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[256,256]_in_two[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], in_two: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 188.885
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[512,512]_in_two[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 630.809
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[512,512]_in_two[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], in_two: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 200.419
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[1024,1024]_in_two[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 9766.767
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[1024,1024]_in_two[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], in_two: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 259.940
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 62.685
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.561
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 40.631
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 13.749
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 74.154
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.686
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 61.583
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.645
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1484.764
+
+# Benchmarking PyTorch: add
+# Mode: Eager
+# Name: add_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 227.445
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1424.561
+
+# Benchmarking PyTorch: sub
+# Mode: Eager
+# Name: sub_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 163.954
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1482.811
+
+# Benchmarking PyTorch: div
+# Mode: Eager
+# Name: div_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 255.297
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[64,1,64]_in_two[1,64,1]_cpu_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1549.697
+
+# Benchmarking PyTorch: mul
+# Mode: Eager
+# Name: mul_in_one[64,1,64]_in_two[1,64,1]_cuda_dtypetorch.float32
+# Input: in_one: [64, 1, 64], in_two: [1, 64, 1], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 233.894
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 7.758
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.435
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 27.724
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.344
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 61.755
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 15.912
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 3497.302
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 15.935
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 7.275
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 13.169
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 60.694
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 14.243
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 65.825
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 13.168
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2459.533
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 13.313
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 45.755
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.450
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 67.725
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.450
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 139.413
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.471
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 3546.180
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.999
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 29.809
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.134
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 66.904
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.152
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 128.318
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.295
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 3015.256
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.023
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 62.648
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.552
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 65.028
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.532
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 132.320
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.516
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2513.388
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.583
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 5.312
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.175
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 47.190
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.177
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 28.971
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.128
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2530.717
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.862
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 65.993
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.662
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 65.958
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.452
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 131.126
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.531
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2755.363
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.623
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 48.576
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.016
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 16.227
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 10.986
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 64.854
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.830
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2329.363
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.237
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 64.595
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 11.037
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 61.114
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.049
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 194.617
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.132
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Forward Execution Time (us) : 2905.985
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Forward Execution Time (us) : 12.179
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 79.680
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 227.499
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 501.906
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 141.921
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 650.828
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 104.033
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 12968.897
+
+# Benchmarking PyTorch: abs
+# Mode: Eager
+# Name: abs_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 211.909
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 182.378
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 308.026
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1324.249
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 192.733
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1830.114
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 218.490
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 11908.550
+
+# Benchmarking PyTorch: clamp
+# Mode: Eager
+# Name: clamp_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 289.158
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 422.757
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 158.013
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 728.989
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 131.633
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1057.182
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 195.495
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 16033.070
+
+# Benchmarking PyTorch: cos
+# Mode: Eager
+# Name: cos_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 212.815
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 74.504
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 141.925
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 865.690
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 161.755
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 697.979
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 155.758
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 4483.923
+
+# Benchmarking PyTorch: exp
+# Mode: Eager
+# Name: exp_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 157.232
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 76.238
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 199.991
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 930.086
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 149.722
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 489.158
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 112.324
+
+# Benchmarking PyTorch: log
+# Mode: Eager
+# Name: log_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 4497.272
+
+# Benchmarking PyTorch: log
+ # Mode: Eager
+# Name: log_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 150.346
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 70.108
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 195.122
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 475.081
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 165.325
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 756.725
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 203.067
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 4051.594
+
+# Benchmarking PyTorch: neg
+# Mode: Eager
+# Name: neg_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 124.337
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 725.475
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 157.462
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1002.785
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 214.453
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1025.452
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 228.131
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 15193.904
+
+# Benchmarking PyTorch: sin
+# Mode: Eager
+# Name: sin_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 221.642
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 84.719
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 224.557
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 999.084
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 225.110
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 745.265
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 222.425
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 11934.933
+
+# Benchmarking PyTorch: sqrt
+# Mode: Eager
+# Name: sqrt_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 233.389
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[128,128]_cpu_dtypetorch.float32
+# Input: in_one: [128, 128], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 91.740
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[128,128]_cuda_dtypetorch.float32
+# Input: in_one: [128, 128], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 242.729
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[256,256]_cpu_dtypetorch.float32
+# Input: in_one: [256, 256], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 1129.416
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[256,256]_cuda_dtypetorch.float32
+# Input: in_one: [256, 256], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 243.151
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[512,512]_cpu_dtypetorch.float32
+# Input: in_one: [512, 512], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 627.587
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[512,512]_cuda_dtypetorch.float32
+# Input: in_one: [512, 512], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 177.449
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[1024,1024]_cpu_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cpu, dtype: torch.float32
+Backward Execution Time (us) : 15976.180
+
+# Benchmarking PyTorch: tan
+# Mode: Eager
+# Name: tan_in_one[1024,1024]_cuda_dtypetorch.float32
+# Input: in_one: [1024, 1024], device: cuda, dtype: torch.float32
+Backward Execution Time (us) : 246.934
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 7.343
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 14.210
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 6.272
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 13.805
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 41.556
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 13.810
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 22.367
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 13.904
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 6.423
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 13.823
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 6.740
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 13.703
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 62.169
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 13.867
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 34.546
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 14.044
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 64.207
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 16.965
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 56.672
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 17.202
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 66.164
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 18.351
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 65.270
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 17.942
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 56.142
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 16.941
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 62.283
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 18.068
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 107.885
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 17.327
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 70.190
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 17.320
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 63.380
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 17.640
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 64.610
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 16.966
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 73.905
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 17.051
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 64.576
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 17.289
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 51.230
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 17.181
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 62.668
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 17.487
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 95.829
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 17.446
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 51.073
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 17.245
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 6.661
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 13.548
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 6.759
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 13.528
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 22.777
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 13.744
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 53.968
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 13.746
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Forward Execution Time (us) : 6.966
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Forward Execution Time (us) : 13.597
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Forward Execution Time (us) : 7.346
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Forward Execution Time (us) : 13.544
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Forward Execution Time (us) : 56.241
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Forward Execution Time (us) : 13.754
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Forward Execution Time (us) : 59.532
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Forward Execution Time (us) : 13.606
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 47.923
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 193.789
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 49.452
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 193.374
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 55.049
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 202.116
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 54.967
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 194.129
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 48.915
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 173.160
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 50.602
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 203.935
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 496.107
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 157.578
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 247.704
+
+# Benchmarking PyTorch: sum
+# Mode: Eager
+# Name: sum_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 125.039
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 55.636
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 236.046
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 54.981
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 243.571
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 72.076
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 230.869
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 70.289
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 229.227
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 59.215
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 216.606
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 60.046
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 240.106
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 678.898
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 228.723
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 573.552
+
+# Benchmarking PyTorch: min
+# Mode: Eager
+# Name: min_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 221.897
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 63.918
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 236.650
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 58.244
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 246.952
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 71.262
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 329.727
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 66.638
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 245.279
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 59.051
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 231.113
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 58.426
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 231.337
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 505.464
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 189.963
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 525.405
+
+# Benchmarking PyTorch: max
+# Mode: Eager
+# Name: max_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 224.798
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim0_cpu
+# Input: R: 64, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 79.222
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim0_cuda
+# Input: R: 64, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 356.942
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim1_cpu
+# Input: R: 64, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 78.812
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V32_dim1_cuda
+# Input: R: 64, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 353.708
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim0_cpu
+# Input: R: 64, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 743.916
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim0_cuda
+# Input: R: 64, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 207.686
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim1_cpu
+# Input: R: 64, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 737.536
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R64_V512_dim1_cuda
+# Input: R: 64, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 265.554
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim0_cpu
+# Input: R: 256, V: 32, dim: 0, device: cpu
+Backward Execution Time (us) : 92.285
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim0_cuda
+# Input: R: 256, V: 32, dim: 0, device: cuda
+Backward Execution Time (us) : 346.506
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim1_cpu
+# Input: R: 256, V: 32, dim: 1, device: cpu
+Backward Execution Time (us) : 91.162
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V32_dim1_cuda
+# Input: R: 256, V: 32, dim: 1, device: cuda
+Backward Execution Time (us) : 234.305
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim0_cpu
+# Input: R: 256, V: 512, dim: 0, device: cpu
+Backward Execution Time (us) : 1111.978
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim0_cuda
+# Input: R: 256, V: 512, dim: 0, device: cuda
+Backward Execution Time (us) : 269.863
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim1_cpu
+# Input: R: 256, V: 512, dim: 1, device: cpu
+Backward Execution Time (us) : 1025.217
+
+# Benchmarking PyTorch: prod
+# Mode: Eager
+# Name: prod_R256_V512_dim1_cuda
+# Input: R: 256, V: 512, dim: 1, device: cuda
+Backward Execution Time (us) : 241.846

@@ -90,8 +90,8 @@ target_link_libraries(lamppp INTERFACE autograd_core tensor_core)
 
 target_compile_options(lamppp
   INTERFACE
-    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -fopenmp -DNDEBUG>
-    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -DLMP_DEBUG -fopenmp -g>
+    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -fopenmp>
+    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -fopenmp -DLMP_DEBUG -g>
 )
 
 add_subdirectory(tests)

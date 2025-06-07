@@ -29,7 +29,7 @@ void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
   ListDevicePtr<CUDAOffsetUtil<kNArgs>> d_align(align, 1);
   vectorized_expand_kernel<<<blocks, threads>>>(ptr_, fn_, size, d_align.get());
 
-  LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize());
+  LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize())
       << "expand_kernel_launcher: kernel failed.";
 }
 

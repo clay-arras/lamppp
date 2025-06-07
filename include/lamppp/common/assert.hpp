@@ -126,9 +126,13 @@ struct NullStream {
     template<typename T> NullStream& operator<<(T&&) { return *this; }
     void trigger() const {}
 };
+
+inline bool force_eval(bool cond) __attribute__((noinline, used));
+inline bool force_eval(bool cond) { return cond; };
+
 } 
 #define LMP_INTERNAL_ASSERT(cond) \
-    true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
+    ::lmp::detail::force_eval(static_cast<bool>((cond))) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 #define LMP_CUDA_INTERNAL_ASSERT(call) \
     true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 #define LMP_CUDA_CHECK(call) \

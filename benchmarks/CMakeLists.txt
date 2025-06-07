@@ -14,7 +14,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(benchmark)
 
 # EXECUTABLES ---------------------------------
-add_executable(reg_bench reg_bench.cpp)
+add_executable(reg_bench lamppp/reg_bench.cpp)
 target_link_libraries(reg_bench
   PRIVATE lamppp benchmark::benchmark
 )

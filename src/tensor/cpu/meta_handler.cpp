@@ -21,16 +21,19 @@ UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a)
 }
 
 template <>
-ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
+BinaryMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
     : inTens_({a, b}),
       outDtype_(type_upcast(a->type(), b->type())),
       outSize_(a->numel()),
       outShape_(a->shape()) {
   LMP_INTERNAL_ASSERT(a->device() == b->device())
       << "Should have asserted already";
-  detail::AlignUtil expand_dims(a->shape(), b->shape());
-  outSize_ = expand_dims.aligned_size_;
-  outShape_ = expand_dims.aligned_shape_;
+  bool expand = (a->shape() != b->shape());
+  if (expand) {
+    detail::AlignUtil expand_dims(a->shape(), b->shape());
+    outSize_ = expand_dims.aligned_size_;
+    outShape_ = expand_dims.aligned_shape_;
+  }
   LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
     using out_dtype_t = scalar_t;
     LMP_DISPATCH_ALL_TYPES(a->type(), [&] {
@@ -39,10 +42,12 @@ ExpandMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
         using arg2_dtype_t = scalar_t;
         Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
         outTen_ = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
-        outOffset_ = offset_util_stub_2()(
-            a->device(),
-            ::std::array<const TensorImpl*, ExpandMetaHandler::kNumElem>{a, b},
-            *outTen_.get());
+        if (expand) {
+          outOffset_ = offset_util_stub_2()(
+              a->device(),
+              ::std::array<const TensorImpl*, BinaryMetaHandler::kNumElem>{a, b},
+              *outTen_.get());
+        }
       });
     });
   });

@@ -10,6 +10,7 @@ set(TENSOR_SOURCES
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp
+  cpu/binary.cpp
   cpu/expand.cpp
   cpu/reduct.cpp
   cpu/matrix.cpp
@@ -28,6 +29,7 @@ if (ENABLE_CUDA)
     cuda/matrix.cu
     cuda/offset_util.cu
     cuda/unary.cu
+    cuda/binary.cu
     cuda/reduct.cu
     cuda/expand.cu
     cuda/kernels.cu

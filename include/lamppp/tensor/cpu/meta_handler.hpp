@@ -34,7 +34,7 @@ class TensorMetaHandler {
 };
 
 using UnaryMetaHandler = TensorMetaHandler<const TensorImpl*>;
-using ExpandMetaHandler =
+using BinaryMetaHandler =
     TensorMetaHandler<const TensorImpl*, const TensorImpl*>;
 using ReductMetaHandler = TensorMetaHandler<const TensorImpl*, size_t>;
 

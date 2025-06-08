@@ -5,6 +5,7 @@
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cpu/reduct.hpp"
 #include "lamppp/tensor/cpu/unary.hpp"
+#include "lamppp/tensor/cpu/binary.hpp"
 #include "lamppp/tensor/native/expand_ops.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 
@@ -14,7 +15,11 @@ namespace lmp::tensor::detail::cpu {
 #define DECLARE_EXPAND_OPS_CPU_HELPER(op, functor)                \
   TensorImpl op##_cpu(const TensorImpl& a, const TensorImpl& b) { \
     TensorMetaHandler meta(&a, &b);                               \
-    expand_dispatch_handler<functor>(meta);                       \
+    if (a.shape() == b.shape()) {                                 \
+      binary_dispatch_handler<functor>(meta);                     \
+    } else {                                                      \
+      expand_dispatch_handler<functor>(meta);                     \
+    }                                                             \
     return meta.out();                                            \
   }
 

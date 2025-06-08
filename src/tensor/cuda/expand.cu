@@ -33,7 +33,7 @@ void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
 }
 
 template <template <typename> class OpFunctor, typename... Args>
-void expand_dispatch_handler(ExpandMetaHandler& meta, Args&&... args) {
+void expand_dispatch_handler(BinaryMetaHandler& meta, Args&&... args) {
   LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
     using out_dtype_t = scalar_t;
     LMP_DISPATCH_ALL_TYPES(meta.in()[0]->type(), [&] {
@@ -53,16 +53,16 @@ void expand_dispatch_handler(ExpandMetaHandler& meta, Args&&... args) {
   });
 }
 
-template void expand_dispatch_handler<AddFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<SubFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<MulFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<DivFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<PowFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<EqFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<NeFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<GeFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<GtFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<LeFunctor>(ExpandMetaHandler&);
-template void expand_dispatch_handler<LtFunctor>(ExpandMetaHandler&);
+template void expand_dispatch_handler<AddFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<SubFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<MulFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<DivFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<PowFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<EqFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<NeFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<GeFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<GtFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<LeFunctor>(BinaryMetaHandler&);
+template void expand_dispatch_handler<LtFunctor>(BinaryMetaHandler&);
 
 }  // namespace lmp::tensor::detail::cuda

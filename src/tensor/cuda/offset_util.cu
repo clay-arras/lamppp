@@ -35,6 +35,9 @@ __device__ ::cuda::std::array<stride_t, NArgs + 1> CUDAOffsetUtil<NArgs>::get(
   ::cuda::std::array<stride_t, NArgs + 1> result;
   result.fill(0);
   result[0] = idx;
+  // TODO:
+  // need to cache these constants in shared memory, i.e. arg_pointers_
+  // can also omp unroll the outer loop
 
   for (size_t i = 0; i < this->ndim; ++i) {
     stride_t stride = static_cast<const stride_t*>(arg_pointers_[0])[i];

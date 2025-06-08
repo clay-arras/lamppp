@@ -4,6 +4,7 @@
 #include "lamppp/tensor/cuda/kernels.cuh"
 #include "lamppp/tensor/cuda/matrix.cuh"
 #include "lamppp/tensor/cuda/reduct.cuh"
+#include "lamppp/tensor/cuda/binary.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 
@@ -13,7 +14,11 @@ namespace lmp::tensor::detail::cuda {
 #define DECLARE_EXPAND_OPS_CUDA_HELPER(op, functor)                \
   TensorImpl op##_cuda(const TensorImpl& a, const TensorImpl& b) { \
     TensorMetaHandler meta(&a, &b);                                \
-    expand_dispatch_handler<functor>(meta);                        \
+    if (a.shape() == b.shape()) {                                  \
+      binary_dispatch_handler<functor>(meta);                      \
+    } else {                                                       \
+      expand_dispatch_handler<functor>(meta);                      \
+    }                                                              \
     return meta.out();                                             \
   }
 

@@ -9,6 +9,7 @@
 namespace lmp::autograd {
 
 const tensor::Tensor& Variable::grad() const noexcept {
+  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
   return impl_->grad;
 }
 const tensor::Tensor& Variable::data() const noexcept {
@@ -22,14 +23,17 @@ bool Variable::requires_grad() const noexcept {
 }
 
 void Variable::zero_grad() {
+  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
   impl_->grad = zeros_like(impl_->grad);
 }  // TODO(root): this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
+  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
   LMP_INTERNAL_ASSERT(other_grad.shape() == impl_->grad.shape())
       << "There should be no broadcasting in incr_grad";
   impl_->grad = impl_->grad + other_grad;
 }
 void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {
+  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
   impl_->_grad_fn = std::move(grad_fn);
 }
 

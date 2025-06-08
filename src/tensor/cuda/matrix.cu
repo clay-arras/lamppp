@@ -11,6 +11,7 @@ __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
   for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m; i += gridDim.x * blockDim.x) {
     for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n; j += gridDim.y * blockDim.y) {
       OutType sum = 0;
+      // areas of speedup: use reduction strats here
       for (size_t t = 0; t < k; t++) {
         sum += static_cast<OutType>(A[(i * k) + t]) *
               static_cast<OutType>(B[(n * t) + j]);

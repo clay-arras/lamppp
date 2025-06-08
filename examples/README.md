@@ -1,4 +1,8 @@
-curl -L -o ~/Downloads/mnist-in-csv.zip\
-  https://www.kaggle.com/api/v1/datasets/download/oddrationale/mnist-in-csv
+To get the data: 
 
-Download and place in project-root/data
+```
+mkdir data && cd data
+curl -L -o mnist-in-csv.zip\
+  https://www.kaggle.com/api/v1/datasets/download/oddrationale/mnist-in-csv
+unzip mnist-in-csv.zip
+```

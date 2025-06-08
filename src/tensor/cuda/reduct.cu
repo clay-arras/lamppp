@@ -11,8 +11,7 @@ template <typename PtrList, typename OpFn>
 __global__ void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t size,
                                          size_t axis, const size_t* shape,
                                          const stride_t* strides) {
-  size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
-  if (i < size) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) {
     stride_t outer = strides[axis];
     stride_t inner = strides[axis - 1];
     stride_t idx = ((i / outer) * inner) + (i % outer);

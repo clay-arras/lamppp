@@ -9,8 +9,7 @@ namespace lmp::tensor::detail::cuda {
 
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_unary_kernel(PtrList ptr_, OpFn fn_, size_t size) {
-  size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
-  if (i < size) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) {
     ptr_.set_Out(i, fn_(::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], i)));
   }
 }

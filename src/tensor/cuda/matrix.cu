@@ -8,28 +8,27 @@ namespace {
 template <typename U, typename V, typename OutType>
 __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
                                  size_t n, size_t k) {
-  size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
-  size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
-
-  if (i < m && j < n) {
-    OutType sum = 0;
-    for (size_t t = 0; t < k; t++) {
-      sum += static_cast<OutType>(A[(i * k) + t]) *
-             static_cast<OutType>(B[(n * t) + j]);
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m; i += gridDim.x * blockDim.x) {
+    for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n; j += gridDim.y * blockDim.y) {
+      OutType sum = 0;
+      for (size_t t = 0; t < k; t++) {
+        sum += static_cast<OutType>(A[(i * k) + t]) *
+              static_cast<OutType>(B[(n * t) + j]);
+      }
+      C[(i * n) + j] = sum;
     }
-    C[(i * n) + j] = sum;
   }
 }
 
 template <typename T>
 __global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n) {
-  size_t i = threadIdx.x + (blockIdx.x * blockDim.x);
-  size_t j = threadIdx.y + (blockIdx.y * blockDim.y);
-
-  if (i < m && j < n) {
-    out[(j * m) + i] = in[(i * n) + j];
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m; i += gridDim.x * blockDim.x) {
+    for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n; j += gridDim.y * blockDim.y) {
+      out[(j * m) + i] = in[(i * n) + j];
+    }
   }
 }
+
 }
 
 template <typename U, typename V, typename OutType>

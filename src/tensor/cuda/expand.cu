@@ -12,8 +12,7 @@ namespace lmp::tensor::detail::cuda {
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_expand_kernel(PtrList ptr_, OpFn fn_, size_t size,
                                          const CUDAOffsetUtil<kNArgs>* align) {
-  size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
-  if (i < size) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) { // grid stride loop trick
     ::cuda::std::array offsets = align->get(i);
     ptr_.set_Out(i,
                  fn_(::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], offsets[1]),

@@ -126,8 +126,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
 
 template <typename U, typename V>
 __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
-  size_t i = (blockIdx.x * blockDim.x) + threadIdx.x;
-  if (i < size) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) {
     out[i] = static_cast<V>(in[i]);
   }
 }

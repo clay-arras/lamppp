@@ -139,7 +139,7 @@ struct NullStream {
 
 } 
 #define LMP_INTERNAL_ASSERT(cond) \
-    ::lmp::detail::force_eval(static_cast<bool>((cond))) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
+    true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 #define LMP_CUDA_INTERNAL_ASSERT(call) \
     true ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::NullStream()
 #define LMP_CUDA_CHECK(call) \

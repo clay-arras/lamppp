@@ -23,3 +23,8 @@ add_executable(reg_bench_short lamppp/reg_bench_short.cpp)
 target_link_libraries(reg_bench_short
   PRIVATE lamppp benchmark::benchmark
 )
+
+add_executable(bench_test bench_test.cpp)
+target_link_libraries(bench_test
+  PRIVATE lamppp benchmark::benchmark
+)

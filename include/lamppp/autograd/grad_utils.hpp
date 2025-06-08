@@ -9,7 +9,7 @@ namespace lmp::autograd::detail {
  * @param orig_shape The original shape of the tensor
  * @return The summed gradient tensor
  */
-tensor::Tensor sum_broadcast_axis(tensor::Tensor grad,
+tensor::Tensor sum_broadcast_axis(const tensor::Tensor& grad,
                                   const std::vector<size_t>& orig_shape);
 
 /// @endinternal

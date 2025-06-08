@@ -4,7 +4,7 @@
 
 - next step: try to see if its because we need memory pool (its the allocating a new cuda malloc that's taking a long time)
 - benching cudaMalloc
-- 
+- try figuring out what percent of the speed is from Variable
 
 testing: 
 - test type promotion AND backwards type promotion

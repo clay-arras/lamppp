@@ -36,8 +36,25 @@ void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
   ListDevicePtr<size_t> d_shape(shape, ndims);
   vectorized_reduct_kernel<<<blocks, threads>>>(ptr_, fn_, size, axis,
                                                 d_shape.get(), d_strides.get());
-  LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize())
-      << "reduct_kernel_launcher: kernel failed.";
+  LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize()) << "reduct_kernel_launcher: kernel failed.";
+}
+
+template <template <typename> class OpFunctor, typename... Args>
+void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,
+                             Args&&... args) {
+  LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
+    using out_dtype_t = scalar_t;
+    LMP_DISPATCH_ALL_TYPES(meta.in()[0]->type(), [&] {
+      using arg_dtype_t = scalar_t;
+      reduct_kernel_launcher(
+          internal::CUDAPtrPack<out_dtype_t, arg_dtype_t>(
+              static_cast<out_dtype_t*>(meta.out().data()),
+              static_cast<arg_dtype_t*>(meta.in()[0]->data())),
+          OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
+          meta.out().numel(), axis, meta.in()[0]->shape().data(),
+          meta.in()[0]->strides().data(), meta.out().shape().size());
+    });
+  });
 }
 
 template void reduct_dispatch_handler<SumFunctor>(ReductMetaHandler&, size_t);

@@ -9,7 +9,7 @@
 
 #define LMP_AUTOGRAD_FN_BINARY_DECL_HELPER(grad_fn, self_grad, other_grad) \
 variable_list grad_fn::apply(const variable_list& gradOutputs) { \
-  LMP_INTERNAL_ASSERT(gradOutputs.size() == 2) << "Output size mismatch."; \
+  LMP_INTERNAL_ASSERT(gradOutputs.size() == 1) << "Output size mismatch."; \
   const Variable& grad = gradOutputs[0];                                   \
   Variable& self = (*saved_inputs)[0];                                     \
   Variable& other = (*saved_inputs)[1];                                    \
@@ -25,7 +25,7 @@ variable_list grad_fn::apply(const variable_list& gradOutputs) { \
 
 #define LMP_AUTOGRAD_FFN_BINARY_DECL_HELPER(grad_fn, ten_fn, ...) \
 tensor::Tensor grad_fn::execute(const variable_list& inputs) const {            \
-    LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";  \
+    LMP_INTERNAL_ASSERT(inputs.size() == 2) << "Function must take one input";  \
     const Variable& self = inputs[0];                                           \
     const Variable& other = inputs[1];                                          \
                                                                                 \

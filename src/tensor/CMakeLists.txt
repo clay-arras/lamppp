@@ -37,6 +37,8 @@ endif()
 
 add_library(tensor_core SHARED ${TENSOR_SOURCES})
 
+target_link_libraries(tensor_core PUBLIC lamppp_compile_flags)
+
 # Apply coverage flags if enabled
 if(ENABLE_COVERAGE)
   target_compile_options(tensor_core PRIVATE --coverage -O0 -g)
@@ -49,7 +51,7 @@ if (ENABLE_CUDA)
     CUDA_RESOLVE_DEVICE_SYMBOLS ON
   )
   target_link_libraries(tensor_core
-    PUBLIC CUDA::cudart
+    PUBLIC CUDA::cudart OpenMP::OpenMP_CXX
   )
 endif()
 

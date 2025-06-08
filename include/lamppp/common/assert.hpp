@@ -81,37 +81,47 @@ struct Voidify {
 } // namespace detail
 } // namespace lmp
 
-// ignoring some error with warning: control reaches end of non-void function [-Wreturn-type]
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
-
 #define LMP_CHECK(cond) \
     (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::CheckStream(__FILE__, __LINE__, __func__, #cond)
-
-#pragma GCC diagnostic pop
 
 #ifdef LMP_DEBUG
 
 #define LMP_INTERNAL_ASSERT(cond) \
     (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::AssertStream(__FILE__, __LINE__, __func__, #cond)
 
+
 #ifdef ENABLE_CUDA
-#define LMP_CUDA_INTERNAL_ASSERT(call)                                                   \
-  [&]() {                                                                       \
-    cudaError_t _err = (call);                                                  \
-    return (_err == cudaSuccess)                                                \
-           ? (void)0                                                            \
-           : ::lmp::detail::Voidify() &                                         \
-             ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__, _err); \
-  }()
+
+namespace lmp::detail {
+
+inline cudaError_t& cuda_assert_last_error() {
+    static thread_local cudaError_t last{};
+    return last;
+}
+
+template<class F>
+inline bool cuda_assert_once(F&& f) {
+    cuda_assert_last_error() = f();
+    return cuda_assert_last_error() != cudaSuccess;
+}
+
+}
+
+#define LMP_CUDA_INTERNAL_ASSERT(call)                                         \
+  if (const cudaError_t LMP_CUDA_ERROR = (call); LMP_CUDA_ERROR == cudaSuccess) \
+    ;                                                                          \
+  else                                                                         \
+  ::lmp::detail::Voidify() &                                                   \
+      ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__,            \
+                                      LMP_CUDA_ERROR)
+
 #define LMP_CUDA_CHECK(call)                                                   \
-  [&]() {                                                                       \
-    cudaError_t _err = (call);                                                  \
-    return (_err == cudaSuccess)                                                \
-           ? (void)0                                                            \
-           : ::lmp::detail::Voidify() &                                         \
-             ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__, _err); \
-  }()
+  if (const cudaError_t LMP_CUDA_ERROR = (call); LMP_CUDA_ERROR == cudaSuccess) \
+    ;                                                                          \
+  else                                                                         \
+  ::lmp::detail::Voidify() &                                                   \
+      ::lmp::detail::CudaAssertStream(__FILE__, __LINE__, __func__,            \
+                                      LMP_CUDA_ERROR)
 #endif
 
 
@@ -126,9 +136,6 @@ struct NullStream {
     template<typename T> NullStream& operator<<(T&&) { return *this; }
     void trigger() const {}
 };
-
-inline bool force_eval(bool cond) __attribute__((noinline, used));
-inline bool force_eval(bool cond) { return cond; };
 
 } 
 #define LMP_INTERNAL_ASSERT(cond) \

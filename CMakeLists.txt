@@ -79,20 +79,23 @@ if (ENABLE_CUDA)
   find_package(CUDAToolkit REQUIRED)              
 endif()
 
+find_package(OpenMP REQUIRED) # TODO: make this optional
+
 # Enabled for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # CORE TARGETS ---------------------------------
+add_library(lamppp_compile_flags INTERFACE)
+target_compile_options(lamppp_compile_flags
+  INTERFACE
+    $<$<CONFIG:Release>:-march=native;-ffast-math> # also compiles with -O3 -DNDEBUG
+    $<$<CONFIG:Debug>:-march=native;-ffast-math;-DLMP_DEBUG> # -g
+)
+
 add_subdirectory(src/tensor)
 add_subdirectory(src/autograd)
 add_library(lamppp INTERFACE)
 target_link_libraries(lamppp INTERFACE autograd_core tensor_core)
-
-target_compile_options(lamppp
-  INTERFACE
-    $<$<CONFIG:Release>:-O3 -march=native -ffast-math -fopenmp>
-    $<$<CONFIG:Debug>:-O3 -march=native -ffast-math -fopenmp -DLMP_DEBUG -g>
-)
 
 add_subdirectory(tests)
 add_subdirectory(benchmarks)

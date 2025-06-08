@@ -20,6 +20,27 @@ void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
   }
 }
 
+template <template <typename> class OpFunctor, typename... Args>
+void expand_dispatch_handler(ExpandMetaHandler& meta, Args&&... args) {
+  LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
+    using out_dtype_t = scalar_t;
+    LMP_DISPATCH_ALL_TYPES(meta.in()[0]->type(), [&] {
+      using arg1_dtype_t = scalar_t;
+      LMP_DISPATCH_ALL_TYPES(meta.in()[1]->type(), [&] {
+        using arg2_dtype_t = scalar_t;
+        expand_kernel_launcher(
+            internal::PtrPack<out_dtype_t, arg1_dtype_t, arg2_dtype_t>(
+                static_cast<out_dtype_t*>(meta.out().data()),
+                static_cast<arg1_dtype_t*>(meta.in()[0]->data()),
+                static_cast<arg2_dtype_t*>(meta.in()[1]->data())),
+            OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
+            meta.out().numel(),
+            static_cast<const CPUOffsetUtil<kNArgs>*>(meta.offset()));
+      });
+    });
+  });
+}
+
 template void expand_dispatch_handler<AddFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<SubFunctor>(ExpandMetaHandler&);
 template void expand_dispatch_handler<MulFunctor>(ExpandMetaHandler&);

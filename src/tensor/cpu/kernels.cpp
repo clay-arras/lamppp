@@ -15,10 +15,10 @@ namespace lmp::tensor::detail::cpu {
 #define DECLARE_EXPAND_OPS_CPU_HELPER(op, functor)                \
   TensorImpl op##_cpu(const TensorImpl& a, const TensorImpl& b) { \
     TensorMetaHandler meta(&a, &b);                               \
-    if (a.shape() == b.shape()) {                                 \
-      binary_dispatch_handler<functor>(meta);                     \
-    } else {                                                      \
+    if (meta.expand()) {                                          \
       expand_dispatch_handler<functor>(meta);                     \
+    } else {                                                      \
+      binary_dispatch_handler<functor>(meta);                     \
     }                                                             \
     return meta.out();                                            \
   }

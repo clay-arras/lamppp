@@ -2,6 +2,9 @@
 `cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DENABLE_CUDA=OFF -DENABLE_COVERAGE=OFF -DCMAKE
 _C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++`
 
+`nsys profile --trace=cuda,nvtx,osrt --stats=true --sample=cpu -o bench_test ./build/benchmarks/bench_test`
+`nsys stats --report=osrt_sum bench_test.nsys-rep >> log.cpu.txt`
+
 ### current todo
 
 - next step: try to see if its because we need memory pool (its the allocating a new cuda malloc that's taking a long time)
@@ -24,6 +27,9 @@ benchmarking
 why is Variable so slow compared to Tensor: 
 DONE - when operations are done, even with requires_grad=false, we're creating the grad Tensor
 
+
+<!-- - ADD EXPND PARAM TO METAHANDLER AND ADD LMP ASSERT FOR OFFSETUTIL -->
+- look into cudaMemcpy*Async
 
 - use cuda Memset instead of zeros-like
 <!-- - Variables being used in the computations -- NEED to switch to tensors -->

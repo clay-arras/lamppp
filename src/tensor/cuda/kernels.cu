@@ -14,10 +14,10 @@ namespace lmp::tensor::detail::cuda {
 #define DECLARE_EXPAND_OPS_CUDA_HELPER(op, functor)                \
   TensorImpl op##_cuda(const TensorImpl& a, const TensorImpl& b) { \
     TensorMetaHandler meta(&a, &b);                                \
-    if (a.shape() == b.shape()) {                                  \
-      binary_dispatch_handler<functor>(meta);                      \
-    } else {                                                       \
+    if (meta.expand()) {                                           \
       expand_dispatch_handler<functor>(meta);                      \
+    } else {                                                       \
+      binary_dispatch_handler<functor>(meta);                      \
     }                                                              \
     return meta.out();                                             \
   }

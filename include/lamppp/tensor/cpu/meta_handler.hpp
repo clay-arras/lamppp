@@ -20,14 +20,17 @@ class TensorMetaHandler {
   TensorImpl& out() noexcept { return *outTen_; }
   tensor_list& in() noexcept { return inTens_; }
   const OffsetUtil* offset() const noexcept {
+    LMP_INTERNAL_ASSERT(expand_) << "Must have expand = True to get offset";
     return outOffset_.get();
   }
+  bool expand() const noexcept { return expand_; }
 
  private:
   DataType outDtype_;
   size_t outSize_;
   std::vector<size_t> outShape_;
 
+  bool expand_;
   std::unique_ptr<OffsetUtil> outOffset_;
   std::unique_ptr<TensorImpl> outTen_;
   tensor_list inTens_;

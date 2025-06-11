@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['s_20in_20the_20docs_0',['What&apos;s in the docs',['../index.html#autotoc_md13',1,'']]],
+  ['shape_20manipulation_1',['Shape manipulation',['../using_tensor.html#autotoc_md44',1,'']]],
+  ['sine_2',['Sine',['../structlmp_1_1autograd_1_1ops_1_1Sine.html',1,'lmp::autograd::ops']]],
+  ['sinebackward_3',['SineBackward',['../structlmp_1_1autograd_1_1ops_1_1SineBackward.html',1,'lmp::autograd::ops']]],
+  ['sinfunctor_4',['SinFunctor',['../structlmp_1_1tensor_1_1detail_1_1cpu_1_1SinFunctor.html',1,'lmp::tensor::detail::cpu']]],
+  ['solutions_5',['Common issues and solutions',['../getting_started.html#autotoc_md9',1,'']]],
+  ['specific_20elements_6',['Working with specific elements',['../using_tensor.html#autotoc_md58',1,'']]],
+  ['specific_20optimizations_7',['Device-specific optimizations',['../using_tensor.html#autotoc_md61',1,'']]],
+  ['sqrtfunctor_8',['SqrtFunctor',['../structlmp_1_1tensor_1_1detail_1_1cpu_1_1SqrtFunctor.html',1,'lmp::tensor::detail::cpu']]],
+  ['squareroot_9',['SquareRoot',['../structlmp_1_1autograd_1_1ops_1_1SquareRoot.html',1,'lmp::autograd::ops']]],
+  ['squarerootbackward_10',['SquareRootBackward',['../structlmp_1_1autograd_1_1ops_1_1SquareRootBackward.html',1,'lmp::autograd::ops']]],
+  ['squeeze_11',['Squeeze',['../structlmp_1_1autograd_1_1ops_1_1Squeeze.html',1,'lmp::autograd::ops']]],
+  ['squeezebackward_12',['SqueezeBackward',['../structlmp_1_1autograd_1_1ops_1_1SqueezeBackward.html',1,'lmp::autograd::ops']]],
+  ['started_13',['started',['../index.html#autotoc_md11',1,'Getting started'],['../getting_started.html',1,'Getting Started']]],
+  ['steps_14',['steps',['../using_tensor.html#autotoc_md64',1,'Next steps'],['../md_docs_2TODOS.html#autotoc_md19',1,'steps']]],
+  ['storage_15',['Storage',['../classlmp_1_1tensor_1_1Storage.html',1,'lmp::tensor']]],
+  ['storageimpl_16',['StorageImpl',['../classlmp_1_1tensor_1_1Storage_1_1StorageImpl.html',1,'lmp::tensor::Storage']]],
+  ['structure_17',['Training loop structure',['../using_autograd.html#autotoc_md29',1,'']]],
+  ['subfunctor_18',['SubFunctor',['../structlmp_1_1tensor_1_1detail_1_1cpu_1_1SubFunctor.html',1,'lmp::tensor::detail::cpu']]],
+  ['subtract_19',['Subtract',['../structlmp_1_1autograd_1_1ops_1_1Subtract.html',1,'lmp::autograd::ops']]],
+  ['subtractbackward_20',['SubtractBackward',['../structlmp_1_1autograd_1_1ops_1_1SubtractBackward.html',1,'lmp::autograd::ops']]],
+  ['sumfunctor_21',['SumFunctor',['../structlmp_1_1tensor_1_1detail_1_1cpu_1_1SumFunctor.html',1,'lmp::tensor::detail::cpu']]],
+  ['summation_22',['Summation',['../structlmp_1_1autograd_1_1ops_1_1Summation.html',1,'lmp::autograd::ops']]],
+  ['summationbackward_23',['SummationBackward',['../structlmp_1_1autograd_1_1ops_1_1SummationBackward.html',1,'lmp::autograd::ops']]],
+  ['support_24',['With CUDA support',['../getting_started.html#autotoc_md3',1,'']]]
+];

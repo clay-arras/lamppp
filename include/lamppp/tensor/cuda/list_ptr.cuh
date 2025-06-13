@@ -20,11 +20,11 @@ class ListDevicePtr {
   ListDevicePtr() = default;
   explicit ListDevicePtr(const T* obj_list, size_t size) : size_(size) {
     T* raw = nullptr;
-    LMP_CUDA_CHECK(cudaMalloc(&raw, sizeof(T) * size));
+    LMP_CUDA_CHECK(cudaMallocAsync(&raw, sizeof(T) * size, 0));
     LMP_CUDA_CHECK(
-        cudaMemcpy(raw, obj_list, sizeof(T) * size, cudaMemcpyHostToDevice));
+        cudaMemcpyAsync(raw, obj_list, sizeof(T) * size, cudaMemcpyHostToDevice));
     ptr_ =
-        std::shared_ptr<T[]>(raw, [](T* p) { LMP_CUDA_CHECK(cudaFree(p)); });
+        std::shared_ptr<T[]>(raw, [](T* p) { LMP_CUDA_CHECK(cudaFreeAsync(p, 0)); });
   }
 
   T* get() const noexcept { return ptr_.get(); }

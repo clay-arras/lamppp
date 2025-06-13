@@ -93,7 +93,6 @@ static void BM_TensorImpl_Accessor(benchmark::State& state) {
 
 static void BM_Tensor_Op(benchmark::State& state) {
     std::vector<float> data(512 * 512, 1.12F); 
-    lmp::tensor::TensorImpl orig(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
     lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
     for (auto _ : state) {
         lmp::Tensor out = lmp::sin(ten);
@@ -106,7 +105,7 @@ static void BM_Stack_vs_Heap_TensorImpl(benchmark::State& state) {
     std::vector<float> data(512 * 512, 1.12F); 
     
     // Create TensorImpl on heap manually (like Tensor does)
-    auto heap_impl = std::make_shared<TensorImpl>(data, {512, 512}, 
+    auto heap_impl = std::make_shared<lmp::tensor::TensorImpl>(data, std::vector<size_t>{512, 512}, 
                         lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
     
     for (auto _ : state) {
@@ -230,28 +229,28 @@ static void BM_Storage_Allocation_Pattern(benchmark::State& state) {
     }
 }
 
-// Test immediate deallocation theory
-static void BM_Force_Immediate_Dealloc_Scope(benchmark::State& state) {
-    std::vector<float> data(512 * 512, 1.12F); 
+// // Test immediate deallocation theory
+// static void BM_Force_Immediate_Dealloc_Scope(benchmark::State& state) {
+//     std::vector<float> data(512 * 512, 1.12F); 
     
-    for (auto _ : state) {
-        lmp::tensor::TensorImpl res;
-        {
-            // Force destruction immediately after use
-            lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
-            res = lmp::sin_stub()(ten.device(), *lmp::tensor::detail::UnsafeTensorAccessor::getImpl(ten));
-            // ten gets destroyed here, shared_ptr refcount goes to 0
-        }
-        cudaDeviceSynchronize();
-        benchmark::DoNotOptimize(res);
-    }
-}
+//     for (auto _ : state) {
+//         lmp::tensor::TensorImpl res;
+//         {
+//             // Force destruction immediately after use
+//             lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
+//             res = lmp::sin_stub()(ten.device(), *lmp::tensor::detail::UnsafeTensorAccessor::getImpl(ten));
+//             // ten gets destroyed here, shared_ptr refcount goes to 0
+//         }
+//         cudaDeviceSynchronize();
+//         benchmark::DoNotOptimize(res);
+//     }
+// }
 
 static void BM_Force_Immediate_Dealloc_Reset(benchmark::State& state) {
     std::vector<float> data(512 * 512, 1.12F); 
     
     for (auto _ : state) {
-        auto ten_ptr = std::make_shared<lmp::tensor::TensorImpl>(data, {512, 512}, 
+        auto ten_ptr = std::make_shared<lmp::tensor::TensorImpl>(data, std::vector<size_t>{512, 512}, 
                                                                 lmp::tensor::DeviceType::CUDA, 
                                                                 lmp::tensor::DataType::Float32);
         lmp::tensor::TensorImpl res = lmp::sin_stub()(ten_ptr->device(), *ten_ptr);
@@ -304,7 +303,7 @@ BENCHMARK(BM_GPU_Memory_Investigation);
 BENCHMARK(BM_Memory_Locality_Test);
 BENCHMARK(BM_TensorMetaHandler_Creation);
 BENCHMARK(BM_Storage_Allocation_Pattern);
-BENCHMARK(BM_Force_Immediate_Dealloc_Scope);
+// BENCHMARK(BM_Force_Immediate_Dealloc_Scope);
 BENCHMARK(BM_Force_Immediate_Dealloc_Reset);
 BENCHMARK(BM_Manual_Memory_Management);
 BENCHMARK(BM_Reuse_Tensor_Object);

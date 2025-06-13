@@ -33,7 +33,7 @@ CudaDataPtr create_cuda_data_ptr(size_t num_elements) {
     
     auto cuda_deleter = [](void* ptr) {
         if (ptr) {
-            cudaFree(ptr);
+            cudaFreeAsync(ptr, nullptr);
         }
     };
     

@@ -27,19 +27,19 @@ void register_forward(const std::string& name,
         });
 }
 
-template<size_t N>
-void register_backward(const std::string& name,
-                      OperatorFunction<N> op_fn, 
-                      InitializerFunction<N> init_fn) {
-    benchmark::RegisterBenchmark(
-        name + "Backward",
-        [op_fn, init_fn](benchmark::State& state) {
-            for (auto _ : state) {
-                state.PauseTiming();
-                std::array<lmp::autograd::Variable, N> inputs = init_fn();
-                lmp::autograd::Variable result = op_fn(inputs);
-                state.ResumeTiming();
-                result.backward();
-            }
-        });
-} 
+// template<size_t N>
+// void register_backward(const std::string& name,
+//                       OperatorFunction<N> op_fn, 
+//                       InitializerFunction<N> init_fn) {
+//     benchmark::RegisterBenchmark(
+//         name + "Backward",
+//         [op_fn, init_fn](benchmark::State& state) {
+//             for (auto _ : state) {
+//                 state.PauseTiming();
+//                 std::array<lmp::autograd::Variable, N> inputs = init_fn();
+//                 lmp::autograd::Variable result = op_fn(inputs);
+//                 state.ResumeTiming();
+//                 result.backward();
+//             }
+//         });
+// } 

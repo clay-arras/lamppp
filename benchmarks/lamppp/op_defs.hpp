@@ -71,15 +71,15 @@ public:
         };
         auto init_fn = [config]() -> std::array<lmp::autograd::Variable, 2> {
             return {
-                lmp::autograd::randn(0, 1, config.shapes[0], config.device, config.dtype, true),
-                lmp::autograd::randn(0, 1, config.shapes[1], config.device, config.dtype, true)
+                lmp::autograd::randn(0, 1, config.shapes[0], config.device, config.dtype, false),
+                lmp::autograd::randn(0, 1, config.shapes[1], config.device, config.dtype, false)
             };
         };
         
         std::string bench_name = name() + "_" + to_string(config.shapes) + "_" + to_string(config.dtype) + "_" +
                                 (config.device == lmp::tensor::DeviceType::CUDA ? "CUDA" : "CPU");
         register_forward<2>(bench_name, op_fn, init_fn);
-        register_backward<2>(bench_name, op_fn, init_fn);
+        // register_backward<2>(bench_name, op_fn, init_fn);
     }
 
 protected:
@@ -99,7 +99,7 @@ public:
         std::string bench_name = name() + "_" + to_string(config.shapes) + "_" + to_string(config.dtype) + "_" +
                                 (config.device == lmp::tensor::DeviceType::CUDA ? "CUDA" : "CPU");
         register_forward<1>(bench_name, op_fn, init_fn);
-        register_backward<1>(bench_name, op_fn, init_fn);
+        // register_backward<1>(bench_name, op_fn, init_fn);
     }
 
 protected:
@@ -122,7 +122,7 @@ public:
             std::string bench_name = name() + "_axis" + std::to_string(axis) + "_" + to_string(config.shapes) + "_" +
                                     to_string(config.dtype) + "_" + (config.device == lmp::tensor::DeviceType::CUDA ? "CUDA" : "CPU");
             register_forward<1>(bench_name, op_fn, init_fn);
-            register_backward<1>(bench_name, op_fn, init_fn);
+            // register_backward<1>(bench_name, op_fn, init_fn);
         }
     }
 

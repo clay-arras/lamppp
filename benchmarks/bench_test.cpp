@@ -177,6 +177,8 @@ int main(int argc, char** argv) {
                   rand(shape, DeviceType::CUDA, DataType::Float32, false);
               state.ResumeTiming();
               Variable c = fn(a, b);
+              cudaDeviceSynchronize();
+              benchmark::DoNotOptimize(c);
             }
           });
     }
@@ -236,6 +238,8 @@ int main(int argc, char** argv) {
                                                 DataType::Float32, false);
                                        state.ResumeTiming();
                                        Variable c = fn(a);
+              cudaDeviceSynchronize();
+                                       benchmark::DoNotOptimize(c);
                                      }
                                    });
     }

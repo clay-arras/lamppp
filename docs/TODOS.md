@@ -68,14 +68,4 @@ TensorImpl initialize from vector (512 x 512): 890000ns
 
 ## ---
 
-
-when creating: 
-TensorImpl calls Storage, which calls empty_cuda(1)
-then it calls copy_stub, which creates a temporary array for the type(2)
-then it copies it over(2)
-
-problem: for operations we only need 1
-
-
-try std::move in the operations to avoid copy
-std::move(sin_stub()(...etc))
+new discrepancy: the speed between grad and no-grad for variable is around 8x

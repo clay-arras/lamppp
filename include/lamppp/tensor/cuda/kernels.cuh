@@ -7,6 +7,7 @@
 #include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/native/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
+#include <cmath>
 
 namespace lmp::tensor::detail::cuda {
 
@@ -29,7 +30,7 @@ struct DivFunctor {
 };
 template <typename T>
 struct PowFunctor {
-  __device__ __host__ T operator()(T arg1, T arg2) { return ::std::pow(arg1, arg2); }
+  __device__ __host__ T operator()(T arg1, T arg2) { return ::pow(arg1, arg2); }
 };
 template <typename T>
 struct EqFunctor {

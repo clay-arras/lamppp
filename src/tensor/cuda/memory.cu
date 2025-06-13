@@ -135,7 +135,7 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
 template <typename U, typename V>
 void cudaVecCopy(size_t size, const U* in, V* out) {
   size_t threads = 256;
-  size_t blocks = (size + threads - 1) / threads;
+  size_t blocks = std::min((size + threads - 1) / threads, 1024UL);
   cudaVecCopyKernel<U, V><<<blocks, threads>>>(size, in, out);
 }
 

@@ -1,17 +1,5 @@
 """
-I'm too lazy to setup the submodules to automate this, but if you want to run the benchmarks, clone the pytorch repo, 
-navigate to the operator benchmarks, drop this file into the pt/ folder, and then run the benchmarks
-
-```
-git clone https://github.com/pytorch/pytorch.git
-cd pytorch/operator_benchmark
-
-cd pt_extension
-python setup.py install
-
-cd ..
-python -m pt.all_test
-```
+python -m pt.all_tests
 """
 
 
@@ -25,6 +13,7 @@ import torch
 cross_product_config = {
     "device": ["cpu", "cuda"],
     "dtype": [torch.float],
+    "tags": ["short", "long"],
 }
 
 
@@ -44,16 +33,18 @@ binary_configs_broadcast = op_bench.config_list(
         [[64, 1, 64], [1, 64, 1]],
     ],
     cross_product_configs=cross_product_config,
+    tags=["long"],
 )
 binary_configs_same_size = op_bench.config_list(
     attr_names=["in_one", "in_two"],
     attrs=[
         [[128, 128], [128, 128]],
-        [[256, 256], [128, 128]],
+        [[256, 256], [256, 256]],
         [[512, 512], [512, 512]],
         [[1024, 1024], [1024, 1024]]
     ],
     cross_product_configs=cross_product_config,
+    tags=["long"],
 )
 
 
@@ -94,11 +85,12 @@ unary_ops_configs = op_bench.config_list(
         [[1024, 1024]]
     ],
     cross_product_configs=cross_product_config,
+    tags=["long"],
 )
 
 class UnaryOpBenchmark(op_bench.TorchBenchmarkBase):
-    def init(self, in_one, device, op_func):
-        self.inputs = {"input": torch.rand(in_one, device=device, requires_grad=True)}
+    def init(self, in_one, device, dtype, op_func):
+        self.inputs = {"input": torch.rand(in_one, device=device, requires_grad=True).to(dtype=dtype)}
         self.op_func = op_func
 
     def forward(self, input):
@@ -137,10 +129,11 @@ reduction_configs = op_bench.cross_product_configs(
     V=[32, 512], 
     dim=[0, 1],
     device=["cpu", "cuda"],
+    tags=["long"],
 ) 
 
 class ReductionBenchmark(op_bench.TorchBenchmarkBase):
-    def init(self, R, V, dim, device, op_func, op_name):
+    def init(self, R, V, dim, device, op_func):
         shape = (R, V) if dim == 0 else (V, R)
         self.input_tensor = torch.rand(shape, device=device, requires_grad=True)
         self.inputs = {"input_tensor": self.input_tensor, "dim": dim}

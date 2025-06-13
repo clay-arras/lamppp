@@ -24,7 +24,7 @@ template <typename PtrList, typename OpFn>
 void expand_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size,
                             const CUDAOffsetUtil<kNArgs>* align) {
   size_t threads = 256;
-  size_t blocks = (size + threads - 1) / threads;
+  size_t blocks = std::min((size + threads - 1) / threads, 1024UL);
   ListDevicePtr<CUDAOffsetUtil<kNArgs>> d_align(align, 1);
   vectorized_expand_kernel<<<blocks, threads>>>(ptr_, fn_, size, d_align.get());
 

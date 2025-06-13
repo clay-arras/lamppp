@@ -93,41 +93,41 @@ Tensor cos_Tensor(const Tensor& a) {
 int main(int argc, char** argv) {
   benchmark::Initialize(&argc, argv);
 
-  // std::vector<
-  //     std::pair<std::string, std::function<Tensor(Tensor, Tensor)>>>
-  //     bin_functions = {
-  //         {"Add", add_Tensors},
-  //         {"Sub", sub_Tensors},
-  //         {"Mul", mul_Tensors},
-  //         {"Div", div_Tensors},
-  //     };
-  // std::vector<std::pair<
-  //     std::string,
-  //     std::function<Tensor(
-  //         Tensor)>>>  
-  //     una_functions = {
-  //         {"Abs", abs_Tensor},
-  //         {"Sin", sin_Tensor},
-  //         {"Cos", cos_Tensor},
-  //     };
-
   std::vector<
-      std::pair<std::string, std::function<Variable(Variable, Variable)>>>
+      std::pair<std::string, std::function<Tensor(Tensor, Tensor)>>>
       bin_functions = {
-          {"Add", add_variables},
-          {"Sub", sub_variables},
-          {"Mul", mul_variables},
-          {"Div", div_variables},
+          // {"Add", add_Tensors},
+          // {"Sub", sub_Tensors},
+          // {"Mul", mul_Tensors},
+          // {"Div", div_Tensors},
       };
   std::vector<std::pair<
       std::string,
-      std::function<Variable(
-          Variable)>>>  
+      std::function<Tensor(
+          Tensor)>>>  
       una_functions = {
-          {"Abs", abs_variable},
-          {"Sin", sin_variable},
-          {"Cos", cos_variable},
+          {"Abs", abs_Tensor},
+          {"Sin", sin_Tensor},
+          {"Cos", cos_Tensor},
       };
+
+  // std::vector<
+  //     std::pair<std::string, std::function<Variable(Variable, Variable)>>>
+  //     bin_functions = {
+  //         {"Add", add_variables},
+  //         {"Sub", sub_variables},
+  //         {"Mul", mul_variables},
+  //         {"Div", div_variables},
+  //     };
+  // std::vector<std::pair<
+  //     std::string,
+  //     std::function<Variable(
+  //         Variable)>>>  
+  //     una_functions = {
+  //         {"Abs", abs_variable},
+  //         {"Sin", sin_variable},
+  //         {"Cos", cos_variable},
+  //     };
 
   std::vector<std::vector<size_t>> shapes = {
     //   {128, 128},
@@ -135,26 +135,6 @@ int main(int argc, char** argv) {
     {512, 512}
     //   {1024, 1024},
   };
-
-  for (const auto& pair : bin_functions) {
-    const std::string& name = pair.first;
-    const auto& fn = pair.second;
-    for (const auto& shape : shapes) {
-      benchmark::RegisterBenchmark(
-          name + "Forward" + std::to_string(shape[0]),
-          [fn, shape](benchmark::State& state) {
-            for (auto _ : state) {
-              state.PauseTiming();
-              Variable a =
-                  rand(shape, DeviceType::CUDA, DataType::Float32, false);
-              Variable b =
-                  rand(shape, DeviceType::CUDA, DataType::Float32, false);
-              state.ResumeTiming();
-              Variable c = fn(a, b);
-            }
-          });
-    }
-  }
 
   // for (const auto& pair : bin_functions) {
   //   const std::string& name = pair.first;
@@ -165,16 +145,36 @@ int main(int argc, char** argv) {
   //         [fn, shape](benchmark::State& state) {
   //           for (auto _ : state) {
   //             state.PauseTiming();
-  //             Tensor a =
-  //                 rand(shape, DeviceType::CUDA, DataType::Float32, false).data();
-  //             Tensor b =
-  //                 rand(shape, DeviceType::CUDA, DataType::Float32, false).data();
+  //             Variable a =
+  //                 rand(shape, DeviceType::CUDA, DataType::Float32, false);
+  //             Variable b =
+  //                 rand(shape, DeviceType::CUDA, DataType::Float32, false);
   //             state.ResumeTiming();
-  //             Tensor c = fn(a, b);
+  //             Variable c = fn(a, b);
   //           }
   //         });
   //   }
   // }
+
+  for (const auto& pair : bin_functions) {
+    const std::string& name = pair.first;
+    const auto& fn = pair.second;
+    for (const auto& shape : shapes) {
+      benchmark::RegisterBenchmark(
+          name + "Forward" + std::to_string(shape[0]),
+          [fn, shape](benchmark::State& state) {
+            for (auto _ : state) {
+              state.PauseTiming();
+              Tensor a =
+                  rand(shape, DeviceType::CUDA, DataType::Float32, false).data();
+              Tensor b =
+                  rand(shape, DeviceType::CUDA, DataType::Float32, false).data();
+              state.ResumeTiming();
+              Tensor c = fn(a, b);
+            }
+          });
+    }
+  }
 
 //   for (const auto& pair : bin_functions) {
 //     const std::string& name = pair.first;
@@ -196,23 +196,6 @@ int main(int argc, char** argv) {
 //           });
 //     }
 //   }
-  for (const auto& pair : una_functions) {
-    const std::string& name = pair.first;
-    const auto& fn = pair.second;
-    for (const auto& shape : shapes) {
-      benchmark::RegisterBenchmark(name + "Forward" + std::to_string(shape[0]),
-                                   [fn, shape](benchmark::State& state) {
-                                     for (auto _ : state) {
-                                       state.PauseTiming();
-                                       Variable a =
-                                           rand(shape, DeviceType::CUDA,
-                                                DataType::Float32, false);
-                                       state.ResumeTiming();
-                                       Variable c = fn(a);
-                                     }
-                                   });
-    }
-  }
 
   // for (const auto& pair : una_functions) {
   //   const std::string& name = pair.first;
@@ -222,15 +205,33 @@ int main(int argc, char** argv) {
   //                                  [fn, shape](benchmark::State& state) {
   //                                    for (auto _ : state) {
   //                                      state.PauseTiming();
-  //                                      Tensor a =
+  //                                      Variable a =
   //                                          rand(shape, DeviceType::CUDA,
-  //                                               DataType::Float32, false).data();
+  //                                               DataType::Float32, false);
   //                                      state.ResumeTiming();
-  //                                      Tensor c = fn(a);
+  //                                      Variable c = fn(a);
   //                                    }
   //                                  });
   //   }
   // }
+
+  for (const auto& pair : una_functions) {
+    const std::string& name = pair.first;
+    const auto& fn = pair.second;
+    for (const auto& shape : shapes) {
+      benchmark::RegisterBenchmark(name + "Forward" + std::to_string(shape[0]),
+                                   [fn, shape](benchmark::State& state) {
+                                     for (auto _ : state) {
+                                       state.PauseTiming();
+                                       Tensor a =
+                                           rand(shape, DeviceType::CUDA,
+                                                DataType::Float32, false).data();
+                                       state.ResumeTiming();
+                                       Tensor c = fn(a);
+                                     }
+                                   });
+    }
+  }
 
 //   for (const auto& pair : una_functions) {
 //     const std::string& name = pair.first;

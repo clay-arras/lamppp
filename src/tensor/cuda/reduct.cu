@@ -35,7 +35,7 @@ void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
                             const size_t* shape, const stride_t* strides,
                             size_t ndims) {
   size_t threads = 256;
-  size_t blocks = (size + threads - 1) / threads;
+  size_t blocks = std::min((size + threads - 1) / threads, 1024UL);
   ListDevicePtr<stride_t> d_strides(strides, ndims);
   ListDevicePtr<size_t> d_shape(shape, ndims);
   vectorized_reduct_kernel<<<blocks, threads>>>(ptr_, fn_, size, axis,

@@ -20,7 +20,7 @@ __global__ void vectorized_binary_kernel(PtrList ptr_, OpFn fn_, size_t size) {
 template <typename PtrList, typename OpFn>
 void binary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
   size_t threads = 256;
-  size_t blocks = (size + threads - 1) / threads;
+  size_t blocks = std::min((size + threads - 1) / threads, 1024UL);
   vectorized_binary_kernel<<<blocks, threads>>>(ptr_, fn_, size);
 
   LMP_CUDA_INTERNAL_ASSERT(cudaDeviceSynchronize())

@@ -15,7 +15,6 @@ testing:
 - test type promotion AND backwards type promotion
 
 benchmarking
-<!-- - make regular binary operations different from broadcasting operations (see if it's speedup) -->
 - relu, sigmoid, tanh -- define this in nn module
 - add default values - quick
 
@@ -24,20 +23,13 @@ benchmarking
 
 
 
-why is Variable so slow compared to Tensor: 
-DONE - when operations are done, even with requires_grad=false, we're creating the grad Tensor
+# why is Variable so slow compared to Tensor: 
 
-
-<!-- - ADD EXPND PARAM TO METAHANDLER AND ADD LMP ASSERT FOR OFFSETUTIL -->
 - look into cudaMemcpy*Async
-
 - use cuda Memset instead of zeros-like
-<!-- - Variables being used in the computations -- NEED to switch to tensors -->
-<!-- - its creating a new class for every operation (but this shouldn't take too much time) -->
 
 realization: there is ZERO purpose to const& a PIMPL
 test the simplest cuda addition between two straight tensors, with +
-<!-- LMP_CHECK(requires_grad()) << "Need to requires_grad if calling" -->
 
 ## steps
 operation inline
@@ -48,3 +40,42 @@ call tensor opt
 
 use perf and flamegraph
 for some reason VM with cuda is much slower than Macbook CPU version
+
+
+# TODO but more -----------------
+lets focus on unary for now
+
+
+@native/unary_ops.hpp: has the stub dispatch
+@cuda/kernels.cuh: calls TensorMetaHandler and the dispatch
+@cpu/meta_handler.hpp: takes no time at all
+@cuda/unary.cuh: is the dispatch, the kernel launcher, and the kernel
+
+
+
+
+## benchmarks: 
+Macro LMP_DISPATCH_TYPE: 1ns
+TensorImpl copy (512 x 512): 20ns
+TensorMetaHandler initialize for unary (512 x 512): 800ns
+unary_dispatch_handler (512 x 512): 200 000ns
+kernels.cu op_cuda (512 x 512): 200 000ns
+full benchmark with Tensor (512 x 512): 850 000ns
+
+TensorImpl initialize from vector (512 x 512): 890000ns
+<!-- maybe it's copy_cuda? -- copy cuda is not used in this -->
+
+
+## ---
+
+
+when creating: 
+TensorImpl calls Storage, which calls empty_cuda(1)
+then it calls copy_stub, which creates a temporary array for the type(2)
+then it copies it over(2)
+
+problem: for operations we only need 1
+
+
+try std::move in the operations to avoid copy
+std::move(sin_stub()(...etc))

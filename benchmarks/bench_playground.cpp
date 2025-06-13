@@ -207,6 +207,88 @@ static void BM_Memory_Locality_Test(benchmark::State& state) {
     }
 }
 
+static void BM_TensorMetaHandler_Creation(benchmark::State& state) {
+    std::vector<float> data(512 * 512, 1.12F); 
+    lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
+    auto impl = lmp::tensor::detail::UnsafeTensorAccessor::getImpl(ten);
+    
+    for (auto _ : state) {
+        lmp::tensor::detail::UnaryMetaHandler meta(impl.get());
+        benchmark::DoNotOptimize(meta);
+    }
+}
+
+// Test if it's the Storage allocation specifically
+static void BM_Storage_Allocation_Pattern(benchmark::State& state) {
+    std::vector<float> data(512 * 512, 1.12F); 
+    lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
+    
+    for (auto _ : state) {
+        // This mimics what TensorMetaHandler does
+        lmp::tensor::Storage out_st(512 * 512 * sizeof(float), lmp::tensor::DeviceType::CUDA);
+        benchmark::DoNotOptimize(out_st);
+    }
+}
+
+// Test immediate deallocation theory
+static void BM_Force_Immediate_Dealloc_Scope(benchmark::State& state) {
+    std::vector<float> data(512 * 512, 1.12F); 
+    
+    for (auto _ : state) {
+        lmp::tensor::TensorImpl res;
+        {
+            // Force destruction immediately after use
+            lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
+            res = lmp::sin_stub()(ten.device(), *lmp::tensor::detail::UnsafeTensorAccessor::getImpl(ten));
+            // ten gets destroyed here, shared_ptr refcount goes to 0
+        }
+        cudaDeviceSynchronize();
+        benchmark::DoNotOptimize(res);
+    }
+}
+
+static void BM_Force_Immediate_Dealloc_Reset(benchmark::State& state) {
+    std::vector<float> data(512 * 512, 1.12F); 
+    
+    for (auto _ : state) {
+        auto ten_ptr = std::make_shared<lmp::tensor::TensorImpl>(data, {512, 512}, 
+                                                                lmp::tensor::DeviceType::CUDA, 
+                                                                lmp::tensor::DataType::Float32);
+        lmp::tensor::TensorImpl res = lmp::sin_stub()(ten_ptr->device(), *ten_ptr);
+        ten_ptr.reset(); // Force immediate deallocation
+        cudaDeviceSynchronize();
+        benchmark::DoNotOptimize(res);
+    }
+}
+
+static void BM_Manual_Memory_Management(benchmark::State& state) {
+    std::vector<float> data(512 * 512, 1.12F); 
+    
+    for (auto _ : state) {
+        // Create and immediately use, then manually destroy
+        auto* ten_raw = new lmp::tensor::TensorImpl(data, {512, 512}, 
+                                                   lmp::tensor::DeviceType::CUDA, 
+                                                   lmp::tensor::DataType::Float32);
+        lmp::tensor::TensorImpl res = lmp::sin_stub()(ten_raw->device(), *ten_raw);
+        delete ten_raw; // Immediate cleanup
+        cudaDeviceSynchronize();
+        benchmark::DoNotOptimize(res);
+    }
+}
+
+static void BM_Reuse_Tensor_Object(benchmark::State& state) {
+    std::vector<float> data(512 * 512, 1.12F); 
+    // Create once, reuse many times
+    lmp::Tensor ten(data, {512, 512}, lmp::tensor::DeviceType::CUDA, lmp::tensor::DataType::Float32);
+    
+    for (auto _ : state) {
+        lmp::tensor::TensorImpl res = lmp::sin_stub()(ten.device(), 
+                                     *lmp::tensor::detail::UnsafeTensorAccessor::getImpl(ten));
+        cudaDeviceSynchronize();
+        benchmark::DoNotOptimize(res);
+    }
+}
+
 BENCHMARK(BM_Unary_Kernel);
 BENCHMARK(BM_Dispatched_CUDA);
 BENCHMARK(BM_Device_Dispatch_CUDA);
@@ -220,5 +302,11 @@ BENCHMARK(BM_GPU_Pointer_Same_Check);
 BENCHMARK(BM_Fresh_vs_Reused_Objects);
 BENCHMARK(BM_GPU_Memory_Investigation);
 BENCHMARK(BM_Memory_Locality_Test);
+BENCHMARK(BM_TensorMetaHandler_Creation);
+BENCHMARK(BM_Storage_Allocation_Pattern);
+BENCHMARK(BM_Force_Immediate_Dealloc_Scope);
+BENCHMARK(BM_Force_Immediate_Dealloc_Reset);
+BENCHMARK(BM_Manual_Memory_Management);
+BENCHMARK(BM_Reuse_Tensor_Object);
 
 BENCHMARK_MAIN();

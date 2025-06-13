@@ -8,7 +8,6 @@
 
 namespace lmp::tensor {
 
-// TODO(astronaut): can potentially lazy initialize strides, if you never use it for aligneding
 TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
                        DataType dtype)
     : data_(std::move(storage)),

@@ -27,9 +27,6 @@ FetchContent_MakeAvailable(pybind11)
 # EXECUTABLES ---------------------------------
 enable_testing()
 
-# add_executable(playground playground.cpp)
-# target_link_libraries(playground PRIVATE lamppp)
-
 add_executable(autograd_tests unit/autograd_tests.cpp)
 target_link_libraries(autograd_tests
   PRIVATE autograd_core GTest::gtest_main GTest::gmock

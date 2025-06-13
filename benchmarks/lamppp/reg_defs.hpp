@@ -1,6 +1,7 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
+#include <cuda_runtime_api.h>
 #include <array>
 #include <functional>
 #include <string>
@@ -14,6 +15,7 @@ using InitializerFunction =
     std::function<std::array<lmp::autograd::Variable, N>(bool)>;
 
 const size_t kIterations = 10;
+const float kWarmUpTime = 1;
 
 template <size_t N>
 void register_forward(const std::string& name, OperatorFunction<N> op_fn,
@@ -26,7 +28,11 @@ void register_forward(const std::string& name, OperatorFunction<N> op_fn,
           state.ResumeTiming();
           lmp::autograd::Variable result = op_fn(inputs);
         }
-      })->Iterations(kIterations);
+        state.PauseTiming();
+        cudaDeviceSynchronize();
+        cudaMemPoolTrimTo(nullptr, 0);
+        state.ResumeTiming();
+      })->MinWarmUpTime(kWarmUpTime);
 }
 
 template<size_t N>
@@ -43,5 +49,9 @@ void register_backward(const std::string& name,
                 state.ResumeTiming();
                 result.backward();
             }
-        })->Iterations(kIterations);
+            state.PauseTiming();
+            cudaDeviceSynchronize();
+            cudaMemPoolTrimTo(nullptr, 0);
+            state.ResumeTiming();
+        })->MinWarmUpTime(kWarmUpTime);
 }

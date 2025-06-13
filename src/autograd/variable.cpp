@@ -57,7 +57,7 @@ void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {
-    LMP_INTERNAL_ASSERT(!v.grad_fn().expired()) << "Should not be expired";
+    LMP_INTERNAL_ASSERT(!node.grad_fn().expired()) << "Should not be expired";
     if (node.grad_fn().lock() != nullptr) {
       node.grad_fn().lock()->apply({node});
     }

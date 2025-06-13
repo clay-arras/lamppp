@@ -21,26 +21,26 @@ class OperatorBase {
 
 namespace {
 std::string to_string(const std::vector<size_t>& shape) {
-  std::string str_ = "";
+  std::string str;
   for (size_t i = 0; i < shape.size(); i++) {
     if (i) {
-      str_ += "x";
+      str += "x";
     }
-    str_ += std::to_string(shape[i]);
+    str += std::to_string(shape[i]);
   }
-  return str_;
+  return str;
 }
 
 template <size_t N>
 std::string to_string(const std::array<std::vector<size_t>, N>& shapes) {
-  std::string str_ = "";
+  std::string str;
   for (size_t i = 0; i < shapes.size(); i++) {
     if (i) {
-      str_ += "_";
+      str += "_";
     }
-    str_ += to_string(shapes[i]);
+    str += to_string(shapes[i]);
   }
-  return str_;
+  return str;
 }
 
 std::string to_string(lmp::tensor::DataType dtype) {
@@ -70,11 +70,11 @@ class BinaryOperatorBase : public OperatorBase {
         -> lmp::autograd::Variable {
       return apply_operation(inputs[0], inputs[1]);
     };
-    auto init_fn = [config]() -> std::array<lmp::autograd::Variable, 2> {
+    auto init_fn = [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 2> {
       return {lmp::autograd::randn(0, 1, config.shapes[0], config.device,
-                                   config.dtype, false),
+                                   config.dtype, requires_grad),
               lmp::autograd::randn(0, 1, config.shapes[1], config.device,
-                                   config.dtype, false)};
+                                   config.dtype, requires_grad)};
     };
 
     std::string bench_name =
@@ -82,7 +82,7 @@ class BinaryOperatorBase : public OperatorBase {
         to_string(config.dtype) + "_" +
         (config.device == lmp::tensor::DeviceType::CUDA ? "CUDA" : "CPU");
     register_forward<2>(bench_name, op_fn, init_fn);
-    // register_backward<2>(bench_name, op_fn, init_fn);
+    register_backward<2>(bench_name, op_fn, init_fn);
   }
 
  protected:
@@ -97,9 +97,9 @@ class UnaryOperatorBase : public OperatorBase {
         -> lmp::autograd::Variable {
       return apply_operation(inputs[0]);
     };
-    auto init_fn = [config]() -> std::array<lmp::autograd::Variable, 1> {
+    auto init_fn = [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
       return {lmp::autograd::rand(config.shapes[0], config.device, config.dtype,
-                                  true)};
+                                  requires_grad)};
     };
 
     std::string bench_name =
@@ -107,7 +107,7 @@ class UnaryOperatorBase : public OperatorBase {
         to_string(config.dtype) + "_" +
         (config.device == lmp::tensor::DeviceType::CUDA ? "CUDA" : "CPU");
     register_forward<1>(bench_name, op_fn, init_fn);
-    // register_backward<1>(bench_name, op_fn, init_fn);
+    register_backward<1>(bench_name, op_fn, init_fn);
   }
 
  protected:
@@ -119,9 +119,9 @@ class ReductOperatorBase : public OperatorBase {
  public:
   const std::vector<size_t> axes = {0U, 1U};
   void register_benchmarks(const OperatorConfig<1>& config) {
-    auto init_fn = [config]() -> std::array<lmp::autograd::Variable, 1> {
+    auto init_fn = [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
       return {lmp::autograd::rand(config.shapes[0], config.device, config.dtype,
-                                  true)};
+                                  requires_grad)};
     };
 
     for (size_t axis : axes) {
@@ -136,7 +136,7 @@ class ReductOperatorBase : public OperatorBase {
           to_string(config.shapes) + "_" + to_string(config.dtype) + "_" +
           (config.device == lmp::tensor::DeviceType::CUDA ? "CUDA" : "CPU");
       register_forward<1>(bench_name, op_fn, init_fn);
-      // register_backward<1>(bench_name, op_fn, init_fn);
+      register_backward<1>(bench_name, op_fn, init_fn);
     }
   }
 

@@ -2,8 +2,8 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 #include <thrust/device_ptr.h>
-#include <cuda/std/array>
 #include <cstdint>
+#include <cuda/std/array>
 #include "lamppp/common/assert.hpp"
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cpu/memory.hpp"
@@ -24,7 +24,8 @@ DataPtr empty_cuda(size_t byte_size) {
 void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
   LMP_DISPATCH_ALL_TYPES(type, [&]() {
     cudaVecFill(size, static_cast<scalar_t*>(ptr), static_cast<scalar_t>(t));
-    LMP_CUDA_INTERNAL_ASSERT(cudaGetLastError()) << "fill_cuda: thrust::fill failed.";
+    LMP_CUDA_INTERNAL_ASSERT(cudaGetLastError())
+        << "fill_cuda: thrust::fill failed.";
   });
 }
 
@@ -32,9 +33,9 @@ void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = nullptr;
   cudaMallocAsync(&ptr, new_byte_size, 0);
   cudaMemcpyAsync(ptr, dptr.data(), std::min(old_byte_size, new_byte_size),
-             cudaMemcpyDeviceToDevice);
+                  cudaMemcpyDeviceToDevice);
 
-  auto *deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
+  auto* deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
   dptr = DataPtr(ptr, *deleter);
 }
 
@@ -52,8 +53,8 @@ void vecCopyHostToDevice(const void* src, void* dest, size_t size,
       void* tmp = nullptr;
       LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(src_type), 0))
           << "copy_cpu to CUDA: cudaMalloc for tmp failed.";
-      LMP_CUDA_CHECK(
-          cudaMemcpyAsync(tmp, src, size * sizeof(src_type), cudaMemcpyHostToDevice))
+      LMP_CUDA_CHECK(cudaMemcpyAsync(tmp, src, size * sizeof(src_type),
+                                     cudaMemcpyHostToDevice))
           << "copy_cpu to CUDA: cudaMemcpy HtoD for tmp failed.";
 
       cudaVecCopy<src_type, dest_type>(size, static_cast<const src_type*>(tmp),
@@ -86,7 +87,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           LMP_CUDA_INTERNAL_ASSERT(cudaGetLastError())
               << "copy_cuda to CPU: vecCopy kernel failed.";
           LMP_CUDA_CHECK(cudaMemcpyAsync(dest, tmp, size * sizeof(dest_type),
-                                     cudaMemcpyDeviceToHost))
+                                         cudaMemcpyDeviceToHost))
               << "copy_cuda to CPU: cudaMemcpy DtoH failed.";
           LMP_CUDA_CHECK(cudaFreeAsync(tmp, 0))
               << "copy_cuda to CPU: cudaFreeAsync for tmp failed.";
@@ -111,7 +112,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           LMP_CUDA_INTERNAL_ASSERT(cudaGetLastError())
               << "copy_cuda to CUDA: vecCopy kernel failed.";
           LMP_CUDA_CHECK(cudaMemcpyAsync(dest, tmp, size * sizeof(dest_type),
-                                     cudaMemcpyDeviceToDevice))
+                                         cudaMemcpyDeviceToDevice))
               << "copy_cuda to CUDA: cudaMemcpy DtoD failed.";
           LMP_CUDA_CHECK(cudaFreeAsync(tmp, 0))
               << "copy_cuda to CUDA: cudaFreeAsync for tmp failed.";
@@ -127,7 +128,8 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
 
 template <typename U, typename V>
 __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
-  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size;
+       i += gridDim.x * blockDim.x) {
     out[i] = static_cast<V>(in[i]);
   }
 }
@@ -141,7 +143,8 @@ void cudaVecCopy(size_t size, const U* in, V* out) {
 
 template <typename T>
 __global__ void cudaVecFillKernel(size_t size, T* out, T value) {
-  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size;
+       i += gridDim.x * blockDim.x) {
     out[i] = value;
   }
 }
@@ -157,10 +160,9 @@ void cudaVecFill(size_t size, T* out, T value) {
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type)                              \
   template void cudaVecCopy<arg1_type, arg2_type>(size_t, const arg1_type*, \
-                                                  arg2_type*);              
-#define INSTANTIATE_FILL(arg1_type)                              \
-  template void cudaVecFill<arg1_type>(size_t, arg1_type*,       \
-                                                  arg1_type);
+                                                  arg2_type*);
+#define INSTANTIATE_FILL(arg1_type) \
+  template void cudaVecFill<arg1_type>(size_t, arg1_type*, arg1_type);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_FILL, LMP_LIST_TYPES)

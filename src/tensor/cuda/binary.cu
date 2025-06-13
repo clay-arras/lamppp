@@ -4,15 +4,16 @@
 #include <cuda/std/array>
 #include <cuda/std/tuple>
 #include "lamppp/tensor/cuda/binary.cuh"
-#include "lamppp/tensor/cuda/list_ptr.cuh"
 #include "lamppp/tensor/cuda/kernels.cuh"
+#include "lamppp/tensor/cuda/list_ptr.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
 template <typename PtrList, typename OpFn>
 __global__ void vectorized_binary_kernel(PtrList ptr_, OpFn fn_, size_t size) {
-  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) { 
-    ptr_.set_Out(i, fn_(::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], i), 
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size;
+       i += gridDim.x * blockDim.x) {
+    ptr_.set_Out(i, fn_(::cuda::std::get<1>(ptr_.fns)(ptr_.data[1], i),
                         ::cuda::std::get<2>(ptr_.fns)(ptr_.data[2], i)));
   }
 }
@@ -42,7 +43,6 @@ void binary_dispatch_handler(BinaryMetaHandler& meta, Args&&... args) {
                 static_cast<arg2_dtype_t*>(meta.in()[1]->data())),
             OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
             meta.out().numel());
-            
       });
     });
   });

@@ -1,6 +1,6 @@
+#include <cstdint>
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cuda/matrix.cuh"
-#include <cstdint>
 
 namespace lmp::tensor::detail::cuda {
 
@@ -8,13 +8,15 @@ namespace {
 template <typename U, typename V, typename OutType>
 __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
                                  size_t n, size_t k) {
-  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m; i += gridDim.x * blockDim.x) {
-    for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n; j += gridDim.y * blockDim.y) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m;
+       i += gridDim.x * blockDim.x) {
+    for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n;
+         j += gridDim.y * blockDim.y) {
       OutType sum = 0;
       // areas of speedup: use reduction strats here
       for (size_t t = 0; t < k; t++) {
         sum += static_cast<OutType>(A[(i * k) + t]) *
-              static_cast<OutType>(B[(n * t) + j]);
+               static_cast<OutType>(B[(n * t) + j]);
       }
       C[(i * n) + j] = sum;
     }
@@ -23,14 +25,16 @@ __global__ void cudaMatmulKernel(const U* A, const V* B, OutType* C, size_t m,
 
 template <typename T>
 __global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n) {
-  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m; i += gridDim.x * blockDim.x) {
-    for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n; j += gridDim.y * blockDim.y) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < m;
+       i += gridDim.x * blockDim.x) {
+    for (size_t j = (blockIdx.y * blockDim.y) + threadIdx.y; j < n;
+         j += gridDim.y * blockDim.y) {
       out[(j * m) + i] = in[(i * n) + j];
     }
   }
 }
 
-}
+}  // namespace
 
 template <typename U, typename V, typename OutType>
 void cudaMatMul(const U* A, const V* B, OutType* C, size_t m, size_t n,

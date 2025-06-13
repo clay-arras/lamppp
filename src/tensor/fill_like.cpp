@@ -10,7 +10,8 @@ Tensor full_like(const Tensor& tensor, Scalar scalar) {
     Storage storage(tensor.numel() * sizeof(scalar_t), tensor.device());
     TensorImpl impl(storage, tensor.shape(), tensor.type());
     impl.fill(scalar);
-    return detail::UnsafeTensorAccessor::fromImpl(std::make_shared<TensorImpl>(std::move(impl)));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        std::make_shared<TensorImpl>(std::move(impl)));
   });
 }
 

@@ -41,7 +41,7 @@ __device__ ::cuda::std::array<stride_t, NArgs + 1> CUDAOffsetUtil<NArgs>::get(
 
   for (size_t i = 0; i < this->ndim; ++i) {
     stride_t stride = static_cast<const stride_t*>(arg_pointers_[0])[i];
-    stride_t this_idx = idx / stride; 
+    stride_t this_idx = idx / stride;
     idx = idx % stride;
 
 #pragma omp unroll
@@ -60,11 +60,9 @@ template class CUDAOffsetUtil<3>;
 namespace {
 offset_util_fn<2> offset_util_cuda_2 = offset_util_cuda<2>;
 offset_util_fn<3> offset_util_cuda_3 = offset_util_cuda<3>;
-}
+}  // namespace
 
-LMP_REGISTER_DISPATCH(offset_util_stub_2, DeviceType::CUDA,
-                      offset_util_cuda_2);
-LMP_REGISTER_DISPATCH(offset_util_stub_3, DeviceType::CUDA,
-                      offset_util_cuda_3);
+LMP_REGISTER_DISPATCH(offset_util_stub_2, DeviceType::CUDA, offset_util_cuda_2);
+LMP_REGISTER_DISPATCH(offset_util_stub_3, DeviceType::CUDA, offset_util_cuda_3);
 
 }  // namespace lmp::tensor::detail::cuda

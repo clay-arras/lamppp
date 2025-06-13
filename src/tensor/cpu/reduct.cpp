@@ -20,7 +20,7 @@ void vectorized_reduct_kernel(PtrList ptr_, OpFn fn_, size_t i, size_t axis,
 template <typename PtrList, typename OpFn>
 void reduct_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size, size_t axis,
                             const size_t* shape, const stride_t* strides,
-                            size_t  /*ndims*/) {
+                            size_t /*ndims*/) {
 #pragma omp parallel for simd
   for (size_t i = 0; i < size; i++) {
     vectorized_reduct_kernel(ptr_, fn_, i, axis, shape, strides);

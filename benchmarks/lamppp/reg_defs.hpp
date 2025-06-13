@@ -2,34 +2,34 @@
 
 #include <benchmark/benchmark.h>
 #include <array>
-#include <string>
 #include <functional>
+#include <string>
 #include "lamppp/lamppp.hpp"
 
-template<size_t N>
-using OperatorFunction = std::function<lmp::autograd::Variable(const std::array<lmp::autograd::Variable, N>&)>;
-template<size_t N>
-using InitializerFunction = std::function<std::array<lmp::autograd::Variable, N>()>;
+template <size_t N>
+using OperatorFunction = std::function<lmp::autograd::Variable(
+    const std::array<lmp::autograd::Variable, N>&)>;
+template <size_t N>
+using InitializerFunction =
+    std::function<std::array<lmp::autograd::Variable, N>()>;
 
-template<size_t N>
-void register_forward(const std::string& name, 
-                     OperatorFunction<N> op_fn,
-                     InitializerFunction<N> init_fn) {
-    benchmark::RegisterBenchmark(
-        name + "Forward",
-        [op_fn, init_fn](benchmark::State& state) {
-            for (auto _ : state) {
-                state.PauseTiming();
-                std::array<lmp::autograd::Variable, N> inputs = init_fn();
-                state.ResumeTiming();
-                lmp::autograd::Variable result = op_fn(inputs);
-            }
-        });
+template <size_t N>
+void register_forward(const std::string& name, OperatorFunction<N> op_fn,
+                      InitializerFunction<N> init_fn) {
+  benchmark::RegisterBenchmark(
+      name + "Forward", [op_fn, init_fn](benchmark::State& state) {
+        for (auto _ : state) {
+          state.PauseTiming();
+          std::array<lmp::autograd::Variable, N> inputs = init_fn();
+          state.ResumeTiming();
+          lmp::autograd::Variable result = op_fn(inputs);
+        }
+      });
 }
 
 // template<size_t N>
 // void register_backward(const std::string& name,
-//                       OperatorFunction<N> op_fn, 
+//                       OperatorFunction<N> op_fn,
 //                       InitializerFunction<N> init_fn) {
 //     benchmark::RegisterBenchmark(
 //         name + "Backward",
@@ -42,4 +42,4 @@ void register_forward(const std::string& name,
 //                 result.backward();
 //             }
 //         });
-// } 
+// }

@@ -1,10 +1,10 @@
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cpu/meta_handler.hpp"
+#include "lamppp/tensor/cuda/binary.cuh"
 #include "lamppp/tensor/cuda/expand.cuh"
 #include "lamppp/tensor/cuda/kernels.cuh"
 #include "lamppp/tensor/cuda/matrix.cuh"
 #include "lamppp/tensor/cuda/reduct.cuh"
-#include "lamppp/tensor/cuda/binary.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"
 

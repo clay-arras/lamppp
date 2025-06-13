@@ -5,8 +5,8 @@ namespace lmp::tensor::detail::cpu {
 
 template <typename PtrList, typename OpFn>
 void vectorized_binary_kernel(PtrList ptr_, OpFn fn_, size_t i) {
-    ptr_.set_Out(i, fn_(::std::get<1>(ptr_.fns)(ptr_.data[1], i), 
-                        ::std::get<2>(ptr_.fns)(ptr_.data[2], i)));
+  ptr_.set_Out(i, fn_(::std::get<1>(ptr_.fns)(ptr_.data[1], i),
+                      ::std::get<2>(ptr_.fns)(ptr_.data[2], i)));
 }
 
 template <typename PtrList, typename OpFn>

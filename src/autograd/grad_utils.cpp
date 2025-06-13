@@ -1,6 +1,6 @@
+#include "lamppp/autograd/grad_utils.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
-#include "lamppp/autograd/grad_utils.hpp"
 
 namespace lmp::autograd::detail {
 

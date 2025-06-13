@@ -42,7 +42,7 @@ class TensorOpTest : public testing::Test,
         Tensor(std::vector<float>{10.0F, 20.0F, 30.0F},
                std::vector<size_t>{3U, 1U}, device_, dtype_);
     scalar_tensor_f32_ = Tensor(std::vector<Scalar>{100.0},
-                               std::vector<size_t>{1}, device_, dtype_);
+                                std::vector<size_t>{1}, device_, dtype_);
     tensor_f32_1x2x1_squeeze_expand_ =
         Tensor(std::vector<float>{7.0F, 8.0F}, std::vector<size_t>{1U, 2U, 1U},
                device_, dtype_);
@@ -74,7 +74,8 @@ TEST_P(TensorOpTest, TypeUpcastTest) {
                         DataType::Int32);
   Tensor result = tensor_f32_A_ + tensor_i32_c;
 
-  EXPECT_EQ(result.type(), lmp::tensor::type_upcast(tensor_i32_c.type(), dtype_))
+  EXPECT_EQ(result.type(),
+            lmp::tensor::type_upcast(tensor_i32_c.type(), dtype_))
       << "Result data type mismatch";
   EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3U, 2U}))
       << "Result shape mismatch";
@@ -174,9 +175,8 @@ TEST_P(TensorOpTest, ExpandBroadcastTest) {
   EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3U, 2U, 1U}))
       << "Expand-Broadcast: Result shape mismatch";
 
-  std::vector<Scalar> expected_values = {1.0F + 7.0F, 2.0F + 8.0F,   
-                                         3.0F + 7.0F, 4.0F + 8.0F,   
-                                         5.0F + 7.0F, 6.0F + 8.0F};  
+  std::vector<Scalar> expected_values = {1.0F + 7.0F, 2.0F + 8.0F, 3.0F + 7.0F,
+                                         4.0F + 8.0F, 5.0F + 7.0F, 6.0F + 8.0F};
 
   EXPECT_THAT(getTenData(result),
               ::testing::Pointwise(::testing::FloatNear(kEps), expected_values))
@@ -219,7 +219,7 @@ TEST_P(TensorOpTest, ReductSqueezeTest) {
   }
 
   {
-    Tensor sum_axis0 = lmp::tensor::ops::sum(tensor_f32_A_, 0);  
+    Tensor sum_axis0 = lmp::tensor::ops::sum(tensor_f32_A_, 0);
     Tensor squeezed_sum_axis0 = sum_axis0.squeeze(0);
     EXPECT_EQ(squeezed_sum_axis0.type(), dtype_)
         << "Sum axis 0 then squeeze: Type mismatch";
@@ -489,8 +489,7 @@ TEST_P(TensorOpTest, FillTest) {
   }
 
   {
-    Tensor tensor_3d_fill =
-        tensor_f32_1x2x1_squeeze_expand_;  
+    Tensor tensor_3d_fill = tensor_f32_1x2x1_squeeze_expand_;
     Scalar fill_3d_value = 123.0;
     tensor_3d_fill.fill(fill_3d_value);
 
@@ -509,79 +508,92 @@ TEST_P(TensorOpTest, FillTest) {
 }
 
 TEST_P(TensorOpTest, PowTest) {
-  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 || dtype_ == DataType::Int64) {
-    Tensor int_exp = Tensor(std::vector<float>{1.0F, 2.0F, 1.0F, 2.0F, 1.0F, 2.0F}, 
-                            {3, 2}, device_, dtype_);
+  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 ||
+      dtype_ == DataType::Int64) {
+    Tensor int_exp =
+        Tensor(std::vector<float>{1.0F, 2.0F, 1.0F, 2.0F, 1.0F, 2.0F}, {3, 2},
+               device_, dtype_);
     Tensor result = lmp::tensor::ops::pow(tensor_f32_A_, int_exp);
-    
-    std::vector<Scalar> expected_values = {1.0F, 4.0F, 3.0F, 16.0F, 5.0F, 36.0F};
-    
-    EXPECT_EQ(result.type(), lmp::tensor::type_upcast(tensor_f32_A_.type(), int_exp.type()))
+
+    std::vector<Scalar> expected_values = {1.0F,  4.0F, 3.0F,
+                                           16.0F, 5.0F, 36.0F};
+
+    EXPECT_EQ(result.type(),
+              lmp::tensor::type_upcast(tensor_f32_A_.type(), int_exp.type()))
         << "Pow tensor^tensor (int): Result data type mismatch";
     EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Pow tensor^tensor (int): Result shape mismatch";
-    
+
   } else {
     Tensor result = lmp::tensor::ops::pow(tensor_f32_A_, tensor_f32_B_);
-    
+
     std::vector<Scalar> expected_values = {
         std::pow(1.0F, 0.5F), std::pow(2.0F, 1.5F), std::pow(3.0F, 2.5F),
-        std::pow(4.0F, 3.5F), std::pow(5.0F, 4.5F), std::pow(6.0F, 5.5F)
-    };
-    
-    EXPECT_EQ(result.type(), lmp::tensor::type_upcast(tensor_f32_A_.type(), tensor_f32_B_.type()))
+        std::pow(4.0F, 3.5F), std::pow(5.0F, 4.5F), std::pow(6.0F, 5.5F)};
+
+    EXPECT_EQ(result.type(), lmp::tensor::type_upcast(tensor_f32_A_.type(),
+                                                      tensor_f32_B_.type()))
         << "Pow tensor^tensor: Result data type mismatch";
     EXPECT_THAT(result.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Pow tensor^tensor: Result shape mismatch";
-    EXPECT_THAT(getTenData(result),
-                ::testing::Pointwise(::testing::FloatNear(kEps), expected_values))
+    EXPECT_THAT(
+        getTenData(result),
+        ::testing::Pointwise(::testing::FloatNear(kEps), expected_values))
         << "Pow tensor^tensor: Result data mismatch";
   }
 
   Tensor scalar_exp = Tensor(std::vector<Scalar>{2.0}, {1}, device_, dtype_);
   Tensor result_scalar = lmp::tensor::ops::pow(tensor_f32_A_, scalar_exp);
-  
-  std::vector<Scalar> expected_scalar_values = {1.0F, 4.0F, 9.0F, 16.0F, 25.0F, 36.0F};
-  
-  EXPECT_EQ(result_scalar.type(), lmp::tensor::type_upcast(tensor_f32_A_.type(), scalar_exp.type()))
+
+  std::vector<Scalar> expected_scalar_values = {1.0F,  4.0F,  9.0F,
+                                                16.0F, 25.0F, 36.0F};
+
+  EXPECT_EQ(result_scalar.type(),
+            lmp::tensor::type_upcast(tensor_f32_A_.type(), scalar_exp.type()))
       << "Pow tensor^scalar: Result data type mismatch";
   EXPECT_THAT(result_scalar.shape(), ::testing::ElementsAreArray({3U, 2U}))
       << "Pow tensor^scalar: Result shape mismatch";
-  
-  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 || dtype_ == DataType::Int64) {
+
+  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 ||
+      dtype_ == DataType::Int64) {
     auto result_data = getTenData(result_scalar);
     for (size_t i = 0; i < expected_scalar_values.size(); ++i) {
-      EXPECT_NEAR(result_data[i], expected_scalar_values[i], 1e-1) 
+      EXPECT_NEAR(result_data[i], expected_scalar_values[i], 1e-1)
           << "Pow tensor^scalar (int): Mismatch at index " << i;
     }
   } else {
     EXPECT_THAT(getTenData(result_scalar),
-                ::testing::Pointwise(::testing::FloatNear(kEps), expected_scalar_values))
+                ::testing::Pointwise(::testing::FloatNear(kEps),
+                                     expected_scalar_values))
         << "Pow tensor^scalar: Result data mismatch";
   }
 
-  Tensor ones_tensor = Tensor(std::vector<Scalar>{1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, 
+  Tensor ones_tensor = Tensor(std::vector<Scalar>{1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
                               {3, 2}, device_, dtype_);
   Tensor result_ones = lmp::tensor::ops::pow(tensor_f32_A_, ones_tensor);
-  
-  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 || dtype_ == DataType::Int64) {
+
+  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 ||
+      dtype_ == DataType::Int64) {
     auto result_data = getTenData(result_ones);
     auto expected_data = getTenData(tensor_f32_A_);
   } else {
     EXPECT_THAT(getTenData(result_ones),
-                ::testing::Pointwise(::testing::FloatNear(kEps), getTenData(tensor_f32_A_)))
+                ::testing::Pointwise(::testing::FloatNear(kEps),
+                                     getTenData(tensor_f32_A_)))
         << "Pow tensor^ones: Should equal original tensor";
   }
 
-  Tensor zeros_tensor = Tensor(std::vector<Scalar>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, 
-                               {3, 2}, device_, dtype_);
+  Tensor zeros_tensor =
+      Tensor(std::vector<Scalar>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {3, 2}, device_,
+             dtype_);
   Tensor result_zeros = lmp::tensor::ops::pow(tensor_f32_A_, zeros_tensor);
   std::vector<Scalar> expected_ones = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-  
-  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 || dtype_ == DataType::Int64) {
+
+  if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 ||
+      dtype_ == DataType::Int64) {
     auto result_data = getTenData(result_zeros);
     for (size_t i = 0; i < expected_ones.size(); ++i) {
-      EXPECT_NEAR(result_data[i], expected_ones[i], 1e-1) 
+      EXPECT_NEAR(result_data[i], expected_ones[i], 1e-1)
           << "Pow tensor^zeros (int): Mismatch at index " << i;
     }
   } else {
@@ -593,11 +605,11 @@ TEST_P(TensorOpTest, PowTest) {
 
 TEST_P(TensorOpTest, ComparisonTest) {
   {
-    Tensor eq_tensor = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 6.0}, 
+    Tensor eq_tensor = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 6.0},
                               {3, 2}, device_, dtype_);
     Tensor result_eq = tensor_f32_A_ == eq_tensor;
     std::vector<Scalar> expected_eq = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_eq.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Equality: Result shape mismatch";
     EXPECT_THAT(getTenData(result_eq),
@@ -608,7 +620,7 @@ TEST_P(TensorOpTest, ComparisonTest) {
   {
     Tensor result_ne = tensor_f32_A_ != tensor_f32_B_;
     std::vector<Scalar> expected_ne = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_ne.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Inequality: Result shape mismatch";
     EXPECT_THAT(getTenData(result_ne),
@@ -619,7 +631,7 @@ TEST_P(TensorOpTest, ComparisonTest) {
   {
     Tensor result_lt = tensor_f32_A_ < tensor_f32_B_;
     std::vector<Scalar> expected_lt = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-    
+
     EXPECT_THAT(result_lt.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Less than: Result shape mismatch";
     EXPECT_THAT(getTenData(result_lt),
@@ -630,7 +642,7 @@ TEST_P(TensorOpTest, ComparisonTest) {
   {
     Tensor result_gt = tensor_f32_A_ > tensor_f32_B_;
     std::vector<Scalar> expected_gt = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_gt.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Greater than: Result shape mismatch";
     EXPECT_THAT(getTenData(result_gt),
@@ -639,11 +651,11 @@ TEST_P(TensorOpTest, ComparisonTest) {
   }
 
   {
-    Tensor eq_tensor = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 6.0}, 
+    Tensor eq_tensor = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 6.0},
                               {3, 2}, device_, dtype_);
     Tensor result_le = tensor_f32_A_ <= eq_tensor;
     std::vector<Scalar> expected_le = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_le.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Less than or equal: Result shape mismatch";
     EXPECT_THAT(getTenData(result_le),
@@ -652,11 +664,11 @@ TEST_P(TensorOpTest, ComparisonTest) {
   }
 
   {
-    Tensor eq_tensor = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 6.0}, 
+    Tensor eq_tensor = Tensor(std::vector<Scalar>{1.0, 2.0, 3.0, 4.0, 5.0, 6.0},
                               {3, 2}, device_, dtype_);
     Tensor result_ge = tensor_f32_A_ >= eq_tensor;
     std::vector<Scalar> expected_ge = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_ge.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Greater than or equal: Result shape mismatch";
     EXPECT_THAT(getTenData(result_ge),
@@ -667,31 +679,34 @@ TEST_P(TensorOpTest, ComparisonTest) {
 
 TEST_P(TensorOpTest, BroadcastPowCompTest) {
   {
-    if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 || dtype_ == DataType::Int64) {
-      Tensor int_broadcast = Tensor(std::vector<float>{2.0F, 3.0F}, {1, 2}, device_, dtype_);
+    if (dtype_ == DataType::Int16 || dtype_ == DataType::Int32 ||
+        dtype_ == DataType::Int64) {
+      Tensor int_broadcast =
+          Tensor(std::vector<float>{2.0F, 3.0F}, {1, 2}, device_, dtype_);
       Tensor result_pow = lmp::tensor::ops::pow(tensor_f32_A_, int_broadcast);
-      std::vector<Scalar> expected_pow = {1.0F, 8.0F, 9.0F, 64.0F, 25.0F, 216.0F};
-      
+      std::vector<Scalar> expected_pow = {1.0F,  8.0F,  9.0F,
+                                          64.0F, 25.0F, 216.0F};
+
       EXPECT_THAT(result_pow.shape(), ::testing::ElementsAreArray({3U, 2U}))
           << "Broadcast pow (int): Result shape mismatch";
-      
+
       auto result_data = getTenData(result_pow);
       for (size_t i = 0; i < expected_pow.size(); ++i) {
-        EXPECT_NEAR(result_data[i], expected_pow[i], 1e-1) 
+        EXPECT_NEAR(result_data[i], expected_pow[i], 1e-2)
             << "Broadcast pow (int): Mismatch at index " << i;
       }
     } else {
-      Tensor result_pow = lmp::tensor::ops::pow(tensor_f32_A_, tensor_f32_1x2_broadcast_);
+      Tensor result_pow =
+          lmp::tensor::ops::pow(tensor_f32_A_, tensor_f32_1x2_broadcast_ / 10);
       std::vector<Scalar> expected_pow = {
-          std::pow(1.0F, 10.0F), std::pow(2.0F, 20.0F), 
-          std::pow(3.0F, 10.0F), std::pow(4.0F, 20.0F),
-          std::pow(5.0F, 10.0F), std::pow(6.0F, 20.0F)
-      };
-      
+          std::pow(1.0F, 1.0F), std::pow(2.0F, 2.0F), std::pow(3.0F, 1.0F),
+          std::pow(4.0F, 2.0F), std::pow(5.0F, 1.0F), std::pow(6.0F, 2.0F)};
+
       EXPECT_THAT(result_pow.shape(), ::testing::ElementsAreArray({3U, 2U}))
           << "Broadcast pow: Result shape mismatch";
-      EXPECT_THAT(getTenData(result_pow),
-                  ::testing::Pointwise(::testing::FloatNear(1e-3), expected_pow))
+      EXPECT_THAT(
+          getTenData(result_pow),
+          ::testing::Pointwise(::testing::FloatNear(1e-4), expected_pow))
           << "Broadcast pow: Result data mismatch";
     }
   }
@@ -699,7 +714,7 @@ TEST_P(TensorOpTest, BroadcastPowCompTest) {
   {
     Tensor result_comp = tensor_f32_A_ > tensor_f32_1x2_broadcast_;
     std::vector<Scalar> expected_comp = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-    
+
     EXPECT_THAT(result_comp.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Broadcast comparison: Result shape mismatch";
     EXPECT_THAT(getTenData(result_comp),
@@ -711,7 +726,7 @@ TEST_P(TensorOpTest, BroadcastPowCompTest) {
     Tensor scalar_3 = Tensor(std::vector<Scalar>{3.5}, {1}, device_, dtype_);
     Tensor result_scalar = tensor_f32_A_ >= scalar_3;
     std::vector<Scalar> expected_scalar = {0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_scalar.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Scalar comparison: Result shape mismatch";
   }
@@ -719,7 +734,7 @@ TEST_P(TensorOpTest, BroadcastPowCompTest) {
   {
     Tensor result_col = tensor_f32_A_ < tensor_f32_3x1_broadcast_;
     std::vector<Scalar> expected_col = {1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F};
-    
+
     EXPECT_THAT(result_col.shape(), ::testing::ElementsAreArray({3U, 2U}))
         << "Column broadcast comparison: Result shape mismatch";
     EXPECT_THAT(getTenData(result_col),

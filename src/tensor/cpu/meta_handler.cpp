@@ -45,10 +45,11 @@ BinaryMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
         using arg2_dtype_t = scalar_t;
         Storage out_st(outSize_ * sizeof(out_dtype_t), a->device());
         outTen_ = std::make_unique<TensorImpl>(out_st, outShape_, outDtype_);
-        if (expand_) { // TODO: if I comment this out, the code is 2-4 times faster. idk why
+        if (expand_) {  // TODO: if I comment this out, the code is 2-4 times faster. idk why
           outOffset_ = offset_util_stub_2()(
               a->device(),
-              ::std::array<const TensorImpl*, BinaryMetaHandler::kNumElem>{a, b},
+              ::std::array<const TensorImpl*, BinaryMetaHandler::kNumElem>{a,
+                                                                           b},
               *outTen_.get());
         }
       });

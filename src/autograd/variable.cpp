@@ -9,14 +9,16 @@
 namespace lmp::autograd {
 
 const tensor::Tensor& Variable::grad() const noexcept {
-  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
+  LMP_CHECK(impl_->requires_grad)
+      << "Cannot access grad() if requires_grad = false";
   return impl_->grad;
 }
 const tensor::Tensor& Variable::data() const noexcept {
   return impl_->data;
 }
 std::weak_ptr<Function> Variable::grad_fn() const noexcept {
-  LMP_INTERNAL_ASSERT(!impl_->_grad_fn.expired()) << "Should not access grad_fn if it is expired";
+  LMP_INTERNAL_ASSERT(!impl_->_grad_fn.expired())
+      << "Should not access grad_fn if it is expired";
   std::weak_ptr<Function> grad_fn = impl_->_grad_fn;
   return grad_fn;
 }
@@ -25,17 +27,20 @@ bool Variable::requires_grad() const noexcept {
 }
 
 void Variable::zero_grad() {
-  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
+  LMP_CHECK(impl_->requires_grad)
+      << "Cannot access grad() if requires_grad = false";
   impl_->grad = zeros_like(impl_->grad);
 }  // TODO(root): this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
-  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
+  LMP_CHECK(impl_->requires_grad)
+      << "Cannot access grad() if requires_grad = false";
   LMP_INTERNAL_ASSERT(other_grad.shape() == impl_->grad.shape())
       << "There should be no broadcasting in incr_grad";
   impl_->grad = impl_->grad + other_grad;
 }
 void Variable::set_grad_fn(std::shared_ptr<Function> grad_fn) {
-  LMP_CHECK(impl_->requires_grad) << "Cannot access grad() if requires_grad = false";
+  LMP_CHECK(impl_->requires_grad)
+      << "Cannot access grad() if requires_grad = false";
   impl_->_grad_fn = std::move(grad_fn);
 }
 
@@ -63,9 +68,8 @@ void Variable::dfs(const Variable& v, std::unordered_set<void*>& visited,
                    std::vector<Variable>& topo) const {
   if (visited.find(static_cast<void*>(v.impl_.get())) == visited.end()) {
     visited.insert(static_cast<void*>(v.impl_.get()));
-    // TODO(nx2372): delete the if check
     LMP_INTERNAL_ASSERT(!v.grad_fn().expired()) << "Should not be expired";
-    if (v.grad_fn().lock() == nullptr || v.grad_fn().lock()->saved_inputs == nullptr) {
+    if (v.grad_fn().lock() == nullptr) {
       topo.push_back(v);
       return;
     }
@@ -89,7 +93,8 @@ std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   os << "Variable(requires_grad=" << obj.requires_grad();
   os << ", data=" << obj.data();
   os << ", grad=" << obj.grad();
-  os << ", grad_fn=" << (obj.grad_fn().expired() ? nullptr : obj.grad_fn().lock()) << ")";
+  os << ", grad_fn="
+     << (obj.grad_fn().expired() ? nullptr : obj.grad_fn().lock()) << ")";
   return os;
 }
 

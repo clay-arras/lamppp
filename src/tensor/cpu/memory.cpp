@@ -1,6 +1,6 @@
 #include "lamppp/tensor/cpu/memory.hpp"
-#include <cstring>
 #include <cstdint>
+#include <cstring>
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
@@ -22,7 +22,7 @@ void resize_cpu(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = ::operator new(new_byte_size);
   std::memcpy(ptr, dptr.data(), std::min(old_byte_size, new_byte_size));
 
-  auto *deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
+  auto* deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
   dptr = DataPtr(ptr, *deleter);
 }
 DataPtr empty_cpu(size_t byte_size) {

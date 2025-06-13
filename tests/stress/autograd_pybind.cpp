@@ -8,8 +8,8 @@
 namespace py = pybind11;
 
 using lmp::autograd::Variable;
-using lmp::tensor::DeviceType;
 using lmp::tensor::DataType;
+using lmp::tensor::DeviceType;
 using lmp::tensor::Tensor;
 using std::ostringstream;
 using std::vector;
@@ -109,8 +109,10 @@ PYBIND11_MODULE(lamppp_module, m) {
       .value("CUDA", DeviceType::CUDA);
 
   py::class_<Tensor>(m, "cTensor")
-      .def(py::init<const std::vector<double>, const std::vector<size_t>, DeviceType, DataType> (),
-           py::arg("data"), py::arg("shape"), py::arg("device"), py::arg("dtype"))
+      .def(py::init<const std::vector<double>, const std::vector<size_t>,
+                    DeviceType, DataType>(),
+           py::arg("data"), py::arg("shape"), py::arg("device"),
+           py::arg("dtype"))
       .def_property(
           "data",
           [](Tensor& t) -> vector<double> { return t.to_vector<double>(); },

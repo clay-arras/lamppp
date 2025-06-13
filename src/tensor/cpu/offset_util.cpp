@@ -4,7 +4,8 @@
 namespace lmp::tensor::detail {
 
 std::vector<stride_t> OffsetUtil::init_padded_strides(
-    const std::vector<size_t>& shape, const std::vector<stride_t>& stride) const {
+    const std::vector<size_t>& shape,
+    const std::vector<stride_t>& stride) const {
   LMP_INTERNAL_ASSERT(ndim > 0) << "ndim must be greater than 0";
   LMP_INTERNAL_ASSERT(shape.size() <= ndim)
       << "shape size must be less than or equal to ndim";
@@ -73,7 +74,7 @@ template class CPUOffsetUtil<3>;
 namespace {
 offset_util_fn<2> offset_util_cpu_2 = offset_util_cpu<2>;
 offset_util_fn<3> offset_util_cpu_3 = offset_util_cpu<3>;
-}
+}  // namespace
 
 LMP_REGISTER_DISPATCH(offset_util_stub_2, DeviceType::CPU, offset_util_cpu_2);
 LMP_REGISTER_DISPATCH(offset_util_stub_3, DeviceType::CPU, offset_util_cpu_3);

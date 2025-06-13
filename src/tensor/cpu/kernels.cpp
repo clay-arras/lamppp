@@ -1,11 +1,11 @@
 #include "lamppp/tensor/cpu/kernels.hpp"
 #include "lamppp/common/macros.hpp"
+#include "lamppp/tensor/cpu/binary.hpp"
 #include "lamppp/tensor/cpu/expand.hpp"
 #include "lamppp/tensor/cpu/matrix.hpp"
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cpu/reduct.hpp"
 #include "lamppp/tensor/cpu/unary.hpp"
-#include "lamppp/tensor/cpu/binary.hpp"
 #include "lamppp/tensor/native/expand_ops.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 

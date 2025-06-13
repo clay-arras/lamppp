@@ -23,6 +23,11 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out);
 template <typename U, typename V>
 void cudaVecCopy(size_t size, const U* in, V* out);
 
+template <typename T>
+__global__ void cudaVecFillKernel(size_t size, T* out, T value);
+template <typename T>
+void cudaVecFill(size_t size, T* out, T value);
+
 void vecCopyHostToDevice(const void* src, void* dest, size_t size,
               DataType src_dtype, DataType dest_dtype);
 /// @endinternal

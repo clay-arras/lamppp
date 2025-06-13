@@ -20,13 +20,14 @@ DataPtr empty_cuda(size_t byte_size) {
       << "empty_cuda: cudaMalloc failed.";
   return DataPtr(raw, [](void* ptr) { cudaFreeAsync(ptr, 0); });
 }
+
 void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
   LMP_DISPATCH_ALL_TYPES(type, [&]() {
-    thrust::device_ptr<scalar_t> data(static_cast<scalar_t*>(ptr));
-    thrust::fill(data, data + size, static_cast<scalar_t>(t));
+    cudaVecFill(size, static_cast<scalar_t*>(ptr), static_cast<scalar_t>(t));
     LMP_CUDA_INTERNAL_ASSERT(cudaGetLastError()) << "fill_cuda: thrust::fill failed.";
   });
 }
+
 void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = nullptr;
   cudaMallocAsync(&ptr, new_byte_size, 0);
@@ -131,7 +132,6 @@ __global__ void cudaVecCopyKernel(size_t size, const U* in, V* out) {
   }
 }
 
-// TODO(astronaut): need to make it more clear WHEN something is size and when something is byteSize; should be in function signature
 template <typename U, typename V>
 void cudaVecCopy(size_t size, const U* in, V* out) {
   size_t threads = 256;
@@ -139,14 +139,34 @@ void cudaVecCopy(size_t size, const U* in, V* out) {
   cudaVecCopyKernel<U, V><<<blocks, threads>>>(size, in, out);
 }
 
+template <typename T>
+__global__ void cudaVecFillKernel(size_t size, T* out, T value) {
+  for (size_t i = (blockIdx.x * blockDim.x) + threadIdx.x; i < size; i += gridDim.x * blockDim.x) {
+    out[i] = value;
+  }
+}
+
+template <typename T>
+void cudaVecFill(size_t size, T* out, T value) {
+  size_t threads = 256;
+  size_t blocks = std::min((size + threads - 1) / threads, 1024UL);
+  cudaVecFillKernel<T><<<blocks, threads>>>(size, out, value);
+}
+
 #include "lamppp/tensor/supported_types.hpp"
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type)                              \
   template void cudaVecCopy<arg1_type, arg2_type>(size_t, const arg1_type*, \
-                                                  arg2_type*);
+                                                  arg2_type*);              
+#define INSTANTIATE_FILL(arg1_type)                              \
+  template void cudaVecFill<arg1_type>(size_t, arg1_type*,       \
+                                                  arg1_type);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
+LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_FILL, LMP_LIST_TYPES)
+
 #undef INSTANTIATE_COPY
+#undef INSTANTIATE_FILL
 
 LMP_REGISTER_DISPATCH(ops::copy_stub, DeviceType::CUDA, copy_cuda);
 

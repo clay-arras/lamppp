@@ -26,7 +26,7 @@ struct VariableImpl {
         requires_grad(requires_grad),
         _grad_fn(nullptr) {}
   explicit VariableImpl(const tensor::Tensor& data, const tensor::Tensor& grad,
-                        bool requires_grad, std::shared_ptr<Function> grad_fn)
+                        bool requires_grad, const std::shared_ptr<Function>& grad_fn)
       : data(tensor::Tensor(data)),
         grad(tensor::Tensor(grad)),
         requires_grad(requires_grad),
@@ -41,7 +41,7 @@ class Variable {
 
   const tensor::Tensor& grad() const noexcept;
   const tensor::Tensor& data() const noexcept;
-  const std::shared_ptr<Function>& grad_fn() const noexcept;
+  std::weak_ptr<Function> grad_fn() const noexcept;
   bool requires_grad() const noexcept;
 
   void zero_grad();

@@ -15,8 +15,10 @@ const tensor::Tensor& Variable::grad() const noexcept {
 const tensor::Tensor& Variable::data() const noexcept {
   return impl_->data;
 }
-const std::shared_ptr<Function>& Variable::grad_fn() const noexcept {
-  return impl_->_grad_fn;
+std::weak_ptr<Function> Variable::grad_fn() const noexcept {
+  LMP_INTERNAL_ASSERT(!impl_->_grad_fn.expired()) << "Should not access grad_fn if it is expired";
+  std::weak_ptr<Function> grad_fn = impl_->_grad_fn;
+  return grad_fn;
 }
 bool Variable::requires_grad() const noexcept {
   return impl_->requires_grad;
@@ -50,8 +52,9 @@ void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {
-    if (node.grad_fn() != nullptr) {
-      node.grad_fn()->apply({node});
+    LMP_INTERNAL_ASSERT(!v.grad_fn().expired()) << "Should not be expired";
+    if (node.grad_fn().lock() != nullptr) {
+      node.grad_fn().lock()->apply({node});
     }
   }
 }
@@ -60,11 +63,13 @@ void Variable::dfs(const Variable& v, std::unordered_set<void*>& visited,
                    std::vector<Variable>& topo) const {
   if (visited.find(static_cast<void*>(v.impl_.get())) == visited.end()) {
     visited.insert(static_cast<void*>(v.impl_.get()));
-    if (v.grad_fn() == nullptr || v.grad_fn()->saved_inputs == nullptr) {
+    // TODO(nx2372): delete the if check
+    LMP_INTERNAL_ASSERT(!v.grad_fn().expired()) << "Should not be expired";
+    if (v.grad_fn().lock() == nullptr || v.grad_fn().lock()->saved_inputs == nullptr) {
       topo.push_back(v);
       return;
     }
-    for (const auto& child : *(v.grad_fn()->saved_inputs)) {
+    for (const auto& child : *(v.grad_fn().lock()->saved_inputs)) {
       dfs(child, visited, topo);
     }
     topo.push_back(v);
@@ -84,7 +89,7 @@ std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   os << "Variable(requires_grad=" << obj.requires_grad();
   os << ", data=" << obj.data();
   os << ", grad=" << obj.grad();
-  os << ", grad_fn=" << obj.grad_fn() << ")";
+  os << ", grad_fn=" << (obj.grad_fn().expired() ? nullptr : obj.grad_fn().lock()) << ")";
   return os;
 }
 

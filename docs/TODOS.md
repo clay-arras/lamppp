@@ -69,3 +69,15 @@ TensorImpl initialize from vector (512 x 512): 890000ns
 ## ---
 
 new discrepancy: the speed between grad and no-grad for variable is around 8x
+idea: use weak_ptr in the variable_grad functions???
+
+
+0.00055546
+0.00654835
+
+0.000037783
+0.000337788
+
+
+create an empty tensor and use .fill on it
+need to speed up the regular constructor from vector

@@ -16,7 +16,7 @@ struct ForwardFunction : public Function {
                            });
   }
 
-  variable_list apply(const variable_list& inputs) override {
+  variable_list apply(const variable_list&  /*inputs*/) override {
     throw std::runtime_error(
         "Forward function should not be called without template args");
     return {};

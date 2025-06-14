@@ -24,6 +24,7 @@ binary_ops_list = op_bench.op_list(
         ["sub", torch.sub],
         ["div", torch.div],
         ["mul", torch.mul],
+        ["pow", torch.pow],
     ],
 )
 
@@ -129,7 +130,7 @@ reduction_configs = op_bench.cross_product_configs(
     V=[32, 512], 
     dim=[0, 1],
     device=["cpu", "cuda"],
-    tags=["long"],
+    tags=["short", "long"],
 ) 
 
 class ReductionBenchmark(op_bench.TorchBenchmarkBase):
@@ -138,7 +139,6 @@ class ReductionBenchmark(op_bench.TorchBenchmarkBase):
         self.input_tensor = torch.rand(shape, device=device, requires_grad=True)
         self.inputs = {"input_tensor": self.input_tensor, "dim": dim}
         self.op_func = op_func
-        self.set_module_name(op_name)
 
     def forward(self, input_tensor, dim: int):
         return self.op_func(input_tensor, dim)

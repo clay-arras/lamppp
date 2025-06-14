@@ -17,7 +17,7 @@ const tensor::Tensor& Variable::data() const noexcept {
   return impl_->data;
 }
 std::weak_ptr<Function> Variable::grad_fn() const noexcept {
-  LMP_INTERNAL_ASSERT(!impl_->_grad_fn.expired())
+  LMP_INTERNAL_ASSERT(impl_->_grad_fn != nullptr)
       << "Should not access grad_fn if it is expired";
   std::weak_ptr<Function> grad_fn = impl_->_grad_fn;
   return grad_fn;

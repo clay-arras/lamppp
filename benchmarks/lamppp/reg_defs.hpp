@@ -27,12 +27,13 @@ void register_forward(const std::string& name, OperatorFunction<N> op_fn,
           std::array<lmp::autograd::Variable, N> inputs = init_fn(false);
           state.ResumeTiming();
           lmp::autograd::Variable result = op_fn(inputs);
+          benchmark::DoNotOptimize(result);
         }
-        state.PauseTiming();
+      })->MinWarmUpTime(kWarmUpTime)
+      ->Teardown([](const benchmark::State& state) {
+        cudaStreamSynchronize(0);
         cudaDeviceSynchronize();
-        cudaMemPoolTrimTo(nullptr, 0);
-        state.ResumeTiming();
-      })->MinWarmUpTime(kWarmUpTime);
+      });
 }
 
 template<size_t N>
@@ -48,10 +49,11 @@ void register_backward(const std::string& name,
                 lmp::autograd::Variable result = op_fn(inputs);
                 state.ResumeTiming();
                 result.backward();
+                benchmark::DoNotOptimize(result);
             }
-            state.PauseTiming();
+        })->MinWarmUpTime(kWarmUpTime)
+        ->Teardown([](const benchmark::State& state) {
+            cudaStreamSynchronize(0);
             cudaDeviceSynchronize();
-            cudaMemPoolTrimTo(nullptr, 0);
-            state.ResumeTiming();
-        })->MinWarmUpTime(kWarmUpTime);
+        });
 }

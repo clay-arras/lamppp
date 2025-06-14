@@ -1,0 +1,309 @@
+/*!
+\page using_tensor Working with Tensors
+
+Tensors are the fundamental data structure in Lamp++. They're n-dimensional arrays that can live on CPU or GPU, store different data types, and support automatic broadcasting for operations (it's like what ATen is for Pytorch, or if NumPy had CUDA support). This guide covers everything you need to know to work with them effectively.
+
+## Creating tensors
+
+### From vectors
+
+The most common way to create a tensor is from a C++ vector:
+
+```cpp
+#include "lamppp/lamppp.hpp"
+
+// Simple 1D tensor
+std::vector<float> data = {1.0f, 2.0f, 3.0f, 4.0f};
+lmp::Tensor tensor(data, {4}, lmp::DeviceType::CPU, lmp::DataType::Float32);
+
+// 2D tensor (matrix)
+std::vector<int> matrix_data = {1, 2, 3, 4, 5, 6};
+lmp::Tensor matrix(matrix_data, {2, 3}, lmp::DeviceType::CPU, lmp::DataType::Int32);
+
+// 3D tensor
+std::vector<double> cube_data(24, 1.0);  // 24 elements, all 1.0
+lmp::Tensor cube(cube_data, {2, 3, 4}, lmp::DeviceType::CPU, lmp::DataType::Float64);
+```
+
+The constructor takes four parameters:
+- **data**: A flat vector in row-major order
+- **shape**: Dimensions as a vector (e.g., `{28, 28}` for a 28×28 image)
+- **device**: Where to store the tensor (`CPU` or `CUDA`)
+- **dtype**: Element type (defaults to `Float64`)
+
+### Data types
+
+Lamp++ supports six data types:
+
+```cpp
+// Integer types
+lmp::DataType::Bool     
+lmp::DataType::Int16    
+lmp::DataType::Int32    
+lmp::DataType::Int64    
+
+// Floating-point types
+lmp::DataType::Float32  
+lmp::DataType::Float64  
+```
+
+### Device placement
+
+Tensors can live on CPU or GPU:
+
+```cpp
+lmp::Tensor cpu_tensor(data, {2, 2}, lmp::DeviceType::CPU);
+lmp::Tensor gpu_tensor(data, {2, 2}, lmp::DeviceType::CUDA);
+
+// Move between devices
+lmp::Tensor moved_tensor = cpu_tensor.to(lmp::DeviceType::CUDA);
+```
+
+**Important**: The `.to()` method creates a **new tensor** with copied data, unlike PyTorch which returns a view.
+
+## Tensor properties
+
+Every tensor has several properties you can query:
+
+```cpp
+lmp::Tensor tensor(data, {2, 3, 4});
+
+// Shape and size
+auto shape = tensor.shape();           // {2, 3, 4}
+size_t total_elements = tensor.numel(); // 24
+
+// Type and device
+lmp::DataType dtype = tensor.type();     // DataType::Float64
+lmp::DeviceType device = tensor.device(); // DeviceType::CPU
+
+// Raw data pointer (advanced usage)
+void* raw_data = tensor.data();
+```
+
+### Converting back to vectors
+
+To get data out of a tensor:
+
+```cpp
+std::vector<float> result = tensor.to_vector<float>();
+```
+
+This works regardless of the tensor's original data type - it handles the conversion automatically.
+
+## Shape manipulation
+
+Tensors support several operations that change their shape without copying data:
+
+### Reshaping
+
+Reshaping is a fast operation that doesn't change the underlying data. Lamp++ does not support non-contiguous tensors.
+
+```cpp
+lmp::Tensor original(data, {2, 6});    // 2×6 matrix
+lmp::Tensor reshaped = original.reshape({3, 4});  // 3×4 matrix
+lmp::Tensor flattened = original.reshape({12});   // 1D vector
+```
+
+**Note**: The total number of elements must remain the same.
+
+### Adding and removing dimensions
+
+```cpp
+lmp::Tensor tensor(data, {2, 3});
+
+// Add a dimension
+lmp::Tensor expanded = tensor.expand_dims(0);  // Shape becomes {1, 2, 3}
+expanded = tensor.expand_dims(2);              // Shape becomes {2, 3, 1}
+
+// Remove a dimension of size 1
+lmp::Tensor squeezed = expanded.squeeze(0);    // Back to {2, 3}
+```
+
+### Transposition
+
+```cpp
+lmp::Tensor matrix(data, {3, 4});
+lmp::Tensor transposed = lmp::transpose(matrix);  // Shape: {4, 3}
+```
+
+**Important**: Unlike PyTorch, `transpose()` returns a new tensor, not a view. 
+
+## Element-wise operations
+
+### Arithmetic operations
+
+All basic arithmetic operations work element-wise and support broadcasting:
+
+```cpp
+lmp::Tensor a(data_a, {2, 3});
+lmp::Tensor b(data_b, {2, 3});
+
+// Basic arithmetic
+lmp::Tensor sum = a + b;      // Element-wise addition
+lmp::Tensor diff = a - b;     // Element-wise subtraction  
+lmp::Tensor product = a * b;  // Element-wise multiplication
+lmp::Tensor quotient = a / b; // Element-wise division
+lmp::Tensor power = lmp::pow(a, b); // Element-wise power
+
+// With scalars
+lmp::Tensor scaled = a * 2.0f;     // Multiply all elements by 2
+lmp::Tensor shifted = a + 1.0f;    // Add 1 to all elements
+lmp::Tensor from_scalar = 3.0f * a; // Scalar-tensor multiplication
+```
+
+### Mathematical functions
+
+```cpp
+lmp::Tensor input(data, {2, 3});
+
+// Unary math functions
+lmp::Tensor negated = -input;              // or lmp::neg(input)
+lmp::Tensor exponential = lmp::exp(input);
+lmp::Tensor logarithm = lmp::log(input);
+lmp::Tensor square_root = lmp::sqrt(input);
+lmp::Tensor absolute = lmp::abs(input);
+
+// Trigonometric functions
+lmp::Tensor sine = lmp::sin(input);
+lmp::Tensor cosine = lmp::cos(input);
+lmp::Tensor tangent = lmp::tan(input);
+
+// Clamping (ReLU-like)
+lmp::Tensor clamped = lmp::clamp(input, 0.0f, 1.0f);  // Clamp between 0 and 1
+```
+
+### Comparison operations
+
+```cpp
+lmp::Tensor a(data_a, {2, 3});
+lmp::Tensor b(data_b, {2, 3});
+
+// All return boolean tensors
+lmp::Tensor equal = (a == b);
+lmp::Tensor not_equal = (a != b);
+lmp::Tensor greater = (a > b);
+lmp::Tensor greater_equal = (a >= b);
+lmp::Tensor less = (a < b);
+lmp::Tensor less_equal = (a <= b);
+```
+
+## Broadcasting
+
+Lamp++ follows NumPy broadcasting rules. When operating on tensors with different shapes, they're automatically aligned:
+
+```cpp
+lmp::Tensor matrix(data, {3, 4});           // 3×4 matrix
+lmp::Tensor vector(vector_data, {4});       // 1D vector with 4 elements
+lmp::Tensor scalar_tensor(scalar_data, {1}); // Single element
+
+// These all work due to broadcasting
+lmp::Tensor result1 = matrix + vector;       // Vector broadcasts to {3, 4}
+lmp::Tensor result2 = matrix * scalar_tensor; // Scalar broadcasts to {3, 4}
+```
+
+**Broadcasting rules**:
+1. Align shapes from the rightmost dimension
+2. Dimensions of size 1 are "stretched" to match
+3. Missing dimensions are treated as size 1
+
+Examples of valid broadcasts:
+- `{3, 4}` + `{4}` → both become `{3, 4}`
+- `{2, 3, 4}` + `{1, 4}` → both become `{2, 3, 4}`
+- `{5, 1, 3}` + `{2, 3}` → both become `{5, 2, 3}`
+
+## Reduction operations
+
+Reductions compute aggregates along specified axes:
+
+```cpp
+lmp::Tensor tensor(data, {2, 3, 4});
+
+// Reduce along axis 0 (first dimension)
+lmp::Tensor sum_axis0 = lmp::sum(tensor, 0);     // Shape: {1, 3, 4}
+lmp::Tensor max_axis1 = lmp::max(tensor, 1);     // Shape: {2, 1, 4}
+lmp::Tensor min_axis2 = lmp::min(tensor, 2);     // Shape: {2, 3, 1}
+lmp::Tensor prod_axis0 = lmp::prod(tensor, 0);   // Product along axis 0
+
+// Remove singleton dimensions if desired
+lmp::Tensor collapsed = sum_axis0.squeeze(0);    // Shape: {3, 4}
+```
+
+**Note**: All reduction operations keep dimensions by default (like `keepdims=True` in NumPy). Use `squeeze()` to remove singleton dimensions.
+
+## Matrix operations
+
+For linear algebra operations:
+
+```cpp
+lmp::Tensor a(data_a, {3, 4});
+lmp::Tensor b(data_b, {4, 5});
+
+// Matrix multiplication
+lmp::Tensor result = lmp::matmul(a, b);  // Shape: {3, 5}
+
+// Works with batched matrices too
+lmp::Tensor batch_a(batch_data_a, {2, 3, 4}); // Batch of 2 matrices
+lmp::Tensor batch_b(batch_data_b, {2, 4, 5});
+lmp::Tensor batch_result = lmp::matmul(batch_a, batch_b); // Shape: {2, 3, 5}
+```
+
+## Memory management and copying
+
+### Views vs. copies
+
+Some operations return views (sharing memory):
+- `reshape()`, `squeeze()`, `expand_dims()` - return views
+- Most mathematical operations - return new tensors
+- `to()` - always returns a new tensor
+
+### Explicit copying
+
+```cpp
+lmp::Tensor original(data, {2, 3});
+lmp::Tensor target(target_data, {2, 3});
+
+// Copy data from another tensor
+target.copy(original);  // Modifies target in-place
+
+// Fill with a constant value
+target.fill(3.14f);     // All elements become 3.14
+```
+
+## Working with specific elements
+
+### Indexing
+
+```cpp
+lmp::Tensor tensor(data, {2, 3});
+
+// Access individual elements
+lmp::Scalar element = tensor.index({1, 2});  // Element at row 1, column 2
+std::cout << "Value: " << element << std::endl;
+```
+
+## Performance considerations
+
+### Device-specific optimizations
+
+- **CPU operations** use OpenMP for parallelization
+- **CUDA operations** have custom kernels in `src/tensor/cuda/`
+- **Mixed device operations** require explicit transfers
+
+### Memory layout
+
+Tensors use row-major (C-style) memory layout:
+- `{2, 3}` tensor: `[row0_col0, row0_col1, row0_col2, row1_col0, row1_col1, row1_col2]`
+- Strides are calculated automatically for efficient memory access
+
+### Type promotion
+
+When operating on tensors with different types, Lamp++ promotes to the "higher" type:
+- `Bool` < `Int16` < `Int32` < `Int64` < `Float32` < `Float64`
+- Example: `Int32` + `Float32` → `Float32`
+
+
+## Next steps
+
+Now that you understand tensors, you're ready to learn about automatic differentiation in the \subpage using_autograd guide. The autograd system builds on these tensor operations to compute gradients automatically.
+
+*/

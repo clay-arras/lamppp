@@ -1,0 +1,252 @@
+/*!
+\page using_autograd Understanding Autograd
+
+Automatic differentiation is the heart of modern machine learning. Lamp++'s autograd system builds computation graphs on-the-fly and computes gradients using the chain rule. This guide explains how it works and how to use it effectively.
+
+## The big picture
+
+When you do math with Variables (instead of plain Tensors), Lamp++ secretly builds a computation graph. Each operation creates a node that remembers how to compute gradients. When you call `.backward()`, it walks through this graph backward, computing derivatives using the chain rule.
+
+Here's the simplest possible example:
+
+```cpp
+#include "lamppp/lamppp.hpp"
+
+int main() {
+    // Create a variable that tracks gradients
+    lmp::Tensor data({2.0f}, {1}, lmp::DeviceType::CPU, lmp::DataType::Float32);
+    lmp::Variable x(data, true);  // requires_grad = true
+    
+    // Do some computation
+    lmp::Variable y = x * x;      // y = x²
+    
+    // Compute gradients
+    y.backward();
+    
+    // dy/dx = 2x = 2 * 2.0 = 4.0
+    std::cout << "Gradient: " << x.grad() << std::endl;  // Should print 4.0
+    
+    return 0;
+}
+```
+
+## Variables: Tensors with gradient tracking
+
+Variables are wrappers around Tensors that can track gradients. Every Variable has four key components:
+
+```cpp
+lmp::Variable var(tensor_data, true);
+
+// The four components:
+var.data();         // The actual tensor data
+var.grad();         // Accumulated gradients (initially zero)
+var.requires_grad(); // Whether to track gradients
+var.grad_fn();      // Pointer to the operation that created this variable
+```
+
+### Creating Variables
+
+```cpp
+// From existing tensors
+lmp::Tensor tensor(data, {2, 3}, lmp::DeviceType::CPU);
+lmp::Variable var1(tensor, true);  // requires_grad = true
+
+// Using autograd constructors
+lmp::Variable zeros_var = lmp::autograd::zeros({2, 3}, lmp::DeviceType::CPU, 
+                                               lmp::DataType::Float32, true);
+lmp::Variable ones_var = lmp::autograd::ones({2, 3}, lmp::DeviceType::CPU, 
+                                             lmp::DataType::Float32, true);
+lmp::Variable rand_var = lmp::autograd::rand({2, 3}, lmp::DeviceType::CPU, 
+                                             lmp::DataType::Float32, true);
+
+// From nested vectors (automatically infers shape)
+std::vector<std::vector<float>> nested_data = {{1.0f, 2.0f}, {3.0f, 4.0f}};
+lmp::Variable tensor_var = lmp::autograd::tensor(nested_data, lmp::DeviceType::CPU,
+                                                 lmp::DataType::Float32, true);
+```
+
+### Gradient requirements
+
+Only Variables with `requires_grad=true` participate in gradient computation:
+
+```cpp
+lmp::Variable a(tensor_a, true);   // Will track gradients
+lmp::Variable b(tensor_b, false);  // Won't track gradients
+lmp::Variable c = a + b;           // Result tracks gradients (inherits from a)
+```
+
+**Rule**: If any input requires gradients, the result requires gradients.
+
+## Operations and the computation graph
+
+Every operation on Variables creates a node in the computation graph:
+
+```cpp
+lmp::Variable a(tensor_a, true);   // Leaf node
+lmp::Variable b(tensor_b, true);   // Leaf node
+lmp::Variable c = a * b;           // Multiplication node
+lmp::Variable d = lmp::sum(c, 0);  // Sum node
+```
+
+### What creates gradient nodes
+
+**Operations that create backward nodes:**
+- Arithmetic: `+`, `-`, `*`, `/`
+- Math functions: `exp()`, `log()`, `sqrt()`, `sin()`, `cos()`, etc.
+- Reductions: `sum()`, `max()`, `min()`, `prod()`
+- Matrix ops: `matmul()`, `transpose()`
+- Shape ops: `reshape()`, `squeeze()`, `expand_dims()`, `to()` (device transfer)
+
+**Operations that DON'T create gradient nodes:**
+- Comparison ops: `==`, `!=`, `>`, `<`, etc. (return boolean tensors without gradients)
+- Data access: `.data()`, `.shape()`, `.device()`, etc.
+
+## The backward pass
+
+The backward pass computes gradients using reverse-mode automatic differentiation:
+
+```cpp
+lmp::Variable x(data, true);
+lmp::Variable y = x * x * x;  // y = x³
+
+y.backward();  // Compute dy/dx = 3x²
+
+// Access gradients
+std::cout << "dy/dx: " << x.grad() << std::endl;
+```
+
+### Gradient accumulation
+
+Gradients **accumulate** by default:
+
+```cpp
+lmp::Variable x(data, true);
+
+lmp::Variable y1 = x * 2;
+y1.backward();
+std::cout << "First gradient: " << x.grad() << std::endl;  // 2.0
+
+lmp::Variable y2 = x * 3;
+y2.backward();
+std::cout << "Accumulated: " << x.grad() << std::endl;  // 5.0 (2.0 + 3.0)
+
+// Clear gradients before next computation
+x.zero_grad();
+```
+
+**Important**: Always call `zero_grad()` before computing new gradients if you don't want accumulation.
+
+## How gradients flow
+
+Understanding gradient flow helps debug neural networks:
+
+```cpp
+lmp::Variable x(data, true);
+lmp::Variable a = x * 2;      // da/dx = 2
+lmp::Variable b = lmp::exp(a); // db/da = exp(a)
+lmp::Variable c = lmp::sum(b); // dc/db = 1
+
+c.backward();
+// dc/dx = dc/db * db/da * da/dx = 1 * exp(2x) * 2 = 2 * exp(2x)
+```
+
+### Training loop structure
+
+```cpp
+// Neural network parameters
+lmp::Variable weights(weight_data, true);
+lmp::Variable bias(bias_data, true);
+
+for (int epoch = 0; epoch < num_epochs; ++epoch) {
+    for (auto& batch : data_loader) {
+        // Clear gradients from previous iteration
+        weights.zero_grad();
+        bias.zero_grad();
+        
+        // Forward pass
+        lmp::Variable output = lmp::matmul(batch.input, weights) + bias;
+        lmp::Variable loss = compute_loss(output, batch.target);
+        
+        // Backward pass
+        loss.backward();
+        
+        // Update parameters
+        float learning_rate = 0.01f;
+        weights = lmp::Variable(weights.data() - learning_rate * weights.grad(), true);
+        bias = lmp::Variable(bias.data() - learning_rate * bias.grad(), true);
+    }
+}
+```
+
+## Understanding the computation graph
+
+When you call `backward()`, Lamp++ performs a topological sort to ensure gradients are computed in the right order:
+
+```cpp
+lmp::Variable x(data, true);
+lmp::Variable y = x * x;
+lmp::Variable loss = lmp::sum(y);
+
+// backward() visits nodes in reverse topological order
+loss.backward();
+```
+
+## Working with gradients
+
+### Checking and manipulating gradients
+
+```cpp
+lmp::Variable var(data, true);
+
+// Check gradient status
+std::cout << "Requires grad: " << var.requires_grad() << std::endl;
+std::cout << "Has grad_fn: " << (var.grad_fn() != nullptr) << std::endl;
+
+// Manual gradient manipulation
+lmp::Tensor custom_grad(grad_data, var.data().shape(), var.data().device());
+var.incr_grad(custom_grad);  // Add to existing gradients
+var.zero_grad();             // Clear gradients
+```
+
+### Debugging gradients
+
+```cpp
+// Check gradient magnitude
+std::cout << "Gradient magnitude: " << lmp::sum(param.grad() * param.grad()) << std::endl;
+
+// Check for NaN gradients
+auto grad_vector = param.grad().to_vector<float>();
+bool has_nan = std::any_of(grad_vector.begin(), grad_vector.end(), 
+                          [](float x) { return std::isnan(x); });
+```
+
+## Performance considerations
+
+### Memory usage
+- Each operation stores references to its inputs for the backward pass
+- Computation graphs can use significant memory for long sequences
+- Clear gradients with `zero_grad()` when you don't need them
+
+### When to use tensors vs. variables
+
+**Use Tensors for:**
+- Data loading and preprocessing
+- Operations where you don't need gradients
+- Performance-critical code paths
+
+**Use Variables for:**
+- Model parameters
+- Any computation where you need gradients
+- Forward and backward passes in training
+
+## Complete example
+
+For a complete neural network implementation using all these concepts, see the MNIST example in `examples/mnist.cpp`. It demonstrates:
+- Parameter initialization with `autograd::rand()`
+- Forward pass with `matmul()`, activation functions, and loss computation
+- Backward pass and gradient-based parameter updates
+- Proper gradient clearing in training loops
+
+The key insight is that autograd turns the tedious job of computing derivatives into an automatic process, letting you focus on the interesting parts of machine learning: designing architectures and solving problems.
+
+*/

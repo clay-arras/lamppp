@@ -1,0 +1,102 @@
+/*!
+\mainpage Lamp++ Documentation
+
+Lamp++ is a C++ automatic differentiation engine and tensor library built for people who want to understand what's happening under the hood. If you've ever looked into Pytorch's codebase (complex macros, codegens scripts, like wtf?) and been frustrated by PyTorch's black-box approach, or if you wanted to learn how autograd actually works, Lamp++ is for you.
+
+I built this library from scratch in about 4,000 lines of C++ because I believe in Richard Feynman's quote "what I cannot create, I do not understand". You can read the entire codebase in one afternoon, understand the entire codebase in two afternoons, and be ready to build/extend the codebase in the third (I hope).
+
+## What makes Lamp++ different?
+
+**It's small and readable.** The entire autograd engine is ~1,500 lines. The tensor library is ~2,500 lines. You can actually understand how it works.
+
+**It's built for learning.** Want to see how backward propagation works? Look at `autograd/Variable.hpp`. Curious about CUDA kernels? Check out `src/tensor/cuda/`. Everything is there, nothing is hidden.
+
+**It gets out of your way.** No heavyweight framework overhead. No mysterious compilation steps. Just tensors, gradients, and the operations you need.
+
+## Getting started
+
+The fastest way to see what Lamp++ can do is to try this example:
+
+```cpp
+#include "lamppp/lamppp.hpp"
+
+int main() {
+    // Create some tensors
+    lmp::Tensor data_a(std::vector<float>{2.0F, 4.0F}, {1, 2}, 
+                       lmp::DeviceType::CUDA, lmp::DataType::Float32);
+    lmp::Tensor data_b(std::vector<float>{3.0F, 1.0F}, {1, 2}, 
+                       lmp::DeviceType::CUDA, lmp::DataType::Float32);
+
+    // Wrap them in Variables to track gradients
+    lmp::Variable a(data_a, true);
+    lmp::Variable b(data_b, true);
+
+    // Do some math
+    lmp::Variable c = a * b;
+    lmp::Variable loss = lmp::sum(lmp::sum(c, 1), 0);
+
+    // Compute gradients
+    loss.backward();
+
+    // See what happened
+    std::cout << "Gradient of a: " << a.grad() << std::endl;
+    std::cout << "Gradient of b: " << b.grad() << std::endl;
+}
+```
+
+To build this, you need CMake and optionally CUDA:
+
+```bash
+git clone https://github.com/clay-arras/lamp.git
+cd lamp
+cmake -S . -B build -DENABLE_CUDA=ON  # or OFF if you don't have CUDA
+cmake --build build
+```
+
+## How it works
+
+Lamp++ builds computation graphs dynamically as you run your code. When you do `a * b`, it creates a multiplication node that remembers how to compute gradients. When you call `loss.backward()`, it walks backward through the graph computing derivatives using the chain rule. If you'd like to learn more, watch this video by Andej Kaparthy, he teaches everything you need to know about the autograd module in a very straightforward manner https://www.youtube.com/watch?v=VMj-3S1tku0&
+
+The tensor library stores everything as `void*` with type information, and during operations the pointers are casted back to their original types. CUDA operations have their own kernels in `src/tensor/cuda/`, while CPU operations live in `src/tensor/native/`.
+
+If you want to add a new operation, inherit from `autograd::Function` and implement `forward` and `backward` methods. That's all there is to it.
+
+## What's in the docs
+
+- \subpage getting_started "Getting Started" - Build your first neural network
+- \subpage using_tensor "Working with Tensors" - Shapes, devices, and operations  
+- \subpage using_autograd "Understanding Autograd" - How gradients actually work
+
+## This probably isn't for you if...
+
+You want a production-ready framework with every layer type imaginable. That's PyTorch's job, and it does it well.
+
+You need maximum performance for huge models. Lamp++ prioritizes clarity over cutting-edge optimization.
+
+You don't care how automatic differentiation works. If you just want to train models, stick with the mainstream tools.
+
+## This might be perfect if...
+
+You're learning how neural networks actually work and want to peek inside the machinery.
+
+You're prototyping new operations or optimization algorithms and need something you can easily modify.
+
+You're building something specific where you need control over every detail.
+
+You enjoy reading well-structured C++ code and want to understand how modern ML libraries work.
+
+## Contributing
+
+If you find bugs or want to add features, please jump in! The codebase is small enough that you can understand the whole thing, and we're happy to help you get oriented.
+
+The most useful contributions right now are:
+- New tensor operations
+- Better documentation and examples  
+- Performance improvements for existing operations
+- Support for additional data types
+
+## License
+
+MIT License. Use it however you want.
+
+*/

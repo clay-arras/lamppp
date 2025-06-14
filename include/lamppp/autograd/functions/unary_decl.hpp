@@ -13,7 +13,7 @@ variable_list grad_fn::apply(const variable_list& gradOutputs) { \
   const Variable& grad = gradOutputs[0];                                   \
   Variable& self = (*saved_inputs)[0];                                     \
                                                                            \
-  self.incr_grad(self_grad);                                               \
+  if (self.requires_grad()) self.incr_grad(self_grad);                     \
   return {};                                                               \
 }
 

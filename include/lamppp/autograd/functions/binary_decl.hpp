@@ -14,8 +14,8 @@ variable_list grad_fn::apply(const variable_list& gradOutputs) { \
   Variable& self = (*saved_inputs)[0];                                     \
   Variable& other = (*saved_inputs)[1];                                    \
                                                                            \
-  self.incr_grad(self_grad);                                               \
-  other.incr_grad(other_grad);                                             \
+  if (self.requires_grad()) self.incr_grad(self_grad);                     \
+  if (other.requires_grad()) other.incr_grad(other_grad);                  \
   return {};                                                               \
 }
 

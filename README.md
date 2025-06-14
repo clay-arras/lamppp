@@ -17,10 +17,10 @@ Have you ever looked into PyTorch's codebase and been overwhelmed by complex mac
 Lamp++ is a from-scratch implementation of the core concepts behind modern deep learning frameworks, written in about 4,000 lines of C++ and CUDA. It's built around a simple philosophy: **"What I cannot create, I do not understand"** (Richard Feynman).
 
 **What makes it different:**
-- **Small and readable**: ~1,500 lines for autograd, ~2,500 lines for tensors
+- **Small and readable**: ~1,500 lines for autograd, ~2,500 lines for tensors. Zero dependencies 
 - **Transparent**: No mysterious compilation steps or hidden optimizations
 - **Hackable**: Want to add a new operation? It's straightforward
-- **Fast**: Lamp++ is about 3x faster than Pytorch on operation benchmarks. See [benchmarks](https://github.com/clay-arras/lamppp/blob/main/benchmarks/README.md).
+- **Fast**: Lamp++ is about 3x faster than Pytorch on CUDA operation benchmarks. See [benchmarks](https://github.com/clay-arras/lamppp/blob/main/benchmarks/README.md).
 
 **What it's good for:**
 - Learning how automatic differentiation actually works

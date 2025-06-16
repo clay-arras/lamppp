@@ -16,10 +16,9 @@ using std::multiplies;
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with all zeros
  */
-Variable zeros(const std::vector<size_t>& shape,
+Variable zeros(const std::vector<size_t>& shape, bool requires_grad = false,
                tensor::DeviceType device = DEFAULT_DEVICE,
-               tensor::DataType dtype = DEFAULT_DTYPE,
-               bool requires_grad = false);
+               tensor::DataType dtype = DEFAULT_DTYPE);
 
 /**
  * @brief Create a variable with all ones
@@ -29,10 +28,8 @@ Variable zeros(const std::vector<size_t>& shape,
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with all ones
  */
-Variable ones(const std::vector<size_t>& shape,
-              tensor::DeviceType device = DEFAULT_DEVICE,
-              tensor::DataType dtype = DEFAULT_DTYPE,
-              bool requires_grad = false);
+Variable ones(const std::vector<size_t>& shape, bool requires_grad = false, tensor::DeviceType device = DEFAULT_DEVICE,
+              tensor::DataType dtype = DEFAULT_DTYPE);
 
 /**
  * @brief Create a variable with random values
@@ -42,10 +39,9 @@ Variable ones(const std::vector<size_t>& shape,
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with random values
  */
-Variable rand(const std::vector<size_t>& shape,
+Variable rand(const std::vector<size_t>& shape, bool requires_grad = false,
               tensor::DeviceType device = DEFAULT_DEVICE,
-              tensor::DataType dtype = DEFAULT_DTYPE,
-              bool requires_grad = false);
+              tensor::DataType dtype = DEFAULT_DTYPE);
 
 /**
  * @brief Create a variable with random values from a normal distribution
@@ -58,10 +54,9 @@ Variable rand(const std::vector<size_t>& shape,
  * @return A variable with random values
  */
 Variable randn(tensor::Scalar mean, tensor::Scalar var,
-               const std::vector<size_t>& shape,
+               const std::vector<size_t>& shape, bool requires_grad = false,
                tensor::DeviceType device = DEFAULT_DEVICE,
-               tensor::DataType dtype = DEFAULT_DTYPE,
-               bool requires_grad = false);
+               tensor::DataType dtype = DEFAULT_DTYPE);
 
 /// @internal
 template <typename>
@@ -104,10 +99,9 @@ struct TensorHelper {
  * and will unroll the vector to a single tensor. e.g. a std::vector<vector<int>> will be unrolled to a single tensor::Tensor
  */
 template <typename V>
-Variable tensor(const std::vector<V>& data,
+Variable tensor(const std::vector<V>& data, bool requires_grad = false,
                 tensor::DeviceType device = DEFAULT_DEVICE,
-                tensor::DataType dtype = DEFAULT_DTYPE,
-                bool requires_grad = false) {
+                tensor::DataType dtype = DEFAULT_DTYPE) {
   TensorHelper constr;
   constr.unroll(data);
   return Variable(tensor::Tensor(constr.data, constr.shape, device, dtype),

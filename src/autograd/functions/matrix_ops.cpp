@@ -11,10 +11,12 @@ variable_list MatrixMultiplicationBackward::apply(
   Variable& self = (*saved_inputs)[0];
   Variable& other = (*saved_inputs)[1];
 
-  if (self.requires_grad()) self.incr_grad(
-      tensor::ops::matmul(grad.grad(), tensor::ops::transpose(other.data())));
-  if (other.requires_grad()) other.incr_grad(
-      tensor::ops::matmul(tensor::ops::transpose(self.data()), grad.grad()));
+  if (self.requires_grad())
+    self.incr_grad(
+        tensor::ops::matmul(grad.grad(), tensor::ops::transpose(other.data())));
+  if (other.requires_grad())
+    other.incr_grad(
+        tensor::ops::matmul(tensor::ops::transpose(self.data()), grad.grad()));
 
   variable_list grad_inputs = {};
   return grad_inputs;
@@ -25,7 +27,8 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  if (self.requires_grad()) self.incr_grad(tensor::ops::transpose(grad.grad()));
+  if (self.requires_grad())
+    self.incr_grad(tensor::ops::transpose(grad.grad()));
 
   variable_list grad_inputs = {};
   return grad_inputs;

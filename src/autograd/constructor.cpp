@@ -5,8 +5,8 @@
 
 namespace lmp::autograd {
 
-Variable zeros(const std::vector<size_t>& shape, tensor::DeviceType device,
-               tensor::DataType dtype, bool requires_grad) {
+Variable zeros(const std::vector<size_t>& shape, bool requires_grad,
+               tensor::DeviceType device, tensor::DataType dtype) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());
@@ -15,8 +15,8 @@ Variable zeros(const std::vector<size_t>& shape, tensor::DeviceType device,
                   requires_grad);
 }
 
-Variable ones(const std::vector<size_t>& shape, tensor::DeviceType device,
-              tensor::DataType dtype, bool requires_grad) {
+Variable ones(const std::vector<size_t>& shape, bool requires_grad,
+              tensor::DeviceType device, tensor::DataType dtype) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());
@@ -25,8 +25,8 @@ Variable ones(const std::vector<size_t>& shape, tensor::DeviceType device,
                   requires_grad);
 }
 
-Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
-              tensor::DataType dtype, bool requires_grad) {
+Variable rand(const std::vector<size_t>& shape, bool requires_grad,
+              tensor::DeviceType device, tensor::DataType dtype) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());
@@ -42,8 +42,8 @@ Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
 }
 
 Variable randn(tensor::Scalar mean, tensor::Scalar var,
-               const std::vector<size_t>& shape, tensor::DeviceType device,
-               tensor::DataType dtype, bool requires_grad) {
+               const std::vector<size_t>& shape, bool requires_grad,
+               tensor::DeviceType device, tensor::DataType dtype) {
   size_t sz = shape.empty() ? 0
                             : std::accumulate(shape.begin(), shape.end(), 1,
                                               std::multiplies<>());

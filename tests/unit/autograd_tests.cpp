@@ -320,7 +320,7 @@ TEST_P(VariableOpTest, BroadcastAddTest) {
 
 TEST_P(VariableOpTest, ConstructorTest) {
   Variable zeros_var =
-      lmp::autograd::zeros({2, 3}, device_, DataType::Float32, true);
+      lmp::autograd::zeros({2, 3}, true, device_, DataType::Float32);
   EXPECT_THAT(getTenData(zeros_var.data()),
               ::testing::Pointwise(::testing::FloatNear(kEps),
                                    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}))
@@ -331,7 +331,7 @@ TEST_P(VariableOpTest, ConstructorTest) {
       << "Zeros constructor requires_grad mismatch";
 
   Variable ones_var =
-      lmp::autograd::ones({2, 2}, device_, DataType::Float32, false);
+      lmp::autograd::ones({2, 2}, false, device_, DataType::Float32);
   EXPECT_THAT(
       getTenData(ones_var.data()),
       ::testing::Pointwise(::testing::FloatNear(kEps), {1.0, 1.0, 1.0, 1.0}))
@@ -342,7 +342,7 @@ TEST_P(VariableOpTest, ConstructorTest) {
       << "Ones constructor requires_grad mismatch";
 
   Variable rand_var =
-      lmp::autograd::rand({100}, device_, DataType::Float32, true);
+      lmp::autograd::rand({100}, true, device_, DataType::Float32);
   std::vector<Scalar> rand_data = getTenData(rand_var.data());
 
   for (Scalar val : rand_data) {

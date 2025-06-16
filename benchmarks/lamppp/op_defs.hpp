@@ -19,7 +19,6 @@ class OperatorBase {
   virtual std::string name() const = 0;
 };
 
-namespace {
 std::string to_string(const std::vector<size_t>& shape) {
   std::string str;
   for (size_t i = 0; i < shape.size(); i++) {
@@ -61,7 +60,6 @@ std::string to_string(lmp::tensor::DataType dtype) {
       return "Unknown";
   }
 }
-}  // namespace
 
 class BinaryOperatorBase : public OperatorBase {
  public:
@@ -70,11 +68,12 @@ class BinaryOperatorBase : public OperatorBase {
         -> lmp::autograd::Variable {
       return apply_operation(inputs[0], inputs[1]);
     };
-    auto init_fn = [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 2> {
-      return {lmp::autograd::randn(0, 1, config.shapes[0], config.device,
-                                   config.dtype, requires_grad),
-              lmp::autograd::randn(0, 1, config.shapes[1], config.device,
-                                   config.dtype, requires_grad)};
+    auto init_fn =
+        [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 2> {
+      return {lmp::autograd::randn(0, 1, config.shapes[0], requires_grad,
+                                   config.device, config.dtype),
+              lmp::autograd::randn(0, 1, config.shapes[1], requires_grad,
+                                   config.device, config.dtype)};
     };
 
     std::string bench_name =
@@ -97,9 +96,10 @@ class UnaryOperatorBase : public OperatorBase {
         -> lmp::autograd::Variable {
       return apply_operation(inputs[0]);
     };
-    auto init_fn = [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
-      return {lmp::autograd::rand(config.shapes[0], config.device, config.dtype,
-                                  requires_grad)};
+    auto init_fn =
+        [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
+      return {lmp::autograd::rand(config.shapes[0], requires_grad,
+                                  config.device, config.dtype)};
     };
 
     std::string bench_name =
@@ -119,9 +119,10 @@ class ReductOperatorBase : public OperatorBase {
  public:
   const std::vector<size_t> axes = {0U, 1U};
   void register_benchmarks(const OperatorConfig<1>& config) {
-    auto init_fn = [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
-      return {lmp::autograd::rand(config.shapes[0], config.device, config.dtype,
-                                  requires_grad)};
+    auto init_fn =
+        [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
+      return {lmp::autograd::rand(config.shapes[0], requires_grad,
+                                  config.device, config.dtype)};
     };
 
     for (size_t axis : axes) {

@@ -11,11 +11,11 @@ int main() {
   auto [test_data, test_label] = readCSV("data/mnist_test.csv");
 
   lmp::Variable weights1 =
-      lmp::autograd::rand({784, 256}, lmp::DeviceType::CUDA,
-                          lmp::DataType::Float32, true) /
+      lmp::autograd::rand({784, 256}, true, lmp::DeviceType::CUDA,
+                          lmp::DataType::Float32) /
       100;
-  lmp::Variable weights2 = lmp::autograd::rand({256, 10}, lmp::DeviceType::CUDA,
-                                               lmp::DataType::Float32, true) /
+  lmp::Variable weights2 = lmp::autograd::rand({256, 10}, true, lmp::DeviceType::CUDA,
+                                               lmp::DataType::Float32) /
                            100;
 
   int epochs = 1e9;
@@ -36,8 +36,8 @@ int main() {
       lmp::Variable exp = lmp::exp(a2);
       lmp::Variable denom =
           lmp::matmul(lmp::sum(exp, 1),
-                      lmp::autograd::ones({1, 10}, lmp::DeviceType::CUDA,
-                                          lmp::DataType::Float32, false)) +
+                      lmp::autograd::ones({1, 10}, false, lmp::DeviceType::CUDA,
+                                          lmp::DataType::Float32)) +
           1e-10F;
       lmp::Variable z2 = exp / denom;
 
@@ -45,9 +45,9 @@ int main() {
     };
 
     lmp::Variable inputs = lmp::autograd::tensor(
-        out_data, lmp::DeviceType::CUDA, lmp::DataType::Float32, false);
+        out_data, false, lmp::DeviceType::CUDA, lmp::DataType::Float32);
     lmp::Variable labels = lmp::autograd::tensor(
-        out_labels, lmp::DeviceType::CUDA, lmp::DataType::Float32, false);
+        out_labels, false, lmp::DeviceType::CUDA, lmp::DataType::Float32);
 
     lmp::Variable out_layer = forward(inputs);
     lmp::Variable loss =
@@ -74,11 +74,11 @@ int main() {
                           test_batch_data, test_batch_labels);
 
       lmp::Variable test_inputs =
-          lmp::autograd::tensor(test_batch_data, lmp::DeviceType::CUDA,
-                                lmp::DataType::Float32, false);
+          lmp::autograd::tensor(test_batch_data, false, lmp::DeviceType::CUDA,
+                                lmp::DataType::Float32);
       lmp::Variable test_labels =
-          lmp::autograd::tensor(test_batch_labels, lmp::DeviceType::CUDA,
-                                lmp::DataType::Float32, false);
+          lmp::autograd::tensor(test_batch_labels, false, lmp::DeviceType::CUDA,
+                                lmp::DataType::Float32);
       lmp::Variable test_out_layer = forward(test_inputs);
 
       lmp::Variable true_scores = lmp::sum((test_out_layer * test_labels), 1);

@@ -37,6 +37,11 @@ target_link_libraries(tensor_tests
   PRIVATE tensor_core GTest::gtest_main GTest::gmock
 )
 
+add_executable(playground playground.cpp)
+target_link_libraries(playground
+  PRIVATE autograd_core tensor_core nets_core
+)
+
 pybind11_add_module(lamppp_module stress/autograd_pybind.cpp)
 target_link_libraries(lamppp_module PRIVATE lamppp)
 

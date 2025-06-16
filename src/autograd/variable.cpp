@@ -17,8 +17,6 @@ const tensor::Tensor& Variable::data() const noexcept {
   return impl_->data;
 }
 std::weak_ptr<Function> Variable::grad_fn() const noexcept {
-  LMP_INTERNAL_ASSERT(impl_->_grad_fn != nullptr)
-      << "Should not access grad_fn if it is expired";
   std::weak_ptr<Function> grad_fn = impl_->_grad_fn;
   return grad_fn;
 }
@@ -57,7 +55,6 @@ void Variable::backward() {
   std::vector<Variable> topo = topological_sort();
   impl_->grad = ones_like(impl_->grad);
   for (Variable& node : topo) {
-    LMP_INTERNAL_ASSERT(!node.grad_fn().expired()) << "Should not be expired";
     if (node.grad_fn().lock() != nullptr) {
       node.grad_fn().lock()->apply({node});
     }
@@ -68,7 +65,6 @@ void Variable::dfs(const Variable& v, std::unordered_set<void*>& visited,
                    std::vector<Variable>& topo) const {
   if (visited.find(static_cast<void*>(v.impl_.get())) == visited.end()) {
     visited.insert(static_cast<void*>(v.impl_.get()));
-    LMP_INTERNAL_ASSERT(!v.grad_fn().expired()) << "Should not be expired";
     if (v.grad_fn().lock() == nullptr) {
       topo.push_back(v);
       return;

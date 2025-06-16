@@ -20,13 +20,9 @@ if(ENABLE_COVERAGE)
 endif()
 
 target_link_libraries(autograd_core
-  PUBLIC tensor_core lamppp_compile_flags
+  PUBLIC tensor_core lamppp_compile_config
 )
 
 target_include_directories(autograd_core
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include> # For installing headers
-  PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 )

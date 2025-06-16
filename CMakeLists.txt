@@ -43,17 +43,37 @@ find_package(OpenMP REQUIRED) # TODO: make this optional
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # CORE TARGETS ---------------------------------
-add_library(lamppp_compile_flags INTERFACE)
-target_compile_options(lamppp_compile_flags
+set(DEFAULT_DTYPE "Float32")
+if(ENABLE_CUDA)
+  set(DEFAULT_DEVICE "CUDA")
+else()
+  set(DEFAULT_DEVICE "CPU")
+endif()
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/lamppp/common/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/lamppp/common/config.hpp"
+)
+
+add_library(lamppp_compile_config INTERFACE)
+target_compile_options(lamppp_compile_config
   INTERFACE
     $<$<CONFIG:Release>:-march=native;-ffast-math> # also compiles with -O3 -DNDEBUG
     $<$<CONFIG:Debug>:-march=native;-ffast-math;-DLMP_DEBUG> # -g
 )
+target_include_directories(lamppp_compile_config
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
+)
 
 add_subdirectory(src/tensor)
 add_subdirectory(src/autograd)
+add_subdirectory(src/nets)
 add_library(lamppp INTERFACE)
-target_link_libraries(lamppp INTERFACE autograd_core tensor_core)
+target_link_libraries(lamppp INTERFACE autograd_core tensor_core nets_core)
 
 add_subdirectory(tests)
 add_subdirectory(benchmarks)

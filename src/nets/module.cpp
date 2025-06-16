@@ -1,6 +1,8 @@
 #include "lamppp/nets/module.hpp"
 
-std::vector<Parameter> Module::ModuleImpl::parameters() {
+namespace lmp::nets {
+
+std::vector<Parameter> ModuleImpl::parameters() {
     std::vector<Parameter> all_params(params_.size());
     for (const auto& [k, v] : params_) {
         all_params.emplace_back(v);
@@ -12,16 +14,18 @@ std::vector<Parameter> Module::ModuleImpl::parameters() {
     return all_params;
 }
 
-void Module::ModuleImpl::eval() {
+void ModuleImpl::eval() {
     trainable_ = false; 
     for (auto& [k, module] : modules_) {
         module->eval();
     }
 }
 
-void Module::ModuleImpl::train() {
+void ModuleImpl::train() {
     trainable_ = true;
     for (auto& [k, module] : modules_) {
         module->train();
     }
+}
+
 }

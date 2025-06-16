@@ -39,7 +39,7 @@ endif()
 
 add_library(tensor_core SHARED ${TENSOR_SOURCES})
 
-target_link_libraries(tensor_core PUBLIC lamppp_compile_flags)
+target_link_libraries(tensor_core PUBLIC lamppp_compile_config)
 
 # Apply coverage flags if enabled
 if(ENABLE_COVERAGE)
@@ -59,14 +59,8 @@ endif()
 
 target_compile_definitions(tensor_core PUBLIC)
 
-target_include_directories(
-  tensor_core
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
-  PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+target_include_directories(tensor_core
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 set(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE} PARENT_SCOPE)

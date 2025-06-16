@@ -7,30 +7,12 @@
 #include "lamppp/common/assert.hpp"
 #include "parameter.hpp"
 
-class Module {
-public:
-    Module() = default;
+namespace lmp::nets {
 
-private:
-    class ModuleImpl;
-    std::unique_ptr<ModuleImpl> impl_;
-};
-
-class Module::ModuleImpl {
-public:
+class ModuleImpl {
     std::vector<Parameter> parameters();
     void eval();
     void train();
-
-    template<typename Ret, typename... Args>
-    Ret forward(Args&&...  /*args*/) {
-        LMP_INTERNAL_ASSERT(false) << "Not Implemented";
-    }
-
-    template<typename Ret, typename... Args>
-    Ret operator()(Args&&... args) {
-        return forward<Ret>(std::forward<Args>(args)...);
-    }
 
 protected:
     template<typename T>
@@ -45,8 +27,26 @@ protected:
         return *static_cast<T*>(modules_[name].get());
     }
 
-private:
     bool trainable_ = true;
     std::unordered_map<std::string, std::unique_ptr<ModuleImpl>> modules_;
     std::unordered_map<std::string, Parameter> params_;
 };
+
+template <typename Derived>
+class ModuleImplBase : public ModuleImpl {
+public:
+    template<typename... Args>
+    autograd::Variable operator()(Args&&... args) {
+        return static_cast<Derived*>(this)->forward(std::forward<Args>(args)...);
+    }
+};
+
+class Module {
+public:
+    Module() = default;
+
+private:
+    std::shared_ptr<ModuleImpl> impl_;
+};
+
+}

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "lamppp/tensor/scalar.hpp"  // TODO : maybe move scalar somewhere ?
+#include "lamppp/tensor/scalar.hpp"
+#include "lamppp/common/config.hpp"
 #include "variable.hpp"
 
 namespace lmp::autograd {
@@ -15,8 +16,10 @@ using std::multiplies;
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with all zeros
  */
-Variable zeros(const std::vector<size_t>& shape, tensor::DeviceType device,
-               tensor::DataType dtype, bool requires_grad);
+Variable zeros(const std::vector<size_t>& shape,
+               tensor::DeviceType device = DEFAULT_DEVICE,
+               tensor::DataType dtype = DEFAULT_DTYPE,
+               bool requires_grad = false);
 
 /**
  * @brief Create a variable with all ones
@@ -26,8 +29,10 @@ Variable zeros(const std::vector<size_t>& shape, tensor::DeviceType device,
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with all ones
  */
-Variable ones(const std::vector<size_t>& shape, tensor::DeviceType device,
-              tensor::DataType dtype, bool requires_grad);
+Variable ones(const std::vector<size_t>& shape,
+              tensor::DeviceType device = DEFAULT_DEVICE,
+              tensor::DataType dtype = DEFAULT_DTYPE,
+              bool requires_grad = false);
 
 /**
  * @brief Create a variable with random values
@@ -37,8 +42,10 @@ Variable ones(const std::vector<size_t>& shape, tensor::DeviceType device,
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with random values
  */
-Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
-              tensor::DataType dtype, bool requires_grad);
+Variable rand(const std::vector<size_t>& shape,
+              tensor::DeviceType device = DEFAULT_DEVICE,
+              tensor::DataType dtype = DEFAULT_DTYPE,
+              bool requires_grad = false);
 
 /**
  * @brief Create a variable with random values from a normal distribution
@@ -50,8 +57,11 @@ Variable rand(const std::vector<size_t>& shape, tensor::DeviceType device,
  * @param requires_grad Whether the variable requires gradients
  * @return A variable with random values
  */
-Variable randn(tensor::Scalar mean, tensor::Scalar var, const std::vector<size_t>& shape, tensor::DeviceType device,
-              tensor::DataType dtype, bool requires_grad);
+Variable randn(tensor::Scalar mean, tensor::Scalar var,
+               const std::vector<size_t>& shape,
+               tensor::DeviceType device = DEFAULT_DEVICE,
+               tensor::DataType dtype = DEFAULT_DTYPE,
+               bool requires_grad = false);
 
 /// @internal
 template <typename>
@@ -69,8 +79,8 @@ struct TensorHelper {
     if (depth >= shape.size()) {
       shape.push_back(tensor.size());
     }
-    LMP_CHECK(tensor.size() == shape[depth]) <<
-              "Dimensions along axis must be consistent.";
+    LMP_CHECK(tensor.size() == shape[depth])
+        << "Dimensions along axis must be consistent.";
     if constexpr (IsVector<T>::value) {
       for (const T& t : tensor) {
         unroll(t, depth + 1);
@@ -94,8 +104,10 @@ struct TensorHelper {
  * and will unroll the vector to a single tensor. e.g. a std::vector<vector<int>> will be unrolled to a single tensor::Tensor
  */
 template <typename V>
-Variable tensor(const std::vector<V>& data, tensor::DeviceType device,
-                tensor::DataType dtype, bool requires_grad) {
+Variable tensor(const std::vector<V>& data,
+                tensor::DeviceType device = DEFAULT_DEVICE,
+                tensor::DataType dtype = DEFAULT_DTYPE,
+                bool requires_grad = false) {
   TensorHelper constr;
   constr.unroll(data);
   return Variable(tensor::Tensor(constr.data, constr.shape, device, dtype),

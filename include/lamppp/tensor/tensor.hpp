@@ -2,13 +2,13 @@
 
 #include <iostream>
 #include <memory>
-#include <span>
 #include <utility>
 #include <vector>
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
 #include "fill_like.hpp"
+#include "lamppp/common/config.hpp"
 #include "tensor_impl.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 
@@ -39,8 +39,8 @@ class Tensor {
   */
   template <typename T>
   explicit Tensor(const std::vector<T>& data, const std::vector<size_t>& shape,
-                  DeviceType device = DeviceType::CPU,
-                  DataType dtype = DataType::Float64)
+                  DeviceType device = DEFAULT_DEVICE,
+                  DataType dtype = DEFAULT_DTYPE)
       : impl_(std::make_shared<TensorImpl>(data, shape, device, dtype)) {}
 
   void* data() const noexcept;

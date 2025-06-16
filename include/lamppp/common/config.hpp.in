@@ -1,0 +1,11 @@
+#pragma once
+
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/device_type.hpp"
+
+namespace lmp {
+
+constexpr tensor::DataType DEFAULT_DTYPE = tensor::DataType::@DEFAULT_DTYPE@;
+constexpr tensor::DeviceType DEFAULT_DEVICE = tensor::DeviceType::@DEFAULT_DEVICE@;
+
+} // namespace lamppp

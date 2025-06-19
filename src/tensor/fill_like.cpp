@@ -1,4 +1,6 @@
 #include "lamppp/tensor/fill_like.hpp"
+#include <algorithm>
+#include <random>
 #include "lamppp/tensor/dispatch_type.hpp"
 #include "lamppp/tensor/scalar.hpp"
 #include "lamppp/tensor/tensor.hpp"

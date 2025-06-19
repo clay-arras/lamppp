@@ -3,6 +3,9 @@ project(nets_lib LANGUAGES CXX)
 set(nets_SOURCES
   module.cpp
   layers/linear.cpp
+  layers/activation.cpp
+  layers/dropout.cpp
+  layers/container.cpp
 )
 
 add_library(nets_core SHARED ${nets_SOURCES})

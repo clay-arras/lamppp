@@ -9,6 +9,15 @@
 
 namespace lmp::nets {
 
+template <typename T>
+struct function_traits;
+
+template <typename R, typename ...Args>
+struct function_traits<R(*)(Args...)> {
+  using return_type = R;
+  using arg_types = std::tuple<Args...>;
+};
+
 class AnyModule {
  public:
   class Placeholder {
@@ -42,9 +51,18 @@ class AnyModule {
     FuncPtr forward_;
   };
 
-  template <typename Module, typename Ret, typename... Args>
-  explicit AnyModule(Module mod, Ret (Module::*forward)(Args...)) {
-    impl_ = std::make_unique<Holder<Module, Ret, Args...>>(
+  // template <typename Module, typename Ret, typename... Args>
+  // explicit AnyModule(Module mod, Ret (Module::*forward)(Args...)) {
+  //   impl_ = std::make_unique<Holder<Module, Ret, Args...>>(
+  //       std::make_shared(mod), forward);
+  // }
+
+  template <typename Module>
+  explicit AnyModule(Module mod, decltype(&Module::forward) forward) {
+    using FnPtr = decltype(&Module::forward);
+    impl_ = std::make_unique<
+        Holder<Module, typename function_traits<FnPtr>::return_type,
+               typename function_traits<FnPtr>::arg_types>>(
         std::make_shared(mod), forward);
   }
 

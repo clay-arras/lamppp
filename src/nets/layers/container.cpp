@@ -1,5 +1,3 @@
-#pragma once
-
 #include "lamppp/nets/any.hpp"
 #include "lamppp/nets/layers/container.hpp"
 #include <utility>

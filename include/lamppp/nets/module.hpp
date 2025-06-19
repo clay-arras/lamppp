@@ -46,9 +46,17 @@ class Module {
 template <typename Derived>
 class ModuleCRTP : public Module {
  public:
+
+  // template <typename... Args>
+  // std::invoke_result_t<decltype(&Derived::forward), Derived*, Args...> 
+  // operator()(Args&&... args) {
+  //   return static_cast<Derived*>(impl_.get())
+  //       ->forward(std::forward<Args>(args)...);
+  // }
+
   template <typename... Args>
-  std::invoke_result_t<decltype(&Derived::forward), Derived*, Args...> 
-  operator()(Args&&... args) {
+  auto operator()(Args&&... args)
+      -> std::invoke_result_t<decltype(&Derived::forward), Derived*, Args...> {
     return static_cast<Derived*>(impl_.get())
         ->forward(std::forward<Args>(args)...);
   }

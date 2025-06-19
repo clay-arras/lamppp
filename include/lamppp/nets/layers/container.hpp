@@ -17,16 +17,6 @@ class SequentialImpl : public ModuleImpl {
  private:
   std::vector<AnyModule> layers_;
 };
-
-struct Sequential : public ModuleCRTP<SequentialImpl> {
-  explicit Sequential(std::vector<AnyModule> layers);
-};
+LMP_DEFINE_MODULE(Sequential);
 
 }
-
-/*
-
-idea 1: template input and output
-idea 2: just return anyValues and trust user to decode it
-
-*/

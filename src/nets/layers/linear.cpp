@@ -11,9 +11,4 @@ autograd::Variable LinearImpl::forward(const autograd::Variable& x) const {
     return autograd::ops::matmul(x, weights_) + static_cast<autograd::Variable>(bias_);
 }
 
-Linear::Linear(size_t in_features, size_t out_features, bool bias, tensor::DeviceType device,
-            tensor::DataType dtype) {
-    impl_ = std::make_shared<LinearImpl>(LinearImpl(in_features, out_features, bias, device, dtype));
-};
-
 }

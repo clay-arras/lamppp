@@ -23,10 +23,6 @@ class LinearImpl : public ModuleImpl {
   Parameter bias_;     
   bool requires_bias_;
 };
-
-struct Linear : public ModuleCRTP<LinearImpl> {
-    Linear(size_t in_features, size_t out_features, bool bias = true, tensor::DeviceType device = DEFAULT_DEVICE,
-                  tensor::DataType dtype = DEFAULT_DTYPE);
-};
+LMP_DEFINE_MODULE(Linear);
 
 }

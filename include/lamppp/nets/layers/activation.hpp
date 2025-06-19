@@ -10,9 +10,6 @@ class ReLUImpl : public ModuleImpl {
   ReLUImpl() = default;
   autograd::Variable forward(const autograd::Variable& x) const;
 };
-
-struct ReLU : public ModuleCRTP<ReLUImpl> {
-  ReLU();
-};
+LMP_DEFINE_MODULE(ReLU);
 
 }

@@ -14,9 +14,6 @@ class DropoutImpl : public ModuleImpl {
  private:
     tensor::Scalar p_;
 };
-
-struct Dropout : public ModuleCRTP<DropoutImpl> {
-  explicit Dropout(tensor::Scalar p);
-};
+LMP_DEFINE_MODULE(Dropout);
 
 }

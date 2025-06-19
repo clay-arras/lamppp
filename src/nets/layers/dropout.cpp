@@ -12,8 +12,4 @@ autograd::Variable DropoutImpl::forward(const autograd::Variable& x) const {
     return (mask < p_) * x;
 }
 
-Dropout::Dropout(tensor::Scalar p) {
-    impl_ = std::make_shared<DropoutImpl>(DropoutImpl(p));
-};
-
 }

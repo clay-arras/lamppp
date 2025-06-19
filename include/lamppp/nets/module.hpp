@@ -8,6 +8,11 @@
 
 namespace lmp::nets {
 
+namespace detail {
+template <typename T>
+class UnsafeModuleAccessor;
+}
+
 class ModuleImpl {
  public:
   std::vector<Parameter> parameters();
@@ -31,35 +36,61 @@ class ModuleImpl {
   std::unordered_map<std::string, Parameter> params_;
 };
 
+template <typename Derived>
 class Module {
  public:
-  Module() = default;
+  template <typename... Args>
+  explicit Module(Args&&... args)
+      : impl_(std::make_shared<Derived>(std::forward<Args>(args)...)) {}
 
   std::vector<Parameter> parameters();
   void eval();
   void train();
 
- protected:
-  std::shared_ptr<ModuleImpl> impl_;
-};
-
-template <typename Derived>
-class ModuleCRTP : public Module {
- public:
-
-  // template <typename... Args>
-  // std::invoke_result_t<decltype(&Derived::forward), Derived*, Args...> 
-  // operator()(Args&&... args) {
-  //   return static_cast<Derived*>(impl_.get())
-  //       ->forward(std::forward<Args>(args)...);
-  // }
-
   template <typename... Args>
   auto operator()(Args&&... args)
-      -> std::invoke_result_t<decltype(&Derived::forward), Derived*, Args...> {
+      -> std::invoke_result_t<decltype(&Derived::forward), Derived, Args...> {
     return static_cast<Derived*>(impl_.get())
         ->forward(std::forward<Args>(args)...);
   }
+
+ protected:
+  std::shared_ptr<Derived> impl_;
+
+  template <typename T>
+  friend class detail::UnsafeModuleAccessor;
 };
 
+namespace detail {
+// @internal
+template <typename T>
+struct UnsafeModuleAccessor {
+  static std::shared_ptr<T> getImpl(const Module<T>& mod) {
+    return mod.impl_;
+  }
+};
+// @endinternal
+}  // namespace detail
+
+template <typename Derived>
+std::vector<Parameter> Module<Derived>::parameters() {
+  return impl_->parameters();
+}
+
+template <typename Derived>
+void Module<Derived>::eval() {
+  impl_->eval();
+}
+
+template <typename Derived>
+void Module<Derived>::train() {
+  impl_->train();
+}
+
 }  // namespace lmp::nets
+
+#define LMP_DEFINE_MODULE_IMPL(module, impl) \
+  struct module : public Module<impl> {      \
+    using Module<impl>::Module;              \
+  };
+#define LMP_DEFINE_MODULE(module) LMP_DEFINE_MODULE_IMPL(module, module##Impl)

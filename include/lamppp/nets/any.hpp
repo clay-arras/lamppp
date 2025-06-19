@@ -6,17 +6,9 @@
 #include <utility>
 #include <vector>
 #include "lamppp/common/assert.hpp"
+#include "lamppp/nets/module.hpp"
 
 namespace lmp::nets {
-
-template <typename T>
-struct function_traits;
-
-template <typename R, typename ...Args>
-struct function_traits<R(*)(Args...)> {
-  using return_type = R;
-  using arg_types = std::tuple<Args...>;
-};
 
 class AnyModule {
  public:
@@ -26,12 +18,13 @@ class AnyModule {
     virtual ~Placeholder() = default;
   };
 
-  template <typename Module, typename Ret, typename... Args>
+  template <typename ModuleImpl, typename... Args>
   class Holder : public Placeholder {
-    using FuncPtr = Ret (Module::*)(Args...);
+    using FuncPtr = std::invoke_result_t<decltype(&ModuleImpl::forward), ModuleImpl*,
+                                         Args...> (ModuleImpl::*)(Args...) const;
 
    public:
-    explicit Holder(std::shared_ptr<Module> mod, FuncPtr forward)
+    explicit Holder(std::shared_ptr<ModuleImpl> mod, FuncPtr forward)
         : mod_(mod), forward_(forward) {};
     ~Holder() override = default;
     std::any call(const std::vector<std::any>& args) override {
@@ -42,28 +35,26 @@ class AnyModule {
    private:
     template <size_t... Idx>
     std::any invoke(const std::vector<std::any>& args,
-                    std::index_sequence<Idx...> seq) {
-      return std::any(static_cast<Module*>(mod_)->*forward_(
-          any_cast<Args>(args[seq[Idx]])...));
+                    std::index_sequence<Idx...>  /*seq*/) {
+      return std::any((static_cast<ModuleImpl*>(mod_.get())->*forward_)(
+          any_cast<Args>(args[Idx])...));
     }
 
-    std::shared_ptr<Module> mod_;
+    std::shared_ptr<ModuleImpl> mod_;
     FuncPtr forward_;
   };
 
-  // template <typename Module, typename Ret, typename... Args>
-  // explicit AnyModule(Module mod, Ret (Module::*forward)(Args...)) {
-  //   impl_ = std::make_unique<Holder<Module, Ret, Args...>>(
-  //       std::make_shared(mod), forward);
-  // }
+  template <typename Impl, typename R, typename... Args>
+  std::shared_ptr<AnyModule::Placeholder> make_holder(std::shared_ptr<Impl> m,
+                                                      R (Impl::*fp)(Args...) const) {
+    using H = typename AnyModule::Holder<Impl, Args...>;
+    return std::make_shared<H>(std::move(m), fp);
+  }
 
-  template <typename Module>
-  explicit AnyModule(Module mod, decltype(&Module::forward) forward) {
-    using FnPtr = decltype(&Module::forward);
-    impl_ = std::make_unique<
-        Holder<Module, typename function_traits<FnPtr>::return_type,
-               typename function_traits<FnPtr>::arg_types>>(
-        std::make_shared(mod), forward);
+  template <typename Derived>
+  explicit AnyModule(Module<Derived> mod) {
+    impl_ = make_holder(detail::UnsafeModuleAccessor<Derived>::getImpl(mod),
+                        &Derived::forward);
   }
 
   std::any call(const std::vector<std::any>& args) const {
@@ -71,7 +62,7 @@ class AnyModule {
   }
 
  private:
-  std::unique_ptr<Placeholder> impl_;
+  std::shared_ptr<Placeholder> impl_;
 };
 
 }

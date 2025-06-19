@@ -13,8 +13,4 @@ std::any SequentialImpl::forward(const std::vector<std::any>& in) const {
   return out;
 }
 
-Sequential::Sequential(std::vector<AnyModule> layers) {
-    impl_ = std::make_shared<SequentialImpl>(SequentialImpl(std::move(layers)));
-};
-
 }

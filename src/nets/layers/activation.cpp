@@ -9,8 +9,4 @@ autograd::Variable ReLUImpl::forward(const autograd::Variable& x) const {
     return autograd::ops::clamp(x, 0, std::numeric_limits<tensor::Scalar>::max());
 }
 
-ReLU::ReLU() {
-    impl_ = std::make_shared<ReLUImpl>(ReLUImpl());
-};
-
 }

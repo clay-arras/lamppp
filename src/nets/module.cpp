@@ -28,14 +28,4 @@ void ModuleImpl::train() {
     }
 }
 
-std::vector<Parameter> Module::parameters() {
-  return impl_->parameters();
-}
-void Module::eval() {
-  impl_->eval();
-}
-void Module::train() {
-  impl_->train();
-}
-
 }

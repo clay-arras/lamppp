@@ -10,8 +10,7 @@ namespace lmp::nets {
 
 class SequentialImpl : public ModuleImpl {
  public:
-  explicit SequentialImpl(std::vector<AnyModule> layers)
-      : layers_(std::move(layers)) {};
+  explicit SequentialImpl(std::vector<AnyModule> layers);
   std::any forward(const std::vector<std::any>& in) const;
 
  private:

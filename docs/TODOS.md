@@ -8,9 +8,6 @@ testing:
 - test type promotion AND backwards type promotion
 
 benchmarking
-- relu, sigmoid, tanh -- define this in nn module
-- add default values - quick
-
 - fix github tests
 - add better tests with hypothesis
 
@@ -19,13 +16,6 @@ benchmarking
 - init module: He initialization, Xavier initialization
 - lmp::empty so we can use lmp::nets::init::...
 
-- first to implement: 
-- layer module
-    - linear
-    - dropout
-    - relu
+- add parameter registration to linear and test parameters() function
 
-
-
-a) how do I make forward general (take any amount of args) while also marking it as virtual
-- default_type = 
+- sigmoid, tanh

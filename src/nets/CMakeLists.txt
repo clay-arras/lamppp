@@ -2,6 +2,7 @@ project(nets_lib LANGUAGES CXX)
 
 set(nets_SOURCES
   module.cpp
+  any.cpp
   layers/linear.cpp
   layers/activation.cpp
   layers/dropout.cpp

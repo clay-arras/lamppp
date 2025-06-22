@@ -113,7 +113,7 @@ void TensorImpl::fill(Scalar item) const {
   ops::fill_stub()(device(), data(), numel(), item, type());
 }
 
-const size_t kMaxPrintElem = 1e2;
+const size_t kMaxPrintElem = 2e1;
 void TensorImpl::print(std::ostream& os) const {
   os << "Tensor(data=[";
   LMP_DISPATCH_ALL_TYPES(this->type_, [&] {

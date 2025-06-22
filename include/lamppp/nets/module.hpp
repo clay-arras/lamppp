@@ -1,9 +1,12 @@
 #pragma once
 
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
+#include "lamppp/common/assert.hpp"
 #include "parameter.hpp"
 
 namespace lmp::nets {
@@ -15,24 +18,17 @@ class UnsafeModuleAccessor;
 
 class ModuleImpl {
  public:
-  std::vector<Parameter> parameters();
+  std::vector<Parameter> parameters() const;
+  std::multimap<std::string, Parameter> named_parameters() const;
   void eval();
   void train();
 
  protected:
-  template <typename T>
-  T& register_parameter(const std::string& name, T&& param) {
-    params_[name] = std::forward<T>(param);
-    return params_[name];
-  }
-  template <typename T>
-  T& register_module(const std::string& name, T&& module) {
-    modules_[name] = std::make_unique<T>(std::forward<T>(module));
-    return *static_cast<T*>(modules_[name].get());
-  }
+  void register_parameter(const std::string& name, Parameter param);
+  void register_module(const std::string& name, std::shared_ptr<ModuleImpl> module);
 
   bool trainable_ = true;
-  std::unordered_map<std::string, std::unique_ptr<ModuleImpl>> modules_;
+  std::unordered_map<std::string, std::shared_ptr<ModuleImpl>> modules_; // problem, this is not type-specific, no operator()
   std::unordered_map<std::string, Parameter> params_;
 };
 
@@ -43,7 +39,8 @@ class Module {
   explicit Module(Args&&... args)
       : impl_(std::make_shared<Derived>(std::forward<Args>(args)...)) {}
 
-  std::vector<Parameter> parameters();
+  std::vector<Parameter> parameters() const;
+  std::multimap<std::string, Parameter> named_parameters() const;
   void eval();
   void train();
 
@@ -73,8 +70,13 @@ struct UnsafeModuleAccessor {
 }  // namespace detail
 
 template <typename Derived>
-std::vector<Parameter> Module<Derived>::parameters() {
+std::vector<Parameter> Module<Derived>::parameters() const {
   return impl_->parameters();
+}
+
+template <typename Derived>
+std::multimap<std::string, Parameter> Module<Derived>::named_parameters() const {
+  return impl_->named_parameters();
 }
 
 template <typename Derived>

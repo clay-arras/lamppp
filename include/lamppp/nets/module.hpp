@@ -6,7 +6,6 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include "lamppp/common/assert.hpp"
 #include "parameter.hpp"
 
 namespace lmp::nets {

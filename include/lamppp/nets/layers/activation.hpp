@@ -12,4 +12,18 @@ class ReLUImpl : public ModuleImpl {
 };
 LMP_DEFINE_MODULE(ReLU);
 
+class SigmoidImpl : public ModuleImpl {
+ public:
+  SigmoidImpl() = default;
+  autograd::Variable forward(const autograd::Variable& x) const;
+};
+LMP_DEFINE_MODULE(Sigmoid);
+
+class TanhImpl : public ModuleImpl {
+ public:
+  TanhImpl() = default;
+  autograd::Variable forward(const autograd::Variable& x) const;
+};
+LMP_DEFINE_MODULE(Tanh);
+
 }

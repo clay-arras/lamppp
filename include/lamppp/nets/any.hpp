@@ -27,7 +27,6 @@ class AnyModule {
   class Holder;
 
   std::shared_ptr<Placeholder> impl_;
-
  protected:
   template <typename Impl, typename R, typename... Args>
   std::shared_ptr<AnyModule::Placeholder> make_holder(std::shared_ptr<Impl> m,

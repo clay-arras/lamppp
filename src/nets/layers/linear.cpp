@@ -20,7 +20,7 @@ LinearImpl::LinearImpl(size_t in_features, size_t out_features, bool bias,
 };
 
 autograd::Variable LinearImpl::forward(const autograd::Variable& x) const {
-    if (!requires_bias_) {
+    if (!requires_bias_) { // (batch x in) x (in x out)
         return autograd::ops::matmul(x, weights_);
     }
     return autograd::ops::matmul(x, weights_) + static_cast<autograd::Variable>(bias_);
@@ -31,7 +31,7 @@ FlattenImpl::FlattenImpl(ssize_t start_dim, ssize_t end_dim) : start_dim_(start_
 };
 
 autograd::Variable FlattenImpl::forward(const autograd::Variable& x) const {
-  ssize_t end_dim_idx = (end_dim_ <= 0) ? x.data().shape().size() + end_dim_ : end_dim_;
+  ssize_t end_dim_idx = (end_dim_ < 0) ? x.data().shape().size() + end_dim_ : end_dim_;
   LMP_CHECK(start_dim_ < end_dim_idx)
       << "Start and end dims not valid";
 

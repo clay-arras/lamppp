@@ -1,4 +1,5 @@
 #include "lamppp/autograd/grad_utils.hpp"
+#include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
 
@@ -14,7 +15,7 @@ tensor::Tensor sum_broadcast_axis(const tensor::Tensor& grad,
   tensor::Tensor aligned_grad = grad;
 
 #pragma unroll
-  for (size_t i = LMP_MAX_DIMS; i-- > 0;) {
+  for (size_t i = LMP_MAX_DIMS; i > 0; i--) {
     if (i >= out_dims)
       continue;
 
@@ -31,6 +32,7 @@ tensor::Tensor sum_broadcast_axis(const tensor::Tensor& grad,
       aligned_grad = aligned_grad.squeeze(0);
     }
   }
+  LMP_INTERNAL_ASSERT(aligned_grad.shape() == orig_shape);
   return aligned_grad;
 }
 

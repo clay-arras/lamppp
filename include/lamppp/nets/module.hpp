@@ -17,8 +17,8 @@ class UnsafeModuleAccessor;
 
 class ModuleImpl {
  public:
-  std::vector<Parameter> parameters() const;
-  std::multimap<std::string, Parameter> named_parameters() const;
+  std::vector<Parameter> parameters();
+  std::multimap<std::string, Parameter> named_parameters();
   void eval();
   void train();
 
@@ -38,8 +38,8 @@ class Module {
   explicit Module(Args&&... args)
       : impl_(std::make_shared<Derived>(std::forward<Args>(args)...)) {}
 
-  std::vector<Parameter> parameters() const;
-  std::multimap<std::string, Parameter> named_parameters() const;
+  std::vector<Parameter> parameters();
+  std::multimap<std::string, Parameter> named_parameters();
   void eval();
   void train();
 
@@ -69,12 +69,12 @@ struct UnsafeModuleAccessor {
 }  // namespace detail
 
 template <typename Derived>
-std::vector<Parameter> Module<Derived>::parameters() const {
+std::vector<Parameter> Module<Derived>::parameters() {
   return impl_->parameters();
 }
 
 template <typename Derived>
-std::multimap<std::string, Parameter> Module<Derived>::named_parameters() const {
+std::multimap<std::string, Parameter> Module<Derived>::named_parameters() {
   return impl_->named_parameters();
 }
 

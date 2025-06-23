@@ -2,7 +2,7 @@
 
 namespace lmp::nets {
 
-std::vector<Parameter> ModuleImpl::parameters() const {
+std::vector<Parameter> ModuleImpl::parameters() {
     std::vector<Parameter> all_params; 
     all_params.reserve(params_.size());
     for (const auto& [k, v] : params_) {
@@ -15,7 +15,7 @@ std::vector<Parameter> ModuleImpl::parameters() const {
     return all_params;
 }
 
-std::multimap<std::string, Parameter> ModuleImpl::named_parameters() const {
+std::multimap<std::string, Parameter> ModuleImpl::named_parameters() {
     std::multimap<std::string, Parameter> all_params; 
     for (const auto& [k, v] : params_) {
         all_params.insert({k, v});

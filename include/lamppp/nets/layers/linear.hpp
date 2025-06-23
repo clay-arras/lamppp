@@ -1,12 +1,13 @@
 #pragma once
 
+#include <cstddef>
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/nets/module.hpp"
 #include "lamppp/nets/parameter.hpp"
 
 namespace lmp::nets {
 
-using ssize_t = int; // signed size_t
+using ssize_t = ptrdiff_t; // signed size_t
 
 class LinearImpl : public ModuleImpl {
  public:

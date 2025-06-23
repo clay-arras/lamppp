@@ -10,5 +10,5 @@
 - init module: He initialization, Xavier initialization
 - lmp::empty so we can use lmp::nets::init::...
 
-- maxpool, conv2d
+- add image classification layers like maxpool, conv2d, and batchnorm
 - we need to add a shape(), device(), and type() to Variable (type might fail due to promotion in backward)

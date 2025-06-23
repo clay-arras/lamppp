@@ -16,9 +16,10 @@ namespace lmp::tensor::detail::cuda {
 
 DataPtr empty_cuda(size_t byte_size) {
   void* raw = nullptr;
-  LMP_CUDA_CHECK(cudaMallocAsync(&raw, byte_size, 0))
+  LMP_CUDA_CHECK(cudaMallocAsync(&raw, byte_size, nullptr))
       << "empty_cuda: cudaMalloc failed.";
-  return DataPtr(raw, [](void* ptr) { cudaFreeAsync(ptr, 0); });
+  return DataPtr(
+      raw, [](void* ptr) { LMP_CUDA_CHECK(cudaFreeAsync(ptr, nullptr)); });
 }
 
 void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
@@ -31,9 +32,9 @@ void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
 
 void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = nullptr;
-  cudaMallocAsync(&ptr, new_byte_size, 0);
-  cudaMemcpyAsync(ptr, dptr.data(), std::min(old_byte_size, new_byte_size),
-                  cudaMemcpyDeviceToDevice);
+  LMP_CUDA_CHECK(cudaMallocAsync(&ptr, new_byte_size, nullptr));
+  LMP_CUDA_CHECK(cudaMemcpyAsync(ptr, dptr.data(), std::min(old_byte_size, new_byte_size),
+                  cudaMemcpyDeviceToDevice));
 
   auto* deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
   dptr = DataPtr(ptr, *deleter);
@@ -51,7 +52,7 @@ void vecCopyHostToDevice(const void* src, void* dest, size_t size,
       using dest_type = scalar_t;
 
       void* tmp = nullptr;
-      LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(src_type), 0))
+      LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(src_type), nullptr))
           << "copy_cpu to CUDA: cudaMalloc for tmp failed.";
       LMP_CUDA_CHECK(cudaMemcpyAsync(tmp, src, size * sizeof(src_type),
                                      cudaMemcpyHostToDevice))
@@ -62,7 +63,7 @@ void vecCopyHostToDevice(const void* src, void* dest, size_t size,
 
       LMP_CUDA_INTERNAL_ASSERT(cudaGetLastError())
           << "copy_cpu to CUDA: vecCopy kernel failed.";
-      LMP_CUDA_CHECK(cudaFreeAsync(tmp, 0))
+      LMP_CUDA_CHECK(cudaFreeAsync(tmp, nullptr))
           << "copy_cpu to CUDA: cudaFreeAsync for tmp failed.";
     });
   });
@@ -78,7 +79,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(dest_type), 0))
+          LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(dest_type), nullptr))
               << "copy_cuda to CPU: cudaMalloc for tmp failed.";
 
           cudaVecCopy<src_type, dest_type>(size,
@@ -89,7 +90,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           LMP_CUDA_CHECK(cudaMemcpyAsync(dest, tmp, size * sizeof(dest_type),
                                          cudaMemcpyDeviceToHost))
               << "copy_cuda to CPU: cudaMemcpy DtoH failed.";
-          LMP_CUDA_CHECK(cudaFreeAsync(tmp, 0))
+          LMP_CUDA_CHECK(cudaFreeAsync(tmp, nullptr))
               << "copy_cuda to CPU: cudaFreeAsync for tmp failed.";
         });
       });
@@ -102,7 +103,8 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(dest_type), 0))
+          LMP_CUDA_CHECK(
+              cudaMallocAsync(&tmp, size * sizeof(dest_type), nullptr))
               << "copy_cuda to CUDA: cudaMalloc for tmp failed.";
 
           cudaVecCopy<src_type, dest_type>(size,
@@ -114,7 +116,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           LMP_CUDA_CHECK(cudaMemcpyAsync(dest, tmp, size * sizeof(dest_type),
                                          cudaMemcpyDeviceToDevice))
               << "copy_cuda to CUDA: cudaMemcpy DtoD failed.";
-          LMP_CUDA_CHECK(cudaFreeAsync(tmp, 0))
+          LMP_CUDA_CHECK(cudaFreeAsync(tmp, nullptr))
               << "copy_cuda to CUDA: cudaFreeAsync for tmp failed.";
         });
       });

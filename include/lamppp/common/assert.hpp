@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
+#include "stream.hpp"
 
 #ifdef ENABLE_CUDA
 #include <cuda_runtime.h>

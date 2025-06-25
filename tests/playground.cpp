@@ -1,12 +1,16 @@
-#include <any>
-#include "lamppp/autograd/constructor.hpp"
-#include "lamppp/autograd/grad_utils.hpp"
-#include "lamppp/autograd/functions/matrix_ops.hpp"
+#include <cuda_runtime_api.h>
 #include "lamppp/lamppp.hpp"
-#include "lamppp/nets/any.hpp"
-#include "lamppp/nets/layers/activation.hpp"
-#include "lamppp/nets/layers/container.hpp"
-#include "lamppp/nets/layers/linear.hpp"
 
 int main() {
+  lmp::Variable weights1 = lmp::autograd::rand({784, 256}, true);
+
+  for (int i = 0; i < 10000; i++) {
+    lmp::Variable weights2 = lmp::autograd::rand({256, 10}, true);
+    lmp::Variable loss = lmp::matmul(weights1, weights2);
+    loss.backward();
+
+    float learning_rate = 0.01;
+    weights1 = lmp::Variable(weights1.data() - learning_rate * weights1.grad(),
+                             true);  // grad_fn is cleared
+  }
 }

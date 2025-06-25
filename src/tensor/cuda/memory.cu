@@ -18,8 +18,10 @@ DataPtr empty_cuda(size_t byte_size) {
   void* raw = nullptr;
   LMP_CUDA_CHECK(cudaMallocAsync(&raw, byte_size, nullptr))
       << "empty_cuda: cudaMalloc failed.";
-  return DataPtr(
-      raw, [](void* ptr) { LMP_CUDA_CHECK(cudaFreeAsync(ptr, nullptr)); });
+  return DataPtr(raw, [byte_size](void* ptr) {
+    LMP_CUDA_CHECK(cudaFreeAsync(ptr, nullptr));
+    CudaStreamManager::instance().onFree(byte_size);
+  });
 }
 
 void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
@@ -65,6 +67,7 @@ void vecCopyHostToDevice(const void* src, void* dest, size_t size,
           << "copy_cpu to CUDA: vecCopy kernel failed.";
       LMP_CUDA_CHECK(cudaFreeAsync(tmp, nullptr))
           << "copy_cpu to CUDA: cudaFreeAsync for tmp failed.";
+      CudaStreamManager::instance().onFree(size * sizeof(src_type));
     });
   });
 }
@@ -92,6 +95,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
               << "copy_cuda to CPU: cudaMemcpy DtoH failed.";
           LMP_CUDA_CHECK(cudaFreeAsync(tmp, nullptr))
               << "copy_cuda to CPU: cudaFreeAsync for tmp failed.";
+          CudaStreamManager::instance().onFree(size * sizeof(dest_type));
         });
       });
       break;
@@ -118,6 +122,7 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
               << "copy_cuda to CUDA: cudaMemcpy DtoD failed.";
           LMP_CUDA_CHECK(cudaFreeAsync(tmp, nullptr))
               << "copy_cuda to CUDA: cudaFreeAsync for tmp failed.";
+          CudaStreamManager::instance().onFree(size * sizeof(dest_type));
         });
       });
       break;

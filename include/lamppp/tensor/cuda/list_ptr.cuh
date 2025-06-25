@@ -3,6 +3,7 @@
 #include <driver_types.h>
 #include <memory>
 #include "lamppp/common/assert.hpp"
+#include "lamppp/tensor/cuda/memory.cuh"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -23,8 +24,10 @@ class ListDevicePtr {
     LMP_CUDA_CHECK(cudaMallocAsync(&raw, sizeof(T) * size, 0));
     LMP_CUDA_CHECK(
         cudaMemcpyAsync(raw, obj_list, sizeof(T) * size, cudaMemcpyHostToDevice));
-    ptr_ =
-        std::shared_ptr<T[]>(raw, [](T* p) { LMP_CUDA_CHECK(cudaFreeAsync(p, 0)); });
+    ptr_ = std::shared_ptr<T[]>(raw, [size](T* p) {
+      LMP_CUDA_CHECK(cudaFreeAsync(p, 0));
+      CudaStreamManager::instance().onFree(sizeof(T) * size);
+    });
   }
 
   T* get() const noexcept { return ptr_.get(); }

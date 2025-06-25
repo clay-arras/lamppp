@@ -27,6 +27,7 @@ bool Variable::requires_grad() const noexcept {
 void Variable::zero_grad() {
   LMP_CHECK(requires_grad()) << "Cannot access grad() if requires_grad = false";
   impl_->grad = zeros_like(impl_->grad);
+  impl_->_grad_fn = nullptr;
 }  // TODO(root): this can be better, implement fill in tensor
 void Variable::incr_grad(const tensor::Tensor& other_grad) {
   LMP_CHECK(requires_grad()) << "Cannot access grad() if requires_grad = false";

@@ -12,3 +12,7 @@
 
 - add image classification layers like maxpool, conv2d, and batchnorm
 - we need to add a shape(), device(), and type() to Variable (type might fail due to promotion in backward)
+
+# misc:
+- fix memory leak
+- get layers mnist example working

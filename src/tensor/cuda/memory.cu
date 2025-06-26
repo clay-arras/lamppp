@@ -2,13 +2,11 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 #include <thrust/device_ptr.h>
-#include <cstdint>
 #include <cuda/std/array>
 #include "lamppp/common/assert.hpp"
 #include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/cpu/memory.hpp"
-#include "lamppp/tensor/cuda/list_ptr.cuh"
 #include "lamppp/tensor/cuda/memory.cuh"
+#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 
@@ -164,8 +162,6 @@ void cudaVecFill(size_t size, T* out, T value) {
   size_t blocks = std::min((size + threads - 1) / threads, 1024UL);
   cudaVecFillKernel<T><<<blocks, threads>>>(size, out, value);
 }
-
-#include "lamppp/tensor/supported_types.hpp"
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type)                              \
   template void cudaVecCopy<arg1_type, arg2_type>(size_t, const arg1_type*, \

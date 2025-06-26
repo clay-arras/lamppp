@@ -3,7 +3,7 @@
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/common/assert.hpp"
 #include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/fill_like.hpp"
+#include "lamppp/tensor/utils/fill_like.hpp"
 
 namespace lmp::autograd::ops {
 

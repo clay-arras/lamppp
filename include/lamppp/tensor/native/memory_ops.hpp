@@ -3,7 +3,7 @@
 #include "lamppp/tensor/data_ptr.hpp"
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_stub.hpp"
-#include "lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/data_type.hpp"
 
 namespace lmp::tensor {
 class Tensor;

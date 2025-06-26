@@ -4,7 +4,7 @@
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/nets/module.hpp"
 #include "lamppp/nets/any.hpp"
-#include "lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/data_type.hpp"
 
 namespace lmp::nets {
 

@@ -6,6 +6,13 @@
 namespace lmp::tensor {
 
 /**
+ * @note: this is just a useful utility, since it's the highest priority type.
+ * i.e. if you have Operation(AnyType, Float64), it'll typecast to Float64
+ * @see DataType
+ */
+using Scalar = double;
+
+/**
 * @brief simple dataType enum
 *
 * @note this class works deeply in conjunction with LMP_DISPATCH_ALL_TYPES
@@ -98,3 +105,15 @@ inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
 }
 
 }  // namespace lmp::tensor
+
+#define LMP_X_TYPES(_) \
+  _(bool)            \
+  _(int16_t)         \
+  _(int)             \
+  _(int64_t)         \
+  _(float)           \
+  _(double)
+
+#define LMP_LIST_TYPES \
+  (bool, int16_t, int, int64_t, float, double)
+  

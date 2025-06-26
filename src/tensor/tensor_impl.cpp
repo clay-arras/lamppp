@@ -1,10 +1,10 @@
 #include "lamppp/tensor/tensor_impl.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 
 namespace lmp::tensor {
 

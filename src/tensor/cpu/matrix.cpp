@@ -1,6 +1,6 @@
 #include "lamppp/tensor/cpu/matrix.hpp"
-#include <cstdint>
 #include "lamppp/common/macros.hpp"
+#include "lamppp/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail::cpu {
 
@@ -38,8 +38,6 @@ void cpuTranspose(const T* in, T* out, size_t m, size_t n) {
     for (size_t j = 0; j < n; j++)
       cpuTransposeKernel<T>(in, out, m, n, i, j);
 }
-
-#include "lamppp/tensor/supported_types.hpp"
 
 #define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type) \
   template void cpuMatMul<arg1_type, arg2_type, out_type>( \

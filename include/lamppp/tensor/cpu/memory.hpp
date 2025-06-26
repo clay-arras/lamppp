@@ -4,7 +4,6 @@
 #include "lamppp/tensor/data_ptr.hpp"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/device_type.hpp"
-#include "lamppp/tensor/scalar.hpp"
 
 namespace lmp::tensor::detail::cpu {
 

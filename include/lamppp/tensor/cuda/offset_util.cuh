@@ -3,7 +3,7 @@
 #include <cuda_runtime.h>
 #include <array>
 #include <cuda/std/array>
-#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 #include "lamppp/tensor/cpu/offset_util.hpp"
 #include "lamppp/tensor/cuda/list_ptr.cuh"
 #include "lamppp/tensor/tensor_impl.hpp"

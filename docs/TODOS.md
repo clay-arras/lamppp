@@ -8,11 +8,9 @@
 
 ### nets
 - init module: He initialization, Xavier initialization
-- lmp::empty so we can use lmp::nets::init::...
+- lmp::empty (create an empty tensor/variable) so we can use lmp::nets::init::...
 
 - add image classification layers like maxpool, conv2d, and batchnorm
 - we need to add a shape(), device(), and type() to Variable (type might fail due to promotion in backward)
 
-# misc:
-- fix memory leak
-- get layers mnist example working
+- add default value to reduct s.t. it sums over EVERYTHING

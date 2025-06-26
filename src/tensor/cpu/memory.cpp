@@ -1,8 +1,7 @@
 #include "lamppp/tensor/cpu/memory.hpp"
-#include <cstdint>
 #include <cstring>
 #include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 
@@ -75,8 +74,6 @@ void vecCopy(size_t size, const U* in, V* out) {
     out[i] = in[i];
   }
 }
-
-#include "lamppp/tensor/supported_types.hpp"
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type)                          \
   template void vecCopy<arg1_type, arg2_type>(size_t, const arg1_type*, \

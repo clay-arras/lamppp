@@ -1,4 +1,4 @@
-#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 #include <numeric>
 #include "lamppp/common/assert.hpp"
 

@@ -1,5 +1,5 @@
 #include "lamppp/tensor/cpu/offset_util.hpp"
-#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 
 namespace lmp::tensor::detail {
 

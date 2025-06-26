@@ -1,7 +1,7 @@
 #pragma once
 
-#include "scalar.hpp"
-#include "tensor.hpp"
+#include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/tensor.hpp"
 
 namespace lmp::tensor {
 

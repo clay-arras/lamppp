@@ -2,7 +2,7 @@
 
 #include <array>
 #include <vector>
-#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail {

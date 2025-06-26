@@ -7,10 +7,9 @@
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/align_utils.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 #include "lamppp/tensor/storage.hpp"
-#include "scalar.hpp"
 
 namespace lmp::tensor {
 

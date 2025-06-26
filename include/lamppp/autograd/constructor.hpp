@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/common/config.hpp"
 #include "variable.hpp"
 

@@ -1,9 +1,9 @@
 #include "lamppp/autograd/grad_utils.hpp"
 #include <cuda_runtime_api.h>
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/align_utils.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 
 namespace lmp::autograd::detail {
 

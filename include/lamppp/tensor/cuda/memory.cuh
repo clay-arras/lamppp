@@ -10,7 +10,6 @@
 #include "lamppp/tensor/data_ptr.hpp"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/device_type.hpp"
-#include "lamppp/tensor/scalar.hpp"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -40,7 +39,7 @@ class CudaStreamManager {
   static CudaStreamManager& instance() {
     static CudaStreamManager mgr;
     return mgr;
-  }
+  } // TODO(nx2372): WARNING ERROR
 
   void onFree(size_t bytes) { // TODO(nx2372): I have to fix this later, I don't even know if half of these are effective
     size_t old_size = counter_.fetch_add(bytes, std::memory_order_relaxed);

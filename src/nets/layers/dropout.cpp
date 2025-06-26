@@ -1,9 +1,7 @@
 #include "lamppp/autograd/constructor.hpp"
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/autograd/functions/overloads.hpp"
-#include "lamppp/tensor/scalar.hpp"
 #include "lamppp/nets/layers/dropout.hpp"
-#include <limits>
 
 namespace lmp::nets {
 

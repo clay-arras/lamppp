@@ -1,6 +1,6 @@
-#include <cstdint>
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/cuda/matrix.cuh"
+#include "lamppp/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail::cuda {
 
@@ -50,8 +50,6 @@ void cudaTranspose(const T* in, T* out, size_t m, size_t n) {
   dim3 blocks((m + threads.x - 1) / threads.x, (n + threads.y - 1) / threads.y);
   cudaTransposeKernel<T><<<blocks, threads>>>(in, out, m, n);
 }
-
-#include "lamppp/tensor/supported_types.hpp"
 
 #define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type)  \
   template void cudaMatMul<arg1_type, arg2_type, out_type>( \

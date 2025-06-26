@@ -16,11 +16,11 @@ set(TENSOR_SOURCES
   cpu/matrix.cpp
   cpu/kernels.cpp
   cpu/memory.cpp
-  fill_like.cpp
+  utils/fill_like.cpp
   tensor.cpp
   tensor_impl.cpp
   storage.cpp
-  align_utils.cpp
+  utils/align_utils.cpp
 )
 
 if (ENABLE_CUDA)

@@ -3,7 +3,7 @@
 #include "lamppp/autograd/functions/overloads.hpp"
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/scalar.hpp"
+#include "lamppp/tensor/data_type.hpp"
 #include "lamppp/nets/layers/activation.hpp"
 #include <limits>
 

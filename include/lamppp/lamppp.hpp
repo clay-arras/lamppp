@@ -2,6 +2,7 @@
 
 #include "autograd/core.hpp"
 #include "tensor/core.hpp"
+#include "nets/core.hpp"
 
 namespace lmp {
     using Tensor = tensor::Tensor;

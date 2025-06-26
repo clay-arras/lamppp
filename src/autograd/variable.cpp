@@ -86,7 +86,11 @@ std::vector<Variable> Variable::topological_sort() {
 std::ostream& operator<<(std::ostream& os, const Variable& obj) {
   os << "Variable(requires_grad=" << obj.requires_grad();
   os << ", data=" << obj.data();
-  os << ", grad=" << obj.grad();
+  if (obj.requires_grad()) {
+    os << ", grad=" << obj.grad();
+  } else {
+    os << ", grad=" << nullptr;
+  }
   os << ", grad_fn="
      << (obj.grad_fn().expired() ? nullptr : obj.grad_fn().lock()) << ")";
   return os;

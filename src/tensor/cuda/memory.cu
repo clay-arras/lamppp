@@ -35,8 +35,9 @@ void fill_cuda(void* ptr, size_t size, Scalar t, DataType type) {
 void resize_cuda(DataPtr dptr, size_t old_byte_size, size_t new_byte_size) {
   void* ptr = nullptr;
   LMP_CUDA_CHECK(cudaMallocAsync(&ptr, new_byte_size, nullptr));
-  LMP_CUDA_CHECK(cudaMemcpyAsync(ptr, dptr.data(), std::min(old_byte_size, new_byte_size),
-                  cudaMemcpyDeviceToDevice));
+  LMP_CUDA_CHECK(cudaMemcpyAsync(ptr, dptr.data(),
+                                 std::min(old_byte_size, new_byte_size),
+                                 cudaMemcpyDeviceToDevice));
 
   auto* deleter = std::get_deleter<std::function<void(void*)>>(dptr.ptr);
   dptr = DataPtr(ptr, *deleter);
@@ -82,7 +83,8 @@ void copy_cuda(DeviceType to_device, const void* src, void* dest, size_t size,
           using dest_type = scalar_t;
 
           void* tmp = nullptr;
-          LMP_CUDA_CHECK(cudaMallocAsync(&tmp, size * sizeof(dest_type), nullptr))
+          LMP_CUDA_CHECK(
+              cudaMallocAsync(&tmp, size * sizeof(dest_type), nullptr))
               << "copy_cuda to CPU: cudaMalloc for tmp failed.";
 
           cudaVecCopy<src_type, dest_type>(size,

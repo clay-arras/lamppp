@@ -1,6 +1,5 @@
 #include "lamppp/autograd/functions/view_ops.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/nets/module.hpp"
 #include "lamppp/autograd/core.hpp"
 #include "lamppp/nets/parameter.hpp"
 #include "lamppp/nets/layers/linear.hpp"

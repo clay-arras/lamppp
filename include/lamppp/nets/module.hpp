@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -17,18 +18,21 @@ class UnsafeModuleAccessor;
 
 class ModuleImpl {
  public:
-  std::vector<Parameter> parameters();
-  std::multimap<std::string, Parameter> named_parameters();
+  std::vector<Parameter> parameters() const;
+  std::multimap<std::string, Parameter> named_parameters() const;
+
+  std::vector<std::reference_wrapper<Parameter>> parameters();
+  std::multimap<std::string, std::reference_wrapper<Parameter>> named_parameters();
   void eval();
   void train();
 
  protected:
-  void register_parameter(const std::string& name, Parameter param);
+  void register_parameter(const std::string& name, Parameter& param);
   void register_module(const std::string& name, std::shared_ptr<ModuleImpl> module);
 
   bool trainable_ = true;
   std::unordered_map<std::string, std::shared_ptr<ModuleImpl>> modules_; // problem, this is not type-specific, no operator()
-  std::unordered_map<std::string, Parameter> params_;
+  std::unordered_map<std::string, std::reference_wrapper<Parameter>> params_;
 };
 
 template <typename Derived>
@@ -38,8 +42,11 @@ class Module {
   explicit Module(Args&&... args)
       : impl_(std::make_shared<Derived>(std::forward<Args>(args)...)) {}
 
-  std::vector<Parameter> parameters();
-  std::multimap<std::string, Parameter> named_parameters();
+  std::vector<Parameter> parameters() const;
+  std::multimap<std::string, Parameter> named_parameters() const;
+
+  std::vector<std::reference_wrapper<Parameter>> parameters();
+  std::multimap<std::string, std::reference_wrapper<Parameter>> named_parameters();
   void eval();
   void train();
 
@@ -69,12 +76,22 @@ struct UnsafeModuleAccessor {
 }  // namespace detail
 
 template <typename Derived>
-std::vector<Parameter> Module<Derived>::parameters() {
+std::vector<std::reference_wrapper<Parameter>> Module<Derived>::parameters() {
   return impl_->parameters();
 }
 
 template <typename Derived>
-std::multimap<std::string, Parameter> Module<Derived>::named_parameters() {
+std::multimap<std::string, std::reference_wrapper<Parameter>> Module<Derived>::named_parameters() {
+  return impl_->named_parameters();
+}
+
+template <typename Derived>
+std::vector<Parameter> Module<Derived>::parameters() const {
+  return impl_->parameters();
+}
+
+template <typename Derived>
+std::multimap<std::string, Parameter> Module<Derived>::named_parameters() const {
   return impl_->named_parameters();
 }
 

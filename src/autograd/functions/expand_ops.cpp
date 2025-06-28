@@ -2,7 +2,7 @@
 #include <memory>
 #include "lamppp/autograd/function.hpp"
 #include "lamppp/autograd/functions/binary_decl.hpp"
-#include "lamppp/autograd/grad_utils.hpp"
+#include "lamppp/autograd/utils/grad_utils.hpp"
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/common/assert.hpp"
 #include "lamppp/common/macros.hpp"

@@ -1,4 +1,4 @@
-#include "lamppp/autograd/constructor.hpp"
+#include "lamppp/autograd/utils/constructor.hpp"
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/autograd/functions/overloads.hpp"
 #include "lamppp/nets/layers/dropout.hpp"

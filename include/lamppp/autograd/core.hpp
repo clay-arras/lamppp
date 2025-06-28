@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lamppp/autograd/constructor.hpp"
+#include "lamppp/autograd/utils/constructor.hpp"
 #include "lamppp/autograd/forward_function.hpp"
 #include "lamppp/autograd/function.hpp"
 #include "lamppp/autograd/functions/expand_ops.hpp"

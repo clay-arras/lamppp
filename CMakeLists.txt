@@ -79,6 +79,31 @@ add_subdirectory(tests)
 add_subdirectory(benchmarks)
 add_subdirectory(examples)
 
+# INSTALLATION ---------------------------------
+install(
+  TARGETS
+    lamppp
+    autograd_core
+    tensor_core
+    nets_core
+    lamppp_compile_config
+  EXPORT lampppTargets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(
+  EXPORT lampppTargets
+  FILE   lampppTargets.cmake
+  DESTINATION lib/cmake/lamppp
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
 # STATIC ANALYSIS ---------------------------------
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 if(CLANG_TIDY_EXE)
@@ -126,7 +151,7 @@ if (DOXYGEN_FOUND)
   )
 endif()
 
-# Coverage configuration  
+# COVERAGE ---------------------------------  
 if(ENABLE_COVERAGE)
   include(CTest)
   set(CMAKE_CXX_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage")

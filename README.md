@@ -38,7 +38,7 @@ Lamp++ is a from-scratch implementation of the core concepts behind modern deep 
 ```bash
 git clone https://github.com/clay-arras/lamp.git
 cd lamp
-cmake -S . -B build -DENABLE_CUDA=ON  # or OFF if you don't have CUDA
+cmake -S . -B build -DLMP_ENABLE_CUDA=ON  # or OFF if you don't have CUDA
 cmake --build build
 ```
 

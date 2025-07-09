@@ -11,7 +11,7 @@ set(nets_SOURCES
 
 add_library(nets_core SHARED ${nets_SOURCES})
 
-if(ENABLE_COVERAGE)
+if(LMP_ENABLE_COVERAGE)
   target_compile_options(nets_core PRIVATE --coverage -O0 -g)
   target_link_options(nets_core PRIVATE --coverage)
 endif()

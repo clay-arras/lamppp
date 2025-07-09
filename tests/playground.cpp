@@ -1,6 +1,5 @@
 #include <cuda_runtime_api.h>
 #include <functional>
-#include "lamppp/autograd/constructor.hpp"
 #include "lamppp/lamppp.hpp"
 #include "lamppp/nets/layers/linear.hpp"
 #include "lamppp/nets/parameter.hpp"

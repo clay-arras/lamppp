@@ -39,7 +39,7 @@ That's it for a CPU-only build. Everything should compile in under a minute.
 If you have a NVIDIA GPU and want to use it:
 
 ```bash
-cmake -S . -B build -DENABLE_CUDA=ON
+cmake -S . -B build -DLMP_ENABLE_CUDA=ON
 cmake --build build
 ```
 
@@ -49,19 +49,19 @@ The build system will auto-detect your GPU architecture, so you don't need to wo
 
 **Release build (fast, no debug info):**
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CUDA=ON
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DLMP_ENABLE_CUDA=ON
 cmake --build build
 ```
 
 **Debug build (slower, with debug symbols):**
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CUDA=ON
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=ON
 cmake --build build
 ```
 
 **With code coverage (for contributors):**
 ```bash
-cmake -S . -B build -DENABLE_COVERAGE=ON
+cmake -S . -B build -DLMP_ENABLE_COVERAGE=ON
 cmake --build build
 ```
 
@@ -171,7 +171,7 @@ These will give you an idea of performance on your system. The benchmarks compar
 **CUDA not found errors:**
 - Make sure CUDA toolkit is installed and in your PATH
 - Try `nvcc --version` to verify installation
-- You can always build without CUDA using `-DENABLE_CUDA=OFF`
+- You can always build without CUDA using `-DLMP_ENABLE_CUDA=OFF`
 
 **OpenMP linking errors:**
 - Install OpenMP development packages

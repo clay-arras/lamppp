@@ -5,7 +5,7 @@
 #include "lamppp/tensor/dispatch_type.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 
-#ifdef ENABLE_CUDA
+#ifdef LMP_ENABLE_CUDA
 #include "lamppp/tensor/cuda/memory.cuh"
 #endif
 
@@ -48,7 +48,7 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
       break;
     }
     case DeviceType::CUDA: {
-#ifdef ENABLE_CUDA
+#ifdef LMP_ENABLE_CUDA
       cuda::vecCopyHostToDevice(src, dest, size, src_dtype, dest_dtype);
 #else
       LMP_INTERNAL_ASSERT(false) << "Enable CUDA is false";

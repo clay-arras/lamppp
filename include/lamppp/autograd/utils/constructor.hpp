@@ -2,7 +2,7 @@
 
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/common/config.hpp"
-#include "variable.hpp"
+#include "lamppp/autograd/variable.hpp"
 
 namespace lmp::autograd {
 

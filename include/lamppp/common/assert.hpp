@@ -6,7 +6,7 @@
 #include <sstream>
 #include "stream.hpp"
 
-#ifdef ENABLE_CUDA
+#ifdef LMP_ENABLE_CUDA
 #include <cuda_runtime.h>
 #endif
 
@@ -55,7 +55,7 @@ public:
     }
 };
 
-#ifdef ENABLE_CUDA
+#ifdef LMP_ENABLE_CUDA
 class CudaAssertStream : public BaseStream<CudaAssertStream> {
 public:
     CudaAssertStream(const char* file, int line, const char* func, cudaError_t err) {
@@ -91,7 +91,7 @@ struct Voidify {
     (cond) ? (void)0 : ::lmp::detail::Voidify() & ::lmp::detail::AssertStream(__FILE__, __LINE__, __func__, #cond)
 
 
-#ifdef ENABLE_CUDA
+#ifdef LMP_ENABLE_CUDA
 
 namespace lmp::detail {
 

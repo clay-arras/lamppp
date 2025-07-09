@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.24)
 project(lamppp LANGUAGES CXX)
 
-option(ENABLE_CUDA "Compile with CUDA support" OFF)
-option(ENABLE_COVERAGE "Enable code coverage" OFF)
+option(LMP_ENABLE_CUDA "Compile with CUDA support" OFF)
+option(LMP_ENABLE_COVERAGE "Enable code coverage" OFF)
+option(LMP_ENABLE_TEST "Enable testing" OFF)
+option(LMP_ENABLE_BENCH "Enable benchmarks" OFF)
 
-if(ENABLE_CUDA)
-  add_definitions(-DENABLE_CUDA)
+if(LMP_ENABLE_CUDA)
+  add_definitions(-DLMP_ENABLE_CUDA)
 endif()
 
 # CORE CONFIG ---------------------------------
@@ -28,7 +30,7 @@ set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (ENABLE_CUDA)
+if (LMP_ENABLE_CUDA)
   enable_language(CUDA)
   set(CMAKE_CUDA_STANDARD 17)
   set(CMAKE_CUDA_STANDARD_REQUIRED ON)
@@ -44,7 +46,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # CORE TARGETS ---------------------------------
 set(DEFAULT_DTYPE "Float32")
-if(ENABLE_CUDA)
+if(LMP_ENABLE_CUDA)
   set(DEFAULT_DEVICE "CUDA")
 else()
   set(DEFAULT_DEVICE "CPU")
@@ -152,7 +154,7 @@ if (DOXYGEN_FOUND)
 endif()
 
 # COVERAGE ---------------------------------  
-if(ENABLE_COVERAGE)
+if(LMP_ENABLE_COVERAGE)
   include(CTest)
   set(CMAKE_CXX_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage")
   set(CMAKE_EXE_LINKER_FLAGS_DEBUG "--coverage")

@@ -23,7 +23,7 @@ set(TENSOR_SOURCES
   utils/align_utils.cpp
 )
 
-if (ENABLE_CUDA)
+if (LMP_ENABLE_CUDA)
   enable_language(CUDA)
   list(APPEND TENSOR_SOURCES
     cuda/matrix.cu
@@ -42,12 +42,12 @@ add_library(tensor_core SHARED ${TENSOR_SOURCES})
 target_link_libraries(tensor_core PUBLIC lamppp_compile_config)
 
 # Apply coverage flags if enabled
-if(ENABLE_COVERAGE)
+if(LMP_ENABLE_COVERAGE)
   target_compile_options(tensor_core PRIVATE --coverage -O0 -g)
   target_link_options(tensor_core PRIVATE --coverage)
 endif()
 
-if (ENABLE_CUDA)
+if (LMP_ENABLE_CUDA)
   set_target_properties(tensor_core PROPERTIES
     CUDA_SEPARABLE_COMPILATION ON 
     CUDA_RESOLVE_DEVICE_SYMBOLS ON

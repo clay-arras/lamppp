@@ -45,7 +45,7 @@ target_link_libraries(playground
 pybind11_add_module(lamppp_module stress/autograd_pybind.cpp)
 target_link_libraries(lamppp_module PRIVATE lamppp)
 
-if(ENABLE_COVERAGE)
+if(LMP_ENABLE_COVERAGE)
   target_compile_options(tensor_tests PRIVATE --coverage -O0 -g)
   target_link_options(tensor_tests PRIVATE --coverage)
   target_compile_options(autograd_tests PRIVATE --coverage -O0 -g)

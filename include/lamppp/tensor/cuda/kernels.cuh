@@ -158,6 +158,8 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
 
 TensorImpl transpose_cuda(const TensorImpl& a);
 TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b);
+TensorImpl conv_cuda(const TensorImpl& input, const TensorImpl& kernel,
+                     size_t stride, size_t padding, size_t dilation);
 
 TensorImpl sum_cuda(const TensorImpl& a, size_t axis);
 TensorImpl max_cuda(const TensorImpl& a, size_t axis);

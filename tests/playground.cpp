@@ -1,28 +1,24 @@
-#include <cuda_runtime_api.h>
 #include <functional>
 #include "lamppp/lamppp.hpp"
 #include "lamppp/nets/layers/linear.hpp"
 #include "lamppp/nets/parameter.hpp"
+#include "lamppp/tensor/native/conv_ops.hpp"
 
 int main() {
-  lmp::Variable weights1 = lmp::autograd::rand({784, 256}, true);
+  auto input = lmp::tensor::Tensor(std::vector<float>{
+      1, -4, 2, 7, 9,
+      10, 4, -2, 27, 0,
+      0, 24, 2, 2, 10,
+      1, 4, 0, 2, 1,
+      1, 4, 0, 2, 1
+  }, std::vector<size_t>{5, 5}, lmp::DeviceType::CUDA);
 
-  for (int i = 0; i < 10000; i++) {
-    lmp::Variable weights2 = lmp::autograd::rand({256, 10}, true);
-    lmp::Variable loss = lmp::matmul(weights1, weights2);
-    loss.backward();
+  auto kernel = lmp::tensor::Tensor(std::vector<float>{
+      0, 1, -1,
+      1, 3, 0,
+      1, -3, 0
+  }, std::vector<size_t>{3, 3}, lmp::DeviceType::CUDA);
 
-    float learning_rate = 0.01;
-    weights1 = lmp::Variable(weights1.data() - learning_rate * weights1.grad(),
-                             true);  // grad_fn is cleared
-  }
-
-  lmp::nets::Linear layer(20, 10);
-  for (int i = 0; i < 5; i++) {
-    for (std::reference_wrapper<lmp::nets::Parameter> params :
-         layer.parameters()) {
-      std::cout << params.get() << std::endl;
-      params.get() = lmp::nets::Parameter(params.get() - 1);
-    }
-  }
+  lmp::Tensor output = lmp::tensor::ops::conv(input, kernel, 2, 4, 2);
+  std::cout << output << std::endl;
 }

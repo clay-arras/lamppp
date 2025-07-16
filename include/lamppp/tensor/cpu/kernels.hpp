@@ -158,6 +158,8 @@ TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val);
 
 TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl transpose_cpu(const TensorImpl& a);
+TensorImpl conv_cpu(const TensorImpl& input, const TensorImpl& kernel,
+                     size_t stride, size_t padding, size_t dilation);
 
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
 TensorImpl max_cpu(const TensorImpl& a, size_t axis);

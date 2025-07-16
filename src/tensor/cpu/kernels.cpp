@@ -6,6 +6,8 @@
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/tensor/cpu/reduct.hpp"
 #include "lamppp/tensor/cpu/unary.hpp"
+#include "lamppp/tensor/cpu/conv.hpp"
+#include "lamppp/tensor/native/conv_ops.hpp"
 #include "lamppp/tensor/native/expand_ops.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 
@@ -95,6 +97,40 @@ TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
+TensorImpl conv_cpu(const TensorImpl& input, const TensorImpl& kernel,
+                     size_t stride, size_t padding, size_t dilation) {
+  LMP_CHECK(input.shape().size() == 2 && kernel.shape().size() == 2)
+      << "Both matrices must be 2D.";
+
+  DataType out_dtype = type_upcast(input.type(), kernel.type());
+  size_t out_w = ((input.shape()[0] + 2 * padding -
+                  dilation * (kernel.shape()[0] - 1) - 1) /
+                     stride) +
+                 1;
+  size_t out_h = ((input.shape()[1] + 2 * padding -
+                  dilation * (kernel.shape()[1] - 1) - 1) /
+                     stride) +
+                 1;
+
+  return LMP_DISPATCH_ALL_TYPES(input.type(), [&] {
+    using in_type_t = scalar_t;
+    return LMP_DISPATCH_ALL_TYPES(kernel.type(), [&] {
+      using kern_type_t = scalar_t;
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type_t = scalar_t;
+        std::vector<size_t> out_shape{out_w, out_h};
+        Storage c_storage(out_w * out_h * sizeof(out_type_t), DeviceType::CPU);
+        ::lmp::tensor::detail::cpu::cpuConv2d<in_type_t, kern_type_t, out_type_t>(
+            static_cast<const in_type_t*>(input.data()),
+            static_cast<const kern_type_t*>(kernel.data()),
+            static_cast<out_type_t*>(c_storage.data()), stride, padding, dilation, 
+          input.shape().data(), kernel.shape().data(), out_shape.data());
+        return TensorImpl(c_storage, out_shape, out_dtype);
+      });
+    });
+  });
+}
+
 #define DECLARE_REDUCT_OPS_CPU(args) DECLARE_REDUCT_OPS_CPU_HELPER args
 #define DECLARE_REDUCT_OPS_CPU_HELPER(op, functor)        \
   TensorImpl op##_cpu(const TensorImpl& a, size_t axis) { \
@@ -131,6 +167,7 @@ LMP_REGISTER_DISPATCH(ops::tan_stub, DeviceType::CPU, tan_cpu);
 
 LMP_REGISTER_DISPATCH(ops::transpose_stub, DeviceType::CPU, transpose_cpu);
 LMP_REGISTER_DISPATCH(ops::matmul_stub, DeviceType::CPU, matmul_cpu);
+LMP_REGISTER_DISPATCH(ops::conv_stub, DeviceType::CPU, conv_cpu);
 
 LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CPU, sum_cpu);
 LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CPU, max_cpu);

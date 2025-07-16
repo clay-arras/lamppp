@@ -6,6 +6,8 @@
 #include "lamppp/tensor/cuda/matrix.cuh"
 #include "lamppp/tensor/cuda/reduct.cuh"
 #include "lamppp/tensor/cuda/unary.cuh"
+#include "lamppp/tensor/cuda/conv.cuh"
+#include "lamppp/tensor/native/conv_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cuda {
@@ -94,6 +96,41 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
+TensorImpl conv_cuda(const TensorImpl& input, const TensorImpl& kernel,
+                     size_t stride, size_t padding, size_t dilation) {
+  LMP_CHECK(input.shape().size() == 2 && kernel.shape().size() == 2)
+      << "Both matrices must be 2D.";
+
+  DataType out_dtype = type_upcast(input.type(), kernel.type());
+  size_t out_w = ((input.shape()[0] + 2 * padding -
+                  dilation * (kernel.shape()[0] - 1) - 1) /
+                     stride) +
+                 1;
+  size_t out_h = ((input.shape()[1] + 2 * padding -
+                  dilation * (kernel.shape()[1] - 1) - 1) /
+                     stride) +
+                 1;
+
+  return LMP_DISPATCH_ALL_TYPES(input.type(), [&] {
+    using in_type_t = scalar_t;
+    return LMP_DISPATCH_ALL_TYPES(kernel.type(), [&] {
+      using kern_type_t = scalar_t;
+      return LMP_DISPATCH_ALL_TYPES(out_dtype, [&] {
+        using out_type_t = scalar_t;
+        std::vector<size_t> out_shape{out_w, out_h};
+        Storage c_storage(out_w * out_h * sizeof(out_type_t), DeviceType::CUDA);
+        ::lmp::tensor::detail::cuda::cudaConv2d<in_type_t, kern_type_t, out_type_t>(
+            static_cast<const in_type_t*>(input.data()),
+            static_cast<const kern_type_t*>(kernel.data()),
+            static_cast<out_type_t*>(c_storage.data()), stride, padding, dilation, 
+          input.shape().data(), kernel.shape().data(), out_shape.data());
+        return TensorImpl(c_storage, out_shape, out_dtype);
+      });
+    });
+  });
+}
+
+
 #define DECLARE_REDUCT_OPS_CUDA(args) DECLARE_REDUCT_OPS_CUDA_HELPER args
 #define DECLARE_REDUCT_OPS_CUDA_HELPER(op, functor)        \
   TensorImpl op##_cuda(const TensorImpl& a, size_t axis) { \
@@ -130,6 +167,7 @@ LMP_REGISTER_DISPATCH(ops::clamp_stub, DeviceType::CUDA, clamp_cuda);
 
 LMP_REGISTER_DISPATCH(ops::matmul_stub, DeviceType::CUDA, matmul_cuda);
 LMP_REGISTER_DISPATCH(ops::transpose_stub, DeviceType::CUDA, transpose_cuda);
+LMP_REGISTER_DISPATCH(ops::conv_stub, DeviceType::CUDA, conv_cuda);
 
 LMP_REGISTER_DISPATCH(ops::sum_stub, DeviceType::CUDA, sum_cuda);
 LMP_REGISTER_DISPATCH(ops::max_stub, DeviceType::CUDA, max_cuda);

@@ -9,6 +9,7 @@ set(AUTOGRAD_SOURCES
   functions/reduct_ops.cpp
   functions/expand_ops.cpp
   functions/view_ops.cpp
+  functions/conv_ops.cpp
 )
 
 add_library(autograd_core SHARED ${AUTOGRAD_SOURCES})

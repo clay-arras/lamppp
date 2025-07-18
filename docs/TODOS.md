@@ -13,12 +13,15 @@
 - add image classification layers like maxpool, conv2d, and batchnorm
 - we need to add a shape(), device(), and type() to Variable (type might fail due to promotion in backward)
 
-- add default value to reduct s.t. it sums over EVERYTHING
-
 
 ### convolutions: 
 
-- implement tensor
-    - implement cpu version    
-    - manual testing
-- implement autograd
+<!-- - implement tensor -->
+<!-- - implement cpu version     -->
+<!-- - manual testing -->
+<!-- - implement autograd -->
+
+
+- implement conv1d2d3d
+- implement transpose convolution
+- implement depthwise convolution

@@ -7,10 +7,16 @@
 
 namespace lmp::tensor::ops {
 
-using conv_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&, size_t, size_t, size_t);
+using conv1d_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&, size_t, size_t, size_t);
+using conv2d_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&, size_t, size_t, size_t);
+using conv3d_fn = TensorImpl (*)(const TensorImpl&, const TensorImpl&, size_t, size_t, size_t);
 
-LMP_DECLARE_DISPATCH(conv_fn, conv_stub);
+LMP_DECLARE_DISPATCH(conv1d_fn, conv1d_stub);
+LMP_DECLARE_DISPATCH(conv2d_fn, conv2d_stub);
+LMP_DECLARE_DISPATCH(conv3d_fn, conv3d_stub);
 
-Tensor conv(const Tensor& input, const Tensor& kernel, size_t stride, size_t padding, size_t dilation);
+Tensor conv1d(const Tensor& input, const Tensor& kernel, size_t stride, size_t padding, size_t dilation);
+Tensor conv2d(const Tensor& input, const Tensor& kernel, size_t stride, size_t padding, size_t dilation);
+Tensor conv3d(const Tensor& input, const Tensor& kernel, size_t stride, size_t padding, size_t dilation);
 
 }  // namespace lmp::tensor::ops

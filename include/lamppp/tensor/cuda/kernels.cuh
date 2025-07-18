@@ -6,6 +6,7 @@
 #include "lamppp/tensor/native/expand_ops.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/native/unary_ops.hpp"
+#include "lamppp/tensor/native/conv_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 #include <cmath>
 
@@ -158,7 +159,11 @@ TensorImpl clamp_cuda(const TensorImpl& a, Scalar min_val, Scalar max_val);
 
 TensorImpl transpose_cuda(const TensorImpl& a);
 TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b);
-TensorImpl conv_cuda(const TensorImpl& input, const TensorImpl& kernel,
+TensorImpl conv1d_cuda(const TensorImpl& input, const TensorImpl& kernel,
+                     size_t stride, size_t padding, size_t dilation);
+TensorImpl conv2d_cuda(const TensorImpl& input, const TensorImpl& kernel,
+                     size_t stride, size_t padding, size_t dilation);
+TensorImpl conv3d_cuda(const TensorImpl& input, const TensorImpl& kernel,
                      size_t stride, size_t padding, size_t dilation);
 
 TensorImpl sum_cuda(const TensorImpl& a, size_t axis);

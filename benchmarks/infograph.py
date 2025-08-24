@@ -241,6 +241,63 @@ def plot_speedup_analysis(data):
 speedup_data = plot_speedup_analysis(df)
 
 # %%
+# Print detailed speedup analysis for CUDA
+print("=" * 80)
+print("SPEEDUP ANALYSIS: How much faster is LMP compared to PyTorch on CUDA")
+print("=" * 80)
+
+if not speedup_data.empty:
+    # Filter for CUDA data only
+    cuda_speedup = speedup_data[speedup_data['device'] == 'CUDA']
+    
+    if not cuda_speedup.empty:
+        # Overall average speedup on CUDA
+        overall_avg = cuda_speedup['speedup'].mean()
+        print(f"\nOverall Average Speedup on CUDA: {overall_avg:.2f}x")
+        print(f"This means LMP is {overall_avg:.2f}x faster than PyTorch on average on CUDA")
+        
+        # Speedup by pass type
+        print("\n" + "-" * 50)
+        print("Speedup by Pass Type:")
+        print("-" * 50)
+        for pass_type in cuda_speedup['forward_backward'].unique():
+            pass_speedup = cuda_speedup[cuda_speedup['forward_backward'] == pass_type]['speedup'].mean()
+            print(f"{pass_type:15}: {pass_speedup:.2f}x faster")
+        
+        # Speedup by operation
+        print("\n" + "-" * 50)
+        print("Speedup by Operation (top 10 fastest):")
+        print("-" * 50)
+        op_speedup = cuda_speedup.groupby('operation')['speedup'].mean().sort_values(ascending=False)
+        for op, speedup in op_speedup.head(10).items():
+            print(f"{op:20}: {speedup:.2f}x faster")
+        
+        # Operations where LMP is slower (speedup < 1)
+        slower_ops = op_speedup[op_speedup < 1]
+        if not slower_ops.empty:
+            print("\n" + "-" * 50)
+            print("Operations where LMP is slower:")
+            print("-" * 50)
+            for op, speedup in slower_ops.items():
+                slowdown = 1 / speedup
+                print(f"{op:20}: {slowdown:.2f}x slower")
+        
+        # Best and worst performing operations
+        if len(op_speedup) > 0:
+            best_op = op_speedup.idxmax()
+            worst_op = op_speedup.idxmin()
+            print(f"\nBest performing operation: {best_op} ({op_speedup[best_op]:.2f}x faster)")
+            print(f"Worst performing operation: {worst_op} ({op_speedup[worst_op]:.2f}x)")
+    else:
+        print("No CUDA speedup data available")
+else:
+    print("No speedup data available")
+
+print("=" * 80)
+
+
+
+# %%
 # Operation-specific Performance Visualization
 def plot_operation_performance(data):
     """Plot performance comparison by operation type"""

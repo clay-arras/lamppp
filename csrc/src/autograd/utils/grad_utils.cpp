@@ -1,5 +1,4 @@
 #include "lamppp/autograd/utils/grad_utils.hpp"
-#include <cuda_runtime_api.h>
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/native/reduct_ops.hpp"
 #include "lamppp/tensor/tensor.hpp"

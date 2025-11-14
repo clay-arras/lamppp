@@ -77,6 +77,7 @@ add_subdirectory(csrc/src/nets)
 add_library(lamppp INTERFACE)
 target_link_libraries(lamppp INTERFACE autograd_core tensor_core nets_core)
 
+add_subdirectory(csrc/bindings)
 add_subdirectory(tests)
 add_subdirectory(benchmarks)
 add_subdirectory(examples)

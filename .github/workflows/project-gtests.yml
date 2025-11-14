@@ -72,5 +72,5 @@ jobs:
 
       - name: Run GTests
         run: |
-          build/build/autograd_tests
-          build/build/tensor_tests
+          build/tests/autograd_tests
+          build/tests/tensor_tests

@@ -1,10 +1,11 @@
 
+requirements: 
+- need to export a python module: already done.
+- need to figure out how to LINK the cpp .so file to the module
+- finally need to figure out how to export said module WITH the pybind.
+- preferrably uses poetry
 
-<!-- - decision: do I keep the unique_ptr OR do I do shared ptr? 
-- default behavior: do I want Modules to be COPIABLE, or one-to-many PIMPL type deal? -->
 
-- do I want maps to AnyModule (type erased interface) OR to a shared_ptr<ModuleImpl>???
-- so we DO need a ptr() function that returns a pointer (based on ModuleImpl) to the actual type
-
-
-- so we just have a virtual function in Placeholder, concrete impl in Holder, and a interface method in AnyModule
+ok. we want poetry to STAY as our package manager
+we want to replicate the pyproject.toml and CMakeLists.txt inside of scikit_build_example
+we want to install that.

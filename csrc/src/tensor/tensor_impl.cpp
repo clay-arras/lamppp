@@ -138,7 +138,7 @@ void TensorImpl::print(std::ostream& os) const {
       os << ", ";
     }
   }
-  os << "], dtype=" << this->type_ << "), device=" << this->device() << ")";
+  os << "], dtype=" << this->type_ << ", device=" << this->device() << ")";
 }
 
 }  // namespace lmp::tensor

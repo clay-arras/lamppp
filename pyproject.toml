@@ -1,5 +1,5 @@
 [project]
-name = "lamppp"
+name = "pylamp"
 version = "0.1.0"
 description = ""
 authors = [
@@ -22,7 +22,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-package-mode = false
+package-mode = true
 packages = [
-    { include = "lamppp", from = "build"}
+    { include = "pylamp", from = "src"}
 ]

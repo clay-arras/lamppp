@@ -18,7 +18,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(pylamp, m) {
+PYBIND11_MODULE(_C, m) {
     init_data_type(m);
     init_device_type(m);
     init_tensor(m);

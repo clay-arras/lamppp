@@ -1,11 +1,14 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
-#include <cuda_runtime_api.h>
 #include <array>
 #include <functional>
 #include <string>
 #include "lamppp/lamppp.hpp"
+
+#ifdef LMP_ENABLE_CUDA
+#include <cuda_runtime_api.h>
+#endif
 
 template <size_t N>
 using OperatorFunction = std::function<lmp::autograd::Variable(
@@ -33,8 +36,10 @@ void register_forward(const std::string& name, OperatorFunction<N> op_fn,
       })
       ->MinWarmUpTime(kWarmUpTime)
       ->Teardown([](const benchmark::State& state) {
+#ifdef LMP_ENABLE_CUDA
         cudaStreamSynchronize(0);
         cudaDeviceSynchronize();
+#endif
       });
 }
 
@@ -55,7 +60,9 @@ void register_backward(const std::string& name, OperatorFunction<N> op_fn,
       })
       ->MinWarmUpTime(kWarmUpTime)
       ->Teardown([](const benchmark::State& state) {
+#ifdef LMP_ENABLE_CUDA
         cudaStreamSynchronize(0);
         cudaDeviceSynchronize();
+#endif
       });
 }

@@ -79,8 +79,12 @@ target_link_libraries(lamppp INTERFACE autograd_core tensor_core nets_core)
 
 add_subdirectory(docs/examples)
 add_subdirectory(csrc/bindings)
-add_subdirectory(tests)
-add_subdirectory(benchmarks)
+if(LMP_ENABLE_TEST)
+  add_subdirectory(tests)
+endif()
+if(LMP_ENABLE_BENCH)
+  add_subdirectory(benchmarks)
+endif()
 
 # INSTALLATION ---------------------------------
 install(

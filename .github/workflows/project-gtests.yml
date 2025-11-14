@@ -59,7 +59,7 @@ jobs:
           sudo make install
 
       - name: Build CMake project
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=ON -DLMP_ENABLE_TEST=ON
 
       - name: Build lamppp module
         run: cmake --build build --config Debug --parallel
@@ -72,5 +72,5 @@ jobs:
 
       - name: Run GTests
         run: |
-          build/autograd_tests
-          build/tensor_tests
+          build/build/autograd_tests
+          build/build/tensor_tests

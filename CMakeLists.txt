@@ -53,8 +53,8 @@ else()
 endif()
 
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/lamppp/common/config.hpp.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/lamppp/common/config.hpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/include/lamppp/common/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/csrc/include/lamppp/common/config.hpp"
 )
 
 add_library(lamppp_compile_config INTERFACE)
@@ -65,15 +65,15 @@ target_compile_options(lamppp_compile_config
 )
 target_include_directories(lamppp_compile_config
   INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/csrc/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/csrc/include>
     $<INSTALL_INTERFACE:include>
     ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
 )
 
-add_subdirectory(src/tensor)
-add_subdirectory(src/autograd)
-add_subdirectory(src/nets)
+add_subdirectory(csrc/src/tensor)
+add_subdirectory(csrc/src/autograd)
+add_subdirectory(csrc/src/nets)
 add_library(lamppp INTERFACE)
 target_link_libraries(lamppp INTERFACE autograd_core tensor_core nets_core)
 
@@ -102,7 +102,7 @@ install(
 )
 
 install(
-  DIRECTORY include/
+  DIRECTORY csrc/include/
   DESTINATION include
 )
 
@@ -114,8 +114,8 @@ endif()
 
 # FORMATTING ---------------------------------
 file(GLOB_RECURSE ALL_SOURCE
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/src/tensor/*.[ch]u"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/autograd/*.[ch]pp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]u"
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/autograd/*.[ch]pp"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
   "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
 )
@@ -134,7 +134,7 @@ endif()
 # DOCUMENTATION ---------------------------------
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
-  set(DOXYGEN_INPUT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/docs")
+  set(DOXYGEN_INPUT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src ${CMAKE_CURRENT_SOURCE_DIR}/csrc/include ${CMAKE_CURRENT_SOURCE_DIR}/docs")
   set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/docs")
   set(PROJECT_NAME ${CMAKE_PROJECT_NAME})
   
@@ -146,7 +146,7 @@ if (DOXYGEN_FOUND)
 
   doxygen_add_docs(
     docs
-    "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/docs"
+    "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src" "${CMAKE_CURRENT_SOURCE_DIR}/csrc/include" "${CMAKE_CURRENT_SOURCE_DIR}/docs"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DOXYFILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/docs
@@ -171,7 +171,7 @@ if(LMP_ENABLE_COVERAGE)
   add_custom_target(coverage_cpp
     COMMAND ctest --test-dir ${CMAKE_BINARY_DIR} -L library_tests -T Test -T Coverage
     COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file ${CMAKE_BINARY_DIR}/coverage.info --ignore-errors mismatch,gcov,negative,source --rc geninfo_unexecuted_blocks=1
-    COMMAND lcov --extract ${CMAKE_BINARY_DIR}/coverage.info '${CMAKE_SOURCE_DIR}/src/*' '${CMAKE_SOURCE_DIR}/include/*' -o ${CMAKE_BINARY_DIR}/cpp_filtered.info
+    COMMAND lcov --extract ${CMAKE_BINARY_DIR}/coverage.info '${CMAKE_SOURCE_DIR}/csrc/src/*' '${CMAKE_SOURCE_DIR}/csrc/include/*' -o ${CMAKE_BINARY_DIR}/cpp_filtered.info
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running C++ tests and generating coverage data"
     DEPENDS coverage_clean
@@ -180,7 +180,7 @@ if(LMP_ENABLE_COVERAGE)
   add_custom_target(coverage_python
     COMMAND poetry run pytest tests/
     COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file ${CMAKE_BINARY_DIR}/python_cpp_coverage.info --ignore-errors mismatch,gcov,negative,source --rc geninfo_unexecuted_blocks=1
-    COMMAND lcov --extract ${CMAKE_BINARY_DIR}/python_cpp_coverage.info '${CMAKE_SOURCE_DIR}/src/*' '${CMAKE_SOURCE_DIR}/include/*' -o ${CMAKE_BINARY_DIR}/python_filtered.info
+    COMMAND lcov --extract ${CMAKE_BINARY_DIR}/python_cpp_coverage.info '${CMAKE_SOURCE_DIR}/csrc/src/*' '${CMAKE_SOURCE_DIR}/csrc/include/*' -o ${CMAKE_BINARY_DIR}/python_filtered.info
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running Python tests and capturing C++ coverage data"
     DEPENDS coverage_clean

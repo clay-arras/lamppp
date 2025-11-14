@@ -11,3 +11,4 @@ data/
 coverage/
 .coverage
 **/.ipynb_checkpoints/
+dist/

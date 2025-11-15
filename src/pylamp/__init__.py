@@ -1,3 +1,4 @@
 from __future__ import annotations
 
-from .tensor import foo
+from .Tensor import Tensor
+from .nets.Module import Module

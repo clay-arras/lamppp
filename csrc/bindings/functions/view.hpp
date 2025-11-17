@@ -5,9 +5,7 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DataType;
-
-void init_view(py::module_& m) {
+inline void init_view(py::module_& m) {
     m.def("reshape", &lmp::autograd::ops::reshape);
     m.def("squeeze", &lmp::autograd::ops::squeeze);
     m.def("expand_dims", &lmp::autograd::ops::expand_dims);

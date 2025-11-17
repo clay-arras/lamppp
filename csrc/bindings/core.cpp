@@ -8,6 +8,7 @@
 #include "device_type.hpp"
 #include "tensor.hpp"
 #include "variable.hpp"
+#include "constructor.hpp"
 #include "functions/expand.hpp"
 #include "functions/binary.hpp"
 #include "functions/unary.hpp"
@@ -16,13 +17,12 @@
 #include "functions/view.hpp"
 #include "functions/conv.hpp"
 
-namespace py = pybind11;
-
 PYBIND11_MODULE(_C, m) {
     init_data_type(m);
     init_device_type(m);
     init_tensor(m);
     init_variable(m);
+    init_constructor(m);
 
     init_expand(m);
     init_binary(m);

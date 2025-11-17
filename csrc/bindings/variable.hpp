@@ -16,7 +16,7 @@ using lmp::tensor::Tensor;
 #define LMP_VAR_OVERLOAD(x) .def("__" #x "__", &lmp::autograd::ops::x)
 #define LMP_VAR_FUNCTION(x) .def(#x, &lmp::autograd::ops::x)
 
-void init_variable_overloads(py::class_<Variable> &cls) {
+inline void init_variable_overloads(py::class_<Variable> &cls) {
   cls
     LMP_FOR_EACH_CARTESIAN_PRODUCT(LMP_VAR_OVERLOAD, 
       (add, sub, mul, pow, matmul, neg, abs, eq, lt, le, gt, ge, ne))
@@ -30,7 +30,7 @@ void init_variable_overloads(py::class_<Variable> &cls) {
 #undef LMP_VAR_OVERLOAD
 #undef LMP_VAR_FUNCTION
 
-void init_variable(py::module_& m) {
+inline void init_variable(py::module_& m) {
   auto cls = py::class_<Variable>(m, "_Variable")
       .def(py::init<Tensor, bool>(), py::arg("data"),
            py::arg("requires_grad"))

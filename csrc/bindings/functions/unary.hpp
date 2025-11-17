@@ -5,9 +5,7 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DataType;
-
-void init_unary(py::module_& m) {
+inline void init_unary(py::module_& m) {
     m.def("neg", &lmp::autograd::ops::neg);
     m.def("exp", &lmp::autograd::ops::exp);
     m.def("log", &lmp::autograd::ops::log);

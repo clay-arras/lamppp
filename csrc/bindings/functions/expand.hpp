@@ -5,9 +5,7 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DataType;
-
-void init_expand(py::module_& m) {
+inline void init_expand(py::module_& m) {
     m.def("add", &lmp::autograd::ops::add);
     m.def("sub", &lmp::autograd::ops::sub);
     m.def("mul", &lmp::autograd::ops::mul);

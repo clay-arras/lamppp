@@ -7,10 +7,9 @@ namespace py = pybind11;
 
 using lmp::tensor::DeviceType;
 using lmp::tensor::DataType;
-using lmp::tensor::DeviceType;
 using lmp::tensor::Tensor;
 
-void init_tensor(py::module_& m) {
+inline void init_tensor(py::module_& m) {
   py::class_<Tensor>(m, "_Tensor")
       .def(py::init<const std::vector<double>, const std::vector<size_t>,
                     DeviceType, DataType>(),

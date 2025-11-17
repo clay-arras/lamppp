@@ -5,9 +5,7 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DataType;
-
-void init_reduct(py::module_& m) {
+inline void init_reduct(py::module_& m) {
     m.def("sum", &lmp::autograd::ops::sum);
     m.def("max", &lmp::autograd::ops::max);
     m.def("min", &lmp::autograd::ops::min);

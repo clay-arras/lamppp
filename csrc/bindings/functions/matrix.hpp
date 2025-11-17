@@ -5,9 +5,7 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DataType;
-
-void init_matrix(py::module_& m) {
+inline void init_matrix(py::module_& m) {
     m.def("matmul", &lmp::autograd::ops::matmul);
     m.def("transpose", &lmp::autograd::ops::transpose);
 }

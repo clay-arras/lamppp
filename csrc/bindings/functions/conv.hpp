@@ -5,9 +5,7 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DataType;
-
-void init_conv(py::module_& m) {
+inline void init_conv(py::module_& m) {
 
 }
 

@@ -1,53 +1,55 @@
 import functools
-from pylamp._C import *
+from math import prod
+from pylamp._C import (
+    _Variable,
+    _Tensor,
+    dtype,
+    device
+)
+
+Scalar = int | float
+
+
+def _flatten_array(arr) -> tuple[list[Scalar], list[int]]:
+    shape = []
+
+    def _rec(x, depth=0):
+        if isinstance(x, list):
+            if len(shape) == depth:
+                shape.append(len(x))
+            elif shape[depth] != len(x):
+                raise ValueError("Pylamp: array must be uniform")
+            for i in x:
+                yield from _rec(i, depth + 1)
+
+        elif isinstance(x, Scalar):
+            yield x
+        else:
+            raise ValueError("Pylamp: invalid input type")
+
+    return list(_rec(arr)), shape
+
 
 @functools.total_ordering
 class Tensor(_Variable):
-    def __init__(self) -> None:
-        pass
+    def __init__(
+        self,
+        *args,
+        requires_grad: bool = False,
+        device: device = device.cpu,
+        dtype: dtype = dtype.float32,
+    ) -> None:
+        if len(args) == 1 and isinstance(args[0], list):
+            data, shape = _flatten_array(args[0])
+            ten = _Tensor(data, shape, device, dtype)
+            super().__init__(ten, requires_grad)
+        elif len(args) >= 1 and all([isinstance(arg, Scalar) for arg in args]):
+            # TODO: this will be slow
+            ten = _Tensor([0] * prod(args), args, device, dtype)
+            super().__init__(ten, requires_grad)
 
-    def __add__(self, value: object, /) -> "Tensor":
-        pass
+        else:
+            raise ValueError("Pylamp: invalid Tensor constructor arguments")
 
-    def __radd__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __sub__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __rsub__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __mul__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __rmul__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __truediv__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __rtruediv__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __pow__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __matmul__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __rmatmul__(self, value: object, /) -> "Tensor":
-        pass
-
-    def __neg__(self) -> "Tensor":
-        pass
-
-    def __abs__(self) -> "Tensor":
-        pass
-
-    def __eq__(self, value: object, /) -> "Tensor":
-        pass
-    
-    def __lt__(self, value: object, /) -> "Tensor":
-        pass
-        
+    def __repr__(self) -> str:
+        return super().__repr__()

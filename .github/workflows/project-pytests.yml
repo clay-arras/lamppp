@@ -3,6 +3,12 @@ name: project-pytests
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Enable tmate debugging session'
+        required: false
+        default: 'false'
 
 jobs:
   greet:
@@ -47,6 +53,12 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "export PATH=$HOME/.local/bin:\$PATH" >> $GITHUB_ENV
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        with:
+          limit-access-to-actor: true
 
       - name: Install Python dependencies
         run: |

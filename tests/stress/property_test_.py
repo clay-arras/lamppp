@@ -23,7 +23,8 @@ from hypothesis import Verbosity, given, settings
 from hypothesis.strategies import composite, lists, integers, sampled_from, permutations
 import torch
 import math
-import lamppp_module as lamppp
+
+# import lamppp_module as lamppp
 
 
 """

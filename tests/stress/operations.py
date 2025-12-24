@@ -1,6 +1,6 @@
-import lamppp_module as lamppp
+import pylamp
 import torch
-from sample_helper import sample_matrices
+from testutils import sample_matrices
 
 
 class Operation:
@@ -21,7 +21,7 @@ class Add(Operation):
         self.ranges = [[-1000, 1000]]
         self.sampler = lambda: sample_matrices(2, self.ranges)
         self.torch_fn = torch.add
-        self.cpp_fn = lamppp.add
+        self.cpp_fn = pylamp.add
 
 
 class Sub(Operation):
@@ -31,7 +31,7 @@ class Sub(Operation):
         self.sampler = lambda: sample_matrices(2, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = torch.sub
-        self.cpp_fn = lamppp.sub
+        self.cpp_fn = pylamp.sub
 
 
 class Mul(Operation):
@@ -41,7 +41,7 @@ class Mul(Operation):
         self.sampler = lambda: sample_matrices(2, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = torch.mul
-        self.cpp_fn = lamppp.mul
+        self.cpp_fn = pylamp.mul
 
 
 class Div(Operation):
@@ -51,7 +51,7 @@ class Div(Operation):
         self.sampler = lambda: sample_matrices(2, self.ranges)
         self.ranges = [[-1000, -1e-3], [1e-3, 1000]]
         self.torch_fn = torch.div
-        self.cpp_fn = lamppp.div
+        self.cpp_fn = pylamp.div
 
 
 class Exp(Operation):
@@ -61,7 +61,7 @@ class Exp(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-10, 10]]
         self.torch_fn = torch.exp
-        self.cpp_fn = lamppp.exp
+        self.cpp_fn = pylamp.exp
 
 
 class Log(Operation):
@@ -71,7 +71,7 @@ class Log(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[1e-3, 1000]]
         self.torch_fn = torch.log
-        self.cpp_fn = lamppp.log
+        self.cpp_fn = pylamp.log
 
 
 class Sqrt(Operation):
@@ -81,7 +81,7 @@ class Sqrt(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[1e-3, 1000]]
         self.torch_fn = torch.sqrt
-        self.cpp_fn = lamppp.sqrt
+        self.cpp_fn = pylamp.sqrt
 
 
 class Abs(Operation):
@@ -91,7 +91,7 @@ class Abs(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = torch.abs
-        self.cpp_fn = lamppp.abs
+        self.cpp_fn = pylamp.abs
 
 
 class Sin(Operation):
@@ -101,7 +101,7 @@ class Sin(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-10, 10]]
         self.torch_fn = torch.sin
-        self.cpp_fn = lamppp.sin
+        self.cpp_fn = pylamp.sin
 
 
 class Cos(Operation):
@@ -111,7 +111,7 @@ class Cos(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-10, 10]]
         self.torch_fn = torch.cos
-        self.cpp_fn = lamppp.cos
+        self.cpp_fn = pylamp.cos
 
 
 class Tan(Operation):
@@ -121,7 +121,7 @@ class Tan(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1.5, 1.5]]
         self.torch_fn = torch.tan
-        self.cpp_fn = lamppp.tan
+        self.cpp_fn = pylamp.tan
 
 
 class Clamp(Operation):
@@ -133,7 +133,7 @@ class Clamp(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = lambda t: torch.clamp(t, min=self.min_val, max=self.max_val)
-        self.cpp_fn = lambda t: lamppp.clamp(t, self.min_val, self.max_val)
+        self.cpp_fn = lambda t: pylamp.clamp(t, self.min_val, self.max_val)
 
 
 class Matmul(Operation):
@@ -143,7 +143,7 @@ class Matmul(Operation):
         self.sampler = lambda: sample_matrices(2, self.ranges)
         self.ranges = [[-100, 100]]
         self.torch_fn = torch.matmul
-        self.cpp_fn = lamppp.matmul
+        self.cpp_fn = pylamp.matmul
 
 
 class Transpose(Operation):
@@ -153,7 +153,7 @@ class Transpose(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = lambda x: x.T
-        self.cpp_fn = lamppp.transpose
+        self.cpp_fn = pylamp.transpose
 
 
 class Sum(Operation):
@@ -163,7 +163,7 @@ class Sum(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = lambda t: torch.sum(t, dim=axis)
-        self.cpp_fn = lambda t: lamppp.sum(t, axis)
+        self.cpp_fn = lambda t: pylamp.sum(t, axis)
 
 
 class Max(Operation):
@@ -173,7 +173,7 @@ class Max(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = lambda t: torch.max(t, dim=axis).values
-        self.cpp_fn = lambda t: lamppp.max(t, axis)
+        self.cpp_fn = lambda t: pylamp.max(t, axis)
 
 
 class Min(Operation):
@@ -183,4 +183,4 @@ class Min(Operation):
         self.sampler = lambda: sample_matrices(1, self.ranges)
         self.ranges = [[-1000, 1000]]
         self.torch_fn = lambda t: torch.min(t, dim=axis).values
-        self.cpp_fn = lambda t: lamppp.min(t, axis)
+        self.cpp_fn = lambda t: pylamp.min(t, axis)

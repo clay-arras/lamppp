@@ -427,13 +427,13 @@ namespace {
 std::vector<ParamTypes> GenerateParams() {
   std::vector<ParamTypes> devices;
   devices.emplace_back(DeviceType::CPU);
-#ifdef LMP_ENABLE_CUDA  
+#ifdef LMP_ENABLE_CUDA
   devices.emplace_back(DeviceType::CUDA);
 #endif
   return devices;
 }
 
-}
+}  // namespace
 
 INSTANTIATE_TEST_SUITE_P(VariableOp, VariableOpTest,
                          testing::ValuesIn(GenerateParams()));

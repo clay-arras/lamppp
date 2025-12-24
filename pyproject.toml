@@ -27,7 +27,7 @@ wheel.packages = ["src/pylamp"]
 
 [tool.scikit-build.cmake]
 build-type = "Debug"
-define.LMP_ENABLE_CUDA = "ON"
+define.LMP_ENABLE_CUDA = "OFF"
 define.LMP_ENABLE_COVERAGE = "OFF"
 define.LMP_ENABLE_TEST = "OFF"
 define.LMP_ENABLE_BENCH = "OFF"

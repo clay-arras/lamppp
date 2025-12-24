@@ -35,26 +35,19 @@ jobs:
         with:
           python-version: ">=3.11"
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "export PATH=$HOME/.local/bin:\$PATH" >> $GITHUB_ENV
-
       - name: Install Python dependencies
         run: |
-          python -m venv .venv
-          poetry env use python
-          poetry lock
-          poetry install
+          pip install uv
+          uv lock
+          uv sync --extra cpu
 
       - name: Build CMake project
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=ON -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=OFF
-
-      - name: Build Lamp++ module
-        run: cmake --build build --parallel
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=ON -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=OFF
+          cmake --build build --parallel
 
       - name: Install Pylamp
-        run: poetry run pip install .
+        run: uv run pip install .
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
@@ -63,10 +56,4 @@ jobs:
           limit-access-to-actor: true
 
       - name: Run tests
-        run: poetry run pytest tests/pytorch_stress_test.py
-
-      - name: Upload lamppp wheel/so
-        uses: actions/upload-artifact@v4
-        with:
-          name: lamppp-module
-          path: build/lamppp*.so
+        run: uv run pytest tests/stress/pytorch_stress_test.py

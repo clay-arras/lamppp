@@ -6,7 +6,7 @@
 
 namespace lmp::tensor::detail {
 
-/// @internal 
+/// @internal
 /// @todo have it crash in the DEBUG mode, otherwise catch it in production
 /**
  * @brief Smart pointer wrapper for tensor data with custom deleter support
@@ -23,7 +23,7 @@ struct DataPtr {
   std::shared_ptr<void> ptr;
 
   DataPtr() = default;
-  DataPtr(void* data_ptr, std::function<void(void*)> dealloc)
+  DataPtr(void* data_ptr, const std::function<void(void*)>& dealloc)
       : ptr(data_ptr, [dealloc](void* data) {
           try {
             dealloc(data);

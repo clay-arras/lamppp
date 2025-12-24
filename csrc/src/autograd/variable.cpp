@@ -8,7 +8,7 @@
 
 namespace lmp::autograd {
 
-const tensor::Tensor& Variable::grad() const noexcept {
+const tensor::Tensor& Variable::grad() const {
   LMP_CHECK(impl_->requires_grad)
       << "Cannot access grad() if requires_grad = false";
   return impl_->grad;
@@ -59,9 +59,10 @@ void Variable::backward() {
   }
 }
 
-void Variable::dfs(const Variable& v, std::unordered_set<void*>& visited,
+void Variable::dfs(const Variable& v,  // NOLINT
+                   std::unordered_set<void*>& visited,
                    std::vector<Variable>& topo) const {
-  if (visited.find(static_cast<void*>(v.impl_.get())) == visited.end()) {
+  if (!visited.contains(static_cast<void*>(v.impl_.get()))) {
     visited.insert(static_cast<void*>(v.impl_.get()));
     if (v.grad_fn().lock() == nullptr) {
       topo.push_back(v);

@@ -30,7 +30,7 @@ class TensorMetaHandler {
   size_t outSize_;
   std::vector<size_t> outShape_;
 
-  bool expand_;
+  bool expand_{false};
   std::unique_ptr<OffsetUtil> outOffset_;
   std::unique_ptr<TensorImpl> outTen_;
   tensor_list inTens_;

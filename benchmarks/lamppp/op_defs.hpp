@@ -148,7 +148,7 @@ class ReductOperatorBase : public OperatorBase {
 
 class AddOp : public BinaryOperatorBase {
  public:
-  std::string name() const override { return "Add"; }
+  std::string name() const override { return "Add"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -160,7 +160,7 @@ class AddOp : public BinaryOperatorBase {
 
 class SubOp : public BinaryOperatorBase {
  public:
-  std::string name() const override { return "Sub"; }
+  std::string name() const override { return "Sub"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -172,7 +172,7 @@ class SubOp : public BinaryOperatorBase {
 
 class MulOp : public BinaryOperatorBase {
  public:
-  std::string name() const override { return "Mul"; }
+  std::string name() const override { return "Mul"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -184,7 +184,7 @@ class MulOp : public BinaryOperatorBase {
 
 class DivOp : public BinaryOperatorBase {
  public:
-  std::string name() const override { return "Div"; }
+  std::string name() const override { return "Div"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -196,7 +196,7 @@ class DivOp : public BinaryOperatorBase {
 
 class PowOp : public BinaryOperatorBase {
  public:
-  std::string name() const override { return "Pow"; }
+  std::string name() const override { return "Pow"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -208,7 +208,7 @@ class PowOp : public BinaryOperatorBase {
 
 class NegOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Neg"; }
+  std::string name() const override { return "Neg"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -219,7 +219,7 @@ class NegOp : public UnaryOperatorBase {
 
 class LogOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Log"; }
+  std::string name() const override { return "Log"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -230,7 +230,7 @@ class LogOp : public UnaryOperatorBase {
 
 class ExpOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Exp"; }
+  std::string name() const override { return "Exp"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -241,7 +241,7 @@ class ExpOp : public UnaryOperatorBase {
 
 class SqrtOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Sqrt"; }
+  std::string name() const override { return "Sqrt"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -252,7 +252,7 @@ class SqrtOp : public UnaryOperatorBase {
 
 class AbsOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Abs"; }
+  std::string name() const override { return "Abs"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -263,7 +263,7 @@ class AbsOp : public UnaryOperatorBase {
 
 class SinOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Sin"; }
+  std::string name() const override { return "Sin"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -274,7 +274,7 @@ class SinOp : public UnaryOperatorBase {
 
 class CosOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Cos"; }
+  std::string name() const override { return "Cos"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -285,7 +285,7 @@ class CosOp : public UnaryOperatorBase {
 
 class TanOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Tan"; }
+  std::string name() const override { return "Tan"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -296,7 +296,7 @@ class TanOp : public UnaryOperatorBase {
 
 class ClampOp : public UnaryOperatorBase {
  public:
-  std::string name() const override { return "Clamp"; }
+  std::string name() const override { return "Clamp"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(
@@ -311,7 +311,7 @@ class TransposeOp {};  // stub
 
 class SumOp : public ReductOperatorBase {
  public:
-  std::string name() const override { return "Sum"; }
+  std::string name() const override { return "Sum"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(const lmp::autograd::Variable& a,
@@ -322,7 +322,7 @@ class SumOp : public ReductOperatorBase {
 
 class MinOp : public ReductOperatorBase {
  public:
-  std::string name() const override { return "Min"; }
+  std::string name() const override { return "Min"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(const lmp::autograd::Variable& a,
@@ -333,7 +333,7 @@ class MinOp : public ReductOperatorBase {
 
 class MaxOp : public ReductOperatorBase {
  public:
-  std::string name() const override { return "Max"; }
+  std::string name() const override { return "Max"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(const lmp::autograd::Variable& a,
@@ -344,7 +344,7 @@ class MaxOp : public ReductOperatorBase {
 
 class ProdOp : public ReductOperatorBase {
  public:
-  std::string name() const override { return "Prod"; }
+  std::string name() const override { return "Prod"; }  // NOLINT
 
  protected:
   lmp::autograd::Variable apply_operation(const lmp::autograd::Variable& a,

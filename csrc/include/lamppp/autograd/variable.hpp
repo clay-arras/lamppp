@@ -6,8 +6,8 @@
 #include <vector>
 #include "lamppp/tensor/core.hpp"
 #include "lamppp/tensor/data_type.hpp"
-#include "lamppp/tensor/utils/fill_like.hpp"
 #include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/utils/fill_like.hpp"
 
 namespace lmp::autograd {
 
@@ -22,11 +22,12 @@ struct VariableImpl {
 
   explicit VariableImpl(const tensor::Tensor& data, bool requires_grad = false)
       : data(tensor::Tensor(data)),
-        grad(requires_grad ? zeros_like(data) : tensor::Tensor()), 
+        grad(requires_grad ? zeros_like(data) : tensor::Tensor()),
         requires_grad(requires_grad),
         _grad_fn(nullptr) {}
   explicit VariableImpl(const tensor::Tensor& data, const tensor::Tensor& grad,
-                        bool requires_grad, const std::shared_ptr<Function>& grad_fn)
+                        bool requires_grad,
+                        const std::shared_ptr<Function>& grad_fn)
       : data(tensor::Tensor(data)),
         grad(tensor::Tensor(grad)),
         requires_grad(requires_grad),
@@ -39,7 +40,7 @@ class Variable {
   explicit Variable(const tensor::Tensor& data, bool requires_grad = false)
       : impl_(std::make_shared<VariableImpl>(data, requires_grad)) {}
 
-  const tensor::Tensor& grad() const noexcept;
+  const tensor::Tensor& grad() const;
   const tensor::Tensor& data() const noexcept;
   std::weak_ptr<Function> grad_fn() const noexcept;
   bool requires_grad() const noexcept;
@@ -67,7 +68,7 @@ using variable_list = std::vector<Variable>;
 
 struct VariableOpFact {
   template <typename Op, typename... Args>
-  static variable_list apply(variable_list variables, Args&&... args) {
+  static variable_list apply(const variable_list& variables, Args&&... args) {
     Op op_fn(std::forward<Args>(args)...);
     variable_list result =
         op_fn.template apply<Args...>(variables, std::forward<Args>(args)...);

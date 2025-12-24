@@ -2,6 +2,8 @@
 #include "lamppp/common/macros.hpp"
 #include "lamppp/tensor/data_type.hpp"
 
+#include <utility>
+
 namespace lmp::tensor::detail::cpu {
 
 using ssize_t = ptrdiff_t;  // signed size_t
@@ -11,12 +13,12 @@ template <typename U, typename V, typename OutType>
 void cpuConv1dKernel(const U* input, const V* kernel, OutType* output,
                      size_t stride, size_t padding, size_t dilation,
                      const size_t* input_shape, const size_t* kernel_shape,
-                     const size_t* output_shape, size_t i) {
+                     const size_t* /* output_shape */, size_t i) {
   OutType sum = 0;
   ssize_t start_i = (i * stride) - padding;
   for (size_t ii = 0; ii < kernel_shape[0]; ii++) {
     ssize_t idx_i = start_i + (dilation * ii);
-    if (idx_i >= 0 && idx_i < input_shape[0]) {
+    if (idx_i >= 0 && std::cmp_less(idx_i, input_shape[0])) {
       sum +=
           static_cast<OutType>(kernel[ii]) * static_cast<OutType>(input[idx_i]);
     }
@@ -37,8 +39,8 @@ void cpuConv2dKernel(const U* input, const V* kernel, OutType* output,
     for (size_t jj = 0; jj < kernel_shape[1]; jj++) {
       ssize_t idx_i = start_i + (dilation * ii);
       ssize_t idx_j = start_j + (dilation * jj);
-      if (idx_i >= 0 && idx_i < input_shape[0] && idx_j >= 0 &&
-          idx_j < input_shape[1]) {
+      if (idx_i >= 0 && std::cmp_less(idx_i, input_shape[0]) && idx_j >= 0 &&
+          std::cmp_less(idx_j, input_shape[1])) {
         sum += static_cast<OutType>(kernel[(ii * kernel_shape[1]) + jj]) *
                static_cast<OutType>(input[(idx_i * input_shape[1]) + idx_j]);
       }
@@ -62,8 +64,9 @@ void cpuConv3dKernel(const U* input, const V* kernel, OutType* output,
         ssize_t idx_i = start_i + (dilation * ii);
         ssize_t idx_j = start_j + (dilation * jj);
         ssize_t idx_k = start_k + (dilation * kk);
-        if (idx_i >= 0 && idx_i < input_shape[0] && idx_j >= 0 &&
-            idx_j < input_shape[1] && idx_k >= 0 && idx_k < input_shape[2]) {
+        if (idx_i >= 0 && std::cmp_less(idx_i, input_shape[0]) && idx_j >= 0 &&
+            std::cmp_less(idx_j, input_shape[1]) && idx_k >= 0 &&
+            std::cmp_less(idx_k, input_shape[2])) {
           sum += static_cast<OutType>(
                      kernel[(ii * kernel_shape[1] * kernel_shape[2]) +
                             (jj * kernel_shape[2]) + kk]) *
@@ -116,6 +119,7 @@ void cpuConv3d(const U* input, const V* kernel, OutType* output, size_t stride,
                                        output_shape, i, j, k);
 }
 
+// NOLINTBEGIN(bugprone-macro-parentheses): type pointers cannot be parenthesized
 #define INSTANTIATE_CONV1D(arg1_type, arg2_type, out_type)                   \
   template void cpuConv1d<arg1_type, arg2_type, out_type>(                   \
       const arg1_type*, const arg2_type*, out_type*, size_t, size_t, size_t, \
@@ -130,6 +134,7 @@ void cpuConv3d(const U* input, const V* kernel, OutType* output, size_t stride,
   template void cpuConv3d<arg1_type, arg2_type, out_type>(                   \
       const arg1_type*, const arg2_type*, out_type*, size_t, size_t, size_t, \
       const size_t*, const size_t*, const size_t*);
+// NOLINTEND(bugprone-macro-parentheses)
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_CONV1D, LMP_LIST_TYPES,
                                LMP_LIST_TYPES, LMP_LIST_TYPES);

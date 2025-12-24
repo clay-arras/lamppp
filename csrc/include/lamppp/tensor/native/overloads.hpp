@@ -9,19 +9,19 @@ namespace lmp::tensor {
 /// @internal
 struct TensorOpFact {
   template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
-  static inline Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
+  static Tensor binary_tensor_op(const Tensor& a, const Tensor& b) {
     return (*OpTag)(a, b);
   }
 
   template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
-  static inline Tensor binary_tensor_op(const Tensor& tensor, Scalar scalar) {
+  static Tensor binary_tensor_op(const Tensor& tensor, Scalar scalar) {
     Tensor scalar_tensor(std::vector<Scalar>(1, scalar), {1}, tensor.device(),
                          tensor.type());  // rely on broadcasting
     return binary_tensor_op<OpTag>(tensor, scalar_tensor);
   }
 
   template <Tensor (*OpTag)(const Tensor&, const Tensor&)>
-  static inline Tensor binary_tensor_op(Scalar scalar, const Tensor& tensor) {
+  static Tensor binary_tensor_op(Scalar scalar, const Tensor& tensor) {
     Tensor scalar_tensor(std::vector<Scalar>(1, scalar), {1}, tensor.device(),
                          tensor.type());
     return binary_tensor_op<OpTag>(scalar_tensor, tensor);
@@ -30,13 +30,13 @@ struct TensorOpFact {
 
 #define DECL_BINARY_OP(op, tag)                                    \
   inline Tensor operator op(const Tensor& a, const Tensor& b) {    \
-    return TensorOpFact::binary_tensor_op<&tag>(a, b);             \
+    return TensorOpFact::binary_tensor_op<&(tag)>(a, b);           \
   }                                                                \
   inline Tensor operator op(const Tensor& tensor, Scalar scalar) { \
-    return TensorOpFact::binary_tensor_op<&tag>(tensor, scalar);   \
+    return TensorOpFact::binary_tensor_op<&(tag)>(tensor, scalar); \
   }                                                                \
   inline Tensor operator op(Scalar scalar, const Tensor& tensor) { \
-    return TensorOpFact::binary_tensor_op<&tag>(scalar, tensor);   \
+    return TensorOpFact::binary_tensor_op<&(tag)>(scalar, tensor); \
   }
 
 #define FORALL_BINARY_OPS(_) \
@@ -61,7 +61,9 @@ FORALL_BINARY_OPS(DECL_BINARY_OP)
  * @param a The tensor to negate
  * @return A new tensor with the result of the negation
  */
-inline Tensor operator-(const Tensor& a) { return ops::neg(a); }
+inline Tensor operator-(const Tensor& a) {
+  return ops::neg(a);
+}
 
 /// @endinternal
 

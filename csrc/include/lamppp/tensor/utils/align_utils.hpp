@@ -4,7 +4,7 @@
 #include "lamppp/tensor/data_type.hpp"
 
 /// @todo: can be increased
-#define LMP_MAX_DIMS 16  
+enum { LMP_MAX_DIMS = 16 };
 
 /// @internal
 namespace lmp::tensor::detail {
@@ -31,8 +31,8 @@ class AlignUtil {
   size_t aligned_size_;
 
  private:
-  static std::vector<size_t> calc_aligned_shape(const std::vector<size_t>& a_shape,
-                                         const std::vector<size_t>& b_shape);
+  static std::vector<size_t> calc_aligned_shape(
+      const std::vector<size_t>& a_shape, const std::vector<size_t>& b_shape);
   std::vector<stride_t> calc_aligned_stride();
 };
 /// @endinternal

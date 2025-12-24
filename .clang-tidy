@@ -1,3 +1,12 @@
+# this is just the Google linting files, except for a few additions
+# 
+# -portability-avoid-pragma-once,           built the project with pragma and didn't feel like changing it
+# -readability-identifier-naming,           was asking me to make DataType::Int16 -> DataType::kInt16, DeviceType::CUDA -> DeviceType::kCuda and I didn't like it
+# -llvmlibc-restrict-system-libc-headers,   forgot
+# -llvmlibc-implementation-in-namespace,
+# -llvmlibc-callee-namespace
+#
+
 ---
 # Configure clang-tidy for this project.
 
@@ -91,7 +100,6 @@ Checks: >
   -misc-non-private-member-variables-in-classes,
   -misc-const-correctness,
   -misc-include-cleaner,
-  -misc-no-recursion,
   -modernize-return-braced-init-list,
   -modernize-use-trailing-return-type,
   -modernize-concat-nested-namespaces,
@@ -116,6 +124,10 @@ Checks: >
   -bugprone-unchecked-optional-access,
   -bugprone-unused-local-non-trivial-variable,
   -bugprone-unused-return-value,
+
+  -portability-avoid-pragma-once,
+  -bugprone-lambda-function-name,
+  -readability-identifier-naming,
   -llvmlibc-restrict-system-libc-headers,
   -llvmlibc-implementation-in-namespace,
   -llvmlibc-callee-namespace

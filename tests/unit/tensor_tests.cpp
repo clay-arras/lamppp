@@ -756,14 +756,14 @@ namespace {
 std::vector<ParamTypes> GenerateParamCombinations() {
   std::vector<DeviceType> devices;
   devices.push_back(DeviceType::CPU);
-#ifdef LMP_ENABLE_CUDA  
+#ifdef LMP_ENABLE_CUDA
   devices.push_back(DeviceType::CUDA);
 #endif
 
   std::vector<ParamTypes> comb;
   for (auto dtype : {DataType::Int16, DataType::Int32, DataType::Int64,
                      DataType::Float32, DataType::Float64})
-    for (auto device : devices) 
+    for (auto device : devices)
       comb.emplace_back(device, dtype);
   return comb;
 }

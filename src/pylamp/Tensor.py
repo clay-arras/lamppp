@@ -1,11 +1,6 @@
 import functools
 from math import prod
-from pylamp._C import (
-    _Variable,
-    _Tensor,
-    dtype,
-    device
-)
+from pylamp._C import _Variable, _Tensor, dtype, device
 
 Scalar = int | float
 

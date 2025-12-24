@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+import pylamp
 
 MATRIX_DIMS = (16, 16)
 
@@ -25,3 +27,28 @@ def sample_from_intervals(intervals, shape):
 
 def sample_matrices(n, ranges):
     return [sample_from_intervals(ranges, MATRIX_DIMS) for _ in range(n)]
+
+
+def from_row_major(flat, like):
+    t = torch.tensor(flat).reshape(torch.tensor(like).shape)
+    return t.tolist()
+
+
+def to_pylamp_var(mat, device, requires_grad=True):
+    return pylamp.Tensor(
+        mat, requires_grad=requires_grad, device=device, dtype=pylamp.dtype.float64
+    )
+
+
+def _atol(pred, true):
+    return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true))))
+
+
+def _rtol(pred, true, epsilon):
+    return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true)))) / (
+        float(torch.max(torch.tensor(true))) + epsilon
+    )
+
+
+def calculate_pair_tolerances(cg, tg, epsilon):
+    return _atol(cg, tg), _rtol(cg, tg, epsilon)

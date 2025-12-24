@@ -18,6 +18,8 @@ using lmp::tensor::Tensor;
 
 const Scalar kEps = 1e-5;
 
+using ParamTypes = std::tuple<DeviceType>;
+
 class VariableOpTest
     : public testing::Test,
       public testing::WithParamInterface<std::tuple<DeviceType>> {
@@ -420,8 +422,21 @@ TEST_P(VariableOpTest, ZeroGradTest) {
       << "Variable 'b' gradients should be zero after zero_grad";
 }
 
+namespace {
+
+std::vector<ParamTypes> GenerateParams() {
+  std::vector<ParamTypes> devices;
+  devices.emplace_back(DeviceType::CPU);
+#ifdef LMP_ENABLE_CUDA  
+  devices.emplace_back(DeviceType::CUDA);
+#endif
+  return devices;
+}
+
+}
+
 INSTANTIATE_TEST_SUITE_P(VariableOp, VariableOpTest,
-                         testing::Values(DeviceType::CPU, DeviceType::CUDA));
+                         testing::ValuesIn(GenerateParams()));
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

@@ -1,26 +1,46 @@
-import sys, os
-from pathlib import Path
-
-
-def get_project_root(marker="pyproject.toml"):
-    path = Path(__file__).resolve()
-    for parent in [path, *path.parents]:
-        if (parent / marker).is_file():
-            return parent
-    raise FileNotFoundError(f"Couldn’t locate {marker} in any parent directory.")
-
-
-PROJECT_ROOT = get_project_root()
-sys.path.append(os.path.join(PROJECT_ROOT, "build"))
+import os
 
 import torch
-import lamppp_module as lamppp
+import pylamp
 import pytest
-from operations_helper import *
+from operations import *
+from testutils import *
 
 ITERATIONS = 1000
 EPSILON = 1e-10
 TORCH_DTYPE = torch.float64
+
+
+def get_case():
+    return {
+        "add": Add,
+        "sub": Sub,
+        "mul": Mul,
+        "div": Div,
+        "exp": Exp,
+        "log": Log,
+        "sqrt": Sqrt,
+        "abs": Abs,
+        "sin": Sin,
+        "cos": Cos,
+        "tan": Tan,
+        "clamp": lambda: Clamp(-20, 20),  # todo: randomize this
+        "matmul": Matmul,
+        "transpose": Transpose,
+        "sum_axis_0": lambda: Sum(axis=0),
+        "sum_axis_1": lambda: Sum(axis=1),
+        "max_axis_0": lambda: Max(axis=0),
+        "max_axis_1": lambda: Max(axis=1),
+        "min_axis_0": lambda: Min(axis=0),
+        "min_axis_1": lambda: Min(axis=1),
+    }
+
+
+def get_device():
+    devices = {"cpu": pylamp.device.cpu}
+    if torch.cuda.is_available():  # TODO: this isn't great, should add pylamp option
+        devices.update({"cuda": pylamp.device.cuda})
+    return devices
 
 
 @pytest.fixture
@@ -38,36 +58,7 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False
 
 
-def _to_row_major(mat):
-    return torch.tensor(mat).flatten().tolist()
-
-
-def _from_row_major(flat, like):
-    t = torch.tensor(flat).reshape(torch.tensor(like).shape)
-    return t.tolist()
-
-
-def _to_lamppp_var(mat, device, requires_grad=True):
-    ten = lamppp.cTensor(
-        _to_row_major(mat),
-        list(torch.tensor(mat).shape),
-        device,
-        lamppp.cDataType.Float64,
-    )
-    return lamppp.cVariable(ten, requires_grad)
-
-
-def _atol(pred, true):
-    return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true))))
-
-
-def _rtol(pred, true):
-    return float(torch.max(torch.abs(torch.tensor(pred) - torch.tensor(true)))) / (
-        float(torch.max(torch.tensor(true))) + EPSILON
-    )
-
-
-def compute_grads(lamppp_op, torch_op, mats, device):
+def compute_grads(pylamp_op, torch_op, mats, device):
     torch_vars = [torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats]
     torch_out = torch_op(*torch_vars)
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
@@ -76,71 +67,21 @@ def compute_grads(lamppp_op, torch_op, mats, device):
         "out": [torch_out.data.tolist()],
     }
 
-    lamppp_vars = [_to_lamppp_var(m, device) for m in mats]
-    lamppp_out = lamppp_op(*lamppp_vars)
-    lamppp_out.backward()
-    lamppp_vals = {
-        "grads": [_from_row_major(v.grad.data, m) for v, m in zip(lamppp_vars, mats)],
-        "out": [_from_row_major(lamppp_out.data.data, torch_out.data.tolist())],
+    pylamp_vars = [to_pylamp_var(m, device) for m in mats]
+    pylamp_out = pylamp_op(*pylamp_vars)
+    pylamp_out.backward()
+    pylamp_vals = {
+        "grads": [
+            from_row_major(v.grad.tolist(), m) for v, m in zip(pylamp_vars, mats)
+        ],
+        "out": [from_row_major(pylamp_out.tolist(), torch_out.data.tolist())],
     }
-    return lamppp_vals, torch_vals
-
-
-def calculate_pair_tolerances(cg, tg):
-    return _atol(cg, tg), _rtol(cg, tg)
+    return pylamp_vals, torch_vals
 
 
 @pytest.mark.usefixtures("set_seed", "set_dtype")
-@pytest.mark.parametrize(
-    "case",
-    [
-        Add,
-        Sub,
-        Mul,
-        Div,
-        Exp,
-        Log,
-        Sqrt,
-        Abs,
-        Sin,
-        Cos,
-        Tan,
-        lambda: Clamp(-20, 20),  # todo: randomize this
-        Matmul,
-        Transpose,
-        lambda: Sum(axis=0),
-        lambda: Sum(axis=1),
-        lambda: Max(axis=0),
-        lambda: Max(axis=1),
-        lambda: Min(axis=0),
-        lambda: Min(axis=1),
-    ],
-    ids=[
-        "add",
-        "sub",
-        "mul",
-        "div",
-        "exp",
-        "log",
-        "sqrt",
-        "abs",
-        "sin",
-        "cos",
-        "tan",
-        "clamp",
-        "matmul",
-        "transpose",
-        "sum_axis_0",
-        "sum_axis_1",
-        "max_axis_0",
-        "max_axis_1",
-        "min_axis_0",
-        "min_axis_1",
-    ],
-)
-@pytest.mark.parametrize(
-    "device", [lamppp.cDeviceType.CPU, lamppp.cDeviceType.CUDA], ids=["cpu", "cuda"]
-)
+@pytest.mark.parametrize("case", get_case().values(), ids=get_case().keys())
+@pytest.mark.parametrize("device", get_device().values(), ids=get_device().keys())
 def test_ops(case, device):
     instance = case()
 
@@ -158,7 +99,7 @@ def test_ops(case, device):
                 max(x, y)
                 for x, y in zip(
                     (max_atol_forward, max_rtol_forward),
-                    calculate_pair_tolerances(cpp_out, torch_out),
+                    calculate_pair_tolerances(cpp_out, torch_out, EPSILON),
                 )
             )
         for cpp_grad, torch_grad in zip(cpp_results["grads"], torch_results["grads"]):
@@ -166,7 +107,7 @@ def test_ops(case, device):
                 max(x, y)
                 for x, y in zip(
                     (max_atol_backward, max_rtol_backward),
-                    calculate_pair_tolerances(cpp_grad, torch_grad),
+                    calculate_pair_tolerances(cpp_grad, torch_grad, EPSILON),
                 )
             )
 

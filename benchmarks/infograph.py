@@ -281,7 +281,7 @@ def plot_speedup_analysis(data):
         index="device", columns="forward_backward", values="speedup"
     )
 
-    ax = pivot_speedup.plot(kind="bar", figsize=(12, 8), color=COLORS[2:4])
+    pivot_speedup.plot(kind="bar", figsize=(12, 8), color=COLORS[2:4])
     plt.title(
         "Average Speedup (PyTorch/LMP) by Device and Pass Type",
         fontsize=16,

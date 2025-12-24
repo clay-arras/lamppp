@@ -14,12 +14,6 @@ particularly in complex interaction scenarios between different operations.
 - f) stop when all objects have been connected into one "HEAD" variable
 """
 
-import sys
-import os
-
-PROJECT_ROOT = "/home/nlin/workspace/code/projects/autograd_cpp"
-sys.path.append(os.path.join(PROJECT_ROOT, "build"))
-
 from hypothesis import Verbosity, given, settings
 from hypothesis.strategies import composite, lists, integers, sampled_from, permutations
 import torch
@@ -73,29 +67,35 @@ UNARY_OPS = [
         "lamp": lambda x: pylamp.sqrt(pylamp.clamp(x, -1, 1)),
     },
 ]
-REDUCT_OPS = lambda axis: [
-    {
-        "id": f"sum_axis_{axis}",
-        "torch": lambda x: torch.sum(x, dim=axis % x.ndim, keepdim=False),
-        "lamp": lambda x: pylamp.squeeze(
-            pylamp.sum(x, axis % len(x.data.shape)), axis % len(x.data.shape)
-        ),
-    },
-    {
-        "id": f"min_axis_{axis}",
-        "torch": lambda x: torch.min(x, dim=axis % x.ndim, keepdim=False).values,
-        "lamp": lambda x: pylamp.squeeze(
-            pylamp.min(x, axis % len(x.data.shape)), axis % len(x.data.shape)
-        ),
-    },
-    {
-        "id": f"max_axis_{axis}",
-        "torch": lambda x: torch.max(x, dim=axis % x.ndim, keepdim=False).values,
-        "lamp": lambda x: pylamp.squeeze(
-            pylamp.max(x, axis % len(x.data.shape)), axis % len(x.data.shape)
-        ),
-    },
-]
+
+
+def get_reduct_ops(axis):
+    return [
+        {
+            "id": f"sum_axis_{axis}",
+            "torch": lambda x: torch.sum(x, dim=axis % x.ndim, keepdim=False),
+            "lamp": lambda x: pylamp.squeeze(
+                pylamp.sum(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+            ),
+        },
+        {
+            "id": f"min_axis_{axis}",
+            "torch": lambda x: torch.min(x, dim=axis % x.ndim, keepdim=False).values,
+            "lamp": lambda x: pylamp.squeeze(
+                pylamp.min(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+            ),
+        },
+        {
+            "id": f"max_axis_{axis}",
+            "torch": lambda x: torch.max(x, dim=axis % x.ndim, keepdim=False).values,
+            "lamp": lambda x: pylamp.squeeze(
+                pylamp.max(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+            ),
+        },
+    ]
+
+
+REDUCT_OPS = [get_reduct_ops(i) for i in range(10)]
 
 
 class DSU:
@@ -235,7 +235,7 @@ def build_unaries(draw):
 
     reduct_fns = []
     for i in srand_reduct:
-        reduct_fns.extend(REDUCT_OPS(i))
+        reduct_fns.extend(REDUCT_OPS[i])
 
     return [
         draw(sampled_from(reduct_fns)) if i else draw(sampled_from(UNARY_OPS))

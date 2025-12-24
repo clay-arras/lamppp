@@ -3,8 +3,26 @@ import os
 import torch
 import pylamp
 import pytest
-from operations import *
-from testutils import *
+from operations import (
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Exp,
+    Log,
+    Sqrt,
+    Abs,
+    Sin,
+    Cos,
+    Tan,
+    Clamp,
+    Matmul,
+    Transpose,
+    Sum,
+    Max,
+    Min,
+)
+from testutils import calculate_pair_tolerances, from_row_major, to_pylamp_var
 
 ITERATIONS = 1000
 EPSILON = 1e-10

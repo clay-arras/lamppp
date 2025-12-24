@@ -6,35 +6,50 @@ authors = [{ name = "clay-arras", email = "astrollin.neil@gmail.com" }]
 requires-python = ">=3.11,<3.15"
 readme = "README.md"
 dependencies = [
-    "torch (>=2.6.0,<3.0.0)",
     "ipykernel>=7.1.0,<8",
     "matplotlib>=3.10.8,<4",
     "numpy>=2.4.0,<3",
     "pybind11>=3.0.1,<4",
     "pytest>=9.0.2,<10",
+    "scikit-build-core>=0.11.6",
+    "setuptools>=80.9.0",
+    "wheel>=0.45.1",
+]
+
+[dependency-groups]
+dev = [
+    "black",
+    "ruff",
 ]
 
 [project.optional-dependencies]
-gpu = []
+cpu = [ "torch>=2.9.1", ]
+cu128 = [ "torch>=2.9.1", ]
 
 [tool.uv]
 package = false
+conflicts = [
+    [
+        { extra = "cpu" },
+        { extra = "cu128" },
+    ],
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu128", extra = "cu128" },
+]
 
 [[tool.uv.index]]
-name = "torch-cpu-src"
+name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
 [[tool.uv.index]]
-name = "torch-gpu-src"
+name = "pytorch-cu128"
 url = "https://download.pytorch.org/whl/cu128"
 explicit = true
-
-[tool.uv.sources]
-torch = [
-    { index = "torch-cpu-src", marker = "extra != 'gpu'" },
-    { index = "torch-gpu-src", marker = "extra == 'gpu'" },
-]
 
 [build-system]
 requires = ["scikit-build-core>=0.11", "pybind11>=3.0"]

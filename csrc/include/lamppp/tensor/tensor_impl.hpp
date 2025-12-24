@@ -7,9 +7,9 @@
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
 #include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/utils/align_utils.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 #include "lamppp/tensor/storage.hpp"
+#include "lamppp/tensor/utils/align_utils.hpp"
 
 namespace lmp::tensor {
 
@@ -56,11 +56,11 @@ class TensorImpl {
         numel_(shape.empty() ? 0
                              : std::accumulate(shape.begin(), shape.end(), 1,
                                                std::multiplies<>())) {
-    LMP_CHECK(data.size() == numel_) <<
-              "Size mismatch, product of shape must equal num elements";
-    DataType src_dtype = TypeMeta<T>::value;
-    ops::copy_stub()(DeviceType::CPU, device, data.data(),
-                                data_.data(), numel_, src_dtype, type_);
+    LMP_CHECK(data.size() == numel_)
+        << "Size mismatch, product of shape must equal num elements";
+    DataType src_dtype = TypeMeta<T>::kValue;
+    ops::copy_stub()(DeviceType::CPU, device, data.data(), data_.data(), numel_,
+                     src_dtype, type_);
     update_strides();
   }
   /// @internal

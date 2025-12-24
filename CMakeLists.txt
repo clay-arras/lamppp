@@ -96,7 +96,7 @@ install(
     lamppp_compile_config
   EXPORT lampppTargets
   ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
+  LIBRARY DESTINATION ${SKBUILD_PLATLIB_DIR}/pylamp/lib
   RUNTIME DESTINATION bin
 )
 
@@ -121,6 +121,7 @@ endif()
 file(GLOB_RECURSE ALL_SOURCE
   "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]u"
   "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/autograd/*.[ch]pp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/bindings/*.[ch]pp"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
   "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
 )
@@ -135,6 +136,19 @@ if(CLANG_FORMAT_EXE)
     COMMENT "Apply clang-format to all sources"
   )
 endif()
+
+
+# FORMATTING ---------------------------------
+find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+if(CLANG_TIDY_EXE)
+  add_custom_target(lint
+    COMMAND ${CLANG_TIDY_EXE}
+            -p build
+            ${ALL_SOURCE} -header-filter=.*
+    COMMENT "Apply clang-tidy to all sources"
+  )
+endif()
+
 
 # DOCUMENTATION ---------------------------------
 find_package(Doxygen)

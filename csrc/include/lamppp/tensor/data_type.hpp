@@ -39,27 +39,27 @@ struct TypeMeta;
 
 template <>
 struct TypeMeta<bool> {
-  static constexpr DataType value = DataType::Bool;
+  static constexpr DataType kValue = DataType::Bool;
 };
 template <>
 struct TypeMeta<int16_t> {
-  static constexpr DataType value = DataType::Int16;
+  static constexpr DataType kValue = DataType::Int16;
 };
 template <>
 struct TypeMeta<int> {
-  static constexpr DataType value = DataType::Int32;
+  static constexpr DataType kValue = DataType::Int32;
 };
 template <>
 struct TypeMeta<int64_t> {
-  static constexpr DataType value = DataType::Int64;
+  static constexpr DataType kValue = DataType::Int64;
 };
 template <>
 struct TypeMeta<float> {
-  static constexpr DataType value = DataType::Float32;
+  static constexpr DataType kValue = DataType::Float32;
 };
 template <>
 struct TypeMeta<double> {
-  static constexpr DataType value = DataType::Float64;
+  static constexpr DataType kValue = DataType::Float64;
 };
 
 /// @endinternal
@@ -107,13 +107,11 @@ inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
 }  // namespace lmp::tensor
 
 #define LMP_X_TYPES(_) \
-  _(bool)            \
-  _(int16_t)         \
-  _(int)             \
-  _(int64_t)         \
-  _(float)           \
+  _(bool)              \
+  _(int16_t)           \
+  _(int)               \
+  _(int64_t)           \
+  _(float)             \
   _(double)
 
-#define LMP_LIST_TYPES \
-  (bool, int16_t, int, int64_t, float, double)
-  
+#define LMP_LIST_TYPES (bool, int16_t, int, int64_t, float, double)

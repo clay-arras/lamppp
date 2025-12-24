@@ -8,6 +8,7 @@
 
 #include "lamppp/tensor/core.hpp"
 #include "lamppp/tensor/data_type.hpp"
+#include "lamppp/tensor/device_type.hpp"
 
 using lmp::tensor::DataType;
 using lmp::tensor::DeviceType;
@@ -278,6 +279,10 @@ TEST_P(TensorOpTest, ReductSqueezeTest) {
   }
 }
 TEST_P(TensorOpTest, ToTest) {
+#ifndef LMP_ENABLE_CUDA
+  GTEST_SKIP();
+#endif
+
   if (device_ == DeviceType::CPU) {
     Tensor result = tensor_f32_B_.to(DeviceType::CUDA);
 
@@ -304,6 +309,9 @@ TEST_P(TensorOpTest, ToTest) {
   }
 }
 TEST_P(TensorOpTest, CopyTest) {
+#ifndef LMP_ENABLE_CUDA
+  GTEST_SKIP();
+#endif
   {
     Tensor tensor_copy_target =
         Tensor(std::vector<float>{0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F},
@@ -746,13 +754,17 @@ TEST_P(TensorOpTest, BroadcastPowCompTest) {
 namespace {
 
 std::vector<ParamTypes> GenerateParamCombinations() {
+  std::vector<DeviceType> devices;
+  devices.push_back(DeviceType::CPU);
+#ifdef LMP_ENABLE_CUDA  
+  devices.push_back(DeviceType::CUDA);
+#endif
+
   std::vector<ParamTypes> comb;
   for (auto dtype : {DataType::Int16, DataType::Int32, DataType::Int64,
-                     DataType::Float32, DataType::Float64}) {
-    for (auto device : {DeviceType::CPU, DeviceType::CUDA}) {
+                     DataType::Float32, DataType::Float64})
+    for (auto device : devices) 
       comb.emplace_back(device, dtype);
-    }
-  }
   return comb;
 }
 

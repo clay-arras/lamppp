@@ -14,7 +14,8 @@ particularly in complex interaction scenarios between different operations.
 - f) stop when all objects have been connected into one "HEAD" variable
 """
 
-import sys, os
+import sys
+import os
 
 PROJECT_ROOT = "/home/nlin/workspace/code/projects/autograd_cpp"
 sys.path.append(os.path.join(PROJECT_ROOT, "build"))
@@ -24,7 +25,7 @@ from hypothesis.strategies import composite, lists, integers, sampled_from, perm
 import torch
 import math
 
-# import lamppp_module as lamppp
+import pylamp
 
 
 """
@@ -36,62 +37,62 @@ TODO:
 
 
 NUM_TENS = 4
-DTYPES = [torch.float64]  # bindings for Lamppp other dtypes not supported yet
+DTYPES = [torch.float64]  # bindings for pylamp other dtypes not supported yet
 OPS = [
-    {"id": "add", "torch": torch.add, "lamp": lamppp.add},
-    {"id": "sub", "torch": torch.sub, "lamp": lamppp.sub},
-    {"id": "mul", "torch": torch.mul, "lamp": lamppp.mul},
+    {"id": "add", "torch": torch.add, "lamp": pylamp.add},
+    {"id": "sub", "torch": torch.sub, "lamp": pylamp.sub},
+    {"id": "mul", "torch": torch.mul, "lamp": pylamp.mul},
     {
         "id": "div_clamp_y_1e-1_1e6",
         "torch": lambda x, y: torch.div(x, torch.clamp(y, 1e-1, 1e6)),
-        "lamp": lambda x, y: lamppp.div(x, lamppp.clamp(y, 1e-1, 1e6)),
+        "lamp": lambda x, y: pylamp.div(x, pylamp.clamp(y, 1e-1, 1e6)),
     },
 ]
 UNARY_OPS = [
     {
         "id": "exp_clamp_-10_10",
         "torch": lambda x: torch.exp(torch.clamp(x, -10, 10)),
-        "lamp": lambda x: lamppp.exp(lamppp.clamp(x, -10, 10)),
+        "lamp": lambda x: pylamp.exp(pylamp.clamp(x, -10, 10)),
     },
     {
         "id": "log_clamp_1e-3_500",
         "torch": lambda x: torch.log(torch.clamp(x, 1e-3, 500)),
-        "lamp": lambda x: lamppp.log(lamppp.clamp(x, 1e-3, 500)),
+        "lamp": lambda x: pylamp.log(pylamp.clamp(x, 1e-3, 500)),
     },
     {
         "id": "sqrt_clamp_1e-3_500",
         "torch": lambda x: torch.sqrt(torch.clamp(x, 1e-3, 500)),
-        "lamp": lambda x: lamppp.sqrt(lamppp.clamp(x, 1e-3, 500)),
+        "lamp": lambda x: pylamp.sqrt(pylamp.clamp(x, 1e-3, 500)),
     },
-    {"id": "abs", "torch": torch.abs, "lamp": lamppp.abs},
-    {"id": "sin", "torch": torch.sin, "lamp": lamppp.sin},
-    {"id": "cos", "torch": torch.cos, "lamp": lamppp.cos},
+    {"id": "abs", "torch": torch.abs, "lamp": pylamp.abs},
+    {"id": "sin", "torch": torch.sin, "lamp": pylamp.sin},
+    {"id": "cos", "torch": torch.cos, "lamp": pylamp.cos},
     {
         "id": "sqrt_clamp_-1_1",
         "torch": lambda x: torch.sqrt(torch.clamp(x, -1, 1)),
-        "lamp": lambda x: lamppp.sqrt(lamppp.clamp(x, -1, 1)),
+        "lamp": lambda x: pylamp.sqrt(pylamp.clamp(x, -1, 1)),
     },
 ]
 REDUCT_OPS = lambda axis: [
     {
         "id": f"sum_axis_{axis}",
         "torch": lambda x: torch.sum(x, dim=axis % x.ndim, keepdim=False),
-        "lamp": lambda x: lamppp.squeeze(
-            lamppp.sum(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+        "lamp": lambda x: pylamp.squeeze(
+            pylamp.sum(x, axis % len(x.data.shape)), axis % len(x.data.shape)
         ),
     },
     {
         "id": f"min_axis_{axis}",
         "torch": lambda x: torch.min(x, dim=axis % x.ndim, keepdim=False).values,
-        "lamp": lambda x: lamppp.squeeze(
-            lamppp.min(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+        "lamp": lambda x: pylamp.squeeze(
+            pylamp.min(x, axis % len(x.data.shape)), axis % len(x.data.shape)
         ),
     },
     {
         "id": f"max_axis_{axis}",
         "torch": lambda x: torch.max(x, dim=axis % x.ndim, keepdim=False).values,
-        "lamp": lambda x: lamppp.squeeze(
-            lamppp.max(x, axis % len(x.data.shape)), axis % len(x.data.shape)
+        "lamp": lambda x: pylamp.squeeze(
+            pylamp.max(x, axis % len(x.data.shape)), axis % len(x.data.shape)
         ),
     },
 ]
@@ -139,8 +140,8 @@ class DSU:
         self.torch_head[x] = torch.reshape(self.torch_head[x], nshape_i)
         self.torch_head[y] = torch.reshape(self.torch_head[y], nshape_j)
 
-        self.lamp_head[x] = lamppp.reshape(self.lamp_head[x], nshape_i)
-        self.lamp_head[y] = lamppp.reshape(self.lamp_head[y], nshape_j)
+        self.lamp_head[x] = pylamp.reshape(self.lamp_head[x], nshape_i)
+        self.lamp_head[y] = pylamp.reshape(self.lamp_head[y], nshape_j)
 
         self.torch_head[x] = bin_op["torch"](self.torch_head[x], self.torch_head[y])
         self.torch_head[x] = una_op["torch"](self.torch_head[x])
@@ -257,7 +258,7 @@ def test_graph_builder(meta, bin_ops, una_ops, edges):
         for i in range(len(meta["bodies"]))
     ]
     lamp_tensors = [
-        lamppp.cVariable(lamppp.cTensor(meta["bodies"][i], meta["shapes"][i]), True)
+        pylamp.Tensor(meta["bodies"][i], meta["shapes"][i], True)
         for i in range(len(meta["bodies"]))
     ]
 
@@ -276,15 +277,15 @@ def test_graph_builder(meta, bin_ops, una_ops, edges):
 
         assert (
             list(t_ten.shape) == l_ten_var.data.shape
-        ), f"Tensor {i} shapes mismatch. PyTorch: {t_ten.shape}, Lamppp: {l_ten_var.data.shape}"
+        ), f"Tensor {i} shapes mismatch. PyTorch: {t_ten.shape}, pylamp: {l_ten_var.data.shape}"
 
         if t_ten.grad is not None:
             assert (
                 l_ten_var.grad is not None
-            ), f"Tensor {i}: PyTorch has grad, but Lamppp grad is None."
+            ), f"Tensor {i}: PyTorch has grad, but pylamp grad is None."
             assert (
                 l_ten_var.grad.data is not None
-            ), f"Tensor {i}: PyTorch has grad, but Lamppp grad.data is None."
+            ), f"Tensor {i}: PyTorch has grad, but pylamp grad.data is None."
 
             lamp_grad_torch_compatible = torch.tensor(
                 l_ten_var.grad.data, dtype=t_ten.dtype
@@ -292,10 +293,10 @@ def test_graph_builder(meta, bin_ops, una_ops, edges):
 
             assert torch.allclose(
                 t_ten.grad, lamp_grad_torch_compatible, rtol=1e-4
-            ), f"Gradients for tensor {i} do not match.\nPyTorch grad: {t_ten.grad}\nLamppp grad: {lamp_grad_torch_compatible}"
+            ), f"Gradients for tensor {i} do not match.\nPyTorch grad: {t_ten.grad}\npylamp grad: {lamp_grad_torch_compatible}"
         else:
             assert (
                 l_ten_var.grad is None
                 or l_ten_var.grad.data is None
                 or not l_ten_var.grad.data.data
-            ), f"Tensor {i}: PyTorch grad is None, but Lamppp grad is not effectively None.\nLamppp grad data: {l_ten_var.grad.data.data if l_ten_var.grad and l_ten_var.grad.data else 'N/A'}"
+            ), f"Tensor {i}: PyTorch grad is None, but pylamp grad is not effectively None.\npylamp grad data: {l_ten_var.grad.data.data if l_ten_var.grad and l_ten_var.grad.data else 'N/A'}"

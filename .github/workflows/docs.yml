@@ -1,4 +1,4 @@
-name: Doxygen Documentation Deployment
+name: docs
 on:
   push:
     branches: [ main ] 

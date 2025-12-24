@@ -1,4 +1,4 @@
-name: project-gtests
+name: ci
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup system dependencies
+      - name: Setup system deps
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -29,11 +29,6 @@ jobs:
             python3-venv \
             python3-pip \
             git pybind11-dev python3-pybind11 libboost-all-dev
-
-      - name: Setup Python ≥3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: ">=3.11"
 
       - name: Install Google Test
         run: |
@@ -49,14 +44,33 @@ jobs:
 
       - name: Build lamppp module
         run: cmake --build build --config Debug --parallel
-        
+
+      - name: Run GTests
+        run: |
+          build/tests/autograd_tests
+          build/tests/tensor_tests
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: ">=3.11"
+
+      - name: Install Python dependencies
+        run: |
+          pip install uv
+          uv lock
+          uv sync --extra cpu
+
+      - name: Install Pylamp
+        run: uv pip install .
+
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
 
-      - name: Run GTests
-        run: |
-          build/tests/autograd_tests
-          build/tests/tensor_tests
+      - name: Run tests
+        run: uv run pytest tests/stress/pytorch_stress_test.py
+
+      # TODO: can probably upload some artifact here to save time, idc rn

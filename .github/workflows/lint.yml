@@ -1,0 +1,54 @@
+name: lint
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            python3-venv \
+            python3-pip \
+            git pybind11-dev python3-pybind11 libboost-all-dev
+
+      - name: Build CMake project
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=OFF -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=OFF
+
+      - name: Run C++ formatting
+        run: | 
+          cmake --build build --target format
+          git diff --exit-code
+
+      - name: Run C++ linting
+        run: cmake --build build --target lint
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: ">=3.11"
+
+      - name: Install Python dependencies
+        run: |
+          pip install uv
+          uv lock
+          uv sync
+
+      - name: Run Python formatting
+        run: uv run black . --check
+      
+      - name: Run Python linting
+        run: uv run ruff check 
+
+

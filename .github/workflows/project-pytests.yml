@@ -47,7 +47,7 @@ jobs:
           cmake --build build --parallel
 
       - name: Install Pylamp
-        run: uv run pip install .
+        run: uv pip install .
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3

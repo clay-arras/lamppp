@@ -18,8 +18,13 @@ FetchContent_MakeAvailable(pybind11)
 pybind11_add_module(_C core.cpp)
 target_link_libraries(_C PRIVATE lamppp)
 
+if(APPLE)
+    set_target_properties(_C PROPERTIES INSTALL_RPATH "@loader_path/lib")
+else()
+    set_target_properties(_C PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
+endif()
+
 set_target_properties(_C PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
     BUILD_WITH_INSTALL_RPATH FALSE
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )

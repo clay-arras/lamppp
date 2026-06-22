@@ -40,8 +40,8 @@ constexpr int kChD = 128;
 constexpr int kChK = 16;
 
 template <typename U, typename V, typename OutType>
-__global__ void cudaMatmulVecKernel(const U* A, const V* B, OutType* C, size_t m,
-                                    size_t n, size_t k, OutType alpha,
+__global__ void cudaMatmulVecKernel(const U* A, const V* B, OutType* C,
+                                    size_t m, size_t n, size_t k, OutType alpha,
                                     OutType beta, bool vec_switch) {
   static_assert(kChK * kChD == kChD * kChD / kT);
   static_assert(kT % 4 == 0);
@@ -126,8 +126,8 @@ __global__ void cudaMatmulVecKernel(const U* A, const V* B, OutType* C, size_t m
 #pragma unroll
       for (int i = 0; i < kT; i++) {
         for (int j = 0; j < kT; j++) {
-          tmp[i * kT + j] += static_cast<OutType>(sA_tmp[i]) *
-                             static_cast<OutType>(sB_tmp[j]);
+          tmp[i * kT + j] +=
+              static_cast<OutType>(sA_tmp[i]) * static_cast<OutType>(sB_tmp[j]);
         }
       }
     }
@@ -199,18 +199,18 @@ __global__ void cudaTransposeKernel(const T* in, T* out, size_t m, size_t n) {
 template <typename U, typename V, typename OutType>
 void cudaMatMul(const U* A, const V* B, OutType* C, size_t m, size_t n,
                 size_t k) {
-  constexpr size_t kTileDim = kChK * kT;  
-  constexpr size_t kMinK = kChK;         
+  constexpr size_t kTileDim = kChK * kT;
+  constexpr size_t kMinK = kChK;
 
   if (m >= kTileDim && n >= kTileDim && k > kMinK) {
-    // NOTE: remove maybe? 
+    // NOTE: remove maybe?
     cudaMemset(C, 0, m * n * sizeof(OutType));
 
     bool vec_switch = (n % 4 == 0);
     dim3 block(kChK, kChK);
     dim3 grid((m + kTileDim - 1) / kTileDim, (n + kTileDim - 1) / kTileDim);
-    cudaMatmulVecKernel<U, V, OutType><<<grid, block>>>(
-        A, B, C, m, n, k, OutType(1), OutType(0), vec_switch);
+    cudaMatmulVecKernel<U, V, OutType>
+        <<<grid, block>>>(A, B, C, m, n, k, OutType(1), OutType(0), vec_switch);
   } else {
     dim3 threads(16, 16);
     dim3 blocks((m + threads.x - 1) / threads.x,

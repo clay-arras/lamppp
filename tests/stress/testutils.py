@@ -25,8 +25,8 @@ def sample_from_intervals(intervals, shape):
     return out.reshape(shape).tolist()
 
 
-def sample_matrices(n, ranges):
-    return [sample_from_intervals(ranges, MATRIX_DIMS) for _ in range(n)]
+def sample_matrices(n, ranges, shape=MATRIX_DIMS):
+    return [sample_from_intervals(ranges, shape) for _ in range(n)]
 
 
 def from_row_major(flat, like):

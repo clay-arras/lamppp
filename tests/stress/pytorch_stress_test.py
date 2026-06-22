@@ -54,9 +54,20 @@ def get_case():
     }
 
 
+def _pylamp_cuda_available():
+    try:
+        pylamp.Tensor(
+            [[0.0]], requires_grad=False, device=pylamp.device.cuda,
+            dtype=pylamp.dtype.float64,
+        )
+        return True
+    except Exception:
+        return False
+
+
 def get_device():
     devices = {"cpu": pylamp.device.cpu}
-    if torch.cuda.is_available():  # TODO: this isn't great, should add pylamp option
+    if _pylamp_cuda_available():
         devices.update({"cuda": pylamp.device.cuda})
     return devices
 

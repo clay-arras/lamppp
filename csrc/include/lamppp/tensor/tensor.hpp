@@ -43,7 +43,7 @@ class Tensor {
                   DataType dtype = DEFAULT_DTYPE)
       : impl_(std::make_shared<TensorImpl>(data, shape, device, dtype)) {}
 
-  void* data() const noexcept;
+  void* data();
   DataType type() const noexcept;
   DeviceType device() const noexcept;
   const std::vector<size_t>& shape() const noexcept;
@@ -56,7 +56,7 @@ class Tensor {
     std::vector<T> converted_data(impl_->numel());
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
       std::unique_ptr<scalar_t[]> original_data = std::make_unique<scalar_t[]>(numel());
-      ops::copy_stub()(device(), DeviceType::CPU, data(),
+      ops::copy_stub()(device(), DeviceType::CPU, impl_->data(),
                                   original_data.get(), numel(), type(), type());
 
       for (size_t i = 0; i < impl_->numel(); ++i) {

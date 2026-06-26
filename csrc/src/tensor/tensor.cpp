@@ -3,7 +3,7 @@
 
 namespace lmp::tensor {
 
-void* Tensor::data() const noexcept {
+void* Tensor::data() {
   return impl_->data();
 }
 DataType Tensor::type() const noexcept {

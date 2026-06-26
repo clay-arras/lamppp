@@ -61,7 +61,7 @@ TensorImpl transpose_cuda(const TensorImpl& a) {
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&] {
     Storage c_storage(m * n * sizeof(scalar_t), DeviceType::CUDA);
     ::lmp::tensor::detail::cuda::cudaTranspose<scalar_t>(
-        static_cast<const scalar_t*>(a.data()),
+        static_cast<const scalar_t*>(const_cast<TensorImpl&>(a).data()),
         static_cast<scalar_t*>(c_storage.data()), m, n);
     return TensorImpl(c_storage, {n, m}, out_dtype);
   });
@@ -87,8 +87,8 @@ TensorImpl matmul_cuda(const TensorImpl& a, const TensorImpl& b) {
         using out_type_t = scalar_t;
         Storage c_storage(m * n * sizeof(out_type_t), DeviceType::CUDA);
         ::lmp::tensor::detail::cuda::cudaMatMul<a_type_t, b_type_t, out_type_t>(
-            static_cast<const a_type_t*>(a.data()),
-            static_cast<const b_type_t*>(b.data()),
+            static_cast<const a_type_t*>(const_cast<TensorImpl&>(a).data()),
+            static_cast<const b_type_t*>(const_cast<TensorImpl&>(b).data()),
             static_cast<out_type_t*>(c_storage.data()), m, n, k);
         return TensorImpl(c_storage, {m, n}, out_dtype);
       });
@@ -126,8 +126,8 @@ TensorImpl conv1d_cuda(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cuda::cudaConv1d<in_type_t, kern_type_t,
                                                 out_type_t>(
-            static_cast<const in_type_t*>(input.data()),
-            static_cast<const kern_type_t*>(kernel.data()),
+            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());
@@ -173,8 +173,8 @@ TensorImpl conv2d_cuda(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cuda::cudaConv2d<in_type_t, kern_type_t,
                                                 out_type_t>(
-            static_cast<const in_type_t*>(input.data()),
-            static_cast<const kern_type_t*>(kernel.data()),
+            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());
@@ -226,8 +226,8 @@ TensorImpl conv3d_cuda(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cuda::cudaConv3d<in_type_t, kern_type_t,
                                                 out_type_t>(
-            static_cast<const in_type_t*>(input.data()),
-            static_cast<const kern_type_t*>(kernel.data()),
+            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());

@@ -18,7 +18,8 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
                            : std::accumulate(shape.begin(), shape.end(), 1,
                                              std::multiplies<>())) {
   LMP_DISPATCH_ALL_TYPES(dtype, [&] {
-    LMP_CHECK(data_.byte_size() / sizeof(scalar_t) == numel_)
+    LMP_CHECK(data_.byte_size() == 0 ||
+              data_.byte_size() / sizeof(scalar_t) == numel_)
         << "Storage size mismatch: expected " << numel_ << " elements of type "
         << dtype << " (" << sizeof(scalar_t) << " bytes each), but storage has "
         << data_.byte_size() << " bytes (capacity for "

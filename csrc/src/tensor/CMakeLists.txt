@@ -22,6 +22,7 @@ set(TENSOR_SOURCES
   tensor.cpp
   tensor_impl.cpp
   storage.cpp
+  infer_meta.cpp
   utils/align_utils.cpp
 )
 

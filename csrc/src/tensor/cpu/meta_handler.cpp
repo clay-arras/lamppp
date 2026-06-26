@@ -1,16 +1,17 @@
 #include "lamppp/tensor/cpu/meta_handler.hpp"
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/device_type.hpp"
+#include "lamppp/tensor/infer_meta.hpp"
 
 namespace lmp::tensor::detail {
 
 template <>
-UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a)
-    : inTens_({a}),
-      outDtype_(a->type()),
-      outSize_(a->numel()),
-      outShape_(a->shape()),
-      expand_(false) {
+UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a) : inTens_({a}) {
+  OpMeta m = infer_unary(a);
+  outDtype_ = m.dtype;
+  outSize_ = m.size;
+  outShape_ = m.shape;
+  expand_ = m.expand;
   LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
     using out_dtype_t = scalar_t;
     LMP_DISPATCH_ALL_TYPES(a->type(), [&] {
@@ -23,19 +24,12 @@ UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a)
 
 template <>
 BinaryMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
-    : inTens_({a, b}),
-      outDtype_(type_upcast(a->type(), b->type())),
-      outSize_(a->numel()),
-      outShape_(a->shape()),
-      expand_(false) {
-  LMP_INTERNAL_ASSERT(a->device() == b->device())
-      << "Should have asserted already";
-  expand_ = (a->shape() != b->shape());
-  if (expand_) {
-    detail::AlignUtil expand_dims(a->shape(), b->shape());
-    outSize_ = expand_dims.aligned_size_;
-    outShape_ = expand_dims.aligned_shape_;
-  }
+    : inTens_({a, b}) {
+  OpMeta m = infer_binary(a, b);
+  outDtype_ = m.dtype;
+  outSize_ = m.size;
+  outShape_ = m.shape;
+  expand_ = m.expand;
 
   LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
     using out_dtype_t = scalar_t;
@@ -59,13 +53,12 @@ BinaryMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
 
 template <>
 ReductMetaHandler::TensorMetaHandler(const TensorImpl* a, size_t axis)
-    : inTens_({a}),
-      outDtype_(a->type()),
-      outSize_(a->numel()),
-      outShape_(a->shape()),
-      expand_(false) {
-  outSize_ /= outShape_[axis];
-  outShape_[axis] = 1;
+    : inTens_({a}) {
+  OpMeta m = infer_reduct(a, axis);
+  outDtype_ = m.dtype;
+  outSize_ = m.size;
+  outShape_ = m.shape;
+  expand_ = m.expand;
   LMP_DISPATCH_ALL_TYPES(outDtype_, [&] {
     using out_dtype_t = scalar_t;
     LMP_DISPATCH_ALL_TYPES(a->type(), [&] {

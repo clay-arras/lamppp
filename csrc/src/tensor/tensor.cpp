@@ -1,4 +1,5 @@
 #include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/native/shape_ops.hpp"
 #include <iostream>
 
 namespace lmp::tensor {
@@ -23,16 +24,15 @@ size_t Tensor::numel() const noexcept {
 }
 
 Tensor Tensor::reshape(std::vector<size_t> new_shape) const {
-  return Tensor(
-      std::make_shared<TensorImpl>(impl_->reshape(std::move(new_shape))));
+  return ops::reshape(*this, std::move(new_shape));
 }
 
 Tensor Tensor::squeeze(size_t dim) const {
-  return Tensor(std::make_shared<TensorImpl>(impl_->squeeze(dim)));
+  return ops::squeeze(*this, dim);
 }
 
 Tensor Tensor::expand_dims(size_t dim) const {
-  return Tensor(std::make_shared<TensorImpl>(impl_->expand_dims(dim)));
+  return ops::expand_dims(*this, dim);
 }
 
 Tensor Tensor::to(DeviceType device) const {

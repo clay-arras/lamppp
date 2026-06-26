@@ -15,54 +15,50 @@ module, where we'll depend on `tensorImpl` in the inductor module, but
 we'll have `Tensor` reference some abstract inductor implementations
 (abstract inductor will live in tensor modulus)
 
+> **Decided model lives in `2.md §0`.** The entities below are kept for
+> context but reflect the final decisions: no `LazyNode`, no `OpKind`,
+> `LazyFunction` in `tensor`, metadata on `TensorImpl`.
+
 ## Entities
 
-**LazyNode** — one vertex in the deferred-computation DAG. Two flavors:
-a leaf (wraps an already-realized operand, has `Storage`, terminates
-DFS) or an op node (deferred elementwise op pointing at operand nodes).
-Abstract base declared in tensor; concrete subclasses defined in
-inductor. `Tensor` only holds `shared_ptr<LazyNode>` to the base.
+**TensorImpl is the vertex** — no separate `LazyNode`. `is_lazy()`
+(`lazy_ != nullptr`) distinguishes a realized leaf (has `Storage`,
+terminates DFS) from an op node (0-byte `Storage`, real metadata, holds a
+`shared_ptr<LazyFunction>`).
+
+**LazyFunction** — what an op node carries. A `tensor` type (not inductor),
+fusion analogue of the autograd `Function`. Describes "what computation is
+pending," not differentiation.
 
 - Fields:
-  - Stores `shared_ptr<LazyFunction>` OR a `shared_ptr<TensorImpl>`. One
-    of the pointers will be `nullptr`
+  - `inputs` — `vector<shared_ptr<TensorImpl>>` (≈ `Function::saved_inputs`)
+  - op-specific params (e.g. clamp bounds) — like `ClampBackward::min_val_`
+- Virtuals: `infer_output()`, `run_eager()`, `codegen_expr()`,
+  `is_fusible()`. **No `OpKind`. No output metadata** — that lives on the
+  `TensorImpl` the op produces.
+- One concrete subclass per op (shape shared on a category base).
 
-`@ABSTRACT`
-**LazyFunction** — what an op-node carries: `OpKind`, operand node
-pointers, and output metadata (shape/dtype/device) computed eagerly at
-record time. Fusion analogue of the autograd `Function`; separate lib.
-Describes "what computation is pending," not differentiation.
-
-- Fields:
-  - Substitution string / codegen info
-  - Vector of its children (`std::unique_ptr<variable_list> saved_inputs;`???)
-  - Meta info (i.e. other fields, etc. like for clamp)
-- There are different implementations of `LazyFunction`
-
-**AbstractInductorBackend** — abstract interface declared in tensor,
-exposing record + realize. `Tensor` calls through it and never includes
-inductor.
+**RealizationBackend** — the *only* abstract seam, declared in tensor,
+exposing **realize** (record is a free fn in tensor, not a backend method).
+`Tensor` calls through it and never includes inductor.
 
 **NVRTCInductorBackend** — concrete subclass in inductor implementing
-the interface for CUDA via NVRTC codegen + module cache. Registered into
-tensor at startup. Leaves room for a future `OpenMPInductorBackend` on
-the same seam.
+realize for CUDA via NVRTC codegen + module cache. Registered into tensor
+at startup. Leaves room for a future `OpenMPInductorBackend` on the same
+seam.
 
-- `Lazynode.cpp`
-- `Lazyfunction.cpp`
-- `nvrtc/` (or `cuda/`) which contains the `realize()` code.
-
-- Fields:
-  - TODO: Is realization backend a singleton?
+- `lazy_function.cpp` (+ per-op subclasses) — in **tensor**.
+- `nvrtc/` (or `cuda/`) which contains the `realize()` code — in inductor.
+- Singleton: **yes**, `backend()` returns the single registered instance.
 
 ## TensorImpl field
 
-TODO: should I use Union? !!!!
+Keep both members (no union) — `Storage` is cheap when 0-byte.
 
 ```cpp
 struct TensorImpl {
-  Storage data_;                       // realized bytes
-  std::shared_ptr<LazyNode> lazy_;     // deferred graph node (fwd-decl only)
+  Storage data_;                         // realized bytes
+  std::shared_ptr<LazyFunction> lazy_;   // the pending op; null on eager path
   // invariant: exactly one of {data_ populated, lazy_ set}
   bool is_lazy() const { return lazy_ != nullptr; }
 };
@@ -72,25 +68,28 @@ struct TensorImpl {
   is filled with actual data, still with device field
 
 Eager path never touches `lazy_` → one null-check on the hot path.
-`LazyNode`'s virtual dtor + `shared_ptr`'s type-erased deleter let
-tensor destroy a concrete inductor node whose definition it can't see.
+`LazyFunction` is a `tensor` type, so no cross-module type-erasure is
+needed; only the `RealizationBackend` is abstract.
 
 ## Realization backend
 
+`record` is a free fn in tensor (no backend); the backend exposes realize.
+
 ```cpp
+std::shared_ptr<TensorImpl>                  // free fn in tensor/
+    record(std::shared_ptr<LazyFunction> fn);
+
 struct RealizationBackend {                  // in tensor/
   virtual ~RealizationBackend() = default;
-  virtual std::shared_ptr<TensorImpl>
-      record(OpKind, std::vector<const TensorImpl*> ins) = 0;
   virtual void realize(TensorImpl*) = 0;
 };
 RealizationBackend* backend();               // null unless registered
 void register_backend(RealizationBackend*);  // backend calls at startup
 ```
 
-**record** — reads operand identity, computes output metadata now
-(`type_upcast`, shape), allocates a `TensorImpl` with empty `Storage` +
-a fresh `LazyNode` wrapping a `LazyFunction`. No bytes.
+**record** — takes the op's `LazyFunction`, calls `fn->infer_output()`
+(computes output metadata now — `type_upcast`, shape — and allocates a
+`TensorImpl` with empty `Storage`), sets `lazy_ = fn`. No bytes.
 
 **realize** — DFS backward from the node, stop at leaves/non-fusible (=
 fusion group), codegen one NVRTC kernel (hash → module cache), launch,
@@ -105,10 +104,10 @@ ordinary realized leaves.
 
 ```cpp
 Tensor ops::add(const Tensor& a, const Tensor& b) {
-  auto* B = backend();
-  bool defer = B && a.device()==CUDA;   // Option A: no op-kind/shape test
+  bool defer = backend() && a.device()==CUDA;  // Option A: device-only gate
   if (!defer) return primitives::add(a, b);          // today's eager path
-  return Tensor{ B->record(OpKind::Add, {a.impl(), b.impl()}) };
+  return Tensor{ record(std::make_shared<AddFn>(
+      std::vector{a.impl(), b.impl()})) };
 }
 ```
 

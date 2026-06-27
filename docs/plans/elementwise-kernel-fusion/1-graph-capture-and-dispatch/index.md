@@ -38,7 +38,7 @@ pending," not differentiation.
   `TensorImpl` the op produces.
 - One concrete subclass per op (shape shared on a category base).
 
-**RealizationBackend** — the *only* abstract seam, declared in tensor,
+**LazyBackend** — the *only* abstract seam, declared in tensor,
 exposing **realize** (record is a free fn in tensor, not a backend method).
 `Tensor` calls through it and never includes inductor.
 
@@ -69,9 +69,9 @@ struct TensorImpl {
 
 Eager path never touches `lazy_` → one null-check on the hot path.
 `LazyFunction` is a `tensor` type, so no cross-module type-erasure is
-needed; only the `RealizationBackend` is abstract.
+needed; only the `LazyBackend` is abstract.
 
-## Realization backend
+## Lazy backend
 
 `record` is a free fn in tensor (no backend); the backend exposes realize.
 
@@ -79,12 +79,12 @@ needed; only the `RealizationBackend` is abstract.
 std::shared_ptr<TensorImpl>                  // free fn in tensor/
     record(std::shared_ptr<LazyFunction> fn);
 
-struct RealizationBackend {                  // in tensor/
-  virtual ~RealizationBackend() = default;
+struct LazyBackend {                  // in tensor/
+  virtual ~LazyBackend() = default;
   virtual void realize(TensorImpl*) = 0;
 };
-RealizationBackend* backend();               // null unless registered
-void register_backend(RealizationBackend*);  // backend calls at startup
+LazyBackend* backend();               // null unless registered
+void register_backend(LazyBackend*);  // backend calls at startup
 ```
 
 **record** — takes the op's `LazyFunction`, calls `fn->infer_output()`

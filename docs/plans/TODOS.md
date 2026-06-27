@@ -38,3 +38,6 @@ requirements:
 ok. we want poetry to STAY as our package manager
 we want to replicate the pyproject.toml and CMakeLists.txt inside of scikit_build_example
 we want to install that.
+
+---
+WHY IS META HANDLER in CPU? why is ALIGN shit in CPU? just put it in tensor/? makes no sense, follow infer_meta.

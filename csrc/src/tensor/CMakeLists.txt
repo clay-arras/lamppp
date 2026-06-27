@@ -19,6 +19,7 @@ set(TENSOR_SOURCES
   cpu/kernels.cpp
   cpu/memory.cpp
   utils/fill_like.cpp
+  lazy/lazy_backend.cpp
   tensor.cpp
   tensor_impl.cpp
   storage.cpp

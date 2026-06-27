@@ -47,6 +47,26 @@ size_t TensorImpl::numel() const noexcept {
   return numel_;
 }
 
+bool TensorImpl::is_lazy() const noexcept {
+  return lazy_ != nullptr;
+}
+
+const std::shared_ptr<LazyFunction>& TensorImpl::lazy_op() const noexcept {
+  return lazy_;
+}
+
+void TensorImpl::set_realized(Storage storage) {
+  LMP_DISPATCH_ALL_TYPES(type_, [&] {
+    LMP_CHECK(storage.byte_size() / sizeof(scalar_t) == numel_)
+        << "set_realized: storage size mismatch: expected " << numel_
+        << " elements, got " << (storage.byte_size() / sizeof(scalar_t));
+  });
+  LMP_CHECK(storage.device() == data_.device())
+      << "set_realized: device mismatch";
+  data_ = std::move(storage);
+  lazy_ = nullptr;
+}
+
 void TensorImpl::update_strides() {
   detail::stride_t stride = 1;
   strides_.resize(shape_.size());

@@ -28,7 +28,7 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
   update_strides();
 }
 
-void* TensorImpl::data() const noexcept {
+void* TensorImpl::data() {
   return data_.data();
 }
 DataType TensorImpl::type() const noexcept {
@@ -105,13 +105,13 @@ Scalar TensorImpl::index(const std::vector<size_t>& idx) {
 // maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy(const TensorImpl& other) const {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
-    ops::copy_stub()(other.device(), device(), other.data(), data(),
+    ops::copy_stub()(other.device(), device(), other.data_.data(), data_.data(),
                      other.numel(), other.type(), type());
   });
 }
 
 void TensorImpl::fill(Scalar item) const {
-  ops::fill_stub()(device(), data(), numel(), item, type());
+  ops::fill_stub()(device(), data_.data(), numel(), item, type());
 }
 
 const size_t kMaxPrintElem = 2e1;
@@ -120,7 +120,7 @@ void TensorImpl::print(std::ostream& os) const {
   LMP_DISPATCH_ALL_TYPES(this->type_, [&] {
     size_t print_size = std::min(kMaxPrintElem, this->numel());
     auto* data_ptr = new scalar_t[print_size * sizeof(scalar_t)];
-    ops::copy_stub()(this->device(), DeviceType::CPU, this->data(),
+    ops::copy_stub()(this->device(), DeviceType::CPU, this->data_.data(),
                      static_cast<void*>(data_ptr), print_size, this->type_,
                      this->type_);
     for (size_t i = 0; i < print_size; i++) {

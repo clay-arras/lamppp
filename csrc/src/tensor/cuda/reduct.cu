@@ -50,7 +50,7 @@ void reduct_dispatch_handler(ReductMetaHandler& meta, size_t axis,
       reduct_kernel_launcher(
           internal::CUDAPtrPack<out_dtype_t, arg_dtype_t>(
               static_cast<out_dtype_t*>(meta.out().data()),
-              static_cast<arg_dtype_t*>(meta.in()[0]->data())),
+              static_cast<arg_dtype_t*>(const_cast<TensorImpl*>(meta.in()[0])->data())),
           OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
           meta.out().numel(), axis, meta.in()[0]->shape().data(),
           meta.in()[0]->strides().data(), meta.out().shape().size());

@@ -69,7 +69,7 @@ class TensorImpl {
                       DataType dtype);
   /// @endinternal
 
-  void* data() const noexcept;
+  void* data();
   DataType type() const noexcept;
   DeviceType device() const noexcept;
   const std::vector<size_t>& shape() const noexcept;

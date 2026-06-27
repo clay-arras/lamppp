@@ -15,7 +15,8 @@ Tensor to(const Tensor& a, DeviceType to_device) {
 
   return LMP_DISPATCH_ALL_TYPES(a.type(), [&]() {
     Storage new_storage(a.numel() * sizeof(scalar_t), to_device);
-    copy_stub()(a.device(), to_device, a.data(), new_storage.data(), a.numel(),
+    copy_stub()(a.device(), to_device, const_cast<Tensor&>(a).data(),
+                new_storage.data(), a.numel(),
                 a.type(), a.type());
     TensorImpl new_impl(new_storage, a.shape(), a.type());
     return detail::UnsafeTensorAccessor::fromImpl(

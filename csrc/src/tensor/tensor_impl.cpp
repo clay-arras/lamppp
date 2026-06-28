@@ -70,6 +70,15 @@ void TensorImpl::set_realized(Storage storage) {
   lazy_ = nullptr;
 }
 
+void TensorImpl::set_deferred(std::shared_ptr<LazyFunction> op) {
+  LMP_CHECK(!is_deferred()) << "tensor already has a pending op";
+  lazy_ = std::move(op);
+}
+
+Storage TensorImpl::storage() const noexcept {
+  return data_;
+}
+
 void TensorImpl::update_strides() {
   detail::stride_t stride = 1;
   strides_.resize(shape_.size());

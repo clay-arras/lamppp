@@ -1,8 +1,10 @@
 #include "lamppp/tensor/tensor_impl.hpp"
+
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
+#include "lamppp/tensor/lazy/realize.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 #include "lamppp/tensor/utils/align_utils.hpp"
 
@@ -29,6 +31,7 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
 }
 
 void* TensorImpl::data() {
+  if (is_deferred()) realize(this);
   return data_.data();
 }
 DataType TensorImpl::type() const noexcept {
@@ -47,7 +50,7 @@ size_t TensorImpl::numel() const noexcept {
   return numel_;
 }
 
-bool TensorImpl::is_lazy() const noexcept {
+bool TensorImpl::is_deferred() const noexcept {
   return lazy_ != nullptr;
 }
 

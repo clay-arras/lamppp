@@ -78,7 +78,7 @@ class TensorImpl {
   const std::vector<size_t>& shape() const noexcept;
   const std::vector<detail::stride_t>& strides() const noexcept;
   size_t numel() const noexcept;
-  bool is_lazy() const noexcept;
+  bool is_deferred() const noexcept;
   const std::shared_ptr<LazyFunction>& lazy_op() const noexcept;
   void set_realized(Storage storage);
 

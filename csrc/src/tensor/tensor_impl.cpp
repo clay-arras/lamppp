@@ -70,6 +70,11 @@ void TensorImpl::set_realized(Storage storage) {
   lazy_ = nullptr;
 }
 
+void TensorImpl::set_deferred(std::shared_ptr<LazyFunction> op) {
+  LMP_CHECK(!is_deferred()) << "tensor already has a pending op";
+  lazy_ = std::move(op);
+}
+
 Storage TensorImpl::storage() const noexcept {
   return data_;
 }

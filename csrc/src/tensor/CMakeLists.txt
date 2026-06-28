@@ -22,6 +22,7 @@ set(TENSOR_SOURCES
   lazy/lazy_backend.cpp
   lazy/realize.cpp
   lazy/functions/elementwise_binary.cpp
+  lazy/record.cpp
   tensor.cpp
   tensor_impl.cpp
   storage.cpp

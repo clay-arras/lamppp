@@ -81,6 +81,7 @@ class TensorImpl {
   bool is_deferred() const noexcept;
   const std::shared_ptr<LazyFunction>& lazy_op() const noexcept;
   void set_realized(Storage storage);
+  void set_deferred(std::shared_ptr<LazyFunction> op);
   Storage storage() const noexcept;
 
   TensorImpl reshape(std::vector<size_t> new_shape);

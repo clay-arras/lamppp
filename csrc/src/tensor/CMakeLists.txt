@@ -20,6 +20,7 @@ set(TENSOR_SOURCES
   cpu/memory.cpp
   utils/fill_like.cpp
   lazy/lazy_backend.cpp
+  lazy/functions/elementwise_binary.cpp
   tensor.cpp
   tensor_impl.cpp
   storage.cpp

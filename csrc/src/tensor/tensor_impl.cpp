@@ -1,8 +1,10 @@
 #include "lamppp/tensor/tensor_impl.hpp"
+
 #include "lamppp/common/assert.hpp"
 #include "lamppp/tensor/data_type.hpp"
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_type.hpp"
+#include "lamppp/tensor/lazy/realize.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
 #include "lamppp/tensor/utils/align_utils.hpp"
 
@@ -29,6 +31,7 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
 }
 
 void* TensorImpl::data() {
+  if (is_deferred()) realize(this);
   return data_.data();
 }
 DataType TensorImpl::type() const noexcept {
@@ -45,6 +48,26 @@ const std::vector<detail::stride_t>& TensorImpl::strides() const noexcept {
 }
 size_t TensorImpl::numel() const noexcept {
   return numel_;
+}
+
+bool TensorImpl::is_deferred() const noexcept {
+  return lazy_ != nullptr;
+}
+
+const std::shared_ptr<LazyFunction>& TensorImpl::lazy_op() const noexcept {
+  return lazy_;
+}
+
+void TensorImpl::set_realized(Storage storage) {
+  LMP_DISPATCH_ALL_TYPES(type_, [&] {
+    LMP_CHECK(storage.byte_size() / sizeof(scalar_t) == numel_)
+        << "set_realized: storage size mismatch: expected " << numel_
+        << " elements, got " << (storage.byte_size() / sizeof(scalar_t));
+  });
+  LMP_CHECK(storage.device() == data_.device())
+      << "set_realized: device mismatch";
+  data_ = std::move(storage);
+  lazy_ = nullptr;
 }
 
 void TensorImpl::update_strides() {

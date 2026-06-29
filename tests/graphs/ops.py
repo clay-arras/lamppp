@@ -1,11 +1,13 @@
-"""Op tables, slot menus, and input scaling for the graph equivalence tests.
+"""Op menus, slot sampling, and input scaling for the graph equivalence tests.
 
-Each slot menu maps a name to a ``(torch_fn, lamp_fn)`` pair indexed by backend.
-A template's slots are filled from these menus; the same fill drives both the
-torch reference graph and the pylamp graph so the two stay structurally
-identical. Kernel fusion only covers binary elementwise ops, so the binary menu
-is the fusion target; unary / matmul / reduct are barriers that split a fused
-region (and double as IR-correctness coverage).
+Each menu entry is a ``(torch_fn, lamp_fn)`` pair indexed by backend, so one
+sampled fill drives both the torch reference graph and the pylamp graph.
+
+Ops whose domain can blow up (div by ~0, neg base ^ frac, log/sqrt of <=0,
+tan near pi/2, exp overflow) get a *separate* guarded def that wraps the
+operand in ``clamp`` into a safe domain. The guard is identical on both
+backends, so the differential check stays valid. Ops that are total over the
+reals (add/sub/mul, neg/abs/sin/cos) are used raw.
 """
 
 import numpy as np
@@ -15,44 +17,102 @@ import pylamp
 BACKEND_TORCH = 0
 BACKEND_LAMP = 1
 
-# name -> (torch_fn, lamp_fn), each callable as f(a, b). Fusion target.
-# div is intentionally omitted: its near-zero-denominator hazard needs a guard
-# that doesn't belong in a generic same-shape elementwise slot.
-BINARY = {
+EPS = 1e-3  # positive floor for log/sqrt domain
+BIG = 1e3  # magnitude ceiling
+EXP_HI = 10.0  # exp arg ceiling (e^10 ~ 2e4, no overflow)
+TAN_LIM = 1.5  # < pi/2, keeps tan off its asymptotes
+# div/pow are doubly ill-conditioned: a denom or base near zero blows up both
+# the value and the gradient (pow's exponent grad ~ base^exp * ln(base)).
+# A comfortable floor (not EPS) keeps the differentiable region O(1) so float
+# noise stays well under tolerance.
+DENOM_LO = 0.5  # div denominator floor
+BASE_LO = 0.5  # pow base floor
+BASE_HI = 2.0  # pow base ceiling
+POW_LIM = 2.0  # pow exponent magnitude ceiling
+
+
+# --- binary elementwise: the fusion target ---------------------------------
+
+# Total ops, safe to chain raw -> a pure fusible region.
+BINARY_SAFE = {
     "add": (torch.add, pylamp.add),
     "sub": (torch.sub, pylamp.sub),
     "mul": (torch.mul, pylamp.mul),
 }
 
-# name -> (torch_fn, lamp_fn), each callable as f(x). Trig only: total over the
-# reals, so a chain can never wander out of the domain (no clamp guards needed).
-UNARY = {
+# Domain-bounded ops, guarded with clamp.
+BINARY_BOUNDED = {
+    "div": (
+        lambda a, b: torch.div(a, torch.clamp(b, min=DENOM_LO, max=BIG)),
+        lambda a, b: pylamp.div(a, pylamp.clamp(b, DENOM_LO, BIG)),
+    ),
+    "pow": (
+        lambda a, b: torch.pow(
+            torch.clamp(a, min=BASE_LO, max=BASE_HI),
+            torch.clamp(b, min=-POW_LIM, max=POW_LIM),
+        ),
+        lambda a, b: pylamp.pow(
+            pylamp.clamp(a, BASE_LO, BASE_HI), pylamp.clamp(b, -POW_LIM, POW_LIM)
+        ),
+    ),
+}
+
+# --- unary ------------------------------------------------------------------
+
+UNARY_SAFE = {
+    "neg": (torch.neg, pylamp.neg),
+    "abs": (torch.abs, pylamp.abs),
     "sin": (torch.sin, pylamp.sin),
     "cos": (torch.cos, pylamp.cos),
 }
 
-# name -> (torch_fn, lamp_fn), each callable as f(t, axis). pylamp reductions
-# keep the reduced dim; mirror that with keepdim=True on the torch side so the
-# two outputs line up.
+UNARY_BOUNDED = {
+    "exp": (
+        lambda x: torch.exp(torch.clamp(x, min=-BIG, max=EXP_HI)),
+        lambda x: pylamp.exp(pylamp.clamp(x, -BIG, EXP_HI)),
+    ),
+    "log": (
+        lambda x: torch.log(torch.clamp(x, min=EPS, max=BIG)),
+        lambda x: pylamp.log(pylamp.clamp(x, EPS, BIG)),
+    ),
+    "sqrt": (
+        lambda x: torch.sqrt(torch.clamp(x, min=EPS, max=BIG)),
+        lambda x: pylamp.sqrt(pylamp.clamp(x, EPS, BIG)),
+    ),
+    "tan": (
+        lambda x: torch.tan(torch.clamp(x, min=-TAN_LIM, max=TAN_LIM)),
+        lambda x: pylamp.tan(pylamp.clamp(x, -TAN_LIM, TAN_LIM)),
+    ),
+}
+
+UNARY = {**UNARY_SAFE, **UNARY_BOUNDED}
+
+# --- reduction (barrier) ----------------------------------------------------
+
+# pylamp reductions keep the reduced dim; mirror with keepdim=True on torch.
 REDUCT = {
     "sum": (lambda t, axis: torch.sum(t, dim=axis, keepdim=True), pylamp.sum),
     "max": (lambda t, axis: torch.max(t, dim=axis, keepdim=True).values, pylamp.max),
     "min": (lambda t, axis: torch.min(t, dim=axis, keepdim=True).values, pylamp.min),
 }
 
-# Fixed barrier, not a slot.
+# Fixed barrier, not a sampled slot.
 MATMUL = (torch.matmul, pylamp.matmul)
 
-CATEGORIES = {"BIN": BINARY, "UNARY": UNARY, "REDUCT": REDUCT}
+CATEGORIES = {
+    "BIN": BINARY_SAFE,
+    "BIN_BOUNDED": BINARY_BOUNDED,
+    "UNARY": UNARY,
+    "REDUCT": REDUCT,
+}
 
 
 def row_normalize(arr):
-    """Scale each row by its max-abs so values land in [-1, 1].
+    """Scale each row by its max-abs into [-1, 1].
 
-    This is pure data preprocessing applied before a leaf tensor is built, so it
-    adds no graph nodes and doesn't perturb gradients -- both backends receive
-    byte-identical leaves. Keeping inputs well-conditioned stops a deep mul chain
-    from collapsing toward zero or a sum chain from drifting large.
+    Pure preprocessing on the leaf array (no graph node), so both backends get
+    byte-identical leaves and gradients are untouched. Keeps deep chains
+    well-conditioned instead of collapsing to 0 or drifting large.
     """
     arr = np.asarray(arr, dtype=np.float64)
     flat = arr.reshape(-1, arr.shape[-1])
@@ -62,11 +122,7 @@ def row_normalize(arr):
 
 
 def sample_fills(template, rng):
-    """Pick a concrete op for every slot, grouped by category in slot order.
-
-    The returned dict maps a category to the list of ops chosen for that
-    category's slots, in the order the template consumes them.
-    """
+    """Pick one op per slot, grouped by category in slot order."""
     fills = {}
     for category in template.slots:
         names = list(CATEGORIES[category].keys())
@@ -75,15 +131,13 @@ def sample_fills(template, rng):
 
 
 class OpSet:
-    """Slot ops resolved for a single backend, grouped by category.
-
-    A template's ``build`` reads ``ops.bin[i]`` / ``ops.unary[i]`` /
-    ``ops.reduct[i]`` (slot order within each category) plus the fixed
-    ``ops.matmul``.
-    """
+    """Slot ops resolved for one backend; a template reads them by category."""
 
     def __init__(self, backend, fills):
-        self.bin = [BINARY[n][backend] for n in fills.get("BIN", [])]
+        self.bin = [BINARY_SAFE[n][backend] for n in fills.get("BIN", [])]
+        self.bin_bounded = [
+            BINARY_BOUNDED[n][backend] for n in fills.get("BIN_BOUNDED", [])
+        ]
         self.unary = [UNARY[n][backend] for n in fills.get("UNARY", [])]
         self.reduct = [REDUCT[n][backend] for n in fills.get("REDUCT", [])]
         self.matmul = MATMUL[backend]

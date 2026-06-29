@@ -1,0 +1,26 @@
+name: ci-gpu
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  modal-gpu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: ">=3.11"
+
+      - name: Install Modal
+        run: pip install modal
+
+      - name: Run GPU CI on Modal
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: modal run tests/ci/modal_gpu.py

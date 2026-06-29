@@ -3,8 +3,8 @@
 #include <cmath>
 #include "lamppp/tensor/device_type.hpp"
 #include "lamppp/tensor/dispatch_stub.hpp"
-#include "lamppp/tensor/native/unary_ops.hpp"
 #include "lamppp/tensor/native/matrix_ops.hpp"
+#include "lamppp/tensor/native/unary_ops.hpp"
 #include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::detail::cpu {
@@ -105,7 +105,13 @@ struct ClampFunctor {
   explicit ClampFunctor(Scalar min_val, Scalar max_val)
       : min_val_(min_val), max_val_(max_val) {}
   T operator()(T arg) {
-    return arg < min_val_ ? min_val_ : (arg > max_val_ ? max_val_ : arg);
+    if (arg < min_val_) {
+      return min_val_;
+    }
+    if (arg > max_val_) {
+      return max_val_;
+    }
+    return arg;
   }
 
  private:
@@ -159,7 +165,7 @@ TensorImpl clamp_cpu(const TensorImpl& a, Scalar min_val, Scalar max_val);
 TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b);
 TensorImpl transpose_cpu(const TensorImpl& a);
 TensorImpl conv_cpu(const TensorImpl& input, const TensorImpl& kernel,
-                     size_t stride, size_t padding, size_t dilation);
+                    size_t stride, size_t padding, size_t dilation);
 
 TensorImpl sum_cpu(const TensorImpl& a, size_t axis);
 TensorImpl max_cpu(const TensorImpl& a, size_t axis);

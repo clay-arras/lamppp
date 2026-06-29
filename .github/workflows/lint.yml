@@ -21,10 +21,11 @@ jobs:
             cmake \
             python3-venv \
             python3-pip \
-            git pybind11-dev python3-pybind11 libboost-all-dev
+            git pybind11-dev python3-pybind11 libboost-all-dev \
+            clang-format clang-tidy
 
       - name: Build CMake project
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=OFF -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=OFF
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=ON -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Run C++ formatting
         run: | 

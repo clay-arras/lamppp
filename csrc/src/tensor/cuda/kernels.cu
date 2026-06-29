@@ -126,8 +126,10 @@ TensorImpl conv1d_cuda(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cuda::cudaConv1d<in_type_t, kern_type_t,
                                                 out_type_t>(
-            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
-            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
+            static_cast<const in_type_t*>(
+                const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(
+                const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());
@@ -173,8 +175,10 @@ TensorImpl conv2d_cuda(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cuda::cudaConv2d<in_type_t, kern_type_t,
                                                 out_type_t>(
-            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
-            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
+            static_cast<const in_type_t*>(
+                const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(
+                const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());
@@ -226,8 +230,10 @@ TensorImpl conv3d_cuda(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cuda::cudaConv3d<in_type_t, kern_type_t,
                                                 out_type_t>(
-            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
-            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
+            static_cast<const in_type_t*>(
+                const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(
+                const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());

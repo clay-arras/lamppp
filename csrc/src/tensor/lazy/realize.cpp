@@ -7,7 +7,8 @@
 namespace lmp::tensor {
 
 void realize(TensorImpl* impl) {
-  if (!impl->is_deferred()) return;
+  if (!impl->is_deferred())
+    return;
   LazyBackend* b = backend(impl->device());
   LMP_CHECK(b) << "no lazy backend registered for device";
   b->realize(impl);

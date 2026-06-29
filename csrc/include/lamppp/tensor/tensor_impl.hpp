@@ -109,7 +109,7 @@ class TensorImpl {
   size_t numel_;
   std::vector<size_t> shape_;
   std::vector<detail::stride_t> strides_;
-  std::shared_ptr<LazyFunction> lazy_{};  // pending op; null on the eager path
+  std::shared_ptr<LazyFunction> lazy_;  // pending op; null on the eager path
 };
 /// @endinternal
 

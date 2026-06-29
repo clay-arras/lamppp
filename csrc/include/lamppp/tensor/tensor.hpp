@@ -7,10 +7,10 @@
 #include "data_type.hpp"
 #include "device_type.hpp"
 #include "dispatch_type.hpp"
-#include "utils/fill_like.hpp"
 #include "lamppp/common/config.hpp"
-#include "tensor_impl.hpp"
 #include "lamppp/tensor/native/memory_ops.hpp"
+#include "tensor_impl.hpp"
+#include "utils/fill_like.hpp"  // NOLINT(misc-header-include-cycle)
 
 namespace lmp::tensor {
 
@@ -55,9 +55,10 @@ class Tensor {
   std::vector<T> to_vector() const {
     std::vector<T> converted_data(impl_->numel());
     LMP_DISPATCH_ALL_TYPES(impl_->type(), [&] {
-      std::unique_ptr<scalar_t[]> original_data = std::make_unique<scalar_t[]>(numel());
+      std::unique_ptr<scalar_t[]> original_data =
+          std::make_unique<scalar_t[]>(numel());
       ops::copy_stub()(device(), DeviceType::CPU, impl_->data(),
-                                  original_data.get(), numel(), type(), type());
+                       original_data.get(), numel(), type(), type());
 
       for (size_t i = 0; i < impl_->numel(); ++i) {
         converted_data[i] = static_cast<T>(original_data[i]);
@@ -70,7 +71,7 @@ class Tensor {
   /** 
   * @note These functions are similar to Pytorch in that they return a VIEW
   * i.e. don't change the underlying storage @see storage.hpp
-  */ 
+  */
   Tensor reshape(std::vector<size_t> new_shape) const;
   Tensor squeeze(size_t dim) const;
   Tensor expand_dims(size_t dim) const;
@@ -81,7 +82,7 @@ class Tensor {
   */
   Tensor to(DeviceType device) const;
 
-  /// @note These functions modify the actual data in-place. 
+  /// @note These functions modify the actual data in-place.
   void copy(const Tensor& other);
   void fill(Scalar item);
 

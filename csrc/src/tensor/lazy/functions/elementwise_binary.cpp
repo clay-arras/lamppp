@@ -8,12 +8,13 @@ namespace lmp::tensor {
 
 std::shared_ptr<TensorImpl> ElementwiseBinaryFn::infer_output() const {
   detail::OpMeta m = detail::infer_binary(inputs[0].get(), inputs[1].get());
-  Storage empty(0, inputs[0]->device());                  // 0-byte, on-device
+  Storage empty(0, inputs[0]->device());  // 0-byte, on-device
   return std::make_shared<TensorImpl>(empty, m.shape, m.dtype);
 }
 
 bool ElementwiseBinaryFn::is_fusible() const {
-  return inputs[0]->shape() == inputs[1]->shape();  // same-shape => fusible; broadcast => boundary
+  return inputs[0]->shape() ==
+         inputs[1]->shape();  // same-shape => fusible; broadcast => boundary
 }
 
 void AddFn::run_eager(TensorImpl& out) {

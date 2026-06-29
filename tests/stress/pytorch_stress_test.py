@@ -57,7 +57,9 @@ def get_case():
 def _pylamp_cuda_available():
     try:
         pylamp.Tensor(
-            [[0.0]], requires_grad=False, device=pylamp.device.cuda,
+            [[0.0]],
+            requires_grad=False,
+            device=pylamp.device.cuda,
             dtype=pylamp.dtype.float64,
         )
         return True

@@ -68,6 +68,7 @@ TensorImpl transpose_cpu(const TensorImpl& a) {
   });
 }
 
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   LMP_CHECK(a.shape().size() == 2 && b.shape().size() == 2)
       << "Both matrices must be 2D.";
@@ -97,6 +98,7 @@ TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 TensorImpl conv1d_cpu(const TensorImpl& input, const TensorImpl& kernel,
                       size_t stride, size_t padding, size_t dilation) {
   LMP_CHECK(input.shape().size() == 1 && kernel.shape().size() == 1)
@@ -127,8 +129,10 @@ TensorImpl conv1d_cpu(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cpu::cpuConv1d<in_type_t, kern_type_t,
                                               out_type_t>(
-            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
-            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
+            static_cast<const in_type_t*>(
+                const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(
+                const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());
@@ -139,6 +143,7 @@ TensorImpl conv1d_cpu(const TensorImpl& input, const TensorImpl& kernel,
   });
 }
 
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 TensorImpl conv2d_cpu(const TensorImpl& input, const TensorImpl& kernel,
                       size_t stride, size_t padding, size_t dilation) {
   LMP_CHECK(input.shape().size() == 2 && kernel.shape().size() == 2)
@@ -174,8 +179,10 @@ TensorImpl conv2d_cpu(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cpu::cpuConv2d<in_type_t, kern_type_t,
                                               out_type_t>(
-            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
-            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
+            static_cast<const in_type_t*>(
+                const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(
+                const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());
@@ -186,6 +193,7 @@ TensorImpl conv2d_cpu(const TensorImpl& input, const TensorImpl& kernel,
   });
 }
 
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 TensorImpl conv3d_cpu(const TensorImpl& input, const TensorImpl& kernel,
                       size_t stride, size_t padding, size_t dilation) {
   LMP_CHECK(input.shape().size() == 3 && kernel.shape().size() == 3)
@@ -227,8 +235,10 @@ TensorImpl conv3d_cpu(const TensorImpl& input, const TensorImpl& kernel,
 
         ::lmp::tensor::detail::cpu::cpuConv3d<in_type_t, kern_type_t,
                                               out_type_t>(
-            static_cast<const in_type_t*>(const_cast<TensorImpl&>(input).data()),
-            static_cast<const kern_type_t*>(const_cast<TensorImpl&>(kernel).data()),
+            static_cast<const in_type_t*>(
+                const_cast<TensorImpl&>(input).data()),
+            static_cast<const kern_type_t*>(
+                const_cast<TensorImpl&>(kernel).data()),
             static_cast<out_type_t*>(c_storage.data()), stride, padding,
             dilation, input.shape().data(), kernel.shape().data(),
             out_shape.data());

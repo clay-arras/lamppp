@@ -6,7 +6,6 @@ import operator_benchmark as op_bench
 
 import torch
 
-
 """Microbenchmarks for all operators."""
 
 cross_product_config = {

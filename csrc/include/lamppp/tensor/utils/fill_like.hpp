@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lamppp/tensor/data_type.hpp"
-#include "lamppp/tensor/tensor.hpp"
+#include "lamppp/tensor/tensor.hpp"  // NOLINT(misc-header-include-cycle)
 
 namespace lmp::tensor {
 

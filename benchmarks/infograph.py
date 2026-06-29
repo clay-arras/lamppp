@@ -2,6 +2,7 @@
 """
 I vibe coded this script because I couldn't be bothered. Shows nice infographics on why LMP is faster in operator benchmarks for CUDA
 """
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

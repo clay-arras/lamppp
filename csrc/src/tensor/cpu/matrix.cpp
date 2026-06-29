@@ -5,7 +5,7 @@
 namespace lmp::tensor::detail::cpu {
 
 template <typename U, typename V, typename OutType>
-void cpuMatmulKernel(const U* A, const V* B, OutType* C, size_t m, size_t n,
+void cpuMatmulKernel(const U* A, const V* B, OutType* C, size_t /*m*/, size_t n,
                      size_t k, size_t i, size_t j) {
   OutType sum = 0;
 #pragma omp parallel for schedule(static) reduction(+ : sum)
@@ -39,11 +39,12 @@ void cpuTranspose(const T* in, T* out, size_t m, size_t n) {
       cpuTransposeKernel<T>(in, out, m, n, i, j);
 }
 
-#define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type) \
-  template void cpuMatMul<arg1_type, arg2_type, out_type>( \
-      const arg1_type*, const arg2_type*, out_type*, size_t, size_t, size_t);
+#define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type)             \
+  template void cpuMatMul<arg1_type, arg2_type, out_type>(             \
+      const arg1_type*, const arg2_type*, out_type(*), size_t, size_t, \
+      size_t);
 #define INSTANTIATE_TRANSPOSE(type) \
-  template void cpuTranspose<type>(const type*, type*, size_t, size_t);
+  template void cpuTranspose<type>(const type*, type(*), size_t, size_t);
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_MATMUL, LMP_LIST_TYPES,
                                LMP_LIST_TYPES, LMP_LIST_TYPES);

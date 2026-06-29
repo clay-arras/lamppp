@@ -26,7 +26,8 @@ void unary_dispatch_handler(UnaryMetaHandler& meta, Args&&... args) {
       unary_kernel_launcher(
           internal::PtrPack<out_dtype_t, arg_dtype_t>(
               static_cast<out_dtype_t*>(meta.out().data()),
-              static_cast<arg_dtype_t*>(const_cast<TensorImpl*>(meta.in()[0])->data())),
+              static_cast<arg_dtype_t*>(
+                  const_cast<TensorImpl*>(meta.in()[0])->data())),
           OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
           meta.out().numel());
     });

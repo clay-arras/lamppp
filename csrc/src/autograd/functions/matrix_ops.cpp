@@ -34,6 +34,7 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
   return grad_inputs;
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 tensor::Tensor MatrixMultiplication::execute(const variable_list& inputs) {
   LMP_INTERNAL_ASSERT(inputs.size() == 2) << "Function must take 2 inputs";
   const Variable& self = inputs[0];
@@ -42,6 +43,7 @@ tensor::Tensor MatrixMultiplication::execute(const variable_list& inputs) {
   return tensor::ops::matmul(self.data(), other.data());
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 tensor::Tensor Transpose::execute(const variable_list& inputs) {
   LMP_INTERNAL_ASSERT(inputs.size() == 1) << "Function must take one input";
   const Variable& self = inputs[0];

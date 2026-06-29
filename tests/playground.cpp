@@ -4,6 +4,7 @@
 #include "lamppp/nets/parameter.hpp"
 #include "lamppp/tensor/native/conv_ops.hpp"
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int main() {
   auto input = lmp::tensor::Tensor(
       std::vector<float>{1, -4, 2, 7, 9, 10, 4, -2, 27, 0, 0, 24, 2,

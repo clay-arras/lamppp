@@ -5,9 +5,9 @@
 
 namespace py = pybind11;
 
-using lmp::tensor::DeviceType;
-using lmp::tensor::DataType;
-using lmp::tensor::Tensor;
+using lmp::tensor::DataType;    // NOLINT(google-global-names-in-headers)
+using lmp::tensor::DeviceType;  // NOLINT(google-global-names-in-headers)
+using lmp::tensor::Tensor;      // NOLINT(google-global-names-in-headers)
 
 inline void init_tensor(py::module_& m) {
   py::class_<Tensor>(m, "_Tensor")
@@ -25,9 +25,10 @@ inline void init_tensor(py::module_& m) {
       .def("to", &Tensor::to, py::arg("device"))
       .def("copy", &Tensor::copy, py::arg("other"))
       .def("fill", &Tensor::fill, py::arg("item"))
-      .def(
-          "tolist",
-          [](Tensor& t) -> std::vector<double> { return t.to_vector<double>(); })
+      .def("tolist",
+           [](Tensor& t) -> std::vector<double> {
+             return t.to_vector<double>();
+           })
       .def("__repr__", [](const Tensor& self) {
         std::ostringstream oss;
         oss << self;

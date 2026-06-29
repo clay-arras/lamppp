@@ -21,7 +21,6 @@ import math
 
 import pylamp
 
-
 """
 TODO: 
 - create more datatypes to test dtype promotion

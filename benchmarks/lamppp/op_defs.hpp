@@ -19,7 +19,7 @@ class OperatorBase {
   virtual std::string name() const = 0;
 };
 
-std::string to_string(const std::vector<size_t>& shape) {
+inline std::string to_string(const std::vector<size_t>& shape) {
   std::string str;
   for (size_t i = 0; i < shape.size(); i++) {
     if (i) {
@@ -42,7 +42,7 @@ std::string to_string(const std::array<std::vector<size_t>, N>& shapes) {
   return str;
 }
 
-std::string to_string(lmp::tensor::DataType dtype) {
+inline std::string to_string(lmp::tensor::DataType dtype) {
   switch (dtype) {
     case lmp::tensor::DataType::Bool:
       return "Bool";
@@ -69,6 +69,7 @@ class BinaryOperatorBase : public OperatorBase {
       return apply_operation(inputs[0], inputs[1]);
     };
     auto init_fn =
+        // NOLINTNEXTLINE(bugprone-exception-escape)
         [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 2> {
       return {lmp::autograd::randn(0, 1, config.shapes[0], requires_grad,
                                    config.device, config.dtype),
@@ -97,6 +98,7 @@ class UnaryOperatorBase : public OperatorBase {
       return apply_operation(inputs[0]);
     };
     auto init_fn =
+        // NOLINTNEXTLINE(bugprone-exception-escape)
         [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
       return {lmp::autograd::rand(config.shapes[0], requires_grad,
                                   config.device, config.dtype)};
@@ -120,6 +122,7 @@ class ReductOperatorBase : public OperatorBase {
   const std::vector<size_t> axes = {0U, 1U};
   void register_benchmarks(const OperatorConfig<1>& config) {
     auto init_fn =
+        // NOLINTNEXTLINE(bugprone-exception-escape)
         [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {
       return {lmp::autograd::rand(config.shapes[0], requires_grad,
                                   config.device, config.dtype)};

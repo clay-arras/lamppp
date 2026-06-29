@@ -18,6 +18,7 @@ void binary_kernel_launcher(PtrList ptr_, OpFn fn_, size_t size) {
 }
 
 template <template <typename> class OpFunctor, typename... Args>
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 void binary_dispatch_handler(BinaryMetaHandler& meta, Args&&... args) {
   LMP_DISPATCH_ALL_TYPES(meta.out().type(), [&] {
     using out_dtype_t = scalar_t;
@@ -28,8 +29,10 @@ void binary_dispatch_handler(BinaryMetaHandler& meta, Args&&... args) {
         binary_kernel_launcher(
             internal::PtrPack<out_dtype_t, arg1_dtype_t, arg2_dtype_t>(
                 static_cast<out_dtype_t*>(meta.out().data()),
-                static_cast<arg1_dtype_t*>(const_cast<TensorImpl*>(meta.in()[0])->data()),
-                static_cast<arg2_dtype_t*>(const_cast<TensorImpl*>(meta.in()[1])->data())),
+                static_cast<arg1_dtype_t*>(
+                    const_cast<TensorImpl*>(meta.in()[0])->data()),
+                static_cast<arg2_dtype_t*>(
+                    const_cast<TensorImpl*>(meta.in()[1])->data())),
             OpFunctor<out_dtype_t>(std::forward<Args>(args)...),
             meta.out().numel());
       });

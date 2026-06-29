@@ -1,4 +1,8 @@
-project(benchmarks LANGUAGES CXX CUDA)
+project(benchmarks LANGUAGES CXX)
+
+if(LMP_ENABLE_CUDA)
+  enable_language(CUDA)
+endif()
 
 # FETCH CONTENT ---------------------------------
 include(FetchContent)

@@ -118,13 +118,18 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # FORMATTING ---------------------------------
-file(GLOB_RECURSE ALL_SOURCE
-  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]pp" "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]u"
+file(GLOB_RECURSE ALL_CPP_SOURCE
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]pp"
   "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/autograd/*.[ch]pp"
   "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/bindings/*.[ch]pp"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
   "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
 )
+
+file(GLOB_RECURSE ALL_CUDA_SOURCE
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]u"
+)
+set(ALL_SOURCE ${ALL_CPP_SOURCE} ${ALL_CUDA_SOURCE})
 
 find_program(CLANG_FORMAT_EXE NAMES clang-format)
 if(CLANG_FORMAT_EXE)
@@ -138,15 +143,27 @@ if(CLANG_FORMAT_EXE)
 endif()
 
 
-# FORMATTING ---------------------------------
+# LINTING ---------------------------------
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 if(CLANG_TIDY_EXE)
-  add_custom_target(lint
-    COMMAND ${CLANG_TIDY_EXE}
-            -p build
-            ${ALL_SOURCE} -header-filter=.*
-    COMMENT "Apply clang-tidy to all sources"
-  )
+  set(HEADER_FILTER_REGEX "${CMAKE_CURRENT_SOURCE_DIR}/(csrc|tests|benchmarks)/.*")
+
+  if (LMP_ENABLE_CUDA)
+    add_custom_target(lint
+      COMMAND ${CLANG_TIDY_EXE}
+              -p build
+              ${ALL_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
+      COMMENT "Apply clang-tidy to all sources"
+    )
+  else()
+    add_custom_target(lint
+      COMMAND ${CLANG_TIDY_EXE}
+              -p build
+              ${ALL_CPP_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
+      COMMENT "No CUDA detected, applying clang-tidy to all C++ sources"
+    )
+  endif()
+
 endif()
 
 

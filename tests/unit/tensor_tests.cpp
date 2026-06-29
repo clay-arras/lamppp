@@ -770,6 +770,7 @@ std::vector<ParamTypes> GenerateParamCombinations() {
 
 }  // namespace
 
+// NOLINTNEXTLINE(misc-use-anonymous-namespace)
 INSTANTIATE_TEST_SUITE_P(TensorOp, TensorOpTest,
                          testing::ValuesIn(GenerateParamCombinations()));
 

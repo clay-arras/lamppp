@@ -77,7 +77,7 @@ void vecCopy(size_t size, const U* in, V* out) {
 
 #define INSTANTIATE_COPY(arg1_type, arg2_type)                          \
   template void vecCopy<arg1_type, arg2_type>(size_t, const arg1_type*, \
-                                              arg2_type*);
+                                              arg2_type(*));
 
 LMP_FOR_EACH_CARTESIAN_PRODUCT(INSTANTIATE_COPY, LMP_LIST_TYPES, LMP_LIST_TYPES)
 #undef INSTANTIATE_COPY

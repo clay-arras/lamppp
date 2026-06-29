@@ -435,6 +435,7 @@ std::vector<ParamTypes> GenerateParams() {
 
 }  // namespace
 
+// NOLINTNEXTLINE(misc-use-anonymous-namespace)
 INSTANTIATE_TEST_SUITE_P(VariableOp, VariableOpTest,
                          testing::ValuesIn(GenerateParams()));
 

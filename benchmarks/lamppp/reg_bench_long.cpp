@@ -3,6 +3,7 @@
 #include <vector>
 #include "op_defs.hpp"
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc, char** argv) {
   benchmark::Initialize(&argc, argv);
 

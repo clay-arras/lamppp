@@ -23,6 +23,7 @@ UnaryMetaHandler::TensorMetaHandler(const TensorImpl* a) : inTens_({a}) {
 }
 
 template <>
+// NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 BinaryMetaHandler::TensorMetaHandler(const TensorImpl* a, const TensorImpl* b)
     : inTens_({a, b}) {
   OpMeta m = infer_binary(a, b);

@@ -12,11 +12,11 @@
 #include "utils/batch_sample.hpp"
 #include "utils/csv_reader.hpp"
 
-
 const int kEpochs = 1e9;
 const int kBatchSize = 128;
 const float kLearningRate = 0.01;
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 int main() {
   auto [train_data, train_label] = readCSV("data/mnist_train.csv");
   auto [test_data, test_label] = readCSV("data/mnist_test.csv");
@@ -25,8 +25,7 @@ int main() {
       lmp::nets::AnyModule(lmp::nets::Linear(784, 512, false)),
       lmp::nets::AnyModule(lmp::nets::ReLU()),
       lmp::nets::AnyModule(lmp::nets::Linear(512, 10, false)),
-      lmp::nets::AnyModule(lmp::nets::Softmax(-1))
-  });
+      lmp::nets::AnyModule(lmp::nets::Softmax(-1))});
 
   for (int i = 0; i < kEpochs; i++) {
     std::vector<std::vector<float>> out_data;
@@ -41,9 +40,10 @@ int main() {
         model(std::vector<std::any>{std::any(inputs)}));
 
     lmp::Variable loss =
-        lmp::sum(lmp::sum((-lmp::log(out_layer + 0.001) * labels), 0), 1) / 1200;
+        lmp::sum(lmp::sum((-lmp::log(out_layer + 0.001) * labels), 0), 1) /
+        1200;
     loss.backward();
-    
+
     if (i % 100 == 0) {
       lmp::Variable true_scores = lmp::sum((out_layer * labels), 1);
       lmp::Variable max_scores = lmp::max(out_layer, 1);
@@ -79,9 +79,10 @@ int main() {
                 << " - Validation accuracy: " << test_accuracy << std::endl;
     }
 
-    for (std::reference_wrapper<lmp::nets::Parameter> params : model.parameters()) {
-      params.get() = lmp::nets::Parameter(
-          lmp::Variable(params.get().data() - kLearningRate * params.get().grad(), true));
+    for (std::reference_wrapper<lmp::nets::Parameter> params :
+         model.parameters()) {
+      params.get() = lmp::nets::Parameter(lmp::Variable(
+          params.get().data() - kLearningRate * params.get().grad(), true));
     }
   }
 }

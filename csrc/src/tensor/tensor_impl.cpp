@@ -31,7 +31,8 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
 }
 
 void* TensorImpl::data() {
-  if (is_deferred()) realize(this);
+  if (is_deferred())
+    realize(this);
   return data_.data();
 }
 DataType TensorImpl::type() const noexcept {

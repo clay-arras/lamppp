@@ -2,7 +2,6 @@
 
 #include "lamppp/autograd/variable.hpp"
 #include "lamppp/nets/module.hpp"
-#include "lamppp/nets/layers/activation.hpp"
 
 namespace lmp::nets {
 
@@ -33,8 +32,8 @@ class SoftmaxImpl : public ModuleImpl {
   autograd::Variable forward(const autograd::Variable& x) const;
 
  private:
-   ssize_t dim_;
+  ssize_t dim_;
 };
 LMP_DEFINE_MODULE(Softmax);
 
-}
+}  // namespace lmp::nets

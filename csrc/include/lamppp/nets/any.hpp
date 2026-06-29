@@ -19,7 +19,7 @@ class AnyModule {
   }
 
   std::shared_ptr<ModuleImpl> getImpl();
-  std::any call(const std::vector<std::any>& args) const; 
+  std::any call(const std::vector<std::any>& args) const;
 
  private:
   class Placeholder;
@@ -27,6 +27,7 @@ class AnyModule {
   class Holder;
 
   std::shared_ptr<Placeholder> impl_;
+
  protected:
   template <typename Impl, typename R, typename... Args>
   std::shared_ptr<AnyModule::Placeholder> make_holder(std::shared_ptr<Impl> m,
@@ -37,25 +38,23 @@ class AnyModule {
   }
 };
 
-
 class AnyModule::Placeholder {
-  public:
+ public:
   virtual ~Placeholder() = default;
 
   virtual std::any call(const std::vector<std::any>& args) = 0;
   virtual std::shared_ptr<ModuleImpl> getImpl() = 0;
 };
 
-
 template <typename MImpl, typename... Args>
 class AnyModule::Holder : public AnyModule::Placeholder {
   using FuncPtr = std::invoke_result_t<decltype(&MImpl::forward), MImpl*,
-                                        Args...> (MImpl::*)(Args...) const;
+                                       Args...> (MImpl::*)(Args...) const;
 
-  public:
+ public:
   ~Holder() override = default;
   explicit Holder(std::shared_ptr<MImpl> mod, FuncPtr forward)
-      : mod_(mod), forward_(forward) {};
+      : mod_(std::move(mod)), forward_(forward) {};
 
   std::any call(const std::vector<std::any>& args) override {
     LMP_CHECK(args.size() == sizeof...(Args)) << "Invalid forward arguments";
@@ -63,7 +62,7 @@ class AnyModule::Holder : public AnyModule::Placeholder {
   }
   std::shared_ptr<ModuleImpl> getImpl() override { return mod_; };
 
-  private:
+ private:
   template <size_t... Idx>
   std::any invoke(const std::vector<std::any>& args,
                   std::index_sequence<Idx...> /*seq*/) {

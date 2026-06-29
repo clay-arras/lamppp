@@ -155,10 +155,24 @@ if(CLANG_TIDY_EXE)
               ${ALL_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
       COMMENT "Apply clang-tidy to all sources"
     )
+
+    add_custom_target(lint-fix
+      COMMAND ${CLANG_TIDY_EXE}
+              -p build -fix-errors
+              ${ALL_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
+      COMMENT "Apply clang-tidy to all sources"
+    )
   else()
     add_custom_target(lint
       COMMAND ${CLANG_TIDY_EXE}
               -p build
+              ${ALL_CPP_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
+      COMMENT "No CUDA detected, applying clang-tidy to all C++ sources"
+    )
+
+    add_custom_target(lint-fix
+      COMMAND ${CLANG_TIDY_EXE}
+              -p build -fix-errors
               ${ALL_CPP_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
       COMMENT "No CUDA detected, applying clang-tidy to all C++ sources"
     )

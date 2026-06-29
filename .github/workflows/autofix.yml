@@ -1,0 +1,56 @@
+name: autofix.ci  # needed to securely identify the workflow
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            python3-venv \
+            python3-pip \
+            git pybind11-dev python3-pybind11 libboost-all-dev \
+            clang-format clang-tidy
+
+      - name: Build CMake project
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=ON -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run C++ formatting
+        run: cmake --build build --target format
+
+      - name: Run C++ linting
+        run: cmake --build build --target lint-fix
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: ">=3.11"
+
+      - name: Install Python dependencies
+        run: |
+          pip install uv
+          uv lock
+          uv sync
+
+      - name: Run Python formatting
+        run: uv run black .
+      
+      - name: Run Python linting (Autofix)
+        run: uv run ruff check --fix
+
+      - name: Commit fixes
+        uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a

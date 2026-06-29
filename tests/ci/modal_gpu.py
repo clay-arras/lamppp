@@ -3,7 +3,14 @@ import subprocess
 
 import modal
 
-REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+def _repo_root() -> pathlib.Path:
+    for parent in pathlib.Path(__file__).resolve().parents:
+        if (parent / "pyproject.toml").exists():
+            return parent
+    return pathlib.Path.cwd()
+
+
+REPO_ROOT = _repo_root()
 REMOTE_REPO = "/root/rushlite"
 
 app = modal.App("rushlite-ci-gpu")

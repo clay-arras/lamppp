@@ -67,7 +67,7 @@ def run_gpu_ci() -> None:
         "device=pylamp.device.cuda, dtype=pylamp.dtype.float64); "
         "print('pylamp CUDA device OK')\""
     )
-    _run("uv run pytest tests/stress/pytorch_stress_test.py -v")
+    _run("uv run pytest tests -v")
 
 
 @app.local_entrypoint()

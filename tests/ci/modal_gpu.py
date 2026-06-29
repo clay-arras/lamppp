@@ -9,9 +9,7 @@ REMOTE_REPO = "/root/rushlite"
 app = modal.App("rushlite-ci-gpu")
 
 image = (
-    modal.Image.from_registry(
-        "nvidia/cuda:12.8.1-devel-ubuntu24.04", add_python="3.11"
-    )
+    modal.Image.from_registry("nvidia/cuda:12.8.1-devel-ubuntu24.04", add_python="3.11")
     .apt_install(
         "build-essential",
         "cmake",
@@ -45,7 +43,7 @@ def run_gpu_ci() -> None:
     _run("uv sync --extra cu128")
     _run("SKBUILD_CMAKE_DEFINE=LMP_ENABLE_CUDA=ON uv pip install .")
     _run(
-        "uv run python -c \""
+        'uv run python -c "'
         "import pylamp; "
         "pylamp.Tensor([[0.0]], requires_grad=False, "
         "device=pylamp.device.cuda, dtype=pylamp.dtype.float64); "

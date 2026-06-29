@@ -24,9 +24,7 @@ SEEDS = list(range(16))
 
 def _cuda_available():
     try:
-        pylamp.Tensor(
-            [[0.0]], device=pylamp.device.cuda, dtype=pylamp.dtype.float64
-        )
+        pylamp.Tensor([[0.0]], device=pylamp.device.cuda, dtype=pylamp.dtype.float64)
         return True
     except Exception:
         return False

@@ -66,5 +66,9 @@ def run_once(template, fills, device, rng):
     for i, (tv, lv, a) in enumerate(zip(torch_vars, lamp_vars, arrs)):
         true_grad = tv.grad.tolist()
         pred_grad = _from_row_major(lv.grad.tolist(), a.tolist())
-        assert _atol(pred_grad, true_grad) <= bwd_atol, f"{template.name}: grad[{i}] atol"
-        assert _rtol(pred_grad, true_grad) <= bwd_rtol, f"{template.name}: grad[{i}] rtol"
+        assert (
+            _atol(pred_grad, true_grad) <= bwd_atol
+        ), f"{template.name}: grad[{i}] atol"
+        assert (
+            _rtol(pred_grad, true_grad) <= bwd_rtol
+        ), f"{template.name}: grad[{i}] rtol"

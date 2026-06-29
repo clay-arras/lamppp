@@ -10,15 +10,15 @@ from dataclasses import dataclass
 from typing import Callable
 
 S = (16, 16)  # square block, fully fusible elementwise
-M = (16, 8)   # post-matmul / right-operand block
+M = (16, 8)  # post-matmul / right-operand block
 
 
 @dataclass
 class Template:
     name: str
     input_shapes: list  # one shape per leaf, in xs order
-    slots: list         # category ("BIN"/"UNARY"/"REDUCT") per slot, in build order
-    build: Callable     # build(ops, xs) -> head tensor
+    slots: list  # category ("BIN"/"UNARY"/"REDUCT") per slot, in build order
+    build: Callable  # build(ops, xs) -> head tensor
 
 
 def _long_build(ops, xs):
@@ -42,12 +42,12 @@ long_fuse_chain = Template(
 def _barrier_build(ops, xs):
     # Fusible runs separated by barriers (unary, matmul, reduction). Exercises
     # that the IR partitions a graph correctly around things fusion can't absorb.
-    t = ops.bin[0](xs[0], xs[1])   # fusible run
+    t = ops.bin[0](xs[0], xs[1])  # fusible run
     t = ops.bin[1](t, xs[2])
-    t = ops.unary[0](t)            # barrier: unary
-    t = ops.matmul(t, xs[3])       # barrier: matmul  (16,16)@(16,8) -> (16,8)
-    t = ops.bin[2](t, xs[4])       # fusible run, new shape
-    t = ops.reduct[0](t, 0)        # barrier: reduction -> (1,8)
+    t = ops.unary[0](t)  # barrier: unary
+    t = ops.matmul(t, xs[3])  # barrier: matmul  (16,16)@(16,8) -> (16,8)
+    t = ops.bin[2](t, xs[4])  # fusible run, new shape
+    t = ops.reduct[0](t, 0)  # barrier: reduction -> (1,8)
     return t
 
 

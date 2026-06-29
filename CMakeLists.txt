@@ -120,10 +120,10 @@ endif()
 # FORMATTING ---------------------------------
 file(GLOB_RECURSE ALL_CPP_SOURCE
   "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/tensor/*.[ch]pp"
-  # "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/autograd/*.[ch]pp"
-  # "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/bindings/*.[ch]pp"
-  # "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
-  # "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/autograd/*.[ch]pp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src/bindings/*.[ch]pp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.[ch]pp" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.[ch]pp" 
 )
 
 file(GLOB_RECURSE ALL_CUDA_SOURCE

@@ -98,6 +98,9 @@ TensorImpl matmul_cpu(const TensorImpl& a, const TensorImpl& b) {
   });
 }
 
+// TODO(clay-arras): these do nothing for now. might nuke this later.
+namespace {
+
 // NOLINTNEXTLINE(readability-function-size,google-readability-function-size)
 TensorImpl conv1d_cpu(const TensorImpl& input, const TensorImpl& kernel,
                       size_t stride, size_t padding, size_t dilation) {
@@ -248,6 +251,8 @@ TensorImpl conv3d_cpu(const TensorImpl& input, const TensorImpl& kernel,
     });
   });
 }
+
+}  // namespace
 
 #define DECLARE_REDUCT_OPS_CPU(args) DECLARE_REDUCT_OPS_CPU_HELPER args
 #define DECLARE_REDUCT_OPS_CPU_HELPER(op, functor)        \

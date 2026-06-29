@@ -21,8 +21,8 @@ const size_t kIterations = 10;
 const float kWarmUpTime = 1;
 
 template <size_t N>
-void register_forward(const std::string& name, OperatorFunction<N> op_fn,
-                      InitializerFunction<N> init_fn) {
+void register_forward(const std::string& name, const OperatorFunction<N>& op_fn,
+                      const InitializerFunction<N>& init_fn) {
   benchmark::RegisterBenchmark(
       name + "Forward",
       [op_fn, init_fn](benchmark::State& state) {
@@ -44,8 +44,9 @@ void register_forward(const std::string& name, OperatorFunction<N> op_fn,
 }
 
 template <size_t N>
-void register_backward(const std::string& name, OperatorFunction<N> op_fn,
-                       InitializerFunction<N> init_fn) {
+void register_backward(const std::string& name,
+                       const OperatorFunction<N>& op_fn,
+                       const InitializerFunction<N>& init_fn) {
   benchmark::RegisterBenchmark(
       name + "Backward",
       [op_fn, init_fn](benchmark::State& state) {

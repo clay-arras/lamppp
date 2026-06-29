@@ -146,18 +146,20 @@ endif()
 # LINTING ---------------------------------
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 if(CLANG_TIDY_EXE)
+  set(HEADER_FILTER_REGEX "${CMAKE_CURRENT_SOURCE_DIR}/(csrc|tests|benchmarks)/.*")
+
   if (LMP_ENABLE_CUDA)
     add_custom_target(lint
       COMMAND ${CLANG_TIDY_EXE}
               -p build
-              ${ALL_SOURCE} -header-filter=.*
+              ${ALL_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
       COMMENT "Apply clang-tidy to all sources"
     )
   else()
     add_custom_target(lint
       COMMAND ${CLANG_TIDY_EXE}
               -p build
-              ${ALL_CPP_SOURCE} -header-filter=.*
+              ${ALL_CPP_SOURCE} -header-filter="${HEADER_FILTER_REGEX}"
       COMMENT "No CUDA detected, applying clang-tidy to all C++ sources"
     )
   endif()

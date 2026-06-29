@@ -55,7 +55,11 @@ def run_gpu_ci() -> None:
     _run("nvidia-smi")
     _run("uv lock")
     _run("uv sync --extra cu128")
-    _run("SKBUILD_CMAKE_DEFINE=LMP_ENABLE_CUDA=ON uv pip install .")
+    _run(
+        'CC=gcc CXX=g++ SKBUILD_CMAKE_DEFINE="LMP_ENABLE_CUDA=ON;'
+        'CMAKE_C_COMPILER=gcc;CMAKE_CXX_COMPILER=g++" '
+        "uv pip install ."
+    )
     _run(
         'uv run python -c "'
         "import pylamp; "

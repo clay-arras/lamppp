@@ -1,11 +1,18 @@
 project(inductor_lib LANGUAGES CXX)
 
-set(INDUCTOR_SOURCES
-  nvrtc/nvrtc_backend.cpp
-)
+set(INDUCTOR_SOURCES)
 
 if (LMP_ENABLE_CUDA)
   enable_language(CUDA)
+  list(APPEND INDUCTOR_SOURCES
+    nvrtc/nvrtc_backend.cpp
+  )
+endif()
+
+if (NOT INDUCTOR_SOURCES)
+  set(_inductor_empty ${CMAKE_CURRENT_BINARY_DIR}/inductor_empty.cpp)
+  file(WRITE ${_inductor_empty} "")
+  list(APPEND INDUCTOR_SOURCES ${_inductor_empty})
 endif()
 
 add_library(inductor_core SHARED ${INDUCTOR_SOURCES})

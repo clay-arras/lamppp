@@ -1,7 +1,7 @@
 project(inductor_lib LANGUAGES CXX)
 
 set(INDUCTOR_SOURCES
-  backend.cpp
+  nvrtc/nvrtc_backend.cpp
 )
 
 if (LMP_ENABLE_CUDA)

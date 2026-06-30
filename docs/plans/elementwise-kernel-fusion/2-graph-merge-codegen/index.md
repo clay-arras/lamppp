@@ -43,6 +43,16 @@ void visit(TensorImpl* n, FusedGraph& g, bool is_root = false) {
 Load-bearing invariant: "all leaves are evaluated when the DFS ends" holds only because `visit` calls `realize` on each non-fusible operand on the way down. Boundaries are materialized during the walk, not after. The whole DAG unwinds bottom-up by demand: each non-fusible op recurses into its operands, which may build their own FusedGraphs.
 `escapes(n)` checks liveness signals — no reverse edges needed, since the recorded graph only has operand edges.
 
+> **Real-API mapping (added after Part 1 landed).** The pseudocode above
+> predates the implemented seams. Against the actual code: `is_lazy()` →
+> `TensorImpl::is_deferred()`; `n->lazy()` → `n->lazy_op()` (returns
+> `shared_ptr<LazyFunction>`); `operands` → `lazy_op()->inputs`;
+> `run_eager(n)` → `n->lazy_op()->run_eager(*n)`. The whole `realize`/`visit`
+> walk lives in a new **`NVRTCInductorBackend : LazyBackend`** in the
+> `inductor` module (does not exist yet) — tensor's free `realize(impl)`
+> just delegates to `backend(impl->device())->realize(impl)`. Build order in
+> `1.md`.
+
 ## FusedGraph shape
 
 ```cpp
@@ -92,6 +102,14 @@ void FusedGraph::topo_sort() { /* TODO */ }
 ## codegen
 
 Per-op template map, `OpKind` → format string with positional placeholders, one SSA statement per node. Abnormal ops are just different strings — no special-casing:
+
+> **Already implemented (added after Part 1 landed).** There is **no central
+> `OpKind` map**. The templates below are the per-subclass
+> `LazyFunction::codegen_expr()` virtual — e.g. `AddFn` returns `"{0} + {1}"`
+> in `tensor/lazy/functions/elementwise_binary.hpp`. Codegen reads
+> `node->lazy_op()->codegen_expr()` and substitutes operand names into the
+> `{0}/{1}` placeholders. The map below is therefore descriptive, not a thing
+> to build.
 
 ```
 Add → "{0} + {1}"     Mul  → "{0} * {1}"      Relu  → "fmaxf(0.0f, {0})"

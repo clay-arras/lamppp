@@ -20,8 +20,6 @@ void NVRTCInductorBackend::realize(tensor::TensorImpl* impl) {
   fn->run_eager(*impl);
 }
 
-#ifdef LMP_ENABLE_CUDA
 LMP_REGISTER_LAZY_BACKEND(tensor::DeviceType::CUDA, NVRTCInductorBackend)
-#endif
 
 }  // namespace lmp::inductor

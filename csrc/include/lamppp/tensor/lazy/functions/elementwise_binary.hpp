@@ -2,18 +2,21 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "lamppp/tensor/infer_meta.hpp"
 #include "lamppp/tensor/lazy/lazy_function.hpp"
+#include "lamppp/tensor/native/expand_ops.hpp"
+#include "lamppp/tensor/storage.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor {
-class TensorImpl;
 
 struct ElementwiseBinaryFn : LazyFunction {
   using LazyFunction::LazyFunction;
-  std::shared_ptr<TensorImpl> infer_output() const override;          // defined in .cpp
-  bool is_fusible() const override;                                   // computed (same-shape => fusible; broadcast => boundary); defined in .cpp
+  std::shared_ptr<TensorImpl> infer_output() const override;
+  bool is_fusible() const override;
 };
 
-// Elementwise binary operation subclasses
 struct AddFn : ElementwiseBinaryFn {
   using ElementwiseBinaryFn::ElementwiseBinaryFn;
   void run_eager(TensorImpl& out) override;
@@ -80,4 +83,4 @@ struct LtFn : ElementwiseBinaryFn {
   std::string codegen_expr() const override { return "{0} < {1}"; }
 };
 
-}  // namespace lmp::tensor
+}

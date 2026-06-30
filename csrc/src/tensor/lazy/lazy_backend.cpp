@@ -1,12 +1,9 @@
 #include "lamppp/tensor/lazy/lazy_backend.hpp"
 
-#include <array>
-
 namespace lmp::tensor {
 
 namespace {
 
-/// @brief Meyers-singleton table holding one backend pointer per device.
 std::array<LazyBackend*, static_cast<size_t>(DeviceType::Count)>& registry() {
   static std::array<LazyBackend*, static_cast<size_t>(DeviceType::Count)>
       table{};

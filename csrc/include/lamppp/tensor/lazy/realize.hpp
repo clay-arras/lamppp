@@ -1,10 +1,11 @@
 #pragma once
 
+#include "lamppp/common/assert.hpp"
+#include "lamppp/tensor/lazy/lazy_backend.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
+
 namespace lmp::tensor {
 
-class TensorImpl;
-
-/// @brief Force realization of a deferred tensor via its device's backend.
 void realize(TensorImpl* impl);
 
-}  // namespace lmp::tensor
+}

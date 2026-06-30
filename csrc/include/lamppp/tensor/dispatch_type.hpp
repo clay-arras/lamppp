@@ -13,27 +13,27 @@
 #define LMP_DISPATCH_ALL_TYPES(TYPE, ...)   \
   [&] {                                     \
     switch (TYPE) {                         \
-      case DataType::Bool: {                \
+      case lmp::tensor::DataType::Bool: {   \
         using scalar_t = bool;              \
         return __VA_ARGS__();               \
       }                                     \
-      case DataType::Int16: {               \
+      case lmp::tensor::DataType::Int16: {  \
         using scalar_t = int16_t;           \
         return __VA_ARGS__();               \
       }                                     \
-      case DataType::Int32: {               \
+      case lmp::tensor::DataType::Int32: {  \
         using scalar_t = int;               \
         return __VA_ARGS__();               \
       }                                     \
-      case DataType::Int64: {               \
+      case lmp::tensor::DataType::Int64: {  \
         using scalar_t = int64_t;           \
         return __VA_ARGS__();               \
       }                                     \
-      case DataType::Float32: {             \
+      case lmp::tensor::DataType::Float32: {\
         using scalar_t = float;             \
         return __VA_ARGS__();               \
       }                                     \
-      case DataType::Float64: {             \
+      case lmp::tensor::DataType::Float64: {\
         using scalar_t = double;            \
         return __VA_ARGS__();               \
       }                                     \

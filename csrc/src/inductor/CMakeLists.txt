@@ -6,6 +6,8 @@ if (LMP_ENABLE_CUDA)
   enable_language(CUDA)
   list(APPEND INDUCTOR_SOURCES
     nvrtc/nvrtc_backend.cpp
+    nvrtc/fused_graph.cpp
+    nvrtc/codegen.cpp
   )
 endif()
 
@@ -31,7 +33,7 @@ if (LMP_ENABLE_CUDA)
     CUDA_RESOLVE_DEVICE_SYMBOLS ON
   )
   target_link_libraries(inductor_core
-    PUBLIC CUDA::cudart CUDA::nvrtc
+    PUBLIC CUDA::cudart CUDA::nvrtc CUDA::cuda_driver
   )
 endif()
 

@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <ostream>
 
+#include "lamppp/common/assert.hpp"
+
 namespace lmp::tensor {
 
 /**
@@ -102,6 +104,28 @@ inline std::ostream& operator<<(std::ostream& os, DataType dtype) {
       break;
   }
   return os;
+}
+
+/// @brief C/CUDA type spelling for codegen (e.g. Float32 -> "float").
+inline const char* to_cname(DataType dtype) {
+  switch (dtype) {
+    case DataType::Bool:
+      return "bool";
+    case DataType::Int16:
+      return "short";
+    case DataType::Int32:
+      return "int";
+    case DataType::Int64:
+      return "long long";
+    case DataType::Float32:
+      return "float";
+    case DataType::Float64:
+      return "double";
+    default:
+      LMP_CHECK(false) << "to_cname: unknown DataType "
+                       << static_cast<int>(dtype);
+      return "";  // unreachable; silences -Wreturn-type
+  }
 }
 
 }  // namespace lmp::tensor

@@ -1,11 +1,11 @@
 #pragma once
 #include <memory>
 
-namespace lmp::tensor {
-class TensorImpl;
-class LazyFunction;
+#include "lamppp/tensor/lazy/lazy_function.hpp"
+#include "lamppp/tensor/tensor_impl.hpp"
 
-/// @brief Capture a pending op: build its deferred output impl and attach the op.
+namespace lmp::tensor {
+
 std::shared_ptr<TensorImpl> record(std::shared_ptr<LazyFunction> fn);
 
-}  // namespace lmp::tensor
+}

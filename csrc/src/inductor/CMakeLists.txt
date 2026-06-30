@@ -6,6 +6,7 @@ if (LMP_ENABLE_CUDA)
   enable_language(CUDA)
   list(APPEND INDUCTOR_SOURCES
     nvrtc/nvrtc_backend.cpp
+    nvrtc/fused_graph.cpp
   )
 endif()
 

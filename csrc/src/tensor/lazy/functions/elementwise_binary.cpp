@@ -67,4 +67,4 @@ void LtFn::run_eager(TensorImpl& out) {
   out.set_realized(res.storage());
 }
 
-}
+}  // namespace lmp::tensor

@@ -8,4 +8,4 @@ std::shared_ptr<TensorImpl> record(std::shared_ptr<LazyFunction> fn) {
   return out;
 }
 
-}
+}  // namespace lmp::tensor

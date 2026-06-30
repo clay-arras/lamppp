@@ -10,4 +10,4 @@ void realize(TensorImpl* impl) {
   b->realize(impl);
 }
 
-}
+}  // namespace lmp::tensor

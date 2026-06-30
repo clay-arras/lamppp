@@ -30,3 +30,13 @@ LazyBackend* backend(DeviceType dev);
 void register_backend(DeviceType dev, LazyBackend* b);
 
 }  // namespace lmp::tensor
+
+#define LMP_REGISTER_LAZY_BACKEND(dev, backend_type)        \
+  namespace {                                               \
+  struct _RegLazy_##backend_type {                          \
+    _RegLazy_##backend_type() {                             \
+      static backend_type instance;                         \
+      ::lmp::tensor::register_backend((dev), &instance);    \
+    }                                                        \
+  } _auto_reg_lazy_##backend_type;                          \
+  }

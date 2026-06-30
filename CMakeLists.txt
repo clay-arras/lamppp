@@ -72,10 +72,11 @@ target_include_directories(lamppp_compile_config
 )
 
 add_subdirectory(csrc/src/tensor)
+add_subdirectory(csrc/src/inductor)
 add_subdirectory(csrc/src/autograd)
 add_subdirectory(csrc/src/nets)
 add_library(lamppp INTERFACE)
-target_link_libraries(lamppp INTERFACE autograd_core tensor_core nets_core)
+target_link_libraries(lamppp INTERFACE autograd_core tensor_core inductor_core nets_core)
 
 add_subdirectory(docs/examples)
 add_subdirectory(csrc/bindings)
@@ -92,6 +93,7 @@ install(
     lamppp
     autograd_core
     tensor_core
+    inductor_core
     nets_core
     lamppp_compile_config
   EXPORT lampppTargets

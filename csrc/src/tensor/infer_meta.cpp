@@ -1,4 +1,5 @@
 #include "lamp3/tensor/infer_meta.hpp"
+
 #include "lamp3/common/assert.hpp"
 #include "lamp3/tensor/data_type.hpp"
 #include "lamp3/tensor/tensor_impl.hpp"

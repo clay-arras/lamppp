@@ -31,29 +31,18 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
 }
 
 void* TensorImpl::data() {
-  if (is_deferred())
-    lazy::realize(this);
+  if (is_deferred()) lazy::realize(this);
   return data_.data();
 }
-DataType TensorImpl::type() const noexcept {
-  return type_;
-}
-DeviceType TensorImpl::device() const noexcept {
-  return data_.device();
-}
-const std::vector<size_t>& TensorImpl::shape() const noexcept {
-  return shape_;
-}
+DataType TensorImpl::type() const noexcept { return type_; }
+DeviceType TensorImpl::device() const noexcept { return data_.device(); }
+const std::vector<size_t>& TensorImpl::shape() const noexcept { return shape_; }
 const std::vector<detail::stride_t>& TensorImpl::strides() const noexcept {
   return strides_;
 }
-size_t TensorImpl::numel() const noexcept {
-  return numel_;
-}
+size_t TensorImpl::numel() const noexcept { return numel_; }
 
-bool TensorImpl::is_deferred() const noexcept {
-  return lazy_ != nullptr;
-}
+bool TensorImpl::is_deferred() const noexcept { return lazy_ != nullptr; }
 
 const std::shared_ptr<lazy::LazyFunction>& TensorImpl::lazy_op()
     const noexcept {
@@ -77,9 +66,7 @@ void TensorImpl::set_deferred(std::shared_ptr<lazy::LazyFunction> op) {
   lazy_ = std::move(op);
 }
 
-Storage TensorImpl::storage() const noexcept {
-  return data_;
-}
+Storage TensorImpl::storage() const noexcept { return data_; }
 
 void TensorImpl::update_strides() {
   detail::stride_t stride = 1;
@@ -135,8 +122,9 @@ Scalar TensorImpl::index(const std::vector<size_t>& idx) {
   });
 }
 
-// TODO(astronaut): this needs to be defined more clearly i.e. what happens if other is bigger/smaller,
-// maybe default behavior should be to assign other.type, other.device, other.data COMPLETELY to this
+// TODO(astronaut): this needs to be defined more clearly i.e. what happens if
+// other is bigger/smaller, maybe default behavior should be to assign
+// other.type, other.device, other.data COMPLETELY to this
 void TensorImpl::copy(const TensorImpl& other) const {
   LMP_DISPATCH_ALL_TYPES(other.type(), [&] {
     ops::copy_stub()(other.device(), device(), other.data_.data(), data_.data(),

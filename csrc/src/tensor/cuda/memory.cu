@@ -2,7 +2,9 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 #include <thrust/device_ptr.h>
+
 #include <cuda/std/array>
+
 #include "lamp3/common/assert.hpp"
 #include "lamp3/common/macros.hpp"
 #include "lamp3/tensor/cuda/memory.cuh"

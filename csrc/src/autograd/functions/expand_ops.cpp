@@ -1,5 +1,7 @@
 #include "lamp3/autograd/functions/expand_ops.hpp"
+
 #include <memory>
+
 #include "lamp3/autograd/function.hpp"
 #include "lamp3/autograd/functions/binary_decl.hpp"
 #include "lamp3/autograd/utils/grad_utils.hpp"

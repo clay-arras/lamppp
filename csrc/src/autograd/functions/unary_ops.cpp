@@ -1,6 +1,8 @@
 
 #include "lamp3/autograd/functions/unary_ops.hpp"
+
 #include <cmath>
+
 #include "lamp3/autograd/functions/overloads.hpp"
 #include "lamp3/autograd/functions/unary_decl.hpp"
 #include "lamp3/autograd/variable.hpp"

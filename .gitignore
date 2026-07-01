@@ -1,20 +1,79 @@
+# Build directories and CMake
+build/
+**/build/
+CMakeFiles/
+CMakeCache.txt
+compile_commands.json
+
+# Compiled object files and binaries
+*.o
+*.out
+*.exe
+*.app
+
+# Shared and static libraries 
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+*.pyd
+
+# CUDA artifacts
+*.ptx
+*.cubin
+
+# Byte-compiled DLL files
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+
+# Dependency locks
 poetry.lock
 uv.lock
-Doxyfile
-**/__pycache__/
-**/build/
-data/
-.venv/
-.clangd
-.cache/
-.hypothesis/
-.vscode/
-coverage/
-.coverage
-**/.ipynb_checkpoints/
-dist/
 
-.mypy_cache
-.pytest_cache
-.ruff_cache
+# Distribution / Packaging
+dist/
+*.egg-info/
+*.egg/
+.eggs/
+*.dist-info/
+
+# Machine Learning / Data
+data/
+models/
+checkpoints/
+
+# Caching and coverage
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# C++ Tools
+Doxyfile
+.clangd
+
+# Editors
+.vscode/
+.vs/
+.idea/
 .claude
+
+# Jupyter
+**/.ipynb_checkpoints/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Secrets and Local Environments
+.env
+.env.*

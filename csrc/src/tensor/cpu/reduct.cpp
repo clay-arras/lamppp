@@ -1,4 +1,5 @@
 #include "lamp3/tensor/cpu/reduct.hpp"
+
 #include "lamp3/tensor/utils/align_utils.hpp"
 
 namespace lmp::tensor::detail::cpu {

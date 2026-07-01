@@ -1,4 +1,5 @@
 #include "lamp3/autograd/utils/constructor.hpp"
+
 #include <algorithm>
 #include <numeric>
 #include <random>

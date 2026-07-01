@@ -1,4 +1,5 @@
 #include "lamp3/tensor/utils/fill_like.hpp"
+
 #include "lamp3/tensor/dispatch_type.hpp"
 #include "lamp3/tensor/tensor.hpp"
 
@@ -14,12 +15,8 @@ Tensor full_like(const Tensor& tensor, Scalar scalar) {
   });
 }
 
-Tensor ones_like(const Tensor& tensor) {
-  return full_like(tensor, 1);
-}
+Tensor ones_like(const Tensor& tensor) { return full_like(tensor, 1); }
 
-Tensor zeros_like(const Tensor& tensor) {
-  return full_like(tensor, 0);
-}
+Tensor zeros_like(const Tensor& tensor) { return full_like(tensor, 0); }
 
 }  // namespace lmp::tensor

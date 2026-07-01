@@ -88,8 +88,9 @@ Tensor eq(const Tensor& a, const Tensor& b) {
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
   if (lazy::backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::EqFn>(
-        std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        lazy::record(std::make_shared<lazy::EqFn>(
+            std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
       std::make_shared<TensorImpl>(eq_stub()(a.device(), *ai, *bi)));
@@ -99,8 +100,9 @@ Tensor ne(const Tensor& a, const Tensor& b) {
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
   if (lazy::backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::NeFn>(
-        std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        lazy::record(std::make_shared<lazy::NeFn>(
+            std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
       std::make_shared<TensorImpl>(ne_stub()(a.device(), *ai, *bi)));
@@ -110,8 +112,9 @@ Tensor ge(const Tensor& a, const Tensor& b) {
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
   if (lazy::backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::GeFn>(
-        std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        lazy::record(std::make_shared<lazy::GeFn>(
+            std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
       std::make_shared<TensorImpl>(ge_stub()(a.device(), *ai, *bi)));
@@ -121,8 +124,9 @@ Tensor le(const Tensor& a, const Tensor& b) {
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
   if (lazy::backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::LeFn>(
-        std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        lazy::record(std::make_shared<lazy::LeFn>(
+            std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
       std::make_shared<TensorImpl>(le_stub()(a.device(), *ai, *bi)));
@@ -132,8 +136,9 @@ Tensor gt(const Tensor& a, const Tensor& b) {
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
   if (lazy::backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::GtFn>(
-        std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        lazy::record(std::make_shared<lazy::GtFn>(
+            std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
       std::make_shared<TensorImpl>(gt_stub()(a.device(), *ai, *bi)));
@@ -143,8 +148,9 @@ Tensor lt(const Tensor& a, const Tensor& b) {
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
   if (lazy::backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::LtFn>(
-        std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
+    return detail::UnsafeTensorAccessor::fromImpl(
+        lazy::record(std::make_shared<lazy::LtFn>(
+            std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
       std::make_shared<TensorImpl>(lt_stub()(a.device(), *ai, *bi)));

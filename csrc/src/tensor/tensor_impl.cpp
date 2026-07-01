@@ -55,7 +55,8 @@ bool TensorImpl::is_deferred() const noexcept {
   return lazy_ != nullptr;
 }
 
-const std::shared_ptr<lazy::LazyFunction>& TensorImpl::lazy_op() const noexcept {
+const std::shared_ptr<lazy::LazyFunction>& TensorImpl::lazy_op()
+    const noexcept {
   return lazy_;
 }
 

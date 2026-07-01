@@ -9,6 +9,7 @@
 #include "tensor.hpp"
 #include "variable.hpp"
 #include "constructor.hpp"
+#include "capture_mode.hpp"
 #include "functions/expand.hpp"
 #include "functions/binary.hpp"
 #include "functions/unary.hpp"
@@ -23,6 +24,7 @@ PYBIND11_MODULE(_C, m) {
     init_tensor(m);
     init_variable(m);
     init_constructor(m);
+    init_capture_mode(m);
 
     init_expand(m);
     init_binary(m);

@@ -107,8 +107,6 @@ void NVRTCInductorBackend::realize(tensor::TensorImpl* impl) {
   impl->set_realized(out);
 }
 
-#ifdef LMP_ENABLE_FUSION
 LMP_REGISTER_LAZY_BACKEND(tensor::DeviceType::CUDA, NVRTCInductorBackend)
-#endif
 
 }

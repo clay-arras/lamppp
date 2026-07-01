@@ -40,7 +40,4 @@ def test_graph(template, device, seed, fusion):
     rng = np.random.default_rng(seed)
     fills = sample_fills(template, rng)
     for _ in range(DRAWS):
-        if fusion:
-            pylamp.capture(run_once)(template, fills, device, rng)
-        else:
-            run_once(template, fills, device, rng)
+        pylamp.capture(enable=fusion)(run_once)(template, fills, device, rng)

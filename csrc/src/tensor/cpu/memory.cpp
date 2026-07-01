@@ -1,5 +1,7 @@
 #include "lamp3/tensor/cpu/memory.hpp"
+
 #include <cstring>
+
 #include "lamp3/common/macros.hpp"
 #include "lamp3/tensor/data_type.hpp"
 #include "lamp3/tensor/dispatch_type.hpp"
@@ -60,7 +62,7 @@ void copy_cpu(DeviceType to_device, const void* src, void* dest, size_t size,
 
 /**
  * @brief Small parallized copy function using OMP
- * 
+ *
  * @tparam U Input template type
  * @tparam V Output template type
  * @param size Size of the array being used

@@ -1,8 +1,10 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
+
 #include <cuda/std/array>
 #include <cuda/std/tuple>
+
 #include "lamp3/tensor/cuda/expand.cuh"
 #include "lamp3/tensor/cuda/kernels.cuh"
 #include "lamp3/tensor/cuda/list_ptr.cuh"

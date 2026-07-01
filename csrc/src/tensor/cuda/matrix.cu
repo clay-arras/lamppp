@@ -1,4 +1,5 @@
 #include <type_traits>
+
 #include "lamp3/common/macros.hpp"
 #include "lamp3/tensor/cuda/matrix.cuh"
 #include "lamp3/tensor/data_type.hpp"

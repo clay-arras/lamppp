@@ -1,4 +1,5 @@
 #include "lamp3/tensor/cpu/matrix.hpp"
+
 #include "lamp3/common/macros.hpp"
 #include "lamp3/tensor/data_type.hpp"
 
@@ -35,8 +36,7 @@ template <typename T>
 void cpuTranspose(const T* in, T* out, size_t m, size_t n) {
 #pragma omp parallel for collapse(2) schedule(static)
   for (size_t i = 0; i < m; i++)
-    for (size_t j = 0; j < n; j++)
-      cpuTransposeKernel<T>(in, out, m, n, i, j);
+    for (size_t j = 0; j < n; j++) cpuTransposeKernel<T>(in, out, m, n, i, j);
 }
 
 #define INSTANTIATE_MATMUL(arg1_type, arg2_type, out_type)             \

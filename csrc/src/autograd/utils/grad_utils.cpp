@@ -1,4 +1,5 @@
 #include "lamp3/autograd/utils/grad_utils.hpp"
+
 #include "lamp3/common/assert.hpp"
 #include "lamp3/tensor/native/reduct_ops.hpp"
 #include "lamp3/tensor/tensor.hpp"
@@ -22,8 +23,7 @@ tensor::Tensor sum_broadcast_axis(const tensor::Tensor& grad,
 
 #pragma unroll
   for (size_t i = 0; i < LMP_MAX_DIMS; i++) {
-    if (i >= orig_shape.size())
-      continue;
+    if (i >= orig_shape.size()) continue;
 
     if (orig_shape[i] == 1) {
       aligned_grad = tensor::ops::sum(aligned_grad, i);

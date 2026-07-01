@@ -1,9 +1,11 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
+
 #include <array>
 #include <functional>
 #include <string>
+
 #include "lamp3/lamp3.hpp"
 
 #ifdef LMP_ENABLE_CUDA

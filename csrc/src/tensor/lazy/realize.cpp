@@ -1,6 +1,6 @@
 #include "lamp3/tensor/lazy/realize.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 void realize(TensorImpl* impl) {
   if (!impl->is_deferred())
@@ -10,4 +10,4 @@ void realize(TensorImpl* impl) {
   b->realize(impl);
 }
 
-}  // namespace lmp::tensor
+}  // namespace lmp::tensor::lazy

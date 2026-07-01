@@ -22,7 +22,7 @@
 
 namespace lmp::inductor {
 
-class NVRTCInductorBackend : public tensor::LazyBackend {
+class NVRTCInductorBackend : public tensor::lazy::LazyBackend {
  public:
   void realize(tensor::TensorImpl* impl) override;
 };

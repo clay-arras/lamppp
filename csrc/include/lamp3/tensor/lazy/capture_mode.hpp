@@ -2,7 +2,7 @@
 
 #include "lamp3/tensor/device_type.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 class CaptureGuard {
 public:
@@ -19,4 +19,4 @@ void set_capture_enabled(bool enable);
 
 bool should_capture(DeviceType device);
 
-}
+}  // namespace lmp::tensor::lazy

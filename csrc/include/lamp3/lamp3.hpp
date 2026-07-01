@@ -1,6 +1,7 @@
 #pragma once
 
 #include "autograd/core.hpp"
+#include "inductor/core.hpp"
 #include "nets/core.hpp"
 #include "tensor/core.hpp"
 

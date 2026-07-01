@@ -1,6 +1,6 @@
 #include "lamp3/tensor/lazy/record.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 std::shared_ptr<TensorImpl> record(std::shared_ptr<LazyFunction> fn) {
   std::shared_ptr<TensorImpl> out = fn->infer_output();
@@ -8,4 +8,4 @@ std::shared_ptr<TensorImpl> record(std::shared_ptr<LazyFunction> fn) {
   return out;
 }
 
-}  // namespace lmp::tensor
+}  // namespace lmp::tensor::lazy

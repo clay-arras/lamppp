@@ -66,7 +66,7 @@ void NVRTCInductorBackend::realize(tensor::TensorImpl* impl) {
   if (!impl->lazy_op()->is_fusible()) {
     for (const std::shared_ptr<tensor::TensorImpl>& in :
          impl->lazy_op()->inputs)
-      tensor::realize(in.get());
+      tensor::lazy::realize(in.get());
     impl->lazy_op()->run_eager(*impl);
     return;
   }

@@ -32,7 +32,7 @@ TensorImpl::TensorImpl(Storage storage, const std::vector<size_t>& shape,
 
 void* TensorImpl::data() {
   if (is_deferred())
-    realize(this);
+    lazy::realize(this);
   return data_.data();
 }
 DataType TensorImpl::type() const noexcept {
@@ -55,7 +55,8 @@ bool TensorImpl::is_deferred() const noexcept {
   return lazy_ != nullptr;
 }
 
-const std::shared_ptr<LazyFunction>& TensorImpl::lazy_op() const noexcept {
+const std::shared_ptr<lazy::LazyFunction>& TensorImpl::lazy_op()
+    const noexcept {
   return lazy_;
 }
 
@@ -71,7 +72,7 @@ void TensorImpl::set_realized(Storage storage) {
   lazy_ = nullptr;
 }
 
-void TensorImpl::set_deferred(std::shared_ptr<LazyFunction> op) {
+void TensorImpl::set_deferred(std::shared_ptr<lazy::LazyFunction> op) {
   LMP_CHECK(!is_deferred()) << "tensor already has a pending op";
   lazy_ = std::move(op);
 }

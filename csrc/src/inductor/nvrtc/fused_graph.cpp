@@ -9,7 +9,7 @@ void visit(tensor::TensorImpl* n, FusedGraph& g) {
   g.seen.insert(n);
 
   if (!n->is_deferred() || !n->lazy_op()->is_fusible()) {
-    tensor::realize(n);
+    tensor::lazy::realize(n);
     if (!g.slot.count(n)) {
       g.slot[n] = g.inputs.size();
       g.inputs.push_back(n);

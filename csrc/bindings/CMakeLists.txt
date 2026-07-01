@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(pybind11)
 # EXECUTABLES ---------------------------------
 
 pybind11_add_module(_C core.cpp)
-target_link_libraries(_C PRIVATE lamppp)
+target_link_libraries(_C PRIVATE lamp3)
 
 if(APPLE)
     set_target_properties(_C PROPERTIES INSTALL_RPATH "@loader_path/lib")
@@ -34,4 +34,4 @@ if(LMP_ENABLE_COVERAGE)
   target_link_options(_C PRIVATE --coverage)
 endif()
 
-install(TARGETS _C LIBRARY DESTINATION ${SKBUILD_PLATLIB_DIR}/pylamp)
+install(TARGETS _C LIBRARY DESTINATION ${SKBUILD_PLATLIB_DIR}/rushlite)

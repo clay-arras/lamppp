@@ -1,12 +1,12 @@
-#include "lamppp/tensor/native/expand_ops.hpp"
+#include "lamp3/tensor/native/expand_ops.hpp"
 #include <memory>
 #include <vector>
-#include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/lazy/functions/elementwise_binary.hpp"
-#include "lamppp/tensor/lazy/lazy_backend.hpp"
-#include "lamppp/tensor/lazy/lazy_function.hpp"
-#include "lamppp/tensor/lazy/record.hpp"
-#include "lamppp/tensor/tensor.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/tensor/lazy/functions/elementwise_binary.hpp"
+#include "lamp3/tensor/lazy/lazy_backend.hpp"
+#include "lamp3/tensor/lazy/lazy_function.hpp"
+#include "lamp3/tensor/lazy/record.hpp"
+#include "lamp3/tensor/tensor.hpp"
 
 namespace lmp::tensor::ops {
 

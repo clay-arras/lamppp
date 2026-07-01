@@ -1,5 +1,5 @@
-#include "lamppp/tensor/cuda/offset_util.cuh"
-#include "lamppp/tensor/utils/align_utils.hpp"
+#include "lamp3/tensor/cuda/offset_util.cuh"
+#include "lamp3/tensor/utils/align_utils.hpp"
 
 namespace lmp::tensor::detail::cuda {
 

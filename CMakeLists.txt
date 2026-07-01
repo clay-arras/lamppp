@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(lamppp LANGUAGES CXX)
+project(lamp3 LANGUAGES CXX)
 
 option(LMP_ENABLE_CUDA "Compile with CUDA support" OFF)
 option(LMP_ENABLE_COVERAGE "Enable code coverage" OFF)
@@ -53,17 +53,17 @@ else()
 endif()
 
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/include/lamppp/common/config.hpp.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/csrc/include/lamppp/common/config.hpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/csrc/include/lamp3/common/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/csrc/include/lamp3/common/config.hpp"
 )
 
-add_library(lamppp_compile_config INTERFACE)
-target_compile_options(lamppp_compile_config
+add_library(lamp3_compile_config INTERFACE)
+target_compile_options(lamp3_compile_config
   INTERFACE
     $<$<CONFIG:Release>:-march=native;-ffast-math> # also compiles with -O3 -DNDEBUG
     $<$<CONFIG:Debug>:-march=native;-ffast-math;-DLMP_DEBUG> # -g
 )
-target_include_directories(lamppp_compile_config
+target_include_directories(lamp3_compile_config
   INTERFACE
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/csrc/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/csrc/include>
@@ -75,8 +75,8 @@ add_subdirectory(csrc/src/tensor)
 add_subdirectory(csrc/src/inductor)
 add_subdirectory(csrc/src/autograd)
 add_subdirectory(csrc/src/nets)
-add_library(lamppp INTERFACE)
-target_link_libraries(lamppp INTERFACE autograd_core tensor_core inductor_core nets_core)
+add_library(lamp3 INTERFACE)
+target_link_libraries(lamp3 INTERFACE autograd_core tensor_core inductor_core nets_core)
 
 add_subdirectory(docs/examples)
 add_subdirectory(csrc/bindings)
@@ -90,22 +90,22 @@ endif()
 # INSTALLATION ---------------------------------
 install(
   TARGETS
-    lamppp
+    lamp3
     autograd_core
     tensor_core
     inductor_core
     nets_core
-    lamppp_compile_config
-  EXPORT lampppTargets
+    lamp3_compile_config
+  EXPORT lamp3Targets
   ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION ${SKBUILD_PLATLIB_DIR}/pylamp/lib
+  LIBRARY DESTINATION ${SKBUILD_PLATLIB_DIR}/rushlite/lib
   RUNTIME DESTINATION bin
 )
 
 install(
-  EXPORT lampppTargets
-  FILE   lampppTargets.cmake
-  DESTINATION lib/cmake/lamppp
+  EXPORT lamp3Targets
+  FILE   lamp3Targets.cmake
+  DESTINATION lib/cmake/lamp3
 )
 
 install(

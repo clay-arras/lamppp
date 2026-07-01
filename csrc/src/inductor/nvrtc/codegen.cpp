@@ -1,4 +1,4 @@
-#include "lamppp/inductor/nvrtc/codegen.hpp"
+#include "lamp3/inductor/nvrtc/codegen.hpp"
 
 namespace lmp::inductor {
 namespace {

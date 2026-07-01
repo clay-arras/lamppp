@@ -1,8 +1,8 @@
-#include "lamppp/autograd/utils/grad_utils.hpp"
-#include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/native/reduct_ops.hpp"
-#include "lamppp/tensor/tensor.hpp"
-#include "lamppp/tensor/utils/align_utils.hpp"
+#include "lamp3/autograd/utils/grad_utils.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/tensor/native/reduct_ops.hpp"
+#include "lamp3/tensor/tensor.hpp"
+#include "lamp3/tensor/utils/align_utils.hpp"
 
 namespace lmp::autograd::detail {
 

@@ -1,11 +1,11 @@
-#include "lamppp/nets/layers/activation.hpp"
+#include "lamp3/nets/layers/activation.hpp"
 #include <limits>
-#include "lamppp/autograd/functions/overloads.hpp"
-#include "lamppp/autograd/functions/reduct_ops.hpp"
-#include "lamppp/autograd/functions/unary_ops.hpp"
-#include "lamppp/autograd/variable.hpp"
-#include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/data_type.hpp"
+#include "lamp3/autograd/functions/overloads.hpp"
+#include "lamp3/autograd/functions/reduct_ops.hpp"
+#include "lamp3/autograd/functions/unary_ops.hpp"
+#include "lamp3/autograd/variable.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/tensor/data_type.hpp"
 
 namespace lmp::nets {
 

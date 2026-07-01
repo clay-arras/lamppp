@@ -1,12 +1,12 @@
-#include "lamppp/autograd/functions/expand_ops.hpp"
+#include "lamp3/autograd/functions/expand_ops.hpp"
 #include <memory>
-#include "lamppp/autograd/function.hpp"
-#include "lamppp/autograd/functions/binary_decl.hpp"
-#include "lamppp/autograd/utils/grad_utils.hpp"
-#include "lamppp/autograd/variable.hpp"
-#include "lamppp/common/assert.hpp"
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/utils/fill_like.hpp"
+#include "lamp3/autograd/function.hpp"
+#include "lamp3/autograd/functions/binary_decl.hpp"
+#include "lamp3/autograd/utils/grad_utils.hpp"
+#include "lamp3/autograd/variable.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/utils/fill_like.hpp"
 
 namespace lmp::autograd::ops {
 

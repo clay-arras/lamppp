@@ -1,6 +1,6 @@
-#include "lamppp/tensor/utils/align_utils.hpp"
+#include "lamp3/tensor/utils/align_utils.hpp"
 #include <numeric>
-#include "lamppp/common/assert.hpp"
+#include "lamp3/common/assert.hpp"
 
 namespace lmp::tensor::detail {
 

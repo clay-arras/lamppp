@@ -1,5 +1,5 @@
-#include "lamppp/tensor/storage.hpp"
-#include "lamppp/tensor/native/memory_ops.hpp"
+#include "lamp3/tensor/storage.hpp"
+#include "lamp3/tensor/native/memory_ops.hpp"
 
 namespace lmp::tensor {
 

@@ -1,5 +1,5 @@
-#include "lamppp/tensor/lazy/capture_mode.hpp"
-#include "lamppp/tensor/lazy/lazy_backend.hpp"
+#include "lamp3/tensor/lazy/capture_mode.hpp"
+#include "lamp3/tensor/lazy/lazy_backend.hpp"
 
 namespace lmp::tensor {
 

@@ -1,5 +1,5 @@
 [project]
-name = "pylamp"
+name = "rushlite"
 version = "0.1.0"
 description = ""
 authors = [{ name = "clay-arras", email = "astrollin.neil@gmail.com" }]
@@ -57,7 +57,7 @@ build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
 minimum-version = "build-system.requires"
-wheel.packages = ["src/pylamp"]
+wheel.packages = ["src/rushlite"]
 
 [tool.scikit-build.cmake]
 build-type = "Debug"

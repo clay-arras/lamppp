@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "lamppp/tensor/lazy/capture_mode.hpp"
+#include "lamp3/tensor/lazy/capture_mode.hpp"
 
 namespace py = pybind11;
 

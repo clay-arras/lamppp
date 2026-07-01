@@ -1,16 +1,16 @@
 /*!
 \page using_autograd Understanding Autograd
 
-Automatic differentiation is the heart of modern machine learning. Lamp++'s autograd system builds computation graphs on-the-fly and computes gradients using the chain rule. This guide explains how it works and how to use it effectively.
+Automatic differentiation is the heart of modern machine learning. Lamp3's autograd system builds computation graphs on-the-fly and computes gradients using the chain rule. This guide explains how it works and how to use it effectively.
 
 ## The big picture
 
-When you do math with Variables (instead of plain Tensors), Lamp++ secretly builds a computation graph. Each operation creates a node that remembers how to compute gradients. When you call `.backward()`, it walks through this graph backward, computing derivatives using the chain rule.
+When you do math with Variables (instead of plain Tensors), Lamp3 secretly builds a computation graph. Each operation creates a node that remembers how to compute gradients. When you call `.backward()`, it walks through this graph backward, computing derivatives using the chain rule.
 
 Here's the simplest possible example:
 
 ```cpp
-#include "lamppp/lamppp.hpp"
+#include "lamp3/lamp3.hpp"
 
 int main() {
     // Create a variable that tracks gradients
@@ -180,7 +180,7 @@ for (int epoch = 0; epoch < num_epochs; ++epoch) {
 
 ## Understanding the computation graph
 
-When you call `backward()`, Lamp++ performs a topological sort to ensure gradients are computed in the right order:
+When you call `backward()`, Lamp3 performs a topological sort to ensure gradients are computed in the right order:
 
 ```cpp
 lmp::Variable x(data, true);

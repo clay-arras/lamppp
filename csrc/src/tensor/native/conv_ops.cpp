@@ -1,6 +1,6 @@
-#include "lamppp/tensor/native/conv_ops.hpp"
-#include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/tensor.hpp"
+#include "lamp3/tensor/native/conv_ops.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/tensor/tensor.hpp"
 
 namespace lmp::tensor::ops {
 

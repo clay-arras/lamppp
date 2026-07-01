@@ -62,10 +62,10 @@ def run_gpu_ci() -> None:
     )
     _run(
         'uv run python -c "'
-        "import pylamp; "
-        "pylamp.Tensor([[0.0]], requires_grad=False, "
-        "device=pylamp.device.cuda, dtype=pylamp.dtype.float64); "
-        "print('pylamp CUDA device OK')\""
+        "import rushlite; "
+        "rushlite.Tensor([[0.0]], requires_grad=False, "
+        "device=rushlite.device.cuda, dtype=rushlite.dtype.float64); "
+        "print('rushlite CUDA device OK')\""
     )
     _run("uv run pytest tests -v")
 

@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include <vector>
 
-#include "lamppp/autograd/core.hpp"
-#include "lamppp/autograd/functions/view_ops.hpp"
-#include "lamppp/tensor/core.hpp"
-#include "lamppp/tensor/device_type.hpp"
+#include "lamp3/autograd/core.hpp"
+#include "lamp3/autograd/functions/view_ops.hpp"
+#include "lamp3/tensor/core.hpp"
+#include "lamp3/tensor/device_type.hpp"
 
 using lmp::autograd::Variable;
 using lmp::tensor::DataType;

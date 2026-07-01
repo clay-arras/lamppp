@@ -1,4 +1,4 @@
-#include "lamppp/tensor/lazy/realize.hpp"
+#include "lamp3/tensor/lazy/realize.hpp"
 
 namespace lmp::tensor {
 

@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-import pylamp
+import rushlite
 
 MATRIX_DIMS = (16, 16)
 
@@ -34,9 +34,9 @@ def from_row_major(flat, like):
     return t.tolist()
 
 
-def to_pylamp_var(mat, device, requires_grad=True):
-    return pylamp.Tensor(
-        mat, requires_grad=requires_grad, device=device, dtype=pylamp.dtype.float64
+def to_rushlite_var(mat, device, requires_grad=True):
+    return rushlite.Tensor(
+        mat, requires_grad=requires_grad, device=device, dtype=rushlite.dtype.float64
     )
 
 

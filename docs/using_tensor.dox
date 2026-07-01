@@ -1,7 +1,7 @@
 /*!
 \page using_tensor Working with Tensors
 
-Tensors are the fundamental data structure in Lamp++. They're n-dimensional arrays that can live on CPU or GPU, store different data types, and support automatic broadcasting for operations (it's like what ATen is for Pytorch, or if NumPy had CUDA support). This guide covers everything you need to know to work with them effectively.
+Tensors are the fundamental data structure in Lamp3. They're n-dimensional arrays that can live on CPU or GPU, store different data types, and support automatic broadcasting for operations (it's like what ATen is for Pytorch, or if NumPy had CUDA support). This guide covers everything you need to know to work with them effectively.
 
 ## Creating tensors
 
@@ -10,7 +10,7 @@ Tensors are the fundamental data structure in Lamp++. They're n-dimensional arra
 The most common way to create a tensor is from a C++ vector:
 
 ```cpp
-#include "lamppp/lamppp.hpp"
+#include "lamp3/lamp3.hpp"
 
 // Simple 1D tensor
 std::vector<float> data = {1.0f, 2.0f, 3.0f, 4.0f};
@@ -33,7 +33,7 @@ The constructor takes four parameters:
 
 ### Data types
 
-Lamp++ supports six data types:
+Lamp3 supports six data types:
 
 ```cpp
 // Integer types
@@ -96,7 +96,7 @@ Tensors support several operations that change their shape without copying data:
 
 ### Reshaping
 
-Reshaping is a fast operation that doesn't change the underlying data. Lamp++ does not support non-contiguous tensors.
+Reshaping is a fast operation that doesn't change the underlying data. Lamp3 does not support non-contiguous tensors.
 
 ```cpp
 lmp::Tensor original(data, {2, 6});    // 2×6 matrix
@@ -189,7 +189,7 @@ lmp::Tensor less_equal = (a <= b);
 
 ## Broadcasting
 
-Lamp++ follows NumPy broadcasting rules. When operating on tensors with different shapes, they're automatically aligned:
+Lamp3 follows NumPy broadcasting rules. When operating on tensors with different shapes, they're automatically aligned:
 
 ```cpp
 lmp::Tensor matrix(data, {3, 4});           // 3×4 matrix
@@ -297,7 +297,7 @@ Tensors use row-major (C-style) memory layout:
 
 ### Type promotion
 
-When operating on tensors with different types, Lamp++ promotes to the "higher" type:
+When operating on tensors with different types, Lamp3 promotes to the "higher" type:
 - `Bool` < `Int16` < `Int32` < `Int64` < `Float32` < `Float64`
 - Example: `Int32` + `Float32` → `Float32`
 

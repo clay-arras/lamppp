@@ -1,4 +1,4 @@
-#include "lamppp/tensor/lazy/record.hpp"
+#include "lamp3/tensor/lazy/record.hpp"
 
 namespace lmp::tensor {
 

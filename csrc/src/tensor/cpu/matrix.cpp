@@ -1,6 +1,6 @@
-#include "lamppp/tensor/cpu/matrix.hpp"
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/data_type.hpp"
+#include "lamp3/tensor/cpu/matrix.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail::cpu {
 

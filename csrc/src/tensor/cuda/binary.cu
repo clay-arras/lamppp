@@ -3,9 +3,9 @@
 #include <driver_types.h>
 #include <cuda/std/array>
 #include <cuda/std/tuple>
-#include "lamppp/tensor/cuda/binary.cuh"
-#include "lamppp/tensor/cuda/kernels.cuh"
-#include "lamppp/tensor/cuda/list_ptr.cuh"
+#include "lamp3/tensor/cuda/binary.cuh"
+#include "lamp3/tensor/cuda/kernels.cuh"
+#include "lamp3/tensor/cuda/list_ptr.cuh"
 
 namespace lmp::tensor::detail::cuda {
 

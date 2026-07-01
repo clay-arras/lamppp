@@ -1,11 +1,11 @@
 /*!
-\mainpage Lamp++ Documentation
+\mainpage Lamp3 Documentation
 
-Lamp++ is a C++ automatic differentiation engine and tensor library built for people who want to understand what's happening under the hood. If you've ever looked into Pytorch's codebase (complex macros, codegens scripts, like wtf?) and been frustrated by PyTorch's black-box approach, or if you wanted to learn how autograd actually works, Lamp++ is for you.
+Lamp3 is a C++ automatic differentiation engine and tensor library built for people who want to understand what's happening under the hood. If you've ever looked into Pytorch's codebase (complex macros, codegens scripts, like wtf?) and been frustrated by PyTorch's black-box approach, or if you wanted to learn how autograd actually works, Lamp3 is for you.
 
 I built this library from scratch in about 4,000 lines of C++ because I believe in Richard Feynman's quote "what I cannot create, I do not understand". You can read the entire codebase in one afternoon, understand the entire codebase in two afternoons, and be ready to build/extend the codebase in the third (I hope).
 
-## What makes Lamp++ different?
+## What makes Lamp3 different?
 
 **It's small and readable.** The entire autograd engine is ~1,500 lines. The tensor library is ~2,500 lines. You can actually understand how it works.
 
@@ -15,10 +15,10 @@ I built this library from scratch in about 4,000 lines of C++ because I believe 
 
 ## Getting started
 
-The fastest way to see what Lamp++ can do is to try this example:
+The fastest way to see what Lamp3 can do is to try this example:
 
 ```cpp
-#include "lamppp/lamppp.hpp"
+#include "lamp3/lamp3.hpp"
 
 int main() {
     // Create some tensors
@@ -47,15 +47,15 @@ int main() {
 To build this, you need CMake and optionally CUDA:
 
 ```bash
-git clone https://github.com/clay-arras/lamp.git
-cd lamp
+git clone https://github.com/rushlite/rushlite.git
+cd rushlite
 cmake -S . -B build -DLMP_ENABLE_CUDA=ON  # or OFF if you don't have CUDA
 cmake --build build
 ```
 
 ## How it works
 
-Lamp++ builds computation graphs dynamically as you run your code. When you do `a * b`, it creates a multiplication node that remembers how to compute gradients. When you call `loss.backward()`, it walks backward through the graph computing derivatives using the chain rule. If you'd like to learn more, watch this video by Andej Kaparthy, he teaches everything you need to know about the autograd module in a very straightforward manner https://www.youtube.com/watch?v=VMj-3S1tku0&
+Lamp3 builds computation graphs dynamically as you run your code. When you do `a * b`, it creates a multiplication node that remembers how to compute gradients. When you call `loss.backward()`, it walks backward through the graph computing derivatives using the chain rule. If you'd like to learn more, watch this video by Andej Kaparthy, he teaches everything you need to know about the autograd module in a very straightforward manner https://www.youtube.com/watch?v=VMj-3S1tku0&
 
 The tensor library stores everything as `void*` with type information, and during operations the pointers are casted back to their original types. CUDA operations have their own kernels in `src/tensor/cuda/`, while CPU operations live in `src/tensor/native/`.
 
@@ -71,7 +71,7 @@ If you want to add a new operation, inherit from `autograd::Function` and implem
 
 You want a production-ready framework with every layer type imaginable. That's PyTorch's job, and it does it well.
 
-You need maximum performance for huge models. Lamp++ prioritizes clarity over cutting-edge optimization.
+You need maximum performance for huge models. Lamp3 prioritizes clarity over cutting-edge optimization.
 
 You don't care how automatic differentiation works. If you just want to train models, stick with the mainstream tools.
 

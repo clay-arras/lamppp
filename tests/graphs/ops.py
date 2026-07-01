@@ -1,7 +1,7 @@
 """Op menus, slot sampling, and input scaling for the graph equivalence tests.
 
 Each menu entry is a ``(torch_fn, lamp_fn)`` pair indexed by backend, so one
-sampled fill drives both the torch reference graph and the pylamp graph.
+sampled fill drives both the torch reference graph and the rushlite graph.
 
 Ops whose domain can blow up (div by ~0, neg base ^ frac, log/sqrt of <=0,
 tan near pi/2, exp overflow) get a *separate* guarded def that wraps the
@@ -12,7 +12,7 @@ reals (add/sub/mul, neg/abs/sin/cos) are used raw.
 
 import numpy as np
 import torch
-import pylamp
+import rushlite
 
 BACKEND_TORCH = 0
 BACKEND_LAMP = 1
@@ -35,24 +35,24 @@ POW_LIM = 2.0  # pow exponent magnitude ceiling
 
 # Total ops, safe to chain raw -> a pure fusible region.
 BINARY_SAFE = {
-    "add": (torch.add, pylamp.add),
-    "sub": (torch.sub, pylamp.sub),
-    "mul": (torch.mul, pylamp.mul),
+    "add": (torch.add, rushlite.add),
+    "sub": (torch.sub, rushlite.sub),
+    "mul": (torch.mul, rushlite.mul),
 }
 
 # Domain-bounded ops, guarded with clamp.
 BINARY_BOUNDED = {
     "div": (
         lambda a, b: torch.div(a, torch.clamp(b, min=DENOM_LO, max=BIG)),
-        lambda a, b: pylamp.div(a, pylamp.clamp(b, DENOM_LO, BIG)),
+        lambda a, b: rushlite.div(a, rushlite.clamp(b, DENOM_LO, BIG)),
     ),
     "pow": (
         lambda a, b: torch.pow(
             torch.clamp(a, min=BASE_LO, max=BASE_HI),
             torch.clamp(b, min=-POW_LIM, max=POW_LIM),
         ),
-        lambda a, b: pylamp.pow(
-            pylamp.clamp(a, BASE_LO, BASE_HI), pylamp.clamp(b, -POW_LIM, POW_LIM)
+        lambda a, b: rushlite.pow(
+            rushlite.clamp(a, BASE_LO, BASE_HI), rushlite.clamp(b, -POW_LIM, POW_LIM)
         ),
     ),
 }
@@ -60,28 +60,28 @@ BINARY_BOUNDED = {
 # --- unary ------------------------------------------------------------------
 
 UNARY_SAFE = {
-    "neg": (torch.neg, pylamp.neg),
-    "abs": (torch.abs, pylamp.abs),
-    "sin": (torch.sin, pylamp.sin),
-    "cos": (torch.cos, pylamp.cos),
+    "neg": (torch.neg, rushlite.neg),
+    "abs": (torch.abs, rushlite.abs),
+    "sin": (torch.sin, rushlite.sin),
+    "cos": (torch.cos, rushlite.cos),
 }
 
 UNARY_BOUNDED = {
     "exp": (
         lambda x: torch.exp(torch.clamp(x, min=-BIG, max=EXP_HI)),
-        lambda x: pylamp.exp(pylamp.clamp(x, -BIG, EXP_HI)),
+        lambda x: rushlite.exp(rushlite.clamp(x, -BIG, EXP_HI)),
     ),
     "log": (
         lambda x: torch.log(torch.clamp(x, min=EPS, max=BIG)),
-        lambda x: pylamp.log(pylamp.clamp(x, EPS, BIG)),
+        lambda x: rushlite.log(rushlite.clamp(x, EPS, BIG)),
     ),
     "sqrt": (
         lambda x: torch.sqrt(torch.clamp(x, min=EPS, max=BIG)),
-        lambda x: pylamp.sqrt(pylamp.clamp(x, EPS, BIG)),
+        lambda x: rushlite.sqrt(rushlite.clamp(x, EPS, BIG)),
     ),
     "tan": (
         lambda x: torch.tan(torch.clamp(x, min=-TAN_LIM, max=TAN_LIM)),
-        lambda x: pylamp.tan(pylamp.clamp(x, -TAN_LIM, TAN_LIM)),
+        lambda x: rushlite.tan(rushlite.clamp(x, -TAN_LIM, TAN_LIM)),
     ),
 }
 
@@ -89,15 +89,15 @@ UNARY = {**UNARY_SAFE, **UNARY_BOUNDED}
 
 # --- reduction (barrier) ----------------------------------------------------
 
-# pylamp reductions keep the reduced dim; mirror with keepdim=True on torch.
+# rushlite reductions keep the reduced dim; mirror with keepdim=True on torch.
 REDUCT = {
-    "sum": (lambda t, axis: torch.sum(t, dim=axis, keepdim=True), pylamp.sum),
-    "max": (lambda t, axis: torch.max(t, dim=axis, keepdim=True).values, pylamp.max),
-    "min": (lambda t, axis: torch.min(t, dim=axis, keepdim=True).values, pylamp.min),
+    "sum": (lambda t, axis: torch.sum(t, dim=axis, keepdim=True), rushlite.sum),
+    "max": (lambda t, axis: torch.max(t, dim=axis, keepdim=True).values, rushlite.max),
+    "min": (lambda t, axis: torch.min(t, dim=axis, keepdim=True).values, rushlite.min),
 }
 
 # Fixed barrier, not a sampled slot.
-MATMUL = (torch.matmul, pylamp.matmul)
+MATMUL = (torch.matmul, rushlite.matmul)
 
 CATEGORIES = {
     "BIN": BINARY_SAFE,

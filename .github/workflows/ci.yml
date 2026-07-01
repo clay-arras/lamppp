@@ -42,7 +42,7 @@ jobs:
       - name: Build CMake project
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DLMP_ENABLE_CUDA=OFF -DLMP_ENABLE_TEST=ON -DLMP_ENABLE_COVERAGE=OFF -DLMP_ENABLE_BENCH=OFF
 
-      - name: Build lamppp module
+      - name: Build lamp3 module
         run: cmake --build build --config Debug --parallel
 
       - name: Run GTests
@@ -61,7 +61,7 @@ jobs:
           uv lock
           uv sync --extra cpu
 
-      - name: Install Pylamp
+      - name: Install Rushlite
         run: uv pip install .
 
       - name: Setup tmate session

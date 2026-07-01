@@ -7,11 +7,9 @@ set(TENSOR_SOURCES
   native/reduct_ops.cpp
   native/memory_ops.cpp
   native/shape_ops.cpp
-  native/conv_ops.cpp
   cpu/meta_handler.cpp
   cpu/offset_util.cpp
   cpu/unary.cpp
-  cpu/conv.cpp
   cpu/binary.cpp
   cpu/expand.cpp
   cpu/reduct.cpp
@@ -41,7 +39,6 @@ if (LMP_ENABLE_CUDA)
     cuda/reduct.cu
     cuda/expand.cu
     cuda/kernels.cu
-    cuda/conv.cu
     cuda/memory.cu
   )
 endif()

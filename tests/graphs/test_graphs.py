@@ -3,11 +3,6 @@
 Each (template, seed) samples a slot fill once, then draws randomized inputs a
 handful of times. A chain exercises many ops at once, so a few draws per fill is
 enough -- far fewer iterations than the single-op stress suite needs.
-
-Fusion on/off is an external flag; this file is agnostic to it. Run it once with
-fusion disabled (validates the eager IR) and once enabled (validates that fusion
-preserves numerics). A failure only in the enabled run is a fusion bug, already
-reduced to a minimal chain.
 """
 
 import numpy as np
@@ -40,8 +35,12 @@ def _devices():
 @pytest.mark.parametrize("device", _devices().values(), ids=_devices().keys())
 @pytest.mark.parametrize("template", TEMPLATES, ids=[t.name for t in TEMPLATES])
 @pytest.mark.parametrize("seed", SEEDS)
+@pytest.mark.parametrize("fusion", [True, False])
 def test_graph(template, device, seed):
     rng = np.random.default_rng(seed)
     fills = sample_fills(template, rng)
     for _ in range(DRAWS):
-        run_once(template, fills, device, rng)
+        if fusion:
+            pylamp.capture(run_once)(template, fills, device, rng)
+        else:
+            run_once(template, fills, device, rng)

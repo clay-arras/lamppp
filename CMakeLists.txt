@@ -2,17 +2,12 @@ cmake_minimum_required(VERSION 3.24)
 project(lamppp LANGUAGES CXX)
 
 option(LMP_ENABLE_CUDA "Compile with CUDA support" OFF)
-option(LMP_ENABLE_FUSION "Enable kernel fusion (lazy backend registration)" OFF)
 option(LMP_ENABLE_COVERAGE "Enable code coverage" OFF)
 option(LMP_ENABLE_TEST "Enable testing" OFF)
 option(LMP_ENABLE_BENCH "Enable benchmarks" OFF)
 
 if(LMP_ENABLE_CUDA)
   add_definitions(-DLMP_ENABLE_CUDA)
-endif()
-
-if(LMP_ENABLE_FUSION)
-  add_definitions(-DLMP_ENABLE_FUSION)
 endif()
 
 # CORE CONFIG ---------------------------------

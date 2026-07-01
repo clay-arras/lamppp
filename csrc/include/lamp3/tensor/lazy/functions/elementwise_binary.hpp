@@ -9,7 +9,7 @@
 #include "lamp3/tensor/storage.hpp"
 #include "lamp3/tensor/tensor_impl.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 struct ElementwiseBinaryFn : LazyFunction {
   using LazyFunction::LazyFunction;
@@ -83,4 +83,4 @@ struct LtFn : ElementwiseBinaryFn {
   std::string codegen_expr() const override { return "{0} < {1}"; }
 };
 
-}
+}  // namespace lmp::tensor::lazy

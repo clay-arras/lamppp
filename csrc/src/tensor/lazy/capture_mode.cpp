@@ -1,7 +1,7 @@
 #include "lamp3/tensor/lazy/capture_mode.hpp"
 #include "lamp3/tensor/lazy/lazy_backend.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 bool thread_local capture_enabled = false;
 
@@ -26,4 +26,4 @@ bool should_capture(DeviceType device) {
   return (backend(device) != nullptr) && capture_enabled;
 }
 
-}  // namespace lmp::tensor
+}  // namespace lmp::tensor::lazy

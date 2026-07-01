@@ -6,6 +6,8 @@
 namespace lmp::tensor {
 class TensorImpl;
 
+namespace lazy {
+
 struct LazyFunction {
   std::vector<std::shared_ptr<TensorImpl>> inputs;
 
@@ -18,4 +20,6 @@ struct LazyFunction {
   virtual std::string codegen_expr() const = 0;
   virtual bool is_fusible() const = 0;
 };
-}
+
+}  // namespace lazy
+}  // namespace lmp::tensor

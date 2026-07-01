@@ -4,8 +4,8 @@
 #include "lamp3/tensor/lazy/lazy_function.hpp"
 #include "lamp3/tensor/tensor_impl.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 std::shared_ptr<TensorImpl> record(std::shared_ptr<LazyFunction> fn);
 
-}
+}  // namespace lmp::tensor::lazy

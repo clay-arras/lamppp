@@ -14,7 +14,9 @@
 
 namespace lmp::tensor {
 
+namespace lazy {
 class LazyFunction;
+}  // namespace lazy
 
 /// @internal
 /**
@@ -79,9 +81,9 @@ class TensorImpl {
   const std::vector<detail::stride_t>& strides() const noexcept;
   size_t numel() const noexcept;
   bool is_deferred() const noexcept;
-  const std::shared_ptr<LazyFunction>& lazy_op() const noexcept;
+  const std::shared_ptr<lazy::LazyFunction>& lazy_op() const noexcept;
   void set_realized(Storage storage);
-  void set_deferred(std::shared_ptr<LazyFunction> op);
+  void set_deferred(std::shared_ptr<lazy::LazyFunction> op);
   Storage storage() const noexcept;
 
   TensorImpl reshape(std::vector<size_t> new_shape);
@@ -109,7 +111,7 @@ class TensorImpl {
   size_t numel_;
   std::vector<size_t> shape_;
   std::vector<detail::stride_t> strides_;
-  std::shared_ptr<LazyFunction> lazy_;  // pending op; null on the eager path
+  std::shared_ptr<lazy::LazyFunction> lazy_;  // pending op; null on the eager path
 };
 /// @endinternal
 

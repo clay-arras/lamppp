@@ -44,7 +44,7 @@ std::string codegen_kernel(const FusedGraph& g) {
 
   for (size_t m = 0; m < g.order.size(); ++m) {
     tensor::TensorImpl* node = g.order[m];
-    tensor::LazyFunction* fn = node->lazy_op().get();
+    tensor::lazy::LazyFunction* fn = node->lazy_op().get();
     const std::string ct = tensor::to_cname(node->type());
     std::vector<std::string> args;
     args.reserve(fn->inputs.size());

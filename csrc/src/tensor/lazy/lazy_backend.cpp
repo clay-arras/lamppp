@@ -1,6 +1,6 @@
 #include "lamp3/tensor/lazy/lazy_backend.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 namespace {
 
@@ -20,4 +20,4 @@ void register_backend(DeviceType dev, LazyBackend* b) {
   registry()[static_cast<size_t>(dev)] = b;
 }
 
-}  // namespace lmp::tensor
+}  // namespace lmp::tensor::lazy

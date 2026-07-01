@@ -7,6 +7,6 @@ namespace py = pybind11;
 
 inline void init_capture_mode(py::module_& m) {
     // TODO(clay-arras): should these be in root? 
-    m.def("set_capture_enabled", &lmp::tensor::set_capture_enabled);
-    m.def("is_capture_enabled", &lmp::tensor::is_capture_enabled);
+    m.def("set_capture_enabled", &lmp::tensor::lazy::set_capture_enabled);
+    m.def("is_capture_enabled", &lmp::tensor::lazy::is_capture_enabled);
 }

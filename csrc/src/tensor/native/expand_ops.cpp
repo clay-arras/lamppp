@@ -26,9 +26,9 @@ Tensor add(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
+  if (lazy::backend(a.device()) != nullptr) {
     return detail::UnsafeTensorAccessor::fromImpl(
-        record(std::make_shared<AddFn>(
+        lazy::record(std::make_shared<lazy::AddFn>(
             std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -38,9 +38,9 @@ Tensor sub(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
+  if (lazy::backend(a.device()) != nullptr) {
     return detail::UnsafeTensorAccessor::fromImpl(
-        record(std::make_shared<SubFn>(
+        lazy::record(std::make_shared<lazy::SubFn>(
             std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -50,9 +50,9 @@ Tensor mul(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
+  if (lazy::backend(a.device()) != nullptr) {
     return detail::UnsafeTensorAccessor::fromImpl(
-        record(std::make_shared<MulFn>(
+        lazy::record(std::make_shared<lazy::MulFn>(
             std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -62,9 +62,9 @@ Tensor div(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
+  if (lazy::backend(a.device()) != nullptr) {
     return detail::UnsafeTensorAccessor::fromImpl(
-        record(std::make_shared<DivFn>(
+        lazy::record(std::make_shared<lazy::DivFn>(
             std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -74,9 +74,9 @@ Tensor pow(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
+  if (lazy::backend(a.device()) != nullptr) {
     return detail::UnsafeTensorAccessor::fromImpl(
-        record(std::make_shared<PowFn>(
+        lazy::record(std::make_shared<lazy::PowFn>(
             std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -87,8 +87,8 @@ Tensor eq(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(record(std::make_shared<EqFn>(
+  if (lazy::backend(a.device()) != nullptr) {
+    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::EqFn>(
         std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -98,8 +98,8 @@ Tensor ne(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(record(std::make_shared<NeFn>(
+  if (lazy::backend(a.device()) != nullptr) {
+    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::NeFn>(
         std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -109,8 +109,8 @@ Tensor ge(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(record(std::make_shared<GeFn>(
+  if (lazy::backend(a.device()) != nullptr) {
+    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::GeFn>(
         std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -120,8 +120,8 @@ Tensor le(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(record(std::make_shared<LeFn>(
+  if (lazy::backend(a.device()) != nullptr) {
+    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::LeFn>(
         std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -131,8 +131,8 @@ Tensor gt(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(record(std::make_shared<GtFn>(
+  if (lazy::backend(a.device()) != nullptr) {
+    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::GtFn>(
         std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(
@@ -142,8 +142,8 @@ Tensor lt(const Tensor& a, const Tensor& b) {
   LMP_CHECK(a.device() == b.device()) << "Tensors are on different devices";
   std::shared_ptr<TensorImpl> ai = detail::UnsafeTensorAccessor::getImpl(a);
   std::shared_ptr<TensorImpl> bi = detail::UnsafeTensorAccessor::getImpl(b);
-  if (backend(a.device()) != nullptr) {
-    return detail::UnsafeTensorAccessor::fromImpl(record(std::make_shared<LtFn>(
+  if (lazy::backend(a.device()) != nullptr) {
+    return detail::UnsafeTensorAccessor::fromImpl(lazy::record(std::make_shared<lazy::LtFn>(
         std::vector<std::shared_ptr<TensorImpl>>{ai, bi})));
   }
   return detail::UnsafeTensorAccessor::fromImpl(

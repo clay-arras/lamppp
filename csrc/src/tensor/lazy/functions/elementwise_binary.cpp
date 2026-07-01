@@ -1,6 +1,6 @@
 #include "lamp3/tensor/lazy/functions/elementwise_binary.hpp"
 
-namespace lmp::tensor {
+namespace lmp::tensor::lazy {
 
 std::shared_ptr<TensorImpl> ElementwiseBinaryFn::infer_output() const {
   detail::OpMeta m = detail::infer_binary(inputs[0].get(), inputs[1].get());
@@ -67,4 +67,4 @@ void LtFn::run_eager(TensorImpl& out) {
   out.set_realized(res.storage());
 }
 
-}  // namespace lmp::tensor
+}  // namespace lmp::tensor::lazy

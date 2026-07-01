@@ -16,7 +16,6 @@
 #include "functions/matrix.hpp"
 #include "functions/reduct.hpp"
 #include "functions/view.hpp"
-#include "functions/conv.hpp"
 
 PYBIND11_MODULE(_C, m) {
     init_data_type(m);
@@ -32,5 +31,4 @@ PYBIND11_MODULE(_C, m) {
     init_matrix(m);
     init_reduct(m);
     init_view(m);
-    init_conv(m);
 }

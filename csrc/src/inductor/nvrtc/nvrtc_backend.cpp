@@ -1,4 +1,4 @@
-#include "lamppp/inductor/nvrtc/nvrtc_backend.hpp"
+#include "lamp3/inductor/nvrtc/nvrtc_backend.hpp"
 
 namespace lmp::inductor {
 

@@ -1,11 +1,11 @@
-#include "lamppp/autograd/functions/view_ops.hpp"
+#include "lamp3/autograd/functions/view_ops.hpp"
 #include <cmath>
-#include "lamppp/autograd/functions/unary_decl.hpp"
-#include "lamppp/autograd/variable.hpp"
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/native/shape_ops.hpp"
-#include "lamppp/tensor/tensor.hpp"
-#include "lamppp/tensor/utils/fill_like.hpp"
+#include "lamp3/autograd/functions/unary_decl.hpp"
+#include "lamp3/autograd/variable.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/native/shape_ops.hpp"
+#include "lamp3/tensor/tensor.hpp"
+#include "lamp3/tensor/utils/fill_like.hpp"
 
 namespace lmp::autograd::ops {
 

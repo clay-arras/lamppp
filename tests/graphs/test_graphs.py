@@ -7,7 +7,7 @@ enough -- far fewer iterations than the single-op stress suite needs.
 
 import numpy as np
 import pytest
-import pylamp
+import rushlite
 
 from templates import TEMPLATES
 from ops import sample_fills
@@ -19,16 +19,18 @@ SEEDS = list(range(16))
 
 def _cuda_available():
     try:
-        pylamp.Tensor([[0.0]], device=pylamp.device.cuda, dtype=pylamp.dtype.float64)
+        rushlite.Tensor(
+            [[0.0]], device=rushlite.device.cuda, dtype=rushlite.dtype.float64
+        )
         return True
     except Exception:
         return False
 
 
 def _devices():
-    devices = {"cpu": pylamp.device.cpu}
+    devices = {"cpu": rushlite.device.cpu}
     if _cuda_available():
-        devices["cuda"] = pylamp.device.cuda
+        devices["cuda"] = rushlite.device.cuda
     return devices
 
 
@@ -40,4 +42,4 @@ def test_graph(template, device, seed, fusion):
     rng = np.random.default_rng(seed)
     fills = sample_fills(template, rng)
     for _ in range(DRAWS):
-        pylamp.capture(enable=fusion)(run_once)(template, fills, device, rng)
+        rushlite.capture(enable=fusion)(run_once)(template, fills, device, rng)

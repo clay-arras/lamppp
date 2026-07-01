@@ -1,4 +1,4 @@
-"""Build a template in torch and pylamp from one fill, then diff fwd + bwd.
+"""Build a template in torch and rushlite from one fill, then diff fwd + bwd.
 
 Mirrors the comparison the single-op stress suite does, generalized to an
 N-input graph driven by a template ``build`` function. Tolerances scale with
@@ -6,7 +6,7 @@ chain depth since float error compounds down a chain.
 """
 
 import torch
-import pylamp
+import rushlite
 
 from ops import OpSet, row_normalize, BACKEND_TORCH, BACKEND_LAMP
 
@@ -30,13 +30,13 @@ def _rtol(pred, true):
 
 
 def _from_row_major(flat, like):
-    """Reshape pylamp's flat (row-major) output to match a torch-shaped value."""
+    """Reshape rushlite's flat (row-major) output to match a torch-shaped value."""
     return torch.tensor(flat).reshape(torch.tensor(like).shape).tolist()
 
 
 def _to_lamp(arr, device):
-    return pylamp.Tensor(
-        arr.tolist(), requires_grad=True, device=device, dtype=pylamp.dtype.float64
+    return rushlite.Tensor(
+        arr.tolist(), requires_grad=True, device=device, dtype=rushlite.dtype.float64
     )
 
 

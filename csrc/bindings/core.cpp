@@ -1,8 +1,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "lamppp/autograd/core.hpp"
-#include "lamppp/tensor/core.hpp"
+#include "lamp3/autograd/core.hpp"
+#include "lamp3/tensor/core.hpp"
 
 #include "data_type.hpp"
 #include "device_type.hpp"

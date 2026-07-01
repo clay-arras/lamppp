@@ -1,12 +1,12 @@
-#include "lamppp/tensor/cpu/memory.hpp"
+#include "lamp3/tensor/cpu/memory.hpp"
 #include <cstring>
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/data_type.hpp"
-#include "lamppp/tensor/dispatch_type.hpp"
-#include "lamppp/tensor/native/memory_ops.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/data_type.hpp"
+#include "lamp3/tensor/dispatch_type.hpp"
+#include "lamp3/tensor/native/memory_ops.hpp"
 
 #ifdef LMP_ENABLE_CUDA
-#include "lamppp/tensor/cuda/memory.cuh"
+#include "lamp3/tensor/cuda/memory.cuh"
 #endif
 
 namespace lmp::tensor::detail::cpu {

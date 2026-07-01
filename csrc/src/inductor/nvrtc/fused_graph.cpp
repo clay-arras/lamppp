@@ -1,4 +1,4 @@
-#include "lamppp/inductor/nvrtc/fused_graph.hpp"
+#include "lamp3/inductor/nvrtc/fused_graph.hpp"
 
 namespace lmp::inductor {
 namespace {

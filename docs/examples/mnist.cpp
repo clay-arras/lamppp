@@ -3,12 +3,12 @@
 #include <iostream>
 #include <limits>
 #include <vector>
-#include "lamppp/lamppp.hpp"
-#include "lamppp/nets/any.hpp"
-#include "lamppp/nets/layers/activation.hpp"
-#include "lamppp/nets/layers/container.hpp"
-#include "lamppp/nets/layers/linear.hpp"
-#include "lamppp/nets/parameter.hpp"
+#include "lamp3/lamp3.hpp"
+#include "lamp3/nets/any.hpp"
+#include "lamp3/nets/layers/activation.hpp"
+#include "lamp3/nets/layers/container.hpp"
+#include "lamp3/nets/layers/linear.hpp"
+#include "lamp3/nets/parameter.hpp"
 #include "utils/batch_sample.hpp"
 #include "utils/csv_reader.hpp"
 

@@ -1,6 +1,6 @@
-#include "lamppp/tensor/utils/fill_like.hpp"
-#include "lamppp/tensor/dispatch_type.hpp"
-#include "lamppp/tensor/tensor.hpp"
+#include "lamp3/tensor/utils/fill_like.hpp"
+#include "lamp3/tensor/dispatch_type.hpp"
+#include "lamp3/tensor/tensor.hpp"
 
 namespace lmp::tensor {
 

@@ -21,13 +21,13 @@ g++ --version    # Should support C++20
 nvcc --version   # Optional, for CUDA support
 ```
 
-## Building Lamp++
+## Building Lamp3
 
 ### The basic build
 
 ```bash
-git clone https://github.com/clay-arras/lamp.git
-cd lamp
+git clone https://github.com/rushlite/rushlite.git
+cd rushlite
 cmake -S . -B build
 cmake --build build
 ```
@@ -72,7 +72,7 @@ The Release build includes `-march=native` and `-ffast-math`, so it's optimized 
 Create a file called `test.cpp`:
 
 ```cpp
-#include "lamppp/lamppp.hpp"
+#include "lamp3/lamp3.hpp"
 #include <iostream>
 
 int main() {

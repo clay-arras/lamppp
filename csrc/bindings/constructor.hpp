@@ -1,10 +1,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "lamppp/tensor/core.hpp"
-#include "lamppp/autograd/core.hpp"
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/data_type.hpp"
+#include "lamp3/tensor/core.hpp"
+#include "lamp3/autograd/core.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/data_type.hpp"
 
 namespace py = pybind11;
 

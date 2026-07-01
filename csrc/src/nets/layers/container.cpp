@@ -1,7 +1,7 @@
-#include "lamppp/nets/layers/container.hpp"
+#include "lamp3/nets/layers/container.hpp"
 #include <string>
 #include <utility>
-#include "lamppp/nets/any.hpp"
+#include "lamp3/nets/any.hpp"
 
 namespace lmp::nets {
 

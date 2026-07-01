@@ -48,7 +48,7 @@ endif()
 
 add_library(tensor_core SHARED ${TENSOR_SOURCES})
 
-target_link_libraries(tensor_core PUBLIC lamppp_compile_config)
+target_link_libraries(tensor_core PUBLIC lamp3_compile_config)
 
 # Apply coverage flags if enabled
 if(LMP_ENABLE_COVERAGE)

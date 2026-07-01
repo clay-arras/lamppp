@@ -1,4 +1,4 @@
-#include "lamppp/tensor/lazy/functions/elementwise_binary.hpp"
+#include "lamp3/tensor/lazy/functions/elementwise_binary.hpp"
 
 namespace lmp::tensor {
 

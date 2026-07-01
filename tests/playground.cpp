@@ -1,8 +1,8 @@
 #include <functional>
-#include "lamppp/lamppp.hpp"
-#include "lamppp/nets/layers/linear.hpp"
-#include "lamppp/nets/parameter.hpp"
-#include "lamppp/tensor/native/conv_ops.hpp"
+#include "lamp3/lamp3.hpp"
+#include "lamp3/nets/layers/linear.hpp"
+#include "lamp3/nets/parameter.hpp"
+#include "lamp3/tensor/native/conv_ops.hpp"
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
 int main() {

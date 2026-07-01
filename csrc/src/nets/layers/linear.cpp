@@ -1,8 +1,8 @@
-#include "lamppp/autograd/functions/view_ops.hpp"
-#include "lamppp/common/assert.hpp"
-#include "lamppp/autograd/core.hpp"
-#include "lamppp/nets/parameter.hpp"
-#include "lamppp/nets/layers/linear.hpp"
+#include "lamp3/autograd/functions/view_ops.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/autograd/core.hpp"
+#include "lamp3/nets/parameter.hpp"
+#include "lamp3/nets/layers/linear.hpp"
 
 namespace lmp::nets {
 

@@ -1,4 +1,4 @@
-#include "lamppp/nets/module.hpp"
+#include "lamp3/nets/module.hpp"
 #include <functional>
 
 namespace lmp::nets {

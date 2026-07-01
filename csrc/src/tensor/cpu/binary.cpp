@@ -1,5 +1,5 @@
-#include "lamppp/tensor/cpu/binary.hpp"
-#include "lamppp/tensor/cpu/kernels.hpp"
+#include "lamp3/tensor/cpu/binary.hpp"
+#include "lamp3/tensor/cpu/kernels.hpp"
 
 namespace lmp::tensor::detail::cpu {
 

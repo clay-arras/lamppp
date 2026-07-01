@@ -1,7 +1,7 @@
 import os
 
 import torch
-import pylamp
+import rushlite
 import pytest
 from operations import (
     Add,
@@ -22,7 +22,7 @@ from operations import (
     Max,
     Min,
 )
-from testutils import calculate_pair_tolerances, from_row_major, to_pylamp_var
+from testutils import calculate_pair_tolerances, from_row_major, to_rushlite_var
 
 ITERATIONS = 1000
 EPSILON = 1e-10
@@ -54,13 +54,13 @@ def get_case():
     }
 
 
-def _pylamp_cuda_available():
+def _rushlite_cuda_available():
     try:
-        pylamp.Tensor(
+        rushlite.Tensor(
             [[0.0]],
             requires_grad=False,
-            device=pylamp.device.cuda,
-            dtype=pylamp.dtype.float64,
+            device=rushlite.device.cuda,
+            dtype=rushlite.dtype.float64,
         )
         return True
     except Exception:
@@ -68,9 +68,9 @@ def _pylamp_cuda_available():
 
 
 def get_device():
-    devices = {"cpu": pylamp.device.cpu}
-    if _pylamp_cuda_available():
-        devices.update({"cuda": pylamp.device.cuda})
+    devices = {"cpu": rushlite.device.cpu}
+    if _rushlite_cuda_available():
+        devices.update({"cuda": rushlite.device.cuda})
     return devices
 
 
@@ -89,7 +89,7 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False
 
 
-def compute_grads(pylamp_op, torch_op, mats, device):
+def compute_grads(rushlite_op, torch_op, mats, device):
     torch_vars = [torch.tensor(m, dtype=TORCH_DTYPE, requires_grad=True) for m in mats]
     torch_out = torch_op(*torch_vars)
     torch_out.backward(torch.ones_like(torch_out, dtype=TORCH_DTYPE))
@@ -98,16 +98,16 @@ def compute_grads(pylamp_op, torch_op, mats, device):
         "out": [torch_out.data.tolist()],
     }
 
-    pylamp_vars = [to_pylamp_var(m, device) for m in mats]
-    pylamp_out = pylamp_op(*pylamp_vars)
-    pylamp_out.backward()
-    pylamp_vals = {
+    rushlite_vars = [to_rushlite_var(m, device) for m in mats]
+    rushlite_out = rushlite_op(*rushlite_vars)
+    rushlite_out.backward()
+    rushlite_vals = {
         "grads": [
-            from_row_major(v.grad.tolist(), m) for v, m in zip(pylamp_vars, mats)
+            from_row_major(v.grad.tolist(), m) for v, m in zip(rushlite_vars, mats)
         ],
-        "out": [from_row_major(pylamp_out.tolist(), torch_out.data.tolist())],
+        "out": [from_row_major(rushlite_out.tolist(), torch_out.data.tolist())],
     }
-    return pylamp_vals, torch_vals
+    return rushlite_vals, torch_vals
 
 
 @pytest.mark.usefixtures("set_seed", "set_dtype")

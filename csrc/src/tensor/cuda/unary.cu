@@ -2,8 +2,8 @@
 #include <cuda_runtime_api.h>
 #include <driver_types.h>
 #include <cuda/std/array>
-#include "lamppp/tensor/cuda/kernels.cuh"
-#include "lamppp/tensor/cuda/unary.cuh"
+#include "lamp3/tensor/cuda/kernels.cuh"
+#include "lamp3/tensor/cuda/unary.cuh"
 
 namespace lmp::tensor::detail::cuda {
 

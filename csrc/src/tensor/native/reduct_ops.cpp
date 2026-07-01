@@ -1,5 +1,5 @@
-#include "lamppp/tensor/native/reduct_ops.hpp"
-#include "lamppp/tensor/tensor_impl.hpp"
+#include "lamp3/tensor/native/reduct_ops.hpp"
+#include "lamp3/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 

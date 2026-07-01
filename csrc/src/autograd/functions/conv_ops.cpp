@@ -1,6 +1,6 @@
-#include "lamppp/autograd/functions/conv_ops.hpp"
-#include "lamppp/autograd/function.hpp"
-#include "lamppp/autograd/variable.hpp"
+#include "lamp3/autograd/functions/conv_ops.hpp"
+#include "lamp3/autograd/function.hpp"
+#include "lamp3/autograd/variable.hpp"
 
 namespace lmp::autograd::ops {
 

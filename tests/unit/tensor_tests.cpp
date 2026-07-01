@@ -6,9 +6,9 @@
 #include <tuple>
 #include <vector>
 
-#include "lamppp/tensor/core.hpp"
-#include "lamppp/tensor/data_type.hpp"
-#include "lamppp/tensor/device_type.hpp"
+#include "lamp3/tensor/core.hpp"
+#include "lamp3/tensor/data_type.hpp"
+#include "lamp3/tensor/device_type.hpp"
 
 using lmp::tensor::DataType;
 using lmp::tensor::DeviceType;

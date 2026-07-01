@@ -1,10 +1,10 @@
-#include "lamppp/autograd/variable.hpp"
+#include "lamp3/autograd/variable.hpp"
 #include <algorithm>
 #include <iostream>
 #include <memory>
 #include <unordered_set>
-#include "lamppp/autograd/function.hpp"
-#include "lamppp/common/assert.hpp"
+#include "lamp3/autograd/function.hpp"
+#include "lamp3/common/assert.hpp"
 
 namespace lmp::autograd {
 

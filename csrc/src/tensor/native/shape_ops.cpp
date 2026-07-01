@@ -1,7 +1,7 @@
-#include "lamppp/tensor/native/shape_ops.hpp"
-#include "lamppp/tensor/native/memory_ops.hpp"
-#include "lamppp/tensor/tensor.hpp"
-#include "lamppp/tensor/tensor_impl.hpp"
+#include "lamp3/tensor/native/shape_ops.hpp"
+#include "lamp3/tensor/native/memory_ops.hpp"
+#include "lamp3/tensor/tensor.hpp"
+#include "lamp3/tensor/tensor_impl.hpp"
 
 namespace lmp::tensor::ops {
 

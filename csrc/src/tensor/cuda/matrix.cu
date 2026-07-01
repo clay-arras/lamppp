@@ -1,7 +1,7 @@
 #include <type_traits>
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/cuda/matrix.cuh"
-#include "lamppp/tensor/data_type.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/cuda/matrix.cuh"
+#include "lamp3/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail::cuda {
 

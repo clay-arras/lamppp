@@ -1,4 +1,4 @@
-#include "lamppp/tensor/lazy/lazy_backend.hpp"
+#include "lamp3/tensor/lazy/lazy_backend.hpp"
 
 namespace lmp::tensor {
 

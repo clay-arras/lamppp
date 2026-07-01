@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "lamppp/tensor/core.hpp"
+#include "lamp3/tensor/core.hpp"
 
 namespace py = pybind11;
 

@@ -17,7 +17,7 @@ if(LMP_ENABLE_COVERAGE)
 endif()
 
 target_link_libraries(nets_core
-  PUBLIC tensor_core autograd_core lamppp_compile_config
+  PUBLIC tensor_core autograd_core lamp3_compile_config
 )
 
 target_include_directories(nets_core

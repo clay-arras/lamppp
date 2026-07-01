@@ -1,6 +1,6 @@
-#include "lamppp/tensor/tensor.hpp"
+#include "lamp3/tensor/tensor.hpp"
 #include <iostream>
-#include "lamppp/tensor/native/shape_ops.hpp"
+#include "lamp3/tensor/native/shape_ops.hpp"
 
 namespace lmp::tensor {
 

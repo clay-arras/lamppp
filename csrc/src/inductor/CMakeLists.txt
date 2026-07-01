@@ -19,7 +19,7 @@ endif()
 
 add_library(inductor_core SHARED ${INDUCTOR_SOURCES})
 
-target_link_libraries(inductor_core PUBLIC lamppp_compile_config tensor_core)
+target_link_libraries(inductor_core PUBLIC lamp3_compile_config tensor_core)
 
 # Apply coverage flags if enabled
 if(LMP_ENABLE_COVERAGE)

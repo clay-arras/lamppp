@@ -1,7 +1,7 @@
-#include "lamppp/common/macros.hpp"
-#include "lamppp/tensor/cuda/conv.cuh"
-#include "lamppp/tensor/cuda/list_ptr.cuh"
-#include "lamppp/tensor/data_type.hpp"
+#include "lamp3/common/macros.hpp"
+#include "lamp3/tensor/cuda/conv.cuh"
+#include "lamp3/tensor/cuda/list_ptr.cuh"
+#include "lamp3/tensor/data_type.hpp"
 
 namespace lmp::tensor::detail::cuda {
 

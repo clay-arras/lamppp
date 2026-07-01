@@ -1,7 +1,7 @@
-#include "lamppp/tensor/cpu/meta_handler.hpp"
-#include "lamppp/common/assert.hpp"
-#include "lamppp/tensor/device_type.hpp"
-#include "lamppp/tensor/infer_meta.hpp"
+#include "lamp3/tensor/cpu/meta_handler.hpp"
+#include "lamp3/common/assert.hpp"
+#include "lamp3/tensor/device_type.hpp"
+#include "lamp3/tensor/infer_meta.hpp"
 
 namespace lmp::tensor::detail {
 

@@ -36,7 +36,7 @@ def _devices():
 @pytest.mark.parametrize("template", TEMPLATES, ids=[t.name for t in TEMPLATES])
 @pytest.mark.parametrize("seed", SEEDS)
 @pytest.mark.parametrize("fusion", [True, False])
-def test_graph(template, device, seed):
+def test_graph(template, device, seed, fusion):
     rng = np.random.default_rng(seed)
     fills = sample_fills(template, rng)
     for _ in range(DRAWS):

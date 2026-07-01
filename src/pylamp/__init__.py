@@ -5,4 +5,4 @@ from .Tensor import Tensor
 from .capture_mode import capture_on, capture
 from .nets.Module import Module
 
-__all__ = ["Tensor", "Module"]
+__all__ = ["Tensor", "Module", "capture_on", "capture"]

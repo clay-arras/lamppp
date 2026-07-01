@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.27)
 project(lamp3 LANGUAGES CXX)
 
 option(LMP_ENABLE_CUDA "Compile with CUDA support" OFF)
@@ -78,7 +78,7 @@ add_subdirectory(csrc/src/nets)
 add_library(lamp3 INTERFACE)
 target_link_libraries(lamp3 INTERFACE autograd_core tensor_core inductor_core nets_core)
 
-add_subdirectory(docs/examples)
+add_subdirectory(docs)
 add_subdirectory(csrc/bindings)
 if(LMP_ENABLE_TEST)
   add_subdirectory(tests)
@@ -183,29 +183,7 @@ if(CLANG_TIDY_EXE)
 endif()
 
 
-# DOCUMENTATION ---------------------------------
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-  set(DOXYGEN_INPUT_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src ${CMAKE_CURRENT_SOURCE_DIR}/csrc/include ${CMAKE_CURRENT_SOURCE_DIR}/docs")
-  set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/docs")
-  set(PROJECT_NAME ${CMAKE_PROJECT_NAME})
-  
-  configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in 
-    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile  
-    @ONLY
-  )
-
-  doxygen_add_docs(
-    docs
-    "${CMAKE_CURRENT_SOURCE_DIR}/csrc/src" "${CMAKE_CURRENT_SOURCE_DIR}/csrc/include" "${CMAKE_CURRENT_SOURCE_DIR}/docs"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DOXYFILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/docs
-  )
-endif()
-
-# COVERAGE ---------------------------------  
+# COVERAGE ---------------------------------
 if(LMP_ENABLE_COVERAGE)
   include(CTest)
   set(CMAKE_CXX_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage")

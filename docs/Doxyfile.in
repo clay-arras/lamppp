@@ -5,4 +5,6 @@ FILE_PATTERNS    = *.h *.hpp *.cpp *.c *.cu *.cuh *.dox
 RECURSIVE        = YES
 EXTRACT_ALL      = NO
 GENERATE_HTML    = YES
+GENERATE_LATEX   = NO
 WARN_IF_UNDOCUMENTED = YES
+QUIET            = YES

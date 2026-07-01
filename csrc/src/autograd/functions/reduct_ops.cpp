@@ -1,4 +1,5 @@
 #include "lamp3/autograd/functions/reduct_ops.hpp"
+
 #include "lamp3/autograd/functions/unary_decl.hpp"
 #include "lamp3/autograd/variable.hpp"
 #include "lamp3/common/assert.hpp"

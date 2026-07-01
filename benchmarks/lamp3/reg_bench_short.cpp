@@ -1,6 +1,8 @@
 #include <benchmark/benchmark.h>
+
 #include <memory>
 #include <vector>
+
 #include "op_defs.hpp"
 
 // NOLINTNEXTLINE(bugprone-exception-escape)

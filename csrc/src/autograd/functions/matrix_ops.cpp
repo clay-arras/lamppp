@@ -1,4 +1,5 @@
 #include "lamp3/autograd/functions/matrix_ops.hpp"
+
 #include "lamp3/autograd/function.hpp"
 #include "lamp3/autograd/variable.hpp"
 
@@ -27,8 +28,7 @@ variable_list TransposeBackward::apply(const variable_list& gradOutputs) {
   const Variable& grad = gradOutputs[0];
   Variable& self = (*saved_inputs)[0];
 
-  if (self.requires_grad())
-    self.incr_grad(tensor::ops::transpose(grad.grad()));
+  if (self.requires_grad()) self.incr_grad(tensor::ops::transpose(grad.grad()));
 
   variable_list grad_inputs = {};
   return grad_inputs;

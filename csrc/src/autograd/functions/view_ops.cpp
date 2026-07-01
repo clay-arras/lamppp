@@ -1,5 +1,7 @@
 #include "lamp3/autograd/functions/view_ops.hpp"
+
 #include <cmath>
+
 #include "lamp3/autograd/functions/unary_decl.hpp"
 #include "lamp3/autograd/variable.hpp"
 #include "lamp3/common/macros.hpp"

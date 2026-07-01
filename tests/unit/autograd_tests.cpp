@@ -1,5 +1,6 @@
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
+
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -397,12 +398,10 @@ TEST_P(VariableOpTest, ZeroGradTest) {
   bool a_has_nonzero = false;
   bool b_has_nonzero = false;
   for (Scalar val : a_grad_before) {
-    if (std::abs(val) > kEps)
-      a_has_nonzero = true;
+    if (std::abs(val) > kEps) a_has_nonzero = true;
   }
   for (Scalar val : b_grad_before) {
-    if (std::abs(val) > kEps)
-      b_has_nonzero = true;
+    if (std::abs(val) > kEps) b_has_nonzero = true;
   }
   EXPECT_TRUE(a_has_nonzero)
       << "Variable 'a' should have non-zero gradients before zero_grad";

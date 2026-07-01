@@ -1,5 +1,7 @@
 #include "lamp3/tensor/utils/align_utils.hpp"
+
 #include <numeric>
+
 #include "lamp3/common/assert.hpp"
 
 namespace lmp::tensor::detail {
@@ -21,8 +23,7 @@ std::vector<size_t> AlignUtil::calc_aligned_shape(
 
 #pragma unroll
   for (size_t i = LMP_MAX_DIMS; i-- > 0;) {
-    if (i >= out_dims)
-      continue;
+    if (i >= out_dims) continue;
 
     int offset = out_dims - 1 - i;  // needs to use signed int for this part
     int a_idx = a_shape.size() - 1 - offset;

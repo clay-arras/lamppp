@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+
 #include "lamp3/lamp3.hpp"
 #include "reg_defs.hpp"
 
@@ -94,9 +95,7 @@ class UnaryOperatorBase : public OperatorBase {
  public:
   void register_benchmarks(const OperatorConfig<1>& config) {
     auto op_fn = [this](const std::array<lmp::autograd::Variable, 1>& inputs)
-        -> lmp::autograd::Variable {
-      return apply_operation(inputs[0]);
-    };
+        -> lmp::autograd::Variable { return apply_operation(inputs[0]); };
     auto init_fn =
         // NOLINTNEXTLINE(bugprone-exception-escape)
         [config](bool requires_grad) -> std::array<lmp::autograd::Variable, 1> {

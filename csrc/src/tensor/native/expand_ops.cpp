@@ -1,6 +1,8 @@
 #include "lamp3/tensor/native/expand_ops.hpp"
+
 #include <memory>
 #include <vector>
+
 #include "lamp3/common/assert.hpp"
 #include "lamp3/tensor/lazy/functions/elementwise_binary.hpp"
 #include "lamp3/tensor/lazy/lazy_backend.hpp"

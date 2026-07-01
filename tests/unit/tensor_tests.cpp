@@ -1,5 +1,6 @@
 #include <gmock/gmock-matchers.h>
 #include <gtest/gtest.h>
+
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -763,8 +764,7 @@ std::vector<ParamTypes> GenerateParamCombinations() {
   std::vector<ParamTypes> comb;
   for (auto dtype : {DataType::Int16, DataType::Int32, DataType::Int64,
                      DataType::Float32, DataType::Float64})
-    for (auto device : devices)
-      comb.emplace_back(device, dtype);
+    for (auto device : devices) comb.emplace_back(device, dtype);
   return comb;
 }
 

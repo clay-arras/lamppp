@@ -1,4 +1,5 @@
 #include <functional>
+
 #include "lamp3/lamp3.hpp"
 #include "lamp3/nets/layers/linear.hpp"
 #include "lamp3/nets/parameter.hpp"

@@ -58,6 +58,7 @@ htmlcov/
 
 # C++ Tools
 Doxyfile
+docs/html/
 .clangd
 
 # Editors
